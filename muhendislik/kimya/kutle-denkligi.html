@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kütle Denkliği Hesaplayıcı - Hesapkolik</title>
+    <meta name="description" content="Kimyasal proseslerde madde giriş ve çıkış denkliklerini hesaplayın. Temel kütle denkliği prensiplerini uygulayarak sistemlerinizdeki akışları analiz edin.">
+    <meta name="keywords" content="kütle denkliği, kimya mühendisliği, proses hesaplamaları, akışkanlar, madde dengesi, hesaplama, kimya prosesleri">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="health-calculators-section">
+            <div class="container">
+                <h1 class="main-title">Kütle Denkliği Hesaplayıcı</h1>
+                <p class="section-description">Kimyasal proseslerde madde giriş ve çıkış denkliklerini hızlıca hesaplayın. İşletmenizdeki veya projenizdeki akışları optimize edin.</p>
+
+                <div class="calculator-group">
+                    <div class="calculator-card-wrapper">
+                        <div class="calculator-header">
+                            <i class="fas fa-balance-scale-right icon-small"></i>
+                            <h2>Kütle Denkliğini Hesapla</h2>
+                        </div>
+                        <div class="calculator-form-container">
+                            <form id="massBalanceForm">
+                                <label for="input1">Giriş Akışı 1 (kg/saat):</label>
+                                <input type="number" id="input1" name="input1" placeholder="Örn: 100" required min="0" step="0.01">
+
+                                <label for="input2">Giriş Akışı 2 (kg/saat):</label>
+                                <input type="number" id="input2" name="input2" placeholder="Örn: 50" required min="0" step="0.01">
+                                
+                                <button type="submit">Kütle Denkliğini Hesapla</button>
+                            </form>
+                            <div id="massBalanceResult" class="result-display"></div>
+                            <div id="massBalanceCategory" class="category-display"></div>
+                            <p class="small-text">Varsayılan olarak, iki giriş akışının toplamı tek bir çıkış akışı olarak hesaplanır. Daha karmaşık senaryolar için detaylı mühendislik yazılımları kullanılması önerilir.</p>
+                        </div>
+                    </div>
+                    <section class="info-section">
+                        <h3>Kütle Denkliği Nedir?</h3>
+                        <p>
+                            <strong>Kütle denkliği</strong>, bir sistemdeki kütlenin korunumu ilkesine dayanır. Bu ilkeye göre, bir sistemde kütle yoktan var edilemez veya vardan yok edilemez. Basitçe ifade etmek gerekirse, bir proses sistemine giren toplam kütle, sistemden çıkan toplam kütleye eşit olmalıdır. Bu, kimya mühendisliğinde proseslerin tasarlanması, analiz edilmesi ve optimize edilmesi için temel bir araçtır.
+                        </p>
+                        <p>
+                            Kütle denklikleri genellikle sürekli akış proseslerinde, parti proseslerinde ve yarı-parti proseslerinde kullanılır. Reaksiyonlar olsun ya da olmasın, bir sistemdeki her bir bileşen için ayrı ayrı veya toplam kütle için kütle denklikleri yazılabilir.
+                        </p>
+
+                        <h4>Kütle Denkliği Nasıl Hesaplanır?</h4>
+                        <p>
+                            En basit kütle denkliği denklemi şöyledir:
+                        </p>
+                        <p class="formula-text">
+                            Giriş Kütlesi = Çıkış Kütlesi + Birikme (Akümülasyon)
+                        </p>
+                        <p>
+                            Durgun (steady-state) sistemlerde (zamanla değişmeyen sistemler) birikme terimi sıfır kabul edilir. Bu durumda denklem şöyle basitleşir:
+                        </p>
+                        <p class="formula-text">
+                            Giriş Kütlesi = Çıkış Kütlesi
+                        </p>
+                        <p>
+                            Hesaplayıcımız, bu temel prensibi kullanarak, verilen iki giriş akışının toplamını birleşik bir çıkış akışı olarak sunar. Bu, basit karışım veya reaksiyonsuz ayırma proseslerinde kullanılabilir.
+                        </p>
+
+                        <h4>Uygulama Alanları:</h4>
+                        <ul>
+                            <li>Kimyasal reaktörlerde reaktan ve ürün akışlarının izlenmesi.</li>
+                            <li>Ayırma ünitelerinde (distilasyon kolonları, absorpsiyon kuleleri) bileşen dengelerinin kurulması.</li>
+                            <li>Atık su arıtma tesislerinde kirletici yüklerinin belirlenmesi.</li>
+                            <li>Enerji üretim sistemlerinde yakıt ve baca gazı akışlarının hesaplanması.</li>
+                            <li>Genel proses tasarımında ve optimizasyonunda.</li>
+                        </ul>
+                        <p class="disclaimer-text">
+                            Bu hesaplayıcı temel kütle denkliği prensiplerini uygulamak için basit bir araçtır. Gerçek endüstriyel prosesler genellikle birden fazla giriş/çıkış akışı, reaksiyonlar ve farklı bileşenlerin dengelerini içerir. Daha karmaşık senaryolar için detaylı proses simülasyon yazılımları ve mühendislik uzmanlığı gereklidir.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+    <script>
+        // JavaScript Kodu Başlangıcı
+        document.addEventListener('DOMContentLoaded', function() {
+            const massBalanceForm = document.getElementById('massBalanceForm');
+            const input1 = document.getElementById('input1');
+            const input2 = document.getElementById('input2');
+            const massBalanceResult = document.getElementById('massBalanceResult');
+            const massBalanceCategory = document.getElementById('massBalanceCategory'); // Bu element şu an için hesaplamada kullanılmıyor.
+
+            if (massBalanceForm) {
+                massBalanceForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Formun varsayılan gönderimini engelle
+
+                    const val1 = parseFloat(input1.value);
+                    const val2 = parseFloat(input2.value);
+
+                    // Girişlerin geçerli sayı olup olmadığını kontrol et
+                    if (isNaN(val1) || isNaN(val2) || val1 < 0 || val2 < 0) {
+                        massBalanceResult.innerHTML = '<p class="error">Lütfen geçerli ve pozitif sayılar giriniz.</p>';
+                        massBalanceResult.style.display = 'block'; // Hata mesajını görünür yap
+                        return; // Hesaplamayı durdur
+                    }
+
+                    // Kütle denkliği hesaplaması: Giriş Kütlesi = Çıkış Kütlesi (Varsayım: Birikme sıfır)
+                    const totalOutput = val1 + val2;
+
+                    massBalanceResult.innerHTML = `
+                        <p><strong>Giriş Akışı 1:</strong> ${val1} kg/saat</p>
+                        <p><strong>Giriş Akışı 2:</strong> ${val2} kg/saat</p>
+                        <p><strong>Toplam Çıkış Akışı (Hesaplanan):</strong> <span class="result-value">${totalOutput.toFixed(2)}</span> kg/saat</p>
+                    `;
+                    massBalanceResult.style.display = 'block'; // Sonucu görünür yap
+
+                    // Not: massBalanceCategory için bir mantık tanımlanmamış, isteğe bağlı eklenebilir.
+                    // Örneğin: if (totalOutput > 500) { massBalanceCategory.innerHTML = '<p>Yüksek Akış Prosesi</p>'; }
+                });
+            }
+        });
+        // JavaScript Kodu Sonu
+    </script>
+</body>
+</html>

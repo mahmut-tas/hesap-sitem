@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoğunluk Hesaplayıcı - Hesapkolik</title>
+    <meta name="description" content="Kütle ve hacim kullanarak yoğunluğu hesaplayın veya yoğunluk, kütle ve hacim arasındaki diğer değerleri bulun. Farklı birimler arası dönüşüm desteği.">
+    <meta name="keywords" content="yoğunluk, kütle, hacim, yoğunluk hesaplama, birim dönüşümü, yoğunluk formülü, fizik, kimya, mühendislik hesaplamaları, hesapkolik yoğunluk">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="calculator-page-section">
+            <div class="container">
+                <h1 class="main-title">Yoğunluk Hesaplayıcı</h1>
+                <p class="section-description">Kütle ve hacim bilgilerini kullanarak maddelerin yoğunluğunu hesaplayın. Ayrıca, bilinen yoğunluk ve kütle/hacim değerleri ile eksik olan diğer değeri bulun.</p>
+
+                <div class="calculator-group">
+                    <div class="calculator-card-wrapper">
+                        <div class="calculator-header">
+                            <i class="fas fa-flask icon-small"></i>
+                            <h2>Yoğunluk, Kütle veya Hacim Hesapla</h2>
+                        </div>
+                        <div class="calculator-form-container">
+                            <form id="densityForm">
+                                <p>Hesaplamak istediğiniz değeri seçin:</p>
+                                <div class="radio-group">
+                                    <input type="radio" id="calcDensity" name="calcType" value="density" checked>
+                                    <label for="calcDensity">Yoğunluk (p)</label><br>
+                                    <input type="radio" id="calcMass" name="calcType" value="mass">
+                                    <label for="calcMass">Kütle (m)</label><br>
+                                    <input type="radio" id="calcVolume" name="calcType" value="volume">
+                                    <label for="calcVolume">Hacim (V)</label>
+                                </div>
+                                <hr class="form-divider"> <div id="densityInput" class="input-with-unit">
+                                    <label for="densityValue">Yoğunluk (p):</label>
+                                    <input type="number" id="densityValue" name="densityValue" placeholder="Yoğunluk değerini girin" min="0.000001" step="0.000001">
+                                    <select id="densityUnit">
+                                        <option value="g/cm3">g/cm³</option>
+                                        <option value="kg/m3">kg/m³</option>
+                                        <option value="lb/ft3">lb/ft³</option>
+                                        <option value="kg/L">kg/L</option>
+                                        <option value="g/mL">g/mL</option>
+                                    </select>
+                                </div>
+                                <hr class="form-divider"> <div id="massInput" class="input-with-unit">
+                                    <label for="massValue">Kütle (m):</label>
+                                    <input type="number" id="massValue" name="massValue" placeholder="Kütle değerini girin" min="0.000001" step="0.000001">
+                                    <select id="massUnit">
+                                        <option value="g">gram (g)</option>
+                                        <option value="kg">kilogram (kg)</option>
+                                        <option value="lb">pound (lb)</option>
+                                    </select>
+                                </div>
+                                <hr class="form-divider"> <div id="volumeInput" class="input-with-unit">
+                                    <label for="volumeValue">Hacim (V):</label>
+                                    <input type="number" id="volumeValue" name="volumeValue" placeholder="Hacim değerini girin" min="0.000001" step="0.000001">
+                                    <select id="volumeUnit">
+                                        <option value="cm3">santimetreküp (cm³)</option>
+                                        <option value="m3">metreküp (m³)</option>
+                                        <option value="L">litre (L)</option>
+                                        <option value="ft3">kübik fit (ft³)</option>
+                                        <option value="mL">mililitre (mL)</option>
+                                    </select>
+                                </div>
+                                
+                                <button type="submit">Hesapla</button>
+                            </form>
+                            <div id="densityResult" class="result-display"></div>
+                            <p class="small-text">Lütfen hesaplamak istediğiniz parametrenin dışındaki diğer iki değeri giriniz. Örneğin, yoğunluğu hesaplamak istiyorsanız kütle ve hacmi girmeniz gerekmektedir.</p>
+                        </div>
+                    </div>
+
+                    <section class="info-section">
+                        <h3>Yoğunluk Nedir?</h3>
+                        <p>
+                            <strong>Yoğunluk (p veya ρ)</strong>, bir maddenin birim hacimdeki kütlesidir. Maddenin ne kadar "sıkışık" olduğunu veya belirli bir hacimde ne kadar madde bulunduğunu gösteren bir fiziksel özelliktir. Genellikle kimya, fizik ve mühendislikte önemli bir parametredir.
+                        </p>
+                        <p>
+                            Yoğunluğun temel formülü şöyledir:
+                        </p>
+                        <p class="formula-text">
+                            $ \rho = \frac{m}{V} $
+                        </p>
+                        <ul>
+                            <li><strong>$ \rho $ (Rho):</strong> Yoğunluk (genellikle kg/m³ veya g/cm³ birimleriyle ifade edilir).</li>
+                            <li><strong>$ m $:</strong> Kütle (genellikle kilogram (kg) veya gram (g) birimleriyle ifade edilir).</li>
+                            <li><strong>$ V $:</strong> Hacim (genellikle metreküp (m³) veya santimetreküp (cm³) birimleriyle ifade edilir).</li>
+                        </ul>
+                        <p>
+                            Bu formül, bilinen herhangi iki değeri kullanarak üçüncü değeri hesaplamak için yeniden düzenlenebilir:
+                        </p>
+                        <ul>
+                            <li><strong>Kütle hesaplamak için:</strong> $ m = \rho \cdot V $</li>
+                            <li><strong>Hacim hesaplamak için:</strong> $ V = \frac{m}{\rho} $</li>
+                        </ul>
+
+                        <h4>Yaygın Yoğunluk Birimleri ve Dönüşümleri</h4>
+                        <p>Yoğunluk için birçok farklı birim kullanılır. En yaygın olanları gram/santimetreküp (g/cm³) ve kilogram/metreküp (kg/m³)'tür. İşte bazı önemli dönüşümler:</p>
+                        <ul>
+                            <li>$ 1 \text{ g/cm}^3 = 1000 \text{ kg/m}^3 $</li>
+                            <li>$ 1 \text{ kg/m}^3 = 0.001 \text{ g/cm}^3 $</li>
+                            <li>$ 1 \text{ g/mL} = 1 \text{ g/cm}^3 $</li>
+                            <li>$ 1 \text{ kg/L} = 1000 \text{ g/L} = 1 \text{ kg/dm}^3 = 1 \text{ g/cm}^3 $</li>
+                            <li>$ 1 \text{ lb/ft}^3 \approx 16.0185 \text{ kg/m}^3 $</li>
+                        </ul>
+
+                        <h4>Yoğunluğa Etki Eden Faktörler:</h4>
+                        <ul>
+                            <li><strong>Sıcaklık:</strong> Çoğu maddenin yoğunluğu, sıcaklık arttıkça azalır (su istisnadır, 4°C'de en yüksek yoğunluğa sahiptir).</li>
+                            <li><strong>Basınç:</strong> Gazların yoğunluğu, basınç arttıkça önemli ölçüde artar. Katı ve sıvıların yoğunluğu basınca karşı daha az duyarlıdır.</li>
+                            <li><strong>Madde Durumu:</strong> Genellikle aynı madde için katı haldeki yoğunluk > sıvı haldeki yoğunluk > gaz haldeki yoğunluktur.</li>
+                        </ul>
+
+                        <h4>Uygulama Alanları:</h4>
+                        <ul>
+                            <li><strong>Malzeme Bilimi:</strong> Yeni malzemelerin geliştirilmesinde ve mevcut malzemelerin özelliklerinin belirlenmesinde.</li>
+                            <li><strong>Gemi Tasarımı:</strong> Gemilerin yüzdürme kuvvetlerinin hesaplanmasında (Arşimet prensibi).</li>
+                            <li><strong>Kimya:</strong> Konsantrasyon hesaplamaları ve kimyasal reaksiyonların stokiyometrisinde.</li>
+                            <li><strong>Jeoloji:</strong> Kayaların ve minerallerin tanımlanmasında.</li>
+                            <li><strong>Gıda Endüstrisi:</strong> Ürün kalitesini kontrol etmek ve içeriklerin oranlarını belirlemek için.</li>
+                        </ul>
+                        <p class="disclaimer-text">
+                            Bu hesaplayıcı, temel yoğunluk, kütle ve hacim hesaplamaları için bir araçtır. Hesaplamalar sırasında doğru birimleri seçtiğinizden emin olun. Gerçek dünya uygulamalarında ölçüm hataları ve çevresel faktörler sonuçları etkileyebilir. Daha kesin sonuçlar için hassas ölçüm cihazları ve belirli materyallerin tablolaştırılmış yoğunluk değerleri kullanılmalıdır.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const densityForm = document.getElementById('densityForm');
+            const calcTypeRadios = document.querySelectorAll('input[name="calcType"]');
+            const densityInputDiv = document.getElementById('densityInput');
+            const massInputDiv = document.getElementById('massInput');
+            const volumeInputDiv = document.getElementById('volumeInput');
+
+            const densityValueInput = document.getElementById('densityValue');
+            const densityUnitSelect = document.getElementById('densityUnit');
+            const massValueInput = document.getElementById('massValue');
+            const massUnitSelect = document.getElementById('massUnit');
+            const volumeValueInput = document.getElementById('volumeValue');
+            const volumeUnitSelect = document.getElementById('volumeUnit');
+            const densityResultDiv = document.getElementById('densityResult');
+
+            // Birim dönüşüm faktörleri (hepsi g/cm³'e baz alınmıştır)
+            const densityConversionFactors = {
+                'g/cm3': 1,
+                'kg/m3': 0.001,
+                'lb/ft3': 0.0160185, // 1 lb/ft³ = 0.0160185 g/cm³
+                'kg/L': 1, // 1 kg/L = 1 g/cm³
+                'g/mL': 1
+            };
+
+            // Birim dönüşüm faktörleri (hepsi gram'a baz alınmıştır)
+            const massConversionFactors = {
+                'g': 1,
+                'kg': 1000,
+                'lb': 453.592
+            };
+
+            // Birim dönüşüm faktörleri (hepsi cm³'e baz alınmıştır)
+            const volumeConversionFactors = {
+                'cm3': 1,
+                'm3': 1000000,
+                'L': 1000,
+                'ft3': 28316.8, // 1 ft³ = 28316.8 cm³
+                'mL': 1
+            };
+
+            function updateInputVisibility() {
+                const selectedCalcType = document.querySelector('input[name="calcType"]:checked').value;
+
+                densityInputDiv.style.display = 'flex'; // Default olarak flex
+                massInputDiv.style.display = 'flex';
+                volumeInputDiv.style.display = 'flex';
+
+                densityValueInput.required = true;
+                massValueInput.required = true;
+                volumeValueInput.required = true;
+
+                // Gizlenecek inputu ve gereklilik özelliğini ayarla
+                if (selectedCalcType === 'density') {
+                    densityInputDiv.style.display = 'none';
+                    densityValueInput.required = false;
+                } else if (selectedCalcType === 'mass') {
+                    massInputDiv.style.display = 'none';
+                    massValueInput.required = false;
+                } else { // calcVolume
+                    volumeInputDiv.style.display = 'none';
+                    volumeValueInput.required = false;
+                }
+
+                // Gerekli olmayan inputların değerlerini temizle (isteğe bağlı ama iyi bir UX)
+                densityValueInput.value = '';
+                massValueInput.value = '';
+                volumeValueInput.value = '';
+                densityResultDiv.innerHTML = ''; // Sonucu da temizle
+                densityResultDiv.style.display = 'none';
+            }
+
+            // Sayfa yüklendiğinde ve radio buton değiştiğinde input görünürlüğünü güncelle
+            calcTypeRadios.forEach(radio => {
+                radio.addEventListener('change', updateInputVisibility);
+            });
+            updateInputVisibility(); // Başlangıçta visibility'i ayarla
+
+            densityForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const selectedCalcType = document.querySelector('input[name="calcType"]:checked').value;
+
+                let density, mass, volume;
+                let calculatedValue = null;
+                let resultUnit = '';
+                let resultLabel = '';
+
+                // Tüm inputları sıfırla veya geçersiz değer varsa hata ver
+                densityResultDiv.innerHTML = '';
+                densityResultDiv.style.display = 'none';
+
+                try {
+                    // Sadece görünen inputlardan değer al
+                    if (selectedCalcType !== 'density') {
+                        density = parseFloat(densityValueInput.value);
+                        if (isNaN(density) || density <= 0) throw new Error("Lütfen geçerli ve pozitif bir yoğunluk değeri giriniz.");
+                        density = density * densityConversionFactors[densityUnitSelect.value];
+                    }
+
+                    if (selectedCalcType !== 'mass') {
+                        mass = parseFloat(massValueInput.value);
+                        if (isNaN(mass) || mass <= 0) throw new Error("Lütfen geçerli ve pozitif bir kütle değeri giriniz.");
+                        mass = mass * massConversionFactors[massUnitSelect.value];
+                    }
+
+                    if (selectedCalcType !== 'volume') {
+                        volume = parseFloat(volumeValueInput.value);
+                        if (isNaN(volume) || volume <= 0) throw new Error("Lütfen geçerli ve pozitif bir hacim değeri giriniz.");
+                        volume = volume * volumeConversionFactors[volumeUnitSelect.value];
+                    }
+
+                    if (selectedCalcType === 'density') {
+                        if (volume === 0) throw new Error("Hacim sıfır olamaz.");
+                        calculatedValue = mass / volume;
+                        resultUnit = 'g/cm³';
+                        resultLabel = 'Yoğunluk (p)';
+                    } else if (selectedCalcType === 'mass') {
+                        calculatedValue = density * volume;
+                        resultUnit = 'gram';
+                        resultLabel = 'Kütle (m)';
+                    } else { // calcVolume
+                        if (density === 0) throw new Error("Yoğunluk sıfır olamaz.");
+                        calculatedValue = mass / density;
+                        resultUnit = 'cm³';
+                        resultLabel = 'Hacim (V)';
+                    }
+
+                    densityResultDiv.innerHTML = `
+                        <p><strong>${resultLabel}:</strong> <span class="result-value">${calculatedValue.toPrecision(5)}</span> ${resultUnit}</p>
+                        <hr>
+                        <p><strong>Girdiğiniz Değerler:</strong></p>
+                        ${selectedCalcType !== 'density' ? `<p>Yoğunluk: ${densityValueInput.value} ${densityUnitSelect.value}</p>` : ''}
+                        ${selectedCalcType !== 'mass' ? `<p>Kütle: ${massValueInput.value} ${massUnitSelect.value}</p>` : ''}
+                        ${selectedCalcType !== 'volume' ? `<p>Hacim: ${volumeValueInput.value} ${volumeUnitSelect.value}</p>` : ''}
+                    `;
+                    densityResultDiv.style.display = 'block';
+
+                } catch (error) {
+                    densityResultDiv.innerHTML = `<p class="error">Hata: ${error.message}</p>`;
+                    densityResultDiv.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

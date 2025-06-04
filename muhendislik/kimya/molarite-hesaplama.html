@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Molarite ve Çözelti Hazırlama Hesaplayıcı - Hesapkolik</title>
+    <meta name="description" content="Çözeltilerin molar konsantrasyonunu hesaplayın ve belirli molaritede çözelti hazırlamak için gerekli madde miktarını bulun. Kimya dersleri, laboratuvar çalışmaları ve endüstriyel uygulamalar için kapsamlı araç.">
+    <meta name="keywords" content="molarite, molar konsantrasyon, mol, çözelti, kimya hesaplama, kimya mühendisliği, mol kütlesi, hacim, çözelti hazırlama, asetik asit, seyreltme, stok çözelti, hesapkolik molarite">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="calculator-page-section"> <div class="container">
+                <h1 class="main-title">Molarite Hesaplayıcı ve Çözelti Hazırlama</h1>
+                <p class="section-description">Çözeltilerinizin molar konsantrasyonunu hesaplayın veya belirli bir molaritede çözelti hazırlamak için gerekli madde miktarını öğrenin.</p>
+
+                <div class="calculator-group">
+                    <div class="calculator-card-wrapper">
+                        <div class="calculator-header">
+                            <i class="fas fa-vial icon-small"></i>
+                            <h2>Molariteyi Hesapla</h2>
+                        </div>
+                        <div class="calculator-form-container">
+                            <form id="molarityForm">
+                                <label for="soluteMass">Çözünen Kütlesi (gram):</label>
+                                <input type="number" id="soluteMass" name="soluteMass" placeholder="Örn: 58.44 (NaCl için)" required min="0" step="0.01">
+
+                                <label for="molarMass">Çözünen Mol Kütlesi (g/mol):</label>
+                                <input type="number" id="molarMass" name="molarMass" placeholder="Örn: 58.44" required min="0.001" step="0.01">
+                                
+                                <label for="solutionVolume">Çözelti Hacmi (Litre):</label>
+                                <input type="number" id="solutionVolume" name="solutionVolume" placeholder="Örn: 1" required min="0.001" step="0.001">
+                                
+                                <button type="submit">Molariteyi Hesapla</button>
+                            </form>
+                            <div id="molarityResult" class="result-display"></div>
+                            <p class="small-text">Molarite, çözeltinin bir litre hacmindeki çözünen madde miktarını (mol) ifade eder. Mol sayısı = Çözünen Kütlesi / Mol Kütlesi; Molarite = Mol Sayısı / Çözelti Hacmi.</p>
+                        </div>
+                    </div>
+
+                    <div class="calculator-card-wrapper">
+                        <div class="calculator-header">
+                            <i class="fas fa-flask-acid icon-small"></i>
+                            <h2>Hedef Molaritede Çözelti Hazırla</h2>
+                        </div>
+                        <div class="calculator-form-container">
+                            <form id="dilutionForm">
+                                <label for="targetMolarity_mM">Hedef Molarite (mM):</label>
+                                <input type="number" id="targetMolarity_mM" name="targetMolarity_mM" placeholder="Örn: 10" required min="0.001" step="0.001">
+
+                                <label for="targetVolume_mL">Hedef Çözelti Hacmi (mL):</label>
+                                <input type="number" id="targetVolume_mL" name="targetVolume_mL" placeholder="Örn: 1000" required min="0.001" step="0.001">
+
+                                <label for="concPurity">Konsantre Asit Saflığı (% w/w):</label>
+                                <input type="number" id="concPurity" name="concPurity" placeholder="Örn: 90" required min="0.1" max="100" step="0.1">
+
+                                <label for="concDensity">Konsantre Asit Yoğunluğu (g/mL):</label>
+                                <input type="number" id="concDensity" name="concDensity" placeholder="Örn: 1.049 (90% Asetik Asit için)" required min="0.5" step="0.001">
+
+                                <button type="submit">Hesapla</button>
+                            </form>
+                            <div id="dilutionResult" class="result-display"></div>
+                            <p class="small-text">Bu hesaplayıcı, konsantre bir asit çözeltisinden belirli bir molaritede ve hacimde çözelti hazırlamak için ne kadar konsantre asit gerektiğini belirler. (Asetik Asit Mol Kütlesi: 60.052 g/mol)</p>
+                        </div>
+                    </div>
+
+                    <section class="info-section">
+                        <h3>Molarite Nedir?</h3>
+                        <p>
+                            <strong>Molarite (M)</strong>, bir çözeltinin konsantrasyonunu ifade etmenin en yaygın yollarından biridir. Bir litre çözelti başına düşen çözünen maddenin mol sayısını belirtir. Kimyasal reaksiyonları ve çözelti hazırlama süreçlerini anlamak için temel bir kavramdır.
+                        </p>
+                        <p>
+                            Formülü aşağıdaki gibidir:
+                        </p>
+                        <p class="formula-text">
+                            Molarite (M) = Çözünenin Mol Sayısı (mol) / Çözelti Hacmi (Litre)
+                        </p>
+                        <p>
+                            Çözünenin mol sayısı ise şu şekilde bulunur:
+                        </p>
+                        <p class="formula-text">
+                            Mol Sayısı (mol) = Çözünen Kütlesi (gram) / Çözünenin Mol Kütlesi (g/mol)
+                        </p>
+
+                        <h4>Hedef Molaritede Çözelti Hazırlama Nedir?</h4>
+                        <p>
+                            Bu hesaplayıcı, elinizdeki daha yüksek konsantrasyonlu bir çözeltiden (örneğin %90'lık asetik asit) belirli bir molaritede ve hacimde yeni bir çözelti hazırlamak için ne kadar orijinal maddeye ihtiyacınız olduğunu bulmanıza yardımcı olur. Özellikle laboratuvarlarda ve endüstriyel uygulamalarda hassas çözelti hazırlama süreçleri için kritik öneme sahiptir.
+                        </p>
+                        <p>
+                            Temel prensip, çözeltinin molaritesini (mol/L) ve hedef hacmi (L) kullanarak gerekli mol sayısını bulmak, ardından bu mol sayısını ve orijinal maddenin mol kütlesini, saflığını ve yoğunluğunu dikkate alarak gerekli kütle veya hacmi belirlemektir.
+                        </p>
+                        <p>
+                            Kullanılan formüllerin basitleştirilmiş hali:
+                        </p>
+                        <p class="formula-text">
+                            Gerekli Mol = Hedef Molarite (M) × Hedef Hacim (L)
+                        </p>
+                        <p class="formula-text">
+                            Gerekli Saf Madde Kütlesi (g) = Gerekli Mol × Mol Kütlesi (g/mol)
+                        </p>
+                        <p class="formula-text">
+                            Gerekli Konsantre Çözelti Kütlesi (g) = Gerekli Saf Madde Kütlesi / (Saflık Yüzdesi / 100)
+                        </p>
+                        <p class="formula-text">
+                            Gerekli Konsantre Çözelti Hacmi (mL) = Gerekli Konsantre Çözelti Kütlesi (g) / Konsantre Çözelti Yoğunluğu (g/mL)
+                        </p>
+                        <p>
+                            Unutmayın, hesaplanan konsantre çözelti hacmi, belirtilen hedef çözelti hacmine ulaşmak için yeterli solvent (genellikle su) eklenerek seyreltilmelidir. Örneğin, 10 mL konsantre asit ve 1000 mL hedef hacminiz varsa, konsantre asidi ekledikten sonra toplam hacmi 1000 mL'ye tamamlayacak kadar su eklemelisiniz.
+                        </p>
+                        <p class="disclaimer-text">
+                            Bu hesaplayıcı, temel molarite ve çözelti hazırlama prensiplerini uygulamak için tasarlanmıştır. Gerçek laboratuvar ve endüstriyel uygulamalarda sıcaklık, basınç, asidin suda çözünürlüğü ve diğer fiziksel özellikler konsantrasyonu etkileyebilir. Hassas uygulamalar için standart laboratuvar prosedürleri ve ekipmanları kullanılması tavsiye edilir. Mol kütlesi olarak Asetik Asit (CH₃COOH) için 60.052 g/mol kabul edilmiştir.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Mevcut Molarite Hesaplayıcı Kodu ---
+            const molarityForm = document.getElementById('molarityForm');
+            const soluteMassInput = document.getElementById('soluteMass');
+            const molarMassInput = document.getElementById('molarMass');
+            const solutionVolumeInput = document.getElementById('solutionVolume');
+            const molarityResult = document.getElementById('molarityResult');
+
+            if (molarityForm) {
+                molarityForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Formun varsayılan gönderimini engelle
+
+                    const soluteMass = parseFloat(soluteMassInput.value);
+                    const molarMass = parseFloat(molarMassInput.value);
+                    const solutionVolume = parseFloat(solutionVolumeInput.value);
+
+                    // Girişlerin geçerli sayı olup olmadığını ve mol kütlesi/hacmin sıfırdan büyük olduğunu kontrol et
+                    if (isNaN(soluteMass) || isNaN(molarMass) || isNaN(solutionVolume) ||
+                        soluteMass < 0 || molarMass <= 0 || solutionVolume <= 0) {
+                        molarityResult.innerHTML = '<p class="error">Lütfen geçerli ve pozitif sayılar giriniz. Mol Kütlesi ve Çözelti Hacmi sıfırdan büyük olmalıdır.</p>';
+                        molarityResult.style.display = 'block'; // Hata mesajını görünür yap
+                        return; // Hesaplamayı durdur
+                    }
+
+                    // Mol sayısını hesapla: mol = kütle / mol kütlesi
+                    const moles = soluteMass / molarMass;
+
+                    // Molariteyi hesapla: M = mol / hacim
+                    const molarity = moles / solutionVolume;
+
+                    molarityResult.innerHTML = `
+                        <p><strong>Çözünen Kütlesi:</strong> ${soluteMass} gram</p>
+                        <p><strong>Çözünen Mol Kütlesi:</strong> ${molarMass} g/mol</p>
+                        <p><strong>Çözelti Hacmi:</strong> ${solutionVolume} Litre</p>
+                        <p><strong>Mol Sayısı:</strong> ${moles.toFixed(4)} mol</p>
+                        <p><strong>Molarite (M):</strong> <span class="result-value">${molarity.toFixed(4)}</span> M</p>
+                    `;
+                    molarityResult.style.display = 'block'; // Sonucu görünür yap
+                });
+            }
+
+            // --- Yeni Çözelti Hazırlama Hesaplayıcı Kodu ---
+            const dilutionForm = document.getElementById('dilutionForm');
+            const targetMolarity_mM_Input = document.getElementById('targetMolarity_mM');
+            const targetVolume_mL_Input = document.getElementById('targetVolume_mL');
+            const concPurityInput = document.getElementById('concPurity');
+            const concDensityInput = document.getElementById('concDensity');
+            const dilutionResult = document.getElementById('dilutionResult');
+
+            // Asetik Asit'in mol kütlesi (CH3COOH)
+            const ACETIC_ACID_MOLAR_MASS = 60.052; // g/mol
+
+            if (dilutionForm) {
+                dilutionForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Formun varsayılan gönderimini engelle
+
+                    const targetMolarity_mM = parseFloat(targetMolarity_mM_Input.value);
+                    const targetVolume_mL = parseFloat(targetVolume_mL_Input.value);
+                    const concPurity = parseFloat(concPurityInput.value);
+                    const concDensity = parseFloat(concDensityInput.value);
+
+                    // Doğrulama
+                    if (isNaN(targetMolarity_mM) || isNaN(targetVolume_mL) || isNaN(concPurity) || isNaN(concDensity) ||
+                        targetMolarity_mM <= 0 || targetVolume_mL <= 0 || concPurity <= 0 || concPurity > 100 || concDensity <= 0) {
+                        dilutionResult.innerHTML = '<p class="error">Lütfen tüm alanlara geçerli ve pozitif değerler giriniz. Saflık %0-100 arasında olmalıdır.</p>';
+                        dilutionResult.style.display = 'block';
+                        return;
+                    }
+
+                    // 1. Hedef mol sayısını hesapla (milimolü mole çevir, mL'yi Litreye çevir)
+                    const targetMolarity_M = targetMolarity_mM / 1000; // mM -> M
+                    const targetVolume_L = targetVolume_mL / 1000;     // mL -> L
+                    const molesNeeded = targetMolarity_M * targetVolume_L;
+
+                    // 2. Gerekli saf asetik asit kütlesini hesapla
+                    const pureAceticAcidMass = molesNeeded * ACETIC_ACID_MOLAR_MASS; // gram
+
+                    // 3. Konsantre asit çözeltisinin kütlesini saflığa göre hesapla
+                    const concSolutionMass = pureAceticAcidMass / (concPurity / 100); // gram
+
+                    // 4. Konsantre asit çözeltisinin hacmini yoğunluğa göre hesapla
+                    const concSolutionVolume_mL = concSolutionMass / concDensity; // mL
+
+                    dilutionResult.innerHTML = `
+                        <p><strong>Hedef Molarite:</strong> ${targetMolarity_mM} mM</p>
+                        <p><strong>Hedef Çözelti Hacmi:</strong> ${targetVolume_mL} mL</p>
+                        <p><strong>Konsantre Asit Saflığı:</strong> ${concPurity} % (w/w)</p>
+                        <p><strong>Konsantre Asit Yoğunluğu:</strong> ${concDensity} g/mL</p>
+                        <hr>
+                        <p><strong>Gerekli Saf Asetik Asit Miktarı:</strong> ${pureAceticAcidMass.toFixed(4)} gram</p>
+                        <p><strong>Gerekli Konsantre (%${concPurity}) Asetik Asit Çözeltisi Kütlesi:</strong> ${concSolutionMass.toFixed(4)} gram</p>
+                        <p><strong>Gerekli Konsantre (%${concPurity}) Asetik Asit Çözeltisi Hacmi:</strong> <span class="result-value">${concSolutionVolume_mL.toFixed(3)}</span> mL</p>
+                        <p class="small-text">Bu kadar (${concSolutionVolume_mL.toFixed(3)} mL) konsantre asidi alıp, toplam hacmi ${targetVolume_mL} mL olacak şekilde solvent (örn: saf su) ile tamamlamalısınız.</p>
+                    `;
+                    dilutionResult.style.display = 'block';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

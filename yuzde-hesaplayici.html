@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yüzde Hesaplayıcı - Hesapla Pratik</title>
+    <meta name="description" content="Çeşitli yüzde hesaplamalarını kolayca yapın: bir sayıyı yüzde artırma/azaltma, bir sayının başka bir sayının yüzdesi olma ve daha fazlası.">
+    <meta name="keywords" content="yüzde hesapla, yüzde artırma, yüzde azaltma, yüzde kaçı, indirim hesapla, kdv hesapla, zam hesapla, yüzde hesaplayıcı">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Bu CSS sadece bu sayfa için özeldir. İstersen style.css dosyana taşıyabilirsin. */
+        .percent-calculator-section {
+            padding: 60px 0;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        .percent-calculator-section h2 {
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 2.5em;
+        }
+
+        .percent-form-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .percent-form-container label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .percent-form-container input[type="number"],
+        .percent-form-container select {
+            width: calc(100% - 20px);
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .percent-form-container select {
+            width: 100%; /* Select element için width ayarlaması */
+        }
+
+        .percent-form-container button {
+            background-color: #e74c3c; /* Yüzde için kırmızımsı renk */
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block; /* Butonu blok eleman yapıp ortalamak için */
+            margin: 20px auto 0 auto; /* Ortala */
+        }
+
+        .percent-form-container button:hover {
+            background-color: #c0392b;
+        }
+
+        #percentResult {
+            margin-top: 30px;
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group.hidden {
+            display: none;
+        }
+
+        /* New styles for the explanation sections */
+        .explanation-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+
+        .explanation-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .explanation-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+
+        .explanation-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+
+        .explanation-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .explanation-section strong {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1><a href="index.html">Hesapla Pratik</a></h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Ana Sayfa</a></li>
+                    <li><a href="index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="percent-calculator-section">
+            <div class="container">
+                <h2>Yüzde Hesaplayıcı</h2>
+                <p>Yapmak istediğiniz yüzde hesaplama türünü seçin ve değerleri girin.</p>
+                <div class="percent-form-container">
+                    <form id="percentForm">
+                        <label for="calculationType">Hesaplama Türü Seçin:</label>
+                        <select id="calculationType" name="calculationType">
+                            <option value="increase">A sayısını %B artır</option>
+                            <option value="decrease">A sayısını %B azalt</option>
+                            <option value="whatPercent">A sayısı B sayısının yüzde kaçı?</option>
+                            <option value="valueFromPercent">A'nın %B'si kaçtır?</option>
+                            <option value="originalValue">A sayısı B sayısının %C'si ise, B sayısı kaçtır?</option>
+                        </select>
+
+                        <div id="inputGroupA" class="input-group">
+                            <label for="valueA">Sayı A:</label>
+                            <input type="number" id="valueA" name="valueA" placeholder="İlk sayıyı girin" required step="any">
+                        </div>
+
+                        <div id="inputGroupB" class="input-group">
+                            <label for="valueB">Sayı B (Yüzde veya İkinci Sayı):</label>
+                            <input type="number" id="valueB" name="valueB" placeholder="Yüzde veya ikinci sayıyı girin" required step="any">
+                        </div>
+
+                        <div id="inputGroupC" class="input-group hidden">
+                            <label for="valueC">Sayı C (Yüzde):</label>
+                            <input type="number" id="valueC" name="valueC" placeholder="Yüzde değerini girin" required step="any">
+                        </div>
+
+                        <button type="submit">Hesapla</button>
+                    </form>
+                    <div id="percentResult"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="explanation-section container">
+            <h3>Yüzde Hesaplayıcı Ne İşe Yarar?</h3>
+            <p>
+                Yüzde hesaplayıcımız, günlük hayatta ve iş dünyasında sıkça karşılaşılan çeşitli yüzde bazlı hesaplamaları hızlı ve hatasız bir şekilde yapmanızı sağlar. İster bir ürünün indirimli fiyatını bulmak isteyin, ister bir sayının belirli bir yüzdesini öğrenmek, bu araç size zaman kazandırır ve karmaşık hesaplamaları basitleştirir.
+            </p>
+            <p>Başlıca kullanım alanları:</p>
+            <ul>
+                <li><strong>Finansal Hesaplamalar:</strong> Faiz oranları, yatırım getirileri, hisse senedi değişimleri.</li>
+                <li><strong>Alışveriş ve İndirimler:</strong> İndirimli fiyatları, KDV oranlarını, zamları hesaplama.</li>
+                <li><strong>Eğitim:</strong> Sınav notlarının yüzdelik dilimlerini anlama, istatistiksel verileri yorumlama.</li>
+                <li><strong>İşletme:</strong> Kar marjları, büyüme oranları, komisyon hesaplamaları.</li>
+                <li><strong>Günlük Hayat:</strong> Yemek tariflerinde malzeme oranlarını ayarlama, bahşiş hesaplama.</li>
+            </ul>
+        </section>
+
+        <section class="explanation-section container">
+            <h3>Nasıl Hesaplanır?</h3>
+            <p>Yüzde hesaplamaları temel matematiksel formüllere dayanır. Hesaplayıcımızda bulunan her bir seçeneğin arka planındaki mantık aşağıda açıklanmıştır:</p>
+            <ul>
+                <li>
+                    <strong>A sayısını %B artır:</strong> Bu hesaplama, verilen bir sayının belirli bir yüzde kadar artırılması durumunda yeni değerin ne olacağını bulur. Formül:
+                    $$ \text{Yeni Değer} = \text{A} + (\text{A} \times \frac{\text{B}}{100}) $$
+                    <p>Örnek: 100 TL'ye %20 zam gelirse: $100 + (100 \times \frac{20}{100}) = 100 + 20 = 120$ TL.</p>
+                </li>
+                <li>
+                    <strong>A sayısını %B azalt:</strong> Bu seçenek, bir sayının belirli bir yüzde kadar azaltılması durumunda kalan değeri hesaplar. Formül:
+                    $$ \text{Yeni Değer} = \text{A} - (\text{A} \times \frac{\text{B}}{100}) $$
+                    <p>Örnek: 150 TL'lik bir ürüne %10 indirim gelirse: $150 - (150 \times \frac{10}{100}) = 150 - 15 = 135$ TL.</p>
+                </li>
+                <li>
+                    <strong>A sayısı B sayısının yüzde kaçı?:</strong> Bu hesaplama, bir sayının (A) başka bir sayıya (B) oranının yüzde olarak ifadesini verir. Formül:
+                    $$ \text{Yüzde} = (\frac{\text{A}}{\text{B}}) \times 100 $$
+                    <p>Örnek: 20 sayısı 80 sayısının yüzde kaçıdır?: $(\frac{20}{80}) \times 100 = 0.25 \times 100 = 25\%$</p>
+                </li>
+                <li>
+                    <strong>A'nın %B'si kaçtır?:</strong> Bu, verilen bir sayının belirli bir yüzdelik dilimine karşılık gelen değeri bulur. Formül:
+                    $$ \text{Parça Değer} = \text{A} \times (\frac{\text{B}}{100}) $$
+                    <p>Örnek: 200'ün %15'i kaçtır?: $200 \times (\frac{15}{100}) = 200 \times 0.15 = 30$</p>
+                </li>
+                <li>
+                    <strong>A sayısı B sayısının %C'si ise, B sayısı kaçtır?:</strong> Bu hesaplama, bir parçanın (A) ve bu parçanın temsil ettiği yüzdelik oranın (C) bilindiği durumlarda orijinal bütünün (B) değerini bulur. Formül:
+                    $$ \text{Bütün Sayı} = \frac{\text{A}}{(\frac{\text{C}}{100})} $$
+                    <p>Örnek: 30 sayısı %20'ye denk geliyorsa orijinal sayı kaçtır?: $\frac{30}{(\frac{20}{100})} = \frac{30}{0.20} = 150$</p>
+                </li>
+            </ul>
+            <p>Bu formüller, hesaplayıcımızın arkasındaki temel mantığı oluşturur ve size doğru sonuçları sunar.</p>
+        </section>
+        </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapla Pratik. Tüm hakları saklıdır.</p>
+            <p><a href="gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+
+    <script>
+        const calculationTypeSelect = document.getElementById('calculationType');
+        const inputGroupA = document.getElementById('inputGroupA');
+        const inputGroupB = document.getElementById('inputGroupB');
+        const inputGroupC = document.getElementById('inputGroupC');
+        const valueALabel = inputGroupA.querySelector('label');
+        const valueBLabel = inputGroupB.querySelector('label');
+        const valueCLabel = inputGroupC.querySelector('label');
+        const valueAInput = document.getElementById('valueA');
+        const valueBInput = document.getElementById('valueB');
+        const valueCInput = document.getElementById('valueC');
+        const percentResult = document.getElementById('percentResult');
+
+        function updateInputLabels() {
+            const selectedType = calculationTypeSelect.value;
+            inputGroupC.classList.add('hidden'); // Varsayılan olarak C'yi gizle
+
+            switch (selectedType) {
+                case 'increase':
+                case 'decrease':
+                    valueALabel.textContent = 'Ana Sayı (A):';
+                    valueBLabel.textContent = 'Yüzde Oranı (%B):';
+                    valueAInput.placeholder = 'Örn: 100';
+                    valueBInput.placeholder = 'Örn: 20';
+                    break;
+                case 'whatPercent':
+                    valueALabel.textContent = 'Küçük Sayı (A):';
+                    valueBLabel.textContent = 'Büyük Sayı (B):';
+                    valueAInput.placeholder = 'Örn: 20';
+                    valueBInput.placeholder = 'Örn: 100';
+                    break;
+                case 'valueFromPercent':
+                    valueALabel.textContent = 'Sayı (A):';
+                    valueBLabel.textContent = 'Yüzde Oranı (%B):';
+                    valueAInput.placeholder = 'Örn: 200';
+                    valueBInput.placeholder = 'Örn: 15';
+                    break;
+                case 'originalValue':
+                    valueALabel.textContent = 'Parça Değer (A):';
+                    valueBLabel.textContent = 'Yüzde Oranı (%C):'; // 'B' etiketi burada yüzdeyi temsil ediyor
+                    valueAInput.placeholder = 'Örn: 30';
+                    valueBInput.placeholder = 'Örn: 15';
+                    break;
+            }
+            // valueCInput her zaman sıfırlansın veya boş bırakılsın
+            valueCInput.value = '';
+            // Gereksiz inputları temizle
+            if (selectedType !== 'originalValue') {
+                   valueCInput.removeAttribute('required');
+            }
+        }
+
+        // Başlangıçta etiketleri güncelle
+        updateInputLabels();
+
+        // Seçim değiştiğinde etiketleri güncelle
+        calculationTypeSelect.addEventListener('change', updateInputLabels);
+
+        document.getElementById('percentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const type = calculationTypeSelect.value;
+            const valueA = parseFloat(valueAInput.value);
+            const valueB = parseFloat(valueBInput.value);
+            const valueC = parseFloat(valueCInput.value); // Bu durum için kullanılmayacak ama değişkeni alalım
+
+            if (isNaN(valueA) || isNaN(valueB)) {
+                percentResult.innerHTML = '<span style="color: red;">Lütfen tüm gerekli alanları doldurun.</span>';
+                return;
+            }
+
+            let result;
+            let resultText = '';
+
+            switch (type) {
+                case 'increase':
+                    // A sayısını %B artır: A + (A * B / 100)
+                    result = valueA * (1 + valueB / 100);
+                    resultText = `${valueA} sayısını %${valueB} artırırsanız sonuç: <strong>${result.toFixed(2)}</strong>`;
+                    break;
+                case 'decrease':
+                    // A sayısını %B azalt: A - (A * B / 100)
+                    result = valueA * (1 - valueB / 100);
+                    resultText = `${valueA} sayısını %${valueB} azaltırsanız sonuç: <strong>${result.toFixed(2)}</strong>`;
+                    break;
+                case 'whatPercent':
+                    // A sayısı B sayısının yüzde kaçı?: (A / B) * 100
+                    if (valueB === 0) {
+                        percentResult.innerHTML = '<span style="color: red;">İkinci sayı sıfır olamaz.</span>';
+                        return;
+                    }
+                    result = (valueA / valueB) * 100;
+                    resultText = `${valueA} sayısı ${valueB} sayısının <strong>%${result.toFixed(2)}</strong>'sidir.`;
+                    break;
+                case 'valueFromPercent':
+                    // A'nın %B'si kaçtır?: A * (B / 100)
+                    result = valueA * (valueB / 100);
+                    resultText = `${valueA} sayısının %${valueB}'si: <strong>${result.toFixed(2)}</strong>`;
+                    break;
+                case 'originalValue':
+                    // A sayısı B sayısının %C'si ise, B sayısı kaçtır?: A / (C / 100)
+                    // Burada A = Parça değer, B = Yüzde Oranı olarak kullanılıyor (valueB)
+                    if (valueB === 0) {
+                        percentResult.innerHTML = '<span style="color: red;">Yüzde oranı sıfır olamaz.</span>';
+                        return;
+                    }
+                    result = valueA / (valueB / 100);
+                    resultText = `${valueA} sayısı, ${valueB} yüzdesine denk geliyorsa orijinal sayı: <strong>${result.toFixed(2)}</strong>`;
+                    break;
+            }
+            percentResult.innerHTML = resultText;
+        });
+    </script>
+</body>
+</html>

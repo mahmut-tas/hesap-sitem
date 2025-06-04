@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birim Dönüştürücü - Hesapla Pratik</title>
+    <meta name="description" content="Uzunluk, ağırlık, sıcaklık, alan, hacim, zaman, hız, enerji, güç, basınç, veri ve para birimleri arasında hızlı ve kolay dönüşümler yapın. Tüm birim çevirme ihtiyaçlarınız için tek adres.">
+    <meta name="keywords" content="birim dönüştürücü, birim çevirici, uzunluk çevirici, ağırlık çevirici, sıcaklık dönüştürücü, alan hesaplama, hacim hesaplama, zaman çevirici, hız dönüştürücü, enerji birimleri, güç birimleri, basınç birimleri, veri birimleri, para birimi çevirme">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Bu CSS sadece bu sayfa için özeldir. İstersen style.css dosyana taşıyabilirsin. */
+        .unit-converter-section {
+            padding: 60px 0;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        .unit-converter-section h2 {
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 2.5em;
+        }
+
+        .category-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .category-button {
+            background-color: #1abc9c; /* Temel yeşil */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar hesaba katılır */
+            max-width: 200px;
+            text-align: center;
+        }
+        @media (max-width: 768px) {
+            .category-button {
+                flex: 1 1 calc(50% - 30px); /* Tabletlerde 2 sütun */
+            }
+        }
+        @media (max-width: 480px) {
+            .category-button {
+                flex: 1 1 calc(100% - 30px); /* Mobil cihazlarda 1 sütun */
+            }
+        }
+
+        .category-button:hover {
+            background-color: #16a085;
+            transform: translateY(-3px);
+        }
+
+        .category-button.active {
+            background-color: #2980b9; /* Aktif buton rengi */
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .converter-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .converter-section {
+            display: none; /* Varsayılan olarak tüm dönüştürücü bölümleri gizli */
+        }
+        .converter-section.active {
+            display: block; /* Aktif olan bölüm gösterilir */
+        }
+
+        .converter-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .converter-section input[type="number"],
+        .converter-section select {
+            width: calc(100% - 20px);
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .converter-section select {
+            width: 100%;
+        }
+
+        .converter-section .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .converter-section .form-row .input-group {
+            flex: 1;
+        }
+        .converter-section .form-row select {
+            margin-bottom: 0;
+        }
+
+        #conversionResult {
+            margin-top: 30px;
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+        }
+
+        /* New styles for the explanation sections */
+        .explanation-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+
+        .explanation-section h3 {
+            color: #1abc9c; /* Temel yeşil */
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .explanation-section h4 {
+            color: #2980b9; /* Aktif buton rengi */
+            font-size: 1.3em;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+
+        .explanation-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+
+        .explanation-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+
+        .explanation-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .explanation-section strong {
+            color: #333;
+        }
+
+        /* Inline code for formulas */
+        .explanation-section code {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #eef;
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: #c0392b; /* Kırmızımsı ton */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1><a href="index.html">Hesapla Pratik</a></h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Ana Sayfa</a></li>
+                    <li><a href="index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="unit-converter-section">
+            <div class="container">
+                <h2>Birim Dönüştürücü</h2>
+                <p>Dönüştürmek istediğiniz birim kategorisini seçin:</p>
+
+                <div class="category-buttons">
+                    <button class="category-button" data-category="length">Uzunluk</button>
+                    <button class="category-button" data-category="weight">Ağırlık/Kütle</button>
+                    <button class="category-button" data-category="temperature">Sıcaklık</button>
+                    <button class="category-button" data-category="area">Alan</button>
+                    <button class="category-button" data-category="volume">Hacim</button>
+                    <button class="category-button" data-category="time">Zaman</button>
+                    <button class="category-button" data-category="speed">Hız</button>
+                    <button class="category-button" data-category="energy">Enerji</button>
+                    <button class="category-button" data-category="power">Güç</button>
+                    <button class="category-button" data-category="pressure">Basınç</button>
+                    <button class="category-button" data-category="data">Veri</button>
+                    <button class="category-button" data-category="currency">Para Birimi</button>
+                </div>
+
+                <div class="converter-container">
+                    <div id="length-converter" class="converter-section">
+                        <h3>Uzunluk Dönüştürücü</h3>
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="lengthValue">Değer:</label>
+                                <input type="number" id="lengthValue" placeholder="Değer girin" step="any">
+                            </div>
+                            <div class="input-group">
+                                <label for="lengthFromUnit">Çevrilecek Birim:</label>
+                                <select id="lengthFromUnit">
+                                    <option value="m">Metre (m)</option>
+                                    <option value="cm">Santimetre (cm)</option>
+                                    <option value="mm">Milimetre (mm)</option>
+                                    <option value="km">Kilometre (km)</option>
+                                    <option value="inch">İnç (in)</option>
+                                    <option value="ft">Fit (ft)</option>
+                                    <option value="yd">Yard (yd)</option>
+                                    <option value="mi">Mil (mi)</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="lengthToUnit">Hedef Birim:</label>
+                                <select id="lengthToUnit">
+                                    <option value="m">Metre (m)</option>
+                                    <option value="cm">Santimetre (cm)</option>
+                                    <option value="mm">Milimetre (mm)</option>
+                                    <option value="km">Kilometre (km)</option>
+                                    <option value="inch">İnç (in)</option>
+                                    <option value="ft">Fit (ft)</option>
+                                    <option value="yd">Yard (yd)</option>
+                                    <option value="mi">Mil (mi)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="lengthResult" class="conversion-result"></div>
+                    </div>
+
+                    <div id="weight-converter" class="converter-section">
+                        <h3>Ağırlık/Kütle Dönüştürücü</h3>
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="weightValue">Değer:</label>
+                                <input type="number" id="weightValue" placeholder="Değer girin" step="any">
+                            </div>
+                            <div class="input-group">
+                                <label for="weightFromUnit">Çevrilecek Birim:</label>
+                                <select id="weightFromUnit">
+                                    <option value="kg">Kilogram (kg)</option>
+                                    <option value="g">Gram (g)</option>
+                                    <option value="mg">Miligram (mg)</option>
+                                    <option value="t">Ton (t)</option>
+                                    <option value="lb">Pound (lb)</option>
+                                    <option value="oz">Ons (oz)</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="weightToUnit">Hedef Birim:</label>
+                                <select id="weightToUnit">
+                                    <option value="kg">Kilogram (kg)</option>
+                                    <option value="g">Gram (g)</option>
+                                    <option value="mg">Miligram (mg)</option>
+                                    <option value="t">Ton (t)</option>
+                                    <option value="lb">Pound (lb)</option>
+                                    <option value="oz">Ons (oz)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="weightResult" class="conversion-result"></div>
+                    </div>
+
+                    <div id="temperature-converter" class="converter-section">
+                        <h3>Sıcaklık Dönüştürücü</h3>
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="tempValue">Değer:</label>
+                                <input type="number" id="tempValue" placeholder="Değer girin" step="any">
+                            </div>
+                            <div class="input-group">
+                                <label for="tempFromUnit">Çevrilecek Birim:</label>
+                                <select id="tempFromUnit">
+                                    <option value="celsius">Santigrat (°C)</option>
+                                    <option value="fahrenheit">Fahrenheit (°F)</option>
+                                    <option value="kelvin">Kelvin (K)</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="tempToUnit">Hedef Birim:</label>
+                                <select id="tempToUnit">
+                                    <option value="celsius">Santigrat (°C)</option>
+                                    <option value="fahrenheit">Fahrenheit (°F)</option>
+                                    <option value="kelvin">Kelvin (K)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="temperatureResult" class="conversion-result"></div>
+                    </div>
+
+                    <div id="area-converter" class="converter-section">
+                        <h3>Alan Dönüştürücü</h3>
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="areaValue">Değer:</label>
+                                <input type="number" id="areaValue" placeholder="Değer girin" step="any">
+                            </div>
+                            <div class="input-group">
+                                <label for="areaFromUnit">Çevrilecek Birim:</label>
+                                <select id="areaFromUnit">
+                                    <option value="sqm">Metrekare (m²)</option>
+                                    <option value="sqcm">Santimetrekare (cm²)</option>
+                                    <option value="sqkm">Kilometrekare (km²)</option>
+                                    <option value="hectare">Hektar (ha)</option>
+                                    <option value="acre">Acre</option>
+                                    <option value="sqft">Fitkare (ft²)</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="areaToUnit">Hedef Birim:</label>
+                                <select id="areaToUnit">
+                                    <option value="sqm">Metrekare (m²)</option>
+                                    <option value="sqcm">Santimetrekare (cm²)</option>
+                                    <option value="sqkm">Kilometrekare (km²)</option>
+                                    <option value="hectare">Hektar (ha)</option>
+                                    <option value="acre">Acre</option>
+                                    <option value="sqft">Fitkare (ft²)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="areaResult" class="conversion-result"></div>
+                    </div>
+
+                    <div id="volume-converter" class="converter-section">
+                        <h3>Hacim Dönüştürücü</h3>
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="volumeValue">Değer:</label>
+                                <input type="number" id="volumeValue" placeholder="Değer girin" step="any">
+                            </div>
+                            <div class="input-group">
+                                <label for="volumeFromUnit">Çevrilecek Birim:</label>
+                                <select id="volumeFromUnit">
+                                    <option value="liter">Litre (L)</option>
+                                    <option value="ml">Mililitre (mL)</option>
+                                    <option value="cubicm">Metreküp (m³)</option>
+                                    <option value="cubiccm">Santimetreküp (cm³)</option>
+                                    <option value="gallon">Galon (gal)</option>
+                                    <option value="quart">Kuart (qt)</option>
+                                    <option value="pint">Pint (pt)</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="volumeToUnit">Hedef Birim:</label>
+                                <select id="volumeToUnit">
+                                    <option value="liter">Litre (L)</option>
+                                    <option value="ml">Mililitre (mL)</option>
+                                    <option value="cubicm">Metreküp (m³)</option>
+                                    <option value="cubiccm">Santimetreküp (cm³)</option>
+                                    <option value="gallon">Galon (gal)</option>
+                                    <option value="quart">Kuart (qt)</option>
+                                    <option value="pint">Pint (pt)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="volumeResult" class="conversion-result"></div>
+                    </div>
+
+                    <div id="time-converter" class="converter-section">
+                        <h3>Zaman Dönüştürücü</h3>
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="timeValue">Değer:</label>
+                                <input type="number" id="timeValue" placeholder="Değer girin" step="any">
+                            </div>
+                            <div class="input-group">
+                                <label for="timeFromUnit">Çevrilecek Birim:</label>
+                                <select id="timeFromUnit">
+                                    <option value="second">Saniye (s)</option>
+                                    <option value="minute">Dakika (dk)</option>
+                                    <option value="hour">Saat (sa)</option>
+                                    <option value="day">Gün</option>
+                                    <option value="week">Hafta</option>
+                                    <option value="month">Ay</option>
+                                    <option value="year">Yıl</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="timeToUnit">Hedef Birim:</label>
+                                <select id="timeToUnit">
+                                    <option value="second">Saniye (s)</option>
+                                    <option value="minute">Dakika (dk)</option>
+                                    <option value="hour">Saat (sa)</option>
+                                    <option value="day">Gün</option>
+                                    <option value="week">Hafta</option>
+                                    <option value="month">Ay</option>
+                                    <option value="year">Yıl</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="timeResult" class="conversion-result"></div>
+                    </div>
+
+                    <div id="speed-converter" class="converter-section">
+                        <h3>Hız Dönüştürücü</h3>
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="speedValue">Değer:</label>
+                                <input type="number" id="speedValue" placeholder="Değer girin" step="any">
+                            </div>
+                            <div class="input-group">
+                                <label for="speedFromUnit">Çevrilecek Birim:</label>
+                                <select id="speedFromUnit">
+                                    <option value="mps">Metre/saniye (m/s)</option>
+                                    <option value="kmph">Kilometre/saat (km/h)</option>
+                                    <option value="mph">Mil/saat (mph)</option>
+                                    <option value="knot">Knot</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="speedToUnit">Hedef Birim:</label>
+                                <select id="speedToUnit">
+                                    <option value="mps">Metre/saniye (m/s)</option>
+                                    <option value="kmph">Kilometre/saat (km/h)</option>
+                                    <option value="mph">Mil/saat (mph)</option>
+                                    <option value="knot">Knot</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="speedResult" class="conversion-result"></div>
+                    </div>
+
+                    <div id="energy-converter" class="converter-section">
+                        <h3>Enerji Dönüştürücü</h3>
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="energyValue">Değer:</label>
+                                <input type="number" id="energyValue" placeholder="Değer girin" step="any">
+                            </div>
+                            <div class="input-group">
+                                <label for="energyFromUnit">Çevrilecek Birim:</label>
+                                <select id="energyFromUnit">
+                                    <option value="joule">Joule (J)</option>
+                                    <option value="cal">Kalori (cal)</option>
+                                    <option value="kcal">Kilokalori (kcal)</option>
+                                    <option value="kwh">Kilovat-saat (kWh)</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="energyToUnit">Hedef Birim:</label>
+                                <select id="energyToUnit">
+                                    <option value="joule">Joule (J)</option>
+                                    <option value="cal">Kalori (cal)</option>
+                                    <option value="kcal">Kilokalori (kcal)</option>
+                                    <option value="kwh">Kilovat-saat (kWh)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="energyResult" class="conversion-result"></div>
+                    </div>
+
+                    <div id="power-converter" class="converter-section">
+                        <h3>Güç Dönüştürücü</h3>
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="powerValue">Değer:</label>
+                                <input type="number" id="powerValue" placeholder="Değer girin" step="any">
+                            </div>
+                            <div class="input-group">
+                                <label for="powerFromUnit">Çevrilecek Birim:</label>
+                                <select id="powerFromUnit">
+                                    <option value="watt">Watt (W)</option>
+                                    <option value="kilowatt">Kilovat (kW)</option>
+                                    <option value="hp">Beygir Gücü (hp)</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="powerToUnit">Hedef Birim:</label>
+                                <select id="powerToUnit">
+                                    <option value="watt">Watt (W)</option>
+                                    <option value="kilowatt">Kilovat (kW)</option>
+                                    <option value="hp">Beygir Gücü (hp)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="powerResult" class="conversion-result"></div>
+                    </div>
+
+                    <div id="pressure-converter" class="converter-section">
+                        <h3>Basınç Dönüştürücü</h3>
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="pressureValue">Değer:</label>
+                                <input type="number" id="pressureValue" placeholder="Değer girin" step="any">
+                            </div>
+                            <div class="input-group">
+                                <label for="pressureFromUnit">Çevrilecek Birim:</label>
+                                <select id="pressureFromUnit">
+                                    <option value="pascal">Pascal (Pa)</option>
+                                    <option value="bar">Bar</option>
+                                    <option value="atm">Atmosfer (atm)</option>
+                                    <option value="psi">PSI</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="pressureToUnit">Hedef Birim:</label>
+                                <select id="pressureToUnit">
+                                    <option value="pascal">Pascal (Pa)</option>
+                                    <option value="bar">Bar</option>
+                                    <option value="atm">Atmosfer (atm)</option>
+                                    <option value="psi">PSI</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="pressureResult" class="conversion-result"></div>
+                    </div>
+
+                    <div id="data-converter" class="converter-section">
+                        <h3>Veri Dönüştürücü</h3>
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="dataValue">Değer:</label>
+                                <input type="number" id="dataValue" placeholder="Değer girin" step="any">
+                            </div>
+                            <div class="input-group">
+                                <label for="dataFromUnit">Çevrilecek Birim:</label>
+                                <select id="dataFromUnit">
+                                    <option value="bit">Bit (b)</option>
+                                    <option value="byte">Bayt (B)</option>
+                                    <option value="kb">Kilobayt (KB)</option>
+                                    <option value="mb">Megabayt (MB)</option>
+                                    <option value="gb">Gigabayt (GB)</option>
+                                    <option value="tb">Terabayt (TB)</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="dataToUnit">Hedef Birim:</label>
+                                <select id="dataToUnit">
+                                    <option value="bit">Bit (b)</option>
+                                    <option value="byte">Bayt (B)</option>
+                                    <option value="kb">Kilobayt (KB)</option>
+                                    <option value="mb">Megabayt (MB)</option>
+                                    <option value="gb">Gigabayt (GB)</option>
+                                    <option value="tb">Terabayt (TB)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="dataResult" class="conversion-result"></div>
+                    </div>
+
+                    <div id="currency-converter" class="converter-section">
+                        <h3>Para Birimi Dönüştürücü (API Gerekli)</h3>
+                        <p>Para birimi dönüşümleri için güncel döviz kuru verilerine ihtiyaç duyulur. Bu, genellikle harici bir API (örn. ExchangeRate-API, Open Exchange Rates) ile sağlanır ve canlı bir sunucu ortamında çalışır.</p>
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="currencyValue">Değer:</label>
+                                <input type="number" id="currencyValue" placeholder="Miktar girin" step="0.01">
+                            </div>
+                            <div class="input-group">
+                                <label for="currencyFromUnit">Çevrilecek Birim:</label>
+                                <select id="currencyFromUnit">
+                                    <option value="TRY">Türk Lirası (₺)</option>
+                                    <option value="USD">ABD Doları ($)</option>
+                                    <option value="EUR">Euro (€)</option>
+                                    <option value="GBP">İngiliz Sterlini (£)</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="currencyToUnit">Hedef Birim:</label>
+                                <select id="currencyToUnit">
+                                    <option value="TRY">Türk Lirası (₺)</option>
+                                    <option value="USD">ABD Doları ($)</option>
+                                    <option value="EUR">Euro (€)</option>
+                                    <option value="GBP">İngiliz Sterlini (£)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <p id="lastUpdateTime" style="font-size: 0.9em; color: #777;"></p>
+                        <div id="currencyResult" class="conversion-result"></div>
+                    </div>
+                    
+                    <div id="default-message" class="converter-section active">
+                        <p>Yukarıdaki kategorilerden birini seçerek birim dönüştürmeye başlayın.</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="explanation-section container">
+            <h3>Birim Dönüştürücü Ne İşe Yarar?</h3>
+            <p>
+                Birim dönüştürücü, farklı ölçü sistemleri arasındaki değerleri hızlı ve doğru bir şekilde çevirmenizi sağlayan pratik bir araçtır. Günlük hayatta, eğitimde, mühendislikte, bilimde ve uluslararası ticarette farklı birimlerle çalışmak yaygın olduğundan, birim dönüşümü sıklıkla ihtiyaç duyulan bir işlemdir. Bu araç, karmaşık formülleri hatırlama veya manuel hesaplama yapma ihtiyacını ortadan kaldırarak zaman ve doğruluk sağlar.
+            </p>
+            <p>Başlıca kullanım alanları:</p>
+            <ul>
+                <li><strong>Seyahat ve Turizm:</strong> Farklı ülkelerin mesafe, ağırlık veya sıcaklık birimlerini anlamak.</li>
+                <li><strong>Yemek Tarifleri:</strong> Malzemelerin miktarını farklı ölçü birimlerine dönüştürmek (örn. ons'tan grama).</li>
+                <li><strong>İnşaat ve Mühendislik:</strong> Projelerde farklı ölçü birimleriyle çalışırken tutarlılığı sağlamak.</li>
+                <li><strong>Bilimsel Çalışmalar:</strong> Deney verilerini standart birimlere çevirmek.</li>
+                <li><strong>Eğitim:</strong> Öğrencilerin farklı birim sistemlerini öğrenmelerine ve uygulamalarına yardımcı olmak.</li>
+                <li><strong>Uluslararası Ticaret:</strong> Ürünlerin ağırlık, hacim gibi özelliklerini farklı ülkelerin standartlarına göre belirtmek.</li>
+            </ul>
+        </section>
+
+        <section class="explanation-section container">
+            <h3>Nasıl Hesaplanır?</h3>
+            <p>
+                Birim dönüştürücüdeki her kategori, kendi içindeki birimleri temel bir ortak birime dönüştürme mantığına dayanır. Bu temel birim genellikle Uluslararası Birimler Sistemi (SI) tarafından belirlenen standart birimdir (örn. uzunluk için metre, ağırlık için kilogram).
+            </p>
+
+            <h4>Genel Dönüşüm Prensibi</h4>
+            <p>
+                Çoğu birim dönüşümü, aşağıdaki temel formül kullanılarak yapılır:
+            </p>
+            $$ \text{Hedef Değer} = \text{Girilen Değer} \times \frac{\text{Çevrilecek Birimin Temel Birimdeki Değeri}}{\text{Hedef Birimin Temel Birimdeki Değeri}} $$
+            <p>
+                Örneğin, 10 feet'i metreye çevirmek istediğimizde:
+                1 foot = 0.3048 metre.
+                Hedef Değer = $10 \text{ ft} \times \frac{0.3048 \text{ m/ft}}{1 \text{ m/m}} = 3.048 \text{ m}$
+            </p>
+            <p>
+                Bu yaklaşım, tüm birimlerin bir "temel birim" (genellikle SI birimi) cinsinden katsayılarının saklanmasıyla uygulanır. Dönüşüm, önce girilen değeri temel birime çevirip, sonra bu temel birimdeki değeri hedef birime çevirerek gerçekleşir.
+            </p>
+
+            <h4>Sıcaklık Dönüşümleri</h4>
+            <p>
+                Sıcaklık birimleri (Santigrat, Fahrenheit, Kelvin) doğrusal bir ilişkiyle değil, özel formüllerle birbirine dönüştürülür. Bu nedenle, sıcaklık dönüşümleri diğer birimlere göre farklı bir mantık gerektirir. İşte başlıca sıcaklık dönüşüm formülleri:
+            </p>
+            <ul>
+                <li>
+                    <strong>Santigrat'tan Fahrenheit'a:</strong>
+                    $$ F = C \times 1.8 + 32 $$
+                </li>
+                <li>
+                    <strong>Fahrenheit'tan Santigrat'a:</strong>
+                    $$ C = (F - 32) / 1.8 $$
+                </li>
+                <li>
+                    <strong>Santigrat'tan Kelvin'e:</strong>
+                    $$ K = C + 273.15 $$
+                </li>
+                <li>
+                    <strong>Kelvin'den Santigrat'a:</strong>
+                    $$ C = K - 273.15 $$
+                </li>
+                <li>
+                    <strong>Fahrenheit'tan Kelvin'e (Önce Santigrat'a çevir):</strong>
+                    $$ K = (F - 32) / 1.8 + 273.15 $$
+                </li>
+                <li>
+                    <strong>Kelvin'den Fahrenheit'a (Önce Santigrat'a çevir):</strong>
+                    $$ F = (K - 273.15) \times 1.8 + 32 $$
+                </li>
+            </ul>
+
+            <h4>Para Birimi Dönüşümleri</h4>
+            <p>
+                Para birimi dönüşümleri, diğer birim dönüşümlerinden farklı olarak sürekli değişen döviz kurlarına dayanır. Bu kurlar, piyasa koşullarına göre anlık olarak güncellenir. Bu nedenle, para birimi dönüştürücülerinin doğru sonuç verebilmesi için **harici bir API (Uygulama Programlama Arayüzü) aracılığıyla canlı döviz kurlarına erişmesi gerekir.** Hesapla Pratik Birim Dönüştürücü, bu özelliği desteklemek için bir API entegrasyonu gerektirir. Kullanıcı deneyimi için son güncelleme zamanı da gösterilir.
+            </p>
+            <p>
+                Para birimi dönüşümünün temel formülü şöyledir:
+            </p>
+            $$ \text{Hedef Para Miktarı} = \text{Kaynak Para Miktarı} \times \text{Döviz Kuru} $$
+            <p>
+                Burada "Döviz Kuru", çevrilecek birimden hedef birime olan güncel kuru ifade eder. Örneğin, 1 USD'nin kaç TL olduğu gibi.
+            </p>
+            <p>
+                Hesaplayıcımız, bu temel prensipleri kullanarak girdiğiniz değerleri seçtiğiniz birimler arasında hassas bir şekilde dönüştürür.
+            </p>
+        </section>
+        </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapla Pratik. Tüm hakları saklıdır.</p>
+            <p><a href="gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+
+    <script>
+        const categoryButtons = document.querySelectorAll('.category-button');
+        const converterSections = document.querySelectorAll('.converter-section');
+        const defaultMessage = document.getElementById('default-message');
+
+        // Temel dönüştürme fonksiyonları (metre bazında)
+        const conversions = {
+            length: {
+                m: 1, cm: 0.01, mm: 0.001, km: 1000,
+                inch: 0.0254, ft: 0.3048, yd: 0.9144, mi: 1609.34
+            },
+            weight: {
+                kg: 1, g: 0.001, mg: 0.000001, t: 1000,
+                lb: 0.453592, oz: 0.0283495
+            },
+            area: { // Metrekare bazında
+                sqm: 1, sqcm: 0.0001, sqkm: 1000000, hectare: 10000,
+                acre: 4046.86, sqft: 0.092903
+            },
+            volume: { // Litre bazında
+                liter: 1, ml: 0.001, cubicm: 1000, cubiccm: 0.001,
+                gallon: 3.78541, quart: 0.946353, pint: 0.473176
+            },
+            time: { // Saniye bazında
+                second: 1, minute: 60, hour: 3600, day: 86400,
+                week: 604800, month: 2629800, year: 31557600 // Ortalama ay ve yıl
+            },
+            speed: { // Metre/saniye bazında
+                mps: 1, kmph: 1 / 3.6, mph: 0.44704, knot: 0.514444
+            },
+            energy: { // Joule bazında
+                joule: 1, cal: 4.184, kcal: 4184, kwh: 3600000
+            },
+            power: { // Watt bazında
+                watt: 1, kilowatt: 1000, hp: 745.7
+            },
+            pressure: { // Pascal bazında
+                pascal: 1, bar: 100000, atm: 101325, psi: 6894.76
+            },
+            data: { // Bit bazında
+                bit: 1, byte: 8, kb: 8192, mb: 8388608, gb: 8589934592, tb: 8796093022208 // 1024 tabanlı
+            }
+        };
+
+        // Sıcaklık dönüşümleri farklı bir mantık gerektirir
+        function convertTemperature(value, fromUnit, toUnit) {
+            let valInCelsius;
+            if (fromUnit === 'celsius') {
+                valInCelsius = value;
+            } else if (fromUnit === 'fahrenheit') {
+                valInCelsius = (value - 32) * 5 / 9;
+            } else if (fromUnit === 'kelvin') {
+                valInCelsius = value - 273.15;
+            }
+
+            let result;
+            if (toUnit === 'celsius') {
+                result = valInCelsius;
+            } else if (toUnit === 'fahrenheit') {
+                result = (valInCelsius * 9 / 5) + 32;
+            } else if (toUnit === 'kelvin') {
+                result = valInCelsius + 273.15;
+            }
+            return result;
+        }
+
+        // Genel dönüştürme fonksiyonu (sıcaklık hariç)
+        function convertUnit(value, fromUnit, toUnit, category) {
+            if (fromUnit === toUnit) return value;
+            if (category === 'temperature') {
+                return convertTemperature(value, fromUnit, toUnit);
+            }
+
+            const baseValue = value * conversions[category][fromUnit];
+            return baseValue / conversions[category][toUnit];
+        }
+
+        // Event dinleyicileri ekle
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const category = button.dataset.category;
+
+                // Tüm dönüştürücü bölümlerini ve default mesajı gizle
+                converterSections.forEach(section => section.classList.remove('active'));
+                defaultMessage.classList.remove('active');
+
+                // Tüm butonlardan 'active' sınıfını kaldır
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+
+                // Tıklanan butona 'active' sınıfını ekle
+                button.classList.add('active');
+
+                // İlgili dönüştürücü bölümünü göster
+                document.getElementById(`${category}-converter`).classList.add('active');
+
+                // Sonucu temizle
+                const currentResultDiv = document.querySelector(`#${category}Result`);
+                if (currentResultDiv) { // Ensure the element exists
+                    currentResultDiv.textContent = '';
+                }
+
+
+                // Para birimi seçiliyse döviz kurlarını çek (yalnızca örnek, canlı API entegrasyonu gerekir)
+                if (category === 'currency') {
+                    fetchExchangeRates();
+                }
+            });
+        });
+
+        // Tüm input ve select elemanlarına event dinleyicileri ekle
+        const converterInputs = document.querySelectorAll('.converter-section input[type="number"], .converter-section select');
+        converterInputs.forEach(input => {
+            input.addEventListener('input', (event) => {
+                const section = event.target.closest('.converter-section');
+                if (!section) return; // Eğer converter-section içinde değilse
+                
+                const category = section.id.replace('-converter', '');
+                
+                const valueInput = section.querySelector(`#${category}Value`);
+                const fromUnitSelect = section.querySelector(`#${category}FromUnit`);
+                const toUnitSelect = section.querySelector(`#${category}ToUnit`);
+                const resultDiv = section.querySelector(`#${category}Result`);
+
+                const value = parseFloat(valueInput.value);
+                const fromUnit = fromUnitSelect.value;
+                const toUnit = toUnitSelect.value;
+
+                if (isNaN(value)) {
+                    resultDiv.textContent = 'Lütfen geçerli bir değer girin.';
+                    return;
+                }
+
+                if (category === 'currency') {
+                    // Para birimi için ayrı işlem, API çağrısı gerektirir
+                    convertCurrency(); // Kurlar çekildiyse çevir
+                } else {
+                    const result = convertUnit(value, fromUnit, toUnit, category);
+                    resultDiv.innerHTML = `<strong>${value} ${fromUnit}</strong> = <strong>${result.toFixed(4)} ${toUnit}</strong>`;
+                }
+            });
+        });
+
+        // Para birimi dönüşümü için API entegrasyonu (Örnek - Gerçek bir API anahtarı ve sunucu tarafı kodlaması gerektirir)
+        // Lütfen bu kısmı canlıya alırken kendi API anahtarınızı ve güvenli bir şekilde sunucu tarafından çağrı yapmayı unutmayın.
+        let exchangeRates = {};
+        const currencyAPIKey = 'YOUR_API_KEY'; // Gerçek bir API anahtarı buraya gelecek
+        const currencyBaseURL = `https://v6.exchangerate-api.com/v6/${currencyAPIKey}/latest/`;
+
+        async function fetchExchangeRates() {
+            const fromCurrency = document.getElementById('currencyFromUnit').value;
+            const url = `${currencyBaseURL}${fromCurrency}`;
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                if (data.result === 'success') {
+                    exchangeRates = data.conversion_rates;
+                    document.getElementById('lastUpdateTime').textContent = `Son Güncelleme: ${new Date(data.time_last_update_unix * 1000).toLocaleString()}`;
+                    convertCurrency(); // Kurlar çekildikten sonra otomatik çevir
+                } else {
+                    document.getElementById('currencyResult').textContent = 'Döviz kurları alınamadı: ' + data['error-type'];
+                    document.getElementById('lastUpdateTime').textContent = 'Döviz kurları alınamadı.';
+                }
+            } catch (error) {
+                console.error('Döviz kurları alınırken hata:', error);
+                document.getElementById('currencyResult').textContent = 'Döviz kurları alınırken hata oluştu. Lütfen daha sonra tekrar deneyin.';
+                document.getElementById('lastUpdateTime').textContent = 'Döviz kurları alınamadı.';
+            }
+        }
+
+        function convertCurrency() {
+            const value = parseFloat(document.getElementById('currencyValue').value);
+            const fromUnit = document.getElementById('currencyFromUnit').value;
+            const toUnit = document.getElementById('currencyToUnit').value;
+            const resultDiv = document.getElementById('currencyResult');
+
+            if (isNaN(value)) {
+                resultDiv.textContent = 'Lütfen geçerli bir miktar girin.';
+                return;
+            }
+
+            if (!exchangeRates[toUnit] || !exchangeRates[fromUnit]) { // Aslında base kur hep fromCurrency olduğundan fromUnit kontrolü gereksiz ama yine de
+                 resultDiv.textContent = 'Döviz kurları henüz yüklenmedi veya geçerli değil.';
+                 return;
+            }
+            
+            // fromUnit zaten base olduğu için doğrudan toUnit'e çeviririz
+            const result = value * exchangeRates[toUnit];
+            resultDiv.innerHTML = `<strong>${value.toFixed(2)} ${fromUnit}</strong> = <strong>${result.toFixed(2)} ${toUnit}</strong>`;
+        }
+
+        // Para birimi input/select değişikliklerinde çeviriyi tetikle
+        document.getElementById('currencyValue').addEventListener('input', convertCurrency);
+        document.getElementById('currencyFromUnit').addEventListener('change', fetchExchangeRates); // Kaynak değişirse yeni kurları çek
+        document.getElementById('currencyToUnit').addEventListener('change', convertCurrency); // Hedef değişirse mevcut kurlarla çevir
+
+        // Sayfa yüklendiğinde varsayılan olarak ilk kategori butonunu ve ilgili bölümü aktif et
+        // VEYA sadece hoş geldin mesajı göster
+        document.addEventListener('DOMContentLoaded', () => {
+             // Varsayılan mesajı göster
+            defaultMessage.classList.add('active');
+            // İlk kategoriyi otomatik seçme, kullanıcı kendi seçsin diye kapatıldı.
+            // Eğer istersen ilk butonu aktif edebilirsin:
+            // if (categoryButtons.length > 0) {
+            //     categoryButtons[0].click();
+            // }
+        });
+
+    </script>
+</body>
+</html>

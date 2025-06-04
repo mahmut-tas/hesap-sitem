@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adet Döngüsü Takibi - Hesapkolik</title>
+    <meta name="description" content="Son adet tarihinizi girerek bir sonraki adet döneminizi ve ovülasyon tarihinizi kolayca takip edin.">
+    <meta name="keywords" content="adet döngüsü takibi, ovülasyon takibi, regl takibi, doğurganlık takvimi, son adet tarihi">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../index.html"> <img src="../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Ana Sayfa</a></li>
+                    <li><a href="../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="health-calculators-section">
+            <div class="container">
+                <h1 class="main-title">Adet Döngüsü Takibi</h1>
+                <p class="section-description">Son adet kanamanızın ilk gününü girerek bir sonraki döneminizi ve ovülasyon tarihinizi tahmin edin.</p>
+
+                <div class="calculator-group">
+                    <div class="calculator-card-wrapper">
+                        <div class="calculator-header">
+                            <i class="fas fa-calendar-alt icon-small"></i>
+                            <h2>Döngü Takibi</h2>
+                        </div>
+                        <div class="calculator-form-container">
+                            <form id="periodTrackerForm">
+                                <label for="lastPeriodDate">Son Adet Tarihinizin İlk Günü:</label>
+                                <input type="date" id="lastPeriodDate" name="lastPeriodDate" required>
+
+                                <label for="cycleLength">Ortalama Döngü Uzunluğu (Gün):</label>
+                                <input type="number" id="cycleLength" name="cycleLength" placeholder="Örn: 28" value="28" required min="20" max="45">
+
+                                <button type="submit">Hesapla</button>
+                            </form>
+                            <div id="periodResult" class="result-display"></div>
+                            <div id="ovulationResult" class="category-display"></div>
+                            <div id="fertileWindowResult" class="category-display"></div>
+                        </div>
+                    </div>
+                    <section class="info-section">
+                        <h3>Adet Döngüsü Takibi Nedir ve Neden Önemlidir?</h3>
+                        <p>
+                            **Adet döngüsü takibi**, bir kadının regl dönemlerinin başlangıç ve bitiş tarihlerini, ovülasyon (yumurtlama) günlerini ve doğurganlık penceresini izlemesidir. Bu takip, hem hamile kalmak isteyenler hem de hamileliği önlemek isteyenler için önemlidir. Ayrıca adet düzensizliklerini fark etmeye ve hormonal sağlığınızı anlamaya yardımcı olabilir.
+                        </p>
+                        <p>
+                            Tipik bir adet döngüsü 21 ila 35 gün sürer ve ovülasyon genellikle bir sonraki adet döneminden yaklaşık 14 gün önce gerçekleşir. Ancak bu süreler kişiden kişiye değişebilir.
+                        </p>
+
+                        <h4>Adet Döngüsü ve Ovülasyon Nasıl Hesaplanır?</h4>
+                        <p>
+                            Adet döngüsünün ilk günü, adet kanamasının başladığı gündür. Bu tarihten yola çıkarak bir sonraki adet ve ovülasyon tarihleri tahmin edilebilir.
+                        </p>
+                        <p class="formula-text">
+                            **Bir Sonraki Adet Başlangıcı:** Son Adet Tarihi + Ortalama Döngü Uzunluğu <br>
+                            **Ovülasyon Günü:** Bir Sonraki Adet Başlangıcı - 14 Gün <br>
+                            **Doğurganlık Penceresi:** Ovülasyon Günü - 5 Gün ile Ovülasyon Günü + 1 Gün arası
+                        </p>
+                        <ul>
+                            <li>Örneğin, son adet tarihiniz 1 Ocak ve ortalama döngü uzunluğunuz 28 gün ise:</li>
+                            <li>Bir Sonraki Adet Başlangıcı: 1 Ocak + 28 gün = 29 Ocak</li>
+                            <li>Ovülasyon Günü: 29 Ocak - 14 gün = 15 Ocak</li>
+                            <li>Doğurganlık Penceresi: 10 Ocak - 16 Ocak (15 Ocak'tan 5 gün önce ve 1 gün sonrası)</li>
+                        </ul>
+
+                        <h4>Döngü Takibinin Faydaları:</h4>
+                        <ul>
+                            <li>**Hamilelik Planlaması:** Doğurganlık penceresini bilmek, hamile kalma şansını artırır.</li>
+                            <li>**Doğum Kontrolü:** Doğurgan olmayan günleri bilmek, doğal aile planlaması yöntemlerini uygulayanlar için faydalıdır.</li>
+                            <li>**Sağlık İzleme:** Adet düzensizlikleri, yoğunluk değişiklikleri veya ağrı gibi durumları fark etmeye yardımcı olur. Bu, hormonal dengesizlikler veya diğer sağlık sorunlarının erken teşhisine yol açabilir.</li>
+                            <li>**Kendini Anlama:** Vücudunuzdaki değişiklikleri (ruh hali, enerji seviyesi vb.) döngünüzle ilişkilendirmeye yardımcı olur.</li>
+                        </ul>
+                        <p class="disclaimer-text">
+                            Bu hesaplayıcı genel bir tahmindir ve ovülasyon veya adet döngüsü tarihlerini kesin olarak belirlemez. Stres, diyet, hastalık veya hormonal değişiklikler döngüyü etkileyebilir. Doğum kontrolü amacıyla kullanıldığında veya hamile kalmakta güçlük çekiliyorsa, en doğru bilgi ve tavsiye için her zaman bir sağlık profesyoneline danışmak önemlidir.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+    <script src="../js/saglik-hesaplamalari.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('periodTrackerForm')) {
+                document.getElementById('periodTrackerForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const lastPeriodDateInput = document.getElementById('lastPeriodDate').value;
+                    const cycleLength = parseInt(document.getElementById('cycleLength').value);
+
+                    const periodResultDiv = document.getElementById('periodResult');
+                    const ovulationResultDiv = document.getElementById('ovulationResult');
+                    const fertileWindowResultDiv = document.getElementById('fertileWindowResult');
+
+                    if (!lastPeriodDateInput || isNaN(cycleLength) || cycleLength < 20 || cycleLength > 45) {
+                        periodResultDiv.innerHTML = '<span style="color: red;">Lütfen geçerli bir tarih ve döngü uzunluğu girin (20-45 gün arası).</span>';
+                        ovulationResultDiv.textContent = '';
+                        fertileWindowResultDiv.textContent = '';
+                        return;
+                    }
+
+                    const lastPeriod = new Date(lastPeriodDateInput);
+                    
+                    // Bir sonraki adet başlangıcı
+                    const nextPeriodDate = new Date(lastPeriod);
+                    nextPeriodDate.setDate(lastPeriod.getDate() + cycleLength);
+
+                    // Ovülasyon günü (genellikle bir sonraki adetten 14 gün önce)
+                    const ovulationDate = new Date(nextPeriodDate);
+                    ovulationDate.setDate(nextPeriodDate.getDate() - 14);
+
+                    // Doğurganlık penceresi (ovülasyondan 5 gün önceye kadar ve ovülasyon günü dahil)
+                    const fertileWindowStart = new Date(ovulationDate);
+                    fertileWindowStart.setDate(ovulationDate.getDate() - 5);
+
+                    const fertileWindowEnd = new Date(ovulationDate);
+                    fertileWindowEnd.setDate(ovulationDate.getDate() + 1); // Ovülasyon gününden sonraki gün de eklenebilir. Genellikle ovülasyon günü ve öncesi daha kritiktir.
+
+                    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+
+                    periodResultDiv.innerHTML = `Tahmini Bir Sonraki Adet Başlangıcı: <strong>${nextPeriodDate.toLocaleDateString('tr-TR', options)}</strong>`;
+                    ovulationResultDiv.innerHTML = `Tahmini Ovülasyon Günü: <strong>${ovulationDate.toLocaleDateString('tr-TR', options)}</strong>`;
+                    fertileWindowResultDiv.innerHTML = `Tahmini Doğurganlık Penceresi: <strong>${fertileWindowStart.toLocaleDateString('tr-TR', options)} - ${fertileWindowEnd.toLocaleDateString('tr-TR', options)}</strong>`;
+                    fertileWindowResultDiv.style.color = '#2ecc71';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

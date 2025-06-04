@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yüzde Konsantrasyon Hesaplayıcı - Hesapkolik</title>
+    <meta name="description" content="Kütle/kütle (%w/w) ve kütle/hacim (%w/v) yüzde konsantrasyonlarını kolayca hesaplayın. Kimyasal çözeltiler ve karışımlar için pratik bir araç.">
+    <meta name="keywords" content="yüzde konsantrasyon, kütlece yüzde, hacimce yüzde, yüzde w/w, yüzde w/v, çözelti hazırlama, kimya hesaplamaları, konsantrasyon, hesapkolik konsantrasyon">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="calculator-page-section">
+            <div class="container">
+                <h1 class="main-title">Yüzde Konsantrasyon Hesaplayıcı</h1>
+                <p class="section-description">Çözeltilerinizin yüzde kütle/kütle (%w/w) veya yüzde kütle/hacim (%w/v) konsantrasyonunu hesaplayın. İstenen konsantrasyona ulaşmak için gerekli çözünen madde veya çözücü miktarını da bulabilirsiniz.</p>
+
+                <div class="calculator-group">
+                    <div class="calculator-card-wrapper">
+                        <div class="calculator-header">
+                            <i class="fas fa-percent icon-small"></i>
+                            <h2>Yüzde Konsantrasyon Hesapla</h2>
+                        </div>
+                        <div class="calculator-form-container">
+                            <form id="concentrationForm">
+                                <p>Hesaplama tipini seçin:</p>
+                                <div class="radio-group">
+                                    <input type="radio" id="calcPercent" name="calcType" value="percent" checked>
+                                    <label for="calcPercent">Yüzde Konsantrasyonu Hesapla</label><br>
+                                    <input type="radio" id="calcSolute" name="calcType" value="solute">
+                                    <label for="calcSolute">Gerekli Çözünen Madde Miktarını Hesapla</label><br>
+                                    <input type="radio" id="calcSolution" name="calcType" value="solution">
+                                    <label for="calcSolution">Gerekli Toplam Çözelti Miktarını Hesapla</label>
+                                </div>
+                                <hr class="form-divider">
+
+                                <div class="input-with-unit">
+                                    <label for="concentrationType">Konsantrasyon Tipi:</label>
+                                    <select id="concentrationType">
+                                        <option value="ww">Kütle/Kütle (%w/w)</option>
+                                        <option value="wv">Kütle/Hacim (%w/v)</option>
+                                    </select>
+                                </div>
+                                <hr class="form-divider" id="hr_concentrationType">
+
+                                <div id="inputSoluteMass" class="input-with-unit">
+                                    <label for="soluteMass">Çözünen Madde Kütlesi:</label>
+                                    <input type="number" id="soluteMass" name="soluteMass" placeholder="Örn: 10" min="0.000001" step="0.000001">
+                                    <select id="soluteMassUnit">
+                                        <option value="g">gram (g)</option>
+                                        <option value="mg">miligram (mg)</option>
+                                        <option value="kg">kilogram (kg)</option>
+                                    </select>
+                                </div>
+                                <hr class="form-divider" id="hr_soluteMass">
+
+                                <div id="inputSolution" class="input-with-unit">
+                                    <label for="solutionAmount">Çözelti/Çözücü Miktarı:</label>
+                                    <input type="number" id="solutionAmount" name="solutionAmount" placeholder="Örn: 100">
+                                    <select id="solutionUnit">
+                                        <option value="g">gram (g) - %w/w için</option>
+                                        <option value="ml">mililitre (mL) - %w/v için</option>
+                                        <option value="kg">kilogram (kg) - %w/w için</option>
+                                        <option value="L">litre (L) - %w/v için</option>
+                                    </select>
+                                </div>
+                                <hr class="form-divider" id="hr_solutionAmount">
+
+                                <div id="inputDesiredConcentration" class="input-with-unit" style="display: none;">
+                                    <label for="desiredConcentration">İstenen Yüzde Konsantrasyon (%):</label>
+                                    <input type="number" id="desiredConcentration" name="desiredConcentration" placeholder="Örn: 5" min="0.000001" max="100" step="0.0001">
+                                </div>
+                                <hr class="form-divider" id="hr_desiredConcentration" style="display: none;">
+                                
+                                <button type="submit">Hesapla</button>
+                            </form>
+                            <div id="concentrationResult" class="result-display"></div>
+                            <p class="small-text">Lütfen hesaplama tipine göre gerekli alanları doldurunuz. Eğer yüzde konsantrasyonu hesaplamak istiyorsanız, çözünen madde ve çözelti/çözücü miktarını girin. Diğer durumlarda, diğer iki değeri giriniz.</p>
+                        </div>
+                    </div>
+
+                    <section class="info-section">
+                        <h3>Yüzde Konsantrasyon Nedir?</h3>
+                        <p>
+                            **Yüzde konsantrasyon**, bir çözeltideki çözünen maddenin toplam çözeltiye oranını yüzde olarak ifade eden yaygın bir konsantrasyon birimidir. Genellikle kimyasal, biyolojik ve farmasötik uygulamalarda kullanılır.
+                        </p>
+                        <p>
+                            Temel olarak iki ana tipi vardır:
+                        </p>
+
+                        <h4>1. Kütle/Kütle Yüzde Konsantrasyonu (%w/w)</h4>
+                        <p>
+                            Bir çözeltinin kütle/kütle yüzde konsantrasyonu, **çözünen maddenin kütlesinin, toplam çözeltinin kütlesine oranı**nın 100 ile çarpılmasıyla bulunur. Hem çözünen hem de çözücü katı, sıvı veya gaz olabilir.
+                        </p>
+                        <p class="formula-text">
+                            %w/w = (Çözünen Madde Kütlesi / Toplam Çözelti Kütlesi) × 100
+                        </p>
+                        <ul>
+                            <li><strong>Çözelti Kütlesi = Çözünen Madde Kütlesi + Çözücü Kütlesi</strong></li>
+                            <li>Birimler genellikle gram (g) veya kilogram (kg) cinsindendir.</li>
+                        </ul>
+                        <p>
+                            **Örnek:** 10 g tuzun 90 g su içinde çözülmesiyle hazırlanan çözelti: <br>
+                            Çözelti Kütlesi = 10 g (tuz) + 90 g (su) = 100 g <br>
+                            %w/w = (10 g / 100 g) × 100 = %10 w/w tuz çözeltisi
+                        </p>
+
+                        <h4>2. Kütle/Hacim Yüzde Konsantrasyonu (%w/v)</h4>
+                        <p>
+                            Bir çözeltinin kütle/hacim yüzde konsantrasyonu, **çözünen maddenin kütlesinin, toplam çözeltinin hacmine oranı**nın 100 ile çarpılmasıyla bulunur. Genellikle çözünen katı, çözücü ise sıvıdır.
+                        </p>
+                        <p class="formula-text">
+                            %w/v = (Çözünen Madde Kütlesi / Toplam Çözelti Hacmi) × 100
+                        </p>
+                        <ul>
+                            <li>Çözünen madde genellikle gram (g), çözelti hacmi ise mililitre (mL) cinsindendir.</li>
+                        </ul>
+                        <p>
+                            **Örnek:** 5 g şekerin toplam hacmi 250 mL olan bir çözelti içinde çözülmesiyle hazırlanan çözelti: <br>
+                            %w/v = (5 g / 250 mL) × 100 = %2 w/v şeker çözeltisi
+                        </p>
+
+                        <h4>Uygulama Alanları:</h4>
+                        <ul>
+                            <li>**Eczacılık ve Tıp:** İlaç dozajlarının ve serumların konsantrasyonlarının belirlenmesi.</li>
+                            <li>**Gıda Bilimi:** Gıda ürünlerindeki bileşenlerin (şeker, tuz vb.) oranlarının kontrolü.</li>
+                            <li>**Endüstriyel Kimya:** Üretim süreçlerinde kimyasal karışımların hazırlanması ve kalite kontrolü.</li>
+                            <li>**Çevre Mühendisliği:** Su ve atık su analizlerinde kirletici konsantrasyonlarının izlenmesi.</li>
+                        </ul>
+                        <p class="disclaimer-text">
+                            Bu hesaplayıcı, yüzde konsantrasyonların temel hesaplamaları için bir araçtır. Gerçek dünya uygulamalarında sıcaklık, yoğunluk (özellikle %w/v hesaplamalarında çözücünün hacmini belirlerken) ve çözünen maddenin çözücü içindeki hacim değişiklikleri gibi faktörler sonuçları etkileyebilir. Hassas uygulamalar için laboratuvar ölçümleri ve ek kimyasal prensipler göz önünde bulundurulmalıdır.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const concentrationForm = document.getElementById('concentrationForm');
+            const calcTypeRadios = document.querySelectorAll('input[name="calcType"]');
+            const concentrationTypeSelect = document.getElementById('concentrationType');
+
+            const inputSoluteMass = document.getElementById('inputSoluteMass');
+            const inputSolution = document.getElementById('inputSolution');
+            const inputDesiredConcentration = document.getElementById('inputDesiredConcentration');
+
+            const soluteMassInput = document.getElementById('soluteMass');
+            const soluteMassUnitSelect = document.getElementById('soluteMassUnit');
+            const solutionAmountInput = document.getElementById('solutionAmount');
+            const solutionUnitSelect = document.getElementById('solutionUnit');
+            const desiredConcentrationInput = document.getElementById('desiredConcentration');
+            const concentrationResultDiv = document.getElementById('concentrationResult');
+
+            // HR etiketleri
+            const hr_concentrationType = document.getElementById('hr_concentrationType');
+            const hr_soluteMass = document.getElementById('hr_soluteMass');
+            const hr_solutionAmount = document.getElementById('hr_solutionAmount');
+            const hr_desiredConcentration = document.getElementById('hr_desiredConcentration');
+
+            const allInputDivs = [inputSoluteMass, inputSolution, inputDesiredConcentration];
+            const allHrDivs = [hr_concentrationType, hr_soluteMass, hr_solutionAmount, hr_desiredConcentration];
+            const allValueInputs = [soluteMassInput, solutionAmountInput, desiredConcentrationInput];
+
+            // Birim dönüşüm faktörleri (hepsi gram'a ve ml'ye baz alınmıştır)
+            const soluteMassConversion = { 'g': 1, 'mg': 0.001, 'kg': 1000 };
+            const solutionMassConversion = { 'g': 1, 'kg': 1000 }; // w/w için
+            const solutionVolumeConversion = { 'ml': 1, 'L': 1000 }; // w/v için
+
+            function updateInputVisibility() {
+                const selectedCalcType = document.querySelector('input[name="calcType"]:checked').value;
+                const selectedConcentrationType = concentrationTypeSelect.value;
+
+                // Tüm inputları ve HR'ları gizle
+                allInputDivs.forEach(div => div.style.display = 'none');
+                allHrDivs.forEach(hr => hr.style.display = 'none'); // Tüm HR'ları gizle
+
+                // Tüm inputların required durumunu kaldır ve değerlerini temizle
+                allValueInputs.forEach(input => {
+                    input.required = false;
+                    input.value = '';
+                });
+                concentrationResultDiv.innerHTML = '';
+                concentrationResultDiv.style.display = 'none';
+
+                // Konsantrasyon tipi her zaman görünür
+                hr_concentrationType.style.display = 'block';
+
+                if (selectedCalcType === 'percent') {
+                    // Yüzde Konsantrasyonu Hesapla
+                    inputSoluteMass.style.display = 'flex';
+                    hr_soluteMass.style.display = 'block';
+                    inputSolution.style.display = 'flex';
+                    hr_solutionAmount.style.display = 'block';
+
+                    soluteMassInput.required = true;
+                    solutionAmountInput.required = true;
+                } else if (selectedCalcType === 'solute') {
+                    // Gerekli Çözünen Madde Miktarını Hesapla
+                    inputSolution.style.display = 'flex';
+                    hr_solutionAmount.style.display = 'block';
+                    inputDesiredConcentration.style.display = 'flex';
+                    hr_desiredConcentration.style.display = 'block';
+
+                    solutionAmountInput.required = true;
+                    desiredConcentrationInput.required = true;
+                } else if (selectedCalcType === 'solution') {
+                    // Gerekli Toplam Çözelti Miktarını Hesapla
+                    inputSoluteMass.style.display = 'flex';
+                    hr_soluteMass.style.display = 'block';
+                    inputDesiredConcentration.style.display = 'flex';
+                    hr_desiredConcentration.style.display = 'block';
+
+                    soluteMassInput.required = true;
+                    desiredConcentrationInput.required = true;
+                }
+
+                // Konsantrasyon tipine göre birim seçeneklerini güncelle
+                updateUnits(selectedConcentrationType);
+            }
+
+            function updateUnits(type) {
+                // Çözünen madde birimleri her zaman aynı kalır
+                // Çözelti/Çözücü birimleri konsantrasyon tipine göre değişir
+                solutionUnitSelect.innerHTML = ''; // Mevcut seçenekleri temizle
+
+                if (type === 'ww') {
+                    solutionUnitSelect.innerHTML = `
+                        <option value="g">gram (g) - %w/w için</option>
+                        <option value="kg">kilogram (kg) - %w/w için</option>
+                    `;
+                    // Hacim inputunun placeholder ve step değerini de güncelleyebilirsiniz
+                    solutionAmountInput.placeholder = "Örn: 100 (gram)";
+                } else if (type === 'wv') {
+                    solutionUnitSelect.innerHTML = `
+                        <option value="ml">mililitre (mL) - %w/v için</option>
+                        <option value="L">litre (L) - %w/v için</option>
+                    `;
+                     solutionAmountInput.placeholder = "Örn: 100 (mL)";
+                }
+                 solutionAmountInput.min = "0.000001"; // Minimum değeri her zaman pozitif yap
+                 solutionAmountInput.step = "0.000001";
+            }
+
+            calcTypeRadios.forEach(radio => {
+                radio.addEventListener('change', updateInputVisibility);
+            });
+            concentrationTypeSelect.addEventListener('change', updateInputVisibility); // Konsantrasyon tipi değişince de görünürlüğü güncelle
+            
+            updateInputVisibility(); // Sayfa yüklendiğinde başlangıç görünürlüğünü ve birimleri ayarla
+
+            concentrationForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const selectedCalcType = document.querySelector('input[name="calcType"]:checked').value;
+                const selectedConcentrationType = concentrationTypeSelect.value;
+                
+                let soluteMass, solutionAmount, desiredConcentration;
+                let calculatedResult = null;
+                let resultLabel = '';
+                let resultUnit = '';
+
+                concentrationResultDiv.innerHTML = '';
+                concentrationResultDiv.style.display = 'none';
+
+                try {
+                    // Girdileri al ve standart birimlere dönüştür (gram ve ml'ye)
+                    if (selectedCalcType === 'percent' || selectedCalcType === 'solution') {
+                        soluteMass = parseFloat(soluteMassInput.value);
+                        if (isNaN(soluteMass) || soluteMass <= 0) throw new Error("Lütfen çözünen madde kütlesi için geçerli ve pozitif bir sayı giriniz.");
+                        soluteMass = soluteMass * soluteMassConversion[soluteMassUnitSelect.value]; // Gram'a dönüştür
+                    }
+
+                    if (selectedCalcType === 'percent' || selectedCalcType === 'solute') {
+                        solutionAmount = parseFloat(solutionAmountInput.value);
+                        if (isNaN(solutionAmount) || solutionAmount <= 0) throw new Error("Lütfen çözelti/çözücü miktarı için geçerli ve pozitif bir sayı giriniz.");
+                        
+                        if (selectedConcentrationType === 'ww') {
+                            solutionAmount = solutionAmount * solutionMassConversion[solutionUnitSelect.value]; // Gram'a dönüştür
+                        } else { // wv
+                            solutionAmount = solutionAmount * solutionVolumeConversion[solutionUnitSelect.value]; // mL'ye dönüştür
+                        }
+                    }
+
+                    if (selectedCalcType === 'solute' || selectedCalcType === 'solution') {
+                        desiredConcentration = parseFloat(desiredConcentrationInput.value);
+                        if (isNaN(desiredConcentration) || desiredConcentration <= 0 || desiredConcentration > 100) throw new Error("Lütfen %0 ile %100 arasında geçerli bir yüzde konsantrasyonu giriniz.");
+                    }
+
+                    // Hesaplamalar
+                    if (selectedCalcType === 'percent') {
+                        // % Konsantrasyon = (Çözünen Madde / Toplam Çözelti) * 100
+                        calculatedResult = (soluteMass / solutionAmount) * 100;
+                        resultLabel = 'Yüzde Konsantrasyon';
+                        resultUnit = selectedConcentrationType === 'ww' ? '%w/w' : '%w/v';
+                    } else if (selectedCalcType === 'solute') {
+                        // Gerekli Çözünen = (İstenen Konsantrasyon / 100) * Toplam Çözelti
+                        calculatedResult = (desiredConcentration / 100) * solutionAmount;
+                        resultLabel = 'Gerekli Çözünen Madde Kütlesi';
+                        resultUnit = 'gram (g)'; // Standart birim olarak gram verelim
+                    } else if (selectedCalcType === 'solution') {
+                        // Gerekli Çözelti = Çözünen Madde / (İstenen Konsantrasyon / 100)
+                        calculatedResult = soluteMass / (desiredConcentration / 100);
+                        resultLabel = 'Gerekli Toplam Çözelti Miktarı';
+                        resultUnit = selectedConcentrationType === 'ww' ? 'gram (g)' : 'mililitre (mL)'; // Standart birim olarak g/mL verelim
+                    }
+
+                    // Sonuçları göster
+                    concentrationResultDiv.innerHTML = `
+                        <p><strong>${resultLabel}:</strong> <span class="result-value">${calculatedResult.toFixed(4)}</span> ${resultUnit}</p>
+                        <hr>
+                        <p><strong>Hesaplama Tipi:</strong> ${selectedCalcType === 'percent' ? 'Yüzde Konsantrasyon' : (selectedCalcType === 'solute' ? 'Çözünen Madde Miktarı' : 'Toplam Çözelti Miktarı')}</p>
+                        <p><strong>Konsantrasyon Tipi:</strong> ${selectedConcentrationType === 'ww' ? 'Kütle/Kütle (%w/w)' : 'Kütle/Hacim (%w/v)'}</p>
+                        ${selectedCalcType !== 'solute' ? `<p><strong>Çözünen Madde Kütlesi:</strong> ${soluteMassInput.value} ${soluteMassUnitSelect.value}</p>` : ''}
+                        ${selectedCalcType !== 'solution' ? `<p><strong>Çözelti/Çözücü Miktarı:</strong> ${solutionAmountInput.value} ${solutionUnitSelect.value}</p>` : ''}
+                        ${selectedCalcType !== 'percent' ? `<p><strong>İstenen Yüzde Konsantrasyon:</strong> ${desiredConcentrationInput.value}%</p>` : ''}
+                    `;
+                    concentrationResultDiv.style.display = 'block';
+
+                } catch (e) {
+                    concentrationResultDiv.innerHTML = `<p class="error">Hata: ${e.message}</p>`;
+                    concentrationResultDiv.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

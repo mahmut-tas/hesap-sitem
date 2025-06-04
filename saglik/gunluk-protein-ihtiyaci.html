@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Günlük Protein İhtiyacı Hesaplayıcı - Hesapkolik</title>
+    <meta name="description" content="Yaşınızı, cinsiyetinizi, boyunuzu, kilonuzu ve aktivite seviyenizi girerek günlük protein ihtiyacınızı hesaplayın.">
+    <meta name="keywords" content="günlük protein ihtiyacı, protein hesapla, sağlıklı beslenme, makro besin, kas gelişimi, kilo kontrolü">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../index.html"> <img src="../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Ana Sayfa</a></li>
+                    <li><a href="../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="health-calculators-section">
+            <div class="container">
+                <h1 class="main-title">Günlük Protein İhtiyacı Hesaplayıcı</h1>
+                <p class="section-description">Yaşınızı, cinsiyetinizi, boyunuzu, kilonuzu ve aktivite seviyenizi girerek günlük tahmini protein ihtiyacınızı öğrenin.</p>
+
+                <div class="calculator-group">
+                    <div class="calculator-card-wrapper">
+                        <div class="calculator-header">
+                            <i class="fas fa-egg icon-small"></i>
+                            <h2>Protein İhtiyacı Hesapla</h2>
+                        </div>
+                        <div class="calculator-form-container">
+                            <form id="proteinForm">
+                                <label for="protein_age">Yaşınız:</label>
+                                <input type="number" id="protein_age" name="age" placeholder="Örn: 30" required min="1" max="100">
+
+                                <label for="protein_gender">Cinsiyet:</label>
+                                <select id="protein_gender" name="gender" required>
+                                    <option value="">Seçiniz</option>
+                                    <option value="male">Erkek</option>
+                                    <option value="female">Kadın</option>
+                                </select>
+
+                                <label for="protein_height">Boy (cm):</label>
+                                <input type="number" id="protein_height" name="height" placeholder="Örn: 175" required min="50" max="250">
+
+                                <label for="protein_weight">Kilo (kg):</label>
+                                <input type="number" id="protein_weight" name="weight" placeholder="Örn: 70" required min="10" max="300">
+
+                                <label for="protein_activity">Aktivite Seviyesi:</label>
+                                <select id="protein_activity" name="activity" required>
+                                    <option value="">Seçiniz</option>
+                                    <option value="sedentary">Hareketsiz (Çok az egzersiz veya hiç yok)</option>
+                                    <option value="lightly_active">Az Aktif (Haftada 1-3 gün hafif egzersiz)</option>
+                                    <option value="moderately_active">Orta Derece Aktif (Haftada 3-5 gün orta egzersiz)</option>
+                                    <option value="very_active">Çok Aktif (Haftada 6-7 gün yoğun egzersiz)</option>
+                                    <option value="super_active">Aşırı Aktif (Günde iki kez yoğun egzersiz, fiziksel iş)</option>
+                                </select>
+
+                                <button type="submit">Protein İhtiyacını Hesapla</button>
+                            </form>
+                            <div id="proteinResult" class="result-display"></div>
+                            <div id="proteinGoal" class="category-display"></div>
+                        </div>
+                    </div>
+                    <section class="info-section">
+                        <h3>Günlük Protein İhtiyacı Nedir?</h3>
+                        <p>
+                            **Proteinler**, vücudumuzun temel yapı taşlarıdır. Kasların, organların, cildin, saçın ve tırnakların oluşumu, onarımı ve bakımı için hayati öneme sahiptirler. Ayrıca hormonların, enzimlerin ve antikorların üretiminde rol oynarlar. Yeterli protein alımı, kas kütlesinin korunması, tokluk hissinin sağlanması ve bağışıklık sisteminin güçlendirilmesi için kritik öneme sahiptir.
+                        </p>
+                        <p>
+                            Günlük protein ihtiyacınız yaşınıza, cinsiyetinize, kilonuza, aktivite seviyenize ve sağlık hedeflerinize (örneğin kas kazanımı, kilo verme) göre değişir.
+                        </p>
+
+                        <h4>Günlük Protein İhtiyacı Nasıl Hesaplanır?</h4>
+                        <p>
+                            Günlük protein ihtiyacınızı hesaplamanın birkaç yolu vardır. En yaygın yöntemlerden biri, vücut ağırlığınıza ve aktivite seviyenize göre belirlemektir. Genel sağlık otoriteleri tarafından önerilen temel protein alımı genellikle **kilo başına gram** olarak ifade edilir.
+                        </p>
+                        <p>
+                            **Genel Öneriler (Ortalama yetişkinler için):**
+                        </p>
+                        <ul>
+                            <li>**Hareketsiz Yetişkinler:** Vücut ağırlığının her kilogramı başına yaklaşık **0.8 gram protein**.</li>
+                            <li>**Orta Derece Aktif Yetişkinler (Haftada birkaç kez egzersiz):** Vücut ağırlığının her kilogramı başına yaklaşık **1.0 - 1.2 gram protein**.</li>
+                            <li>**Düzenli Spor Yapanlar ve Kas Kütlesini Artırmak İsteyenler:** Vücut ağırlığının her kilogramı başına yaklaşık **1.2 - 1.7 gram protein**.</li>
+                            <li>**Yoğun Antrenman Yapan Sporcular veya Çok Fiziksel Olarak Aktif Bireyler:** Vücut ağırlığının her kilogramı başına yaklaşık **1.6 - 2.2 gram protein** veya daha fazlası.</li>
+                        </ul>
+                        <p class="formula-text">
+                            Protein İhtiyacı (gram) = Kilo (kg) × Belirlenen Protein Faktörü (g/kg)
+                        </p>
+                        <p>
+                            Hesaplayıcımız, günlük kalori ihtiyacınızı da temel alarak, bu genel öneriler doğrultusunda bir tahminde bulunacaktır. Unutmayın ki 1 gram protein yaklaşık 4 kalori enerji sağlar.
+                        </p>
+
+                        <h4>Sağlıklı Protein Kaynakları:</h4>
+                        <p>
+                            Proteinler hem hayvansal hem de bitkisel kaynaklardan alınabilir. Dengeli bir diyet için çeşitli kaynaklardan protein almak önemlidir:
+                        </p>
+                        <ul>
+                            <li>**Hayvansal Kaynaklar:** Tavuk göğsü, balık (somon, ton balığı), kırmızı et (yağsız), yumurta, süt ürünleri (yoğurt, peynir).</li>
+                            <li>**Bitkisel Kaynaklar:** Baklagiller (mercimek, nohut, fasulye), tofu, tempeh, kinoa, fındık, tohumlar, bazı sebzeler (brokoli, ıspanak).</li>
+                        </ul>
+                        <p class="disclaimer-text">
+                            Bu hesaplayıcı genel bir tahmindir ve beslenme hedefleriniz, mevcut sağlık durumunuz (örneğin böbrek hastalıkları) veya özel diyet ihtiyaçlarınız (örneğin vegan diyet) varsa, en doğru kişisel protein ihtiyacı tavsiyesi için bir diyetisyen veya sağlık uzmanına danışmanız önemlidir.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+    <script src="../js/saglik-hesaplamalari.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('proteinForm')) {
+                document.getElementById('proteinForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const age = parseInt(document.getElementById('protein_age').value);
+                    const gender = document.getElementById('protein_gender').value;
+                    const heightCm = parseFloat(document.getElementById('protein_height').value);
+                    const weightKg = parseFloat(document.getElementById('protein_weight').value);
+                    const activityLevel = document.getElementById('protein_activity').value;
+
+                    const proteinResultDiv = document.getElementById('proteinResult');
+                    const proteinGoalDiv = document.getElementById('proteinGoal');
+
+                    if (isNaN(age) || isNaN(heightCm) || isNaN(weightKg) || age <= 0 || heightCm <= 0 || weightKg <= 0 || !gender || !activityLevel) {
+                        proteinResultDiv.innerHTML = '<span style="color: red;">Lütfen tüm alanları doğru ve eksiksiz doldurun.</span>';
+                        proteinGoalDiv.textContent = '';
+                        return;
+                    }
+
+                    // Önce BMR ve TDEE hesaplama (Kalori İhtiyacı hesaplayıcısı ile aynı mantık)
+                    let bmr;
+                    if (gender === 'male') {
+                        bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) + 5;
+                    } else { // female
+                        bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) - 161;
+                    }
+
+                    let activityFactor;
+                    switch (activityLevel) {
+                        case 'sedentary':
+                            activityFactor = 1.2;
+                            break;
+                        case 'lightly_active':
+                            activityFactor = 1.375;
+                            break;
+                        case 'moderately_active':
+                            activityFactor = 1.55;
+                            break;
+                        case 'very_active':
+                            activityFactor = 1.725;
+                            break;
+                        case 'super_active':
+                            activityFactor = 1.9;
+                            break;
+                        default:
+                            activityFactor = 1.2;
+                    }
+
+                    const tdee = bmr * activityFactor; // Toplam Günlük Enerji Harcaması
+
+                    // Protein ihtiyacı için kilo başına faktör belirleme
+                    let proteinPerKg;
+                    switch (activityLevel) {
+                        case 'sedentary':
+                            proteinPerKg = 0.8; // Hareketsiz için min. RDA
+                            break;
+                        case 'lightly_active':
+                            proteinPerKg = 1.0;
+                            break;
+                        case 'moderately_active':
+                            proteinPerKg = 1.2;
+                            break;
+                        case 'very_active':
+                            proteinPerKg = 1.5;
+                            break;
+                        case 'super_active':
+                            proteinPerKg = 1.8; // Yoğun sporcular için daha yüksek
+                            break;
+                        default:
+                            proteinPerKg = 0.8;
+                    }
+
+                    const proteinGrams = weightKg * proteinPerKg;
+                    
+                    // Ek olarak, TDEE'nin %'si olarak da bir aralık verilebilir
+                    // Genellikle TDEE'nin %10-35'i protein olur. Ortalama %25 alalım.
+                    const proteinCaloriesFromTDEE = tdee * 0.25; 
+                    const proteinGramsFromTDEE = proteinCaloriesFromTDEE / 4; // 1 gram protein = 4 kalori
+
+                    // İki yöntemin ortalamasını alarak daha kapsamlı bir aralık sunabiliriz
+                    // Veya sadece kilo bazlı olanı kullanabiliriz. Burada kilo bazlıyı tercih edip, 
+                    // TDEE bazlıyı bilgi olarak vereceğiz.
+                    
+                    proteinResultDiv.innerHTML = `Tahmini Günlük Protein İhtiyacınız: <strong>${proteinGrams.toFixed(0)} gram</strong>`;
+                    proteinGoalDiv.innerHTML = `Bu, aktivite seviyenize göre her kilo başına yaklaşık ${proteinPerKg} gram proteine denk gelmektedir. (Yaklaşık ${proteinGramsFromTDEE.toFixed(0)} gram da toplam kalori ihtiyacınızın %25'ine eşittir.)`;
+                    proteinGoalDiv.style.color = '#2ecc71'; // Yeşil renk
+                });
+            }
+        });
+    </script>
+</body>
+</html>

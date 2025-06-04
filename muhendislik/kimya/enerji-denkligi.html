@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enerji Denkliği Hesaplayıcı - Hesapkolik</title>
+    <meta name="description" content="Kimyasal proseslerde enerji giriş ve çıkış denkliklerini hesaplayın. Akışkanların ısıtılması veya soğutulması için gerekli enerji miktarını belirleyin.">
+    <meta name="keywords" content="enerji denkliği, ısı transferi, termodinamik, kimya mühendisliği, özgül ısı, sıcaklık değişimi, enerji hesaplama, hesapkolik enerji">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="calculator-page-section">
+            <div class="container">
+                <h1 class="main-title">Enerji Denkliği Hesaplayıcı</h1>
+                <p class="section-description">Akışkanların ısıtılması veya soğutulması süreçlerinde transfer edilen enerji miktarını hızlıca hesaplayın.</p>
+
+                <div class="calculator-group">
+                    <div class="calculator-card-wrapper">
+                        <div class="calculator-header">
+                            <i class="fas fa-fire-alt icon-small"></i>
+                            <h2>Isı Transferi Hesaplayıcı</h2>
+                        </div>
+                        <div class="calculator-form-container">
+                            <form id="energyBalanceForm">
+                                <label for="mass">Akışkanın Kütlesi (kg):</label>
+                                <input type="number" id="mass" name="mass" placeholder="Örn: 100 (Su için)" required min="0.001" step="0.001">
+
+                                <label for="specificHeat">Özgül Isı Kapasitesi (kJ/(kg·°C) veya kJ/(kg·K)):</label>
+                                <input type="number" id="specificHeat" name="specificHeat" placeholder="Örn: 4.18 (Su için)" required min="0.001" step="0.001">
+                                
+                                <label for="tempChange">Sıcaklık Değişimi (°C veya K):</label>
+                                <input type="number" id="tempChange" name="tempChange" placeholder="Örn: 50 (Son sıcaklık - İlk sıcaklık)" required step="0.01">
+                                
+                                <button type="submit">Enerji Denkliğini Hesapla</button>
+                            </form>
+                            <div id="energyBalanceResult" class="result-display"></div>
+                            <p class="small-text">Pozitif sonuç ısı alımını, negatif sonuç ısı kaybını gösterir. Örneğin suyun özgül ısı kapasitesi yaklaşık 4.18 kJ/(kg·°C)'dir.</p>
+                        </div>
+                    </div>
+
+                    <section class="info-section">
+                        <h3>Enerji Denkliği Nedir?</h3>
+                        <p>
+                            **Enerji denkliği**, termodinamiğin birinci yasasına dayanır ve bir sistemdeki toplam enerjinin korunduğunu ifade eder. Yani, bir sisteme giren toplam enerji, sistemden çıkan toplam enerjiye ve sistemde depolanan enerji değişimine eşit olmalıdır. Kimya mühendisliğinde proseslerin ısınma, soğuma, reaksiyon veya faz değişimi gibi enerji transferlerini anlamak ve tasarlamak için temel bir araçtır.
+                        </p>
+                        <p>
+                            Basit enerji denkliği denklemi:
+                        </p>
+                        <p class="formula-text">
+                            Giren Enerji - Çıkan Enerji + Üretilen Enerji = Biriken Enerji
+                        </p>
+                        <p>
+                            Durgun (steady-state) sistemlerde (zamanla değişmeyen sistemler) birikme ve üretim terimleri genellikle sıfır kabul edilir. Bu durumda denklem şöyle basitleşir:
+                        </p>
+                        <p class="formula-text">
+                            Giren Enerji = Çıkan Enerji
+                        </p>
+
+                        <h4>Isı Transferi Nasıl Hesaplanır ($Q = m \cdot c_p \cdot \Delta T$)?</h4>
+                        <p>
+                            Bu hesaplayıcı, bir akışkanın sıcaklık değişimi sonucunda transfer edilen ısı miktarını bulmak için kullanılan yaygın bir formülü uygular:
+                        </p>
+                        <ul>
+                            <li><strong>Akışkanın Kütlesi ($m$):</strong> Isısı değişen maddenin kilogram cinsinden kütlesi.</li>
+                            <li><strong>Özgül Isı Kapasitesi ($c_p$):</strong> Bir maddenin birim kütlesinin sıcaklığını bir derece yükseltmek için gereken enerji miktarıdır. Her madde için farklıdır (örneğin su için yaklaşık 4.18 kJ/(kg·°C)).</li>
+                            <li><strong>Sıcaklık Değişimi ($\Delta T$):</strong> Son sıcaklık ile ilk sıcaklık arasındaki farktır. Eğer son sıcaklık ilkten büyükse pozitif (ısı alımı), küçükse negatif (ısı kaybı) olur.</li>
+                        </ul>
+                        <p>
+                            Bu temel hesaplama, ısı değiştiriciler, reaktörler ve diğer termal proses ekipmanlarının tasarımında ilk adımlardan biridir.
+                        </p>
+
+                        <h4>Uygulama Alanları:</h4>
+                        <ul>
+                            <li>Proses akışkanlarının ısıtılması veya soğutulması.</li>
+                            <li>Isı geri kazanım sistemlerinin verimlilik analizi.</li>
+                            <li>Buhar kazanları ve kondenserlerin tasarımı.</li>
+                            <li>Reaktörlerdeki ekzotermik veya endotermik reaksiyonların neden olduğu sıcaklık değişimlerinin ön analizi.</li>
+                        </ul>
+                        <p class="disclaimer-text">
+                            Bu hesaplayıcı, basit ısı transferi senaryoları için tasarlanmıştır. Gerçek mühendislik uygulamaları, faz değişimleri, kimyasal reaksiyonlar, basınç değişimleri, iş transferi ve farklı ısı transferi modları (iletim, taşınım, ışıma) gibi daha karmaşık faktörleri içerebilir. Detaylı analiz ve tasarım için kapsamlı termodinamik ve ısı transferi yazılımları ile mühendislik uzmanlığı gereklidir.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const energyBalanceForm = document.getElementById('energyBalanceForm');
+            const massInput = document.getElementById('mass');
+            const specificHeatInput = document.getElementById('specificHeat');
+            const tempChangeInput = document.getElementById('tempChange');
+            const energyBalanceResult = document.getElementById('energyBalanceResult');
+
+            if (energyBalanceForm) {
+                energyBalanceForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Formun varsayılan gönderimini engelle
+
+                    const mass = parseFloat(massInput.value);
+                    const specificHeat = parseFloat(specificHeatInput.value);
+                    const tempChange = parseFloat(tempChangeInput.value);
+
+                    // Girişlerin geçerli sayı olup olmadığını ve gerekli pozitif değerleri kontrol et
+                    if (isNaN(mass) || isNaN(specificHeat) || isNaN(tempChange) ||
+                        mass <= 0 || specificHeat <= 0) { // tempChange 0 veya negatif olabilir (soğuma)
+                        energyBalanceResult.innerHTML = '<p class="error">Lütfen kütle ve özgül ısı için geçerli ve pozitif sayılar giriniz.</p>';
+                        energyBalanceResult.style.display = 'block';
+                        return;
+                    }
+
+                    // Isı enerjisi hesaplaması: Q = m * Cp * DeltaT
+                    const heatTransfer = mass * specificHeat * tempChange;
+
+                    let resultText = '';
+                    let resultClass = 'result-value';
+
+                    if (heatTransfer > 0) {
+                        resultText = `Toplam Alınan Isı Enerjisi: <span class="${resultClass}">${heatTransfer.toFixed(3)}</span> kJ`;
+                    } else if (heatTransfer < 0) {
+                        resultText = `Toplam Verilen Isı Enerjisi: <span class="${resultClass}">${Math.abs(heatTransfer).toFixed(3)}</span> kJ`;
+                    } else {
+                        resultText = `Isı Transferi Yok: 0 kJ`;
+                    }
+
+                    energyBalanceResult.innerHTML = `
+                        <p><strong>Akışkanın Kütlesi:</strong> ${mass} kg</p>
+                        <p><strong>Özgül Isı Kapasitesi:</strong> ${specificHeat} kJ/(kg·°C)</p>
+                        <p><strong>Sıcaklık Değişimi:</strong> ${tempChange} °C</p>
+                        <p>${resultText}</p>
+                    `;
+                    energyBalanceResult.style.display = 'block';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

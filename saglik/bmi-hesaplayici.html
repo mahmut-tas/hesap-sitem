@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Hesaplayıcı - Hesapkolik</title>
+    <meta name="description" content="Boy ve kilonuzu girerek Vücut Kitle İndeksinizi (BMI) hesaplayın ve sağlık durumunuzu değerlendirin.">
+    <meta name="keywords" content="bmi hesapla, vücut kitle indeksi, sağlıklı kilo, zayıf, normal kilolu, fazla kilolu, obez">
+    <link rel="stylesheet" href="../css/style.css"> <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../index.html"> <img src="../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Ana Sayfa</a></li>
+                    <li><a href="../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li> <li><a href="../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="health-calculators-section">
+            <div class="container">
+                <h1 class="main-title">Vücut Kitle İndeksi (BMI) Hesaplayıcı</h1>
+                <p class="section-description">Boyunuzu (cm) ve kilonuzu (kg) girerek BMI'nızı hesaplayın ve sağlıklı kilonuzu değerlendirin.</p>
+
+                <div class="calculator-group">
+                    <div class="calculator-card-wrapper">
+                        <div class="calculator-header">
+                            <i class="fas fa-weight icon-small"></i>
+                            <h2>BMI Hesapla</h2>
+                        </div>
+                        <div class="calculator-form-container">
+                            <form id="bmiForm">
+                                <label for="bmi_height">Boy (cm):</label>
+                                <input type="number" id="bmi_height" name="height" placeholder="Örn: 175" required min="50" max="250">
+
+                                <label for="bmi_weight">Kilo (kg):</label>
+                                <input type="number" id="bmi_weight" name="weight" placeholder="Örn: 70" required min="10" max="300">
+
+                                <button type="submit">BMI Hesapla</button>
+                            </form>
+                            <div id="bmiResult" class="result-display"></div>
+                            <div id="bmiCategory" class="category-display"></div>
+                        </div>
+                    </div>
+                    <section class="info-section">
+                        <h3>BMI Nedir ve Neden Önemlidir?</h3>
+                        <p>
+                            <strong>Vücut Kitle İndeksi (BMI)</strong>, bir kişinin kilosunun boyuna göre sağlıklı bir aralıkta olup olmadığını gösteren basit bir ölçümdür. Dünya Sağlık Örgütü (WHO) tarafından geliştirilen ve yetişkinler için yaygın olarak kullanılan bir sağlık göstergesidir. BMI değeri, yağ oranı ve kas kütlesi gibi faktörleri doğrudan ölçmez ancak genel bir sınıflandırma sunar.
+                        </p>
+                        <p>
+                            BMI, bireylerin obezite veya zayıflık gibi kilo sorunları yaşayıp yaşamadığını hızlıca belirlemek ve potansiyel sağlık risklerini değerlendirmek için kritik bir araçtır. Yüksek bir BMI değeri genellikle obeziteyle ilişkili kalp hastalığı, diyabet ve yüksek tansiyon gibi durumların riskini artırabilirken, çok düşük bir BMI değeri de bazı sağlık sorunlarına işaret edebilir.
+                        </p>
+
+                        <h4>BMI Nasıl Hesaplanır?</h4>
+                        <p>
+                            BMI hesaplaması oldukça basittir ve aşağıdaki formülle yapılır:
+                        </p>
+                        <p class="formula-text">
+                            BMI = Kilo (kg) / [Boy (m)]²
+                        </p>
+                        <p>
+                            Örneğin, 70 kg ağırlığında ve 1.75 metre boyunda bir kişi için BMI hesaplaması şöyle yapılır:
+                        </p>
+                        <ul>
+                            <li>Boy (m) = 175 cm / 100 = 1.75 m</li>
+                            <li>Boyun karesi (m²) = 1.75 * 1.75 = 3.0625 m²</li>
+                            <li>BMI = 70 kg / 3.0625 m² = 22.86</li>
+                        </ul>
+
+                        <h4>BMI Değerleri Nasıl Yorumlanır?</h4>
+                        <p>
+                            Dünya Sağlık Örgütü (WHO) tarafından belirlenen standart BMI kategorileri şöyledir:
+                        </p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>BMI Değeri</th>
+                                    <th>Kilo Kategorisi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>18.5'in Altı</td><td>Zayıf</td></tr>
+                                <tr><td>18.5 - 24.9</td><td>Normal Kilolu</td></tr>
+                                <tr><td>25.0 - 29.9</td><td>Fazla Kilolu</td></tr>
+                                <tr><td>30.0 - 34.9</td><td>Obez (Sınıf I)</td></tr>
+                                <tr><td>35.0 - 39.9</td><td>Obez (Sınıf II)</td></tr>
+                                <tr><td>40.0 ve Üzeri</td><td>Aşırı Obez (Sınıf III)</td></tr>
+                            </tbody>
+                        </table>
+                        <p class="disclaimer-text">
+                            Unutulmamalıdır ki BMI genel bir göstergedir ve kas kütlesi yüksek olan sporcular veya yaşlılar gibi bazı özel durumlarda yanıltıcı olabilir. En doğru sağlık değerlendirmesi için her zaman bir sağlık profesyoneline danışmak önemlidir.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+    <script src="../js/saglik-hesaplamalari.js"></script> <script>
+        // BMI hesaplayıcısı için özel çağrı
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('bmiForm')) {
+                // BMI formu varsa ilgili kodu çalıştır
+                document.getElementById('bmiForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const heightCm = parseFloat(document.getElementById('bmi_height').value);
+                    const weightKg = parseFloat(document.getElementById('bmi_weight').value);
+                    const bmiResultDiv = document.getElementById('bmiResult');
+                    const bmiCategoryDiv = document.getElementById('bmiCategory');
+                    if (isNaN(heightCm) || isNaN(weightKg) || heightCm <= 0 || weightKg <= 0) {
+                        bmiResultDiv.innerHTML = '<span style="color: red;">Lütfen geçerli boy ve kilo değerleri girin.</span>';
+                        bmiCategoryDiv.textContent = '';
+                        return;
+                    }
+                    const heightM = heightCm / 100;
+                    const bmi = weightKg / (heightM * heightM);
+                    bmiResultDiv.innerHTML = `BMI Değeriniz: <strong>${bmi.toFixed(2)}</strong>`;
+                    let category = '';
+                    let categoryColor = '#333';
+                    if (bmi < 18.5) {
+                        category = 'Zayıf';
+                        categoryColor = '#f1c40f'; // Sarı
+                    } else if (bmi >= 18.5 && bmi < 24.9) {
+                        category = 'Normal Kilolu';
+                        categoryColor = '#2ecc71'; // Yeşil
+                    } else if (bmi >= 25 && bmi < 29.9) {
+                        category = 'Fazla Kilolu';
+                        categoryColor = '#e74c3c'; // Kırmızımsı turuncu
+                    } else if (bmi >= 30 && bmi < 34.9) {
+                        category = 'Obez (Sınıf I)';
+                        categoryColor = '#c0392b'; // Kırmızı
+                    } else if (bmi >= 35 && bmi < 39.9) {
+                        category = 'Obez (Sınıf II)';
+                        categoryColor = '#a52a2a'; // Koyu kırmızı
+                    } else {
+                        category = 'Aşırı Obez (Sınıf III)';
+                        categoryColor = '#8b0000'; // Çok koyu kırmızı
+                    }
+                    bmiCategoryDiv.textContent = `Durumunuz: ${category}`;
+                    bmiCategoryDiv.style.color = categoryColor;
+                });
+            }
+        });
+    </script>
+</body>
+</html>

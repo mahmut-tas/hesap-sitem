@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reaktör Hacmi Hesaplayıcı (CSTR) - Hesapkolik</title>
+    <meta name="description" content="Sürekli Karıştırmalı Tank Reaktörü (CSTR) için gerekli hacmi hesaplayın. Kimyasal reaksiyonlar ve proses tasarımı için temel bir araç.">
+    <meta name="keywords" content="reaktör hacmi, CSTR, sürekli karıştırmalı tank reaktörü, kimyasal reaktör, reaksiyon kinetiği, kimya mühendisliği, proses tasarımı, hesapkolik reaktör">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="calculator-page-section">
+            <div class="container">
+                <h1 class="main-title">Reaktör Hacmi Hesaplayıcı (CSTR)</h1>
+                <p class="section-description">Sürekli Karıştırmalı Tank Reaktörleri (CSTR) için gerekli hacmi, reaksiyon kinetiği ve dönüşüm bilgileriyle hesaplayın.</p>
+
+                <div class="calculator-group">
+                    <div class="calculator-card-wrapper">
+                        <div class="calculator-header">
+                            <i class="fas fa-atom icon-small"></i>
+                            <h2>CSTR Hacmini Hesapla</h2>
+                        </div>
+                        <div class="calculator-form-container">
+                            <form id="cstrVolumeForm">
+                                <label for="initialMolarFlow">A Maddesi Giriş Mol Akış Hızı (mol/s):</label> <input type="number" id="initialMolarFlow" name="initialMolarFlow" placeholder="Örn: 0.1" required min="0.0001" step="0.0001">
+
+                                <label for="conversion">A Maddesi Dönüşümü (X_A) (ondalık, 0-1 arası):</label> <input type="number" id="conversion" name="conversion" placeholder="Örn: 0.8 (yani %80 dönüşüm)" required min="0.001" max="0.999" step="0.001">
+                                
+                                <label for="reactionRate">A Maddesinin Reaksiyon Hızı (-r_A) (mol/(L·s)):</label> <input type="number" id="reactionRate" name="reactionRate" placeholder="Örn: 0.005" required min="0.000001" step="0.000001">
+                                
+                                <button type="submit">Reaktör Hacmini Hesapla</button>
+                            </form>
+                            <div id="cstrVolumeResult" class="result-display"></div>
+                            <p class="small-text">Bu hesaplayıcı ideal Sürekli Karıştırmalı Tank Reaktörleri (CSTR) için tasarlanmıştır. -r_A değeri, verilen dönüşüm (X_A) noktasındaki reaksiyon hızı olmalıdır.</p> </div>
+                    </div>
+
+                    <section class="info-section">
+                        <h3>Reaktör Hacmi Nedir?</h3>
+                        <p>
+                            Kimyasal reaktörler, kimyasal reaksiyonların gerçekleştiği kapalı sistemlerdir. Reaktör hacminin hesaplanması, bir reaksiyonun belirli bir dönüşümle istenen miktarda ürün üretmesi için ne kadar büyük bir reaktöre ihtiyaç duyulduğunu belirlemek için kritik öneme sahiptir. Bu, proses tasarımının ve ekonomik değerlendirmelerin temelini oluşturur.
+                        </p>
+                        <p>
+                            Reaktör tasarımı, reaksiyon kinetiği (reaksiyonun ne kadar hızlı gerçekleştiği), akışkan mekaniği (maddelerin reaktör içinde nasıl hareket ettiği) ve ısı transferi (enerjinin reaktör içinde nasıl aktığı) gibi birçok mühendislik prensibini bir araya getirir.
+                        </p>
+
+                        <h4>Sürekli Karıştırmalı Tank Reaktörü (CSTR)</h4>
+                        <p>
+                            **Sürekli Karıştırmalı Tank Reaktörü (CSTR)**, içindeki tüm akışkanın anında ve tamamen karıştığı varsayılan bir reaktör tipidir. Bu, reaktörün her noktasında konsantrasyon, sıcaklık ve reaksiyon hızının aynı olduğu anlamına gelir. CSTR'ler genellikle sürekli beslemeli ve ürün çıkışlı operasyonlarda kullanılır.
+                        </p>
+                        <p>
+                            CSTR için temel hacim denklemi şöyledir:
+                        </p>
+                        <p class="formula-text">
+                            $V = \frac{F_{A0} \cdot X_A}{(-r_A)}$
+                        </p>
+                        <ul>
+                            <li><strong>$F_{A0}$ (A Maddesi Giriş Mol Akış Hızı):</strong> Reaktöre giren A maddesinin birim zamanda mol cinsinden miktarı.</li>
+                            <li><strong>$X_A$ (A Maddesi Dönüşümü):</strong> A maddesinin reaksiyon sonucunda ne kadarının ürüne dönüştüğünü gösteren oran (0 ile 1 arasında bir değer).</li>
+                            <li><strong>$(-r_A)$ (A Maddesinin Reaksiyon Hızı):</strong> A maddesinin birim hacim ve birim zamanda ne kadar tükendiğini gösteren hız. CSTR'da bu hız, reaktördeki çıkış konsantrasyonundaki hıza eşittir, çünkü karıştırma mükemmeldir.</li>
+                        </ul>
+                        <p>
+                            Bu hesaplayıcı, bu basit CSTR denkliğini kullanarak gerekli reaktör hacmini belirlemenize yardımcı olur.
+                        </p>
+
+                        <h4>Uygulama Alanları:</h4>
+                        <ul>
+                            <li>Polimerizasyon reaksiyonları.</li>
+                            <li>Biyokimyasal reaksiyonlar (fermantasyon).</li>
+                            <li>Atık su arıtma süreçleri.</li>
+                            <li>İlaç üretimi ve ince kimyasalların sentezi.</li>
+                        </ul>
+                        <p class="disclaimer-text">
+                            Bu hesaplayıcı, ideal CSTR koşulları altında temel reaktör hacmi tahmini için basit bir araçtır. Gerçek endüstriyel uygulamalarda mükemmel karıştırma her zaman sağlanamayabilir ve sıcaklık, basınç, birden fazla reaksiyon, katalizör varlığı gibi birçok faktör reaktör tasarımını etkiler. Daha karmaşık senaryolar için detaylı reaktör modellemesi, proses simülasyon yazılımları ve mühendislik uzmanlığı gereklidir.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cstrVolumeForm = document.getElementById('cstrVolumeForm');
+            const initialMolarFlowInput = document.getElementById('initialMolarFlow');
+            const conversionInput = document.getElementById('conversion');
+            const reactionRateInput = document.getElementById('reactionRate');
+            const cstrVolumeResult = document.getElementById('cstrVolumeResult');
+
+            if (cstrVolumeForm) {
+                cstrVolumeForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Formun varsayılan gönderimini engelle
+
+                    const initialMolarFlow = parseFloat(initialMolarFlowInput.value);
+                    const conversion = parseFloat(conversionInput.value);
+                    const reactionRate = parseFloat(reactionRateInput.value);
+
+                    // Girişlerin geçerli sayı olup olmadığını ve gerekli pozitif değerleri kontrol et
+                    if (isNaN(initialMolarFlow) || isNaN(conversion) || isNaN(reactionRate) ||
+                        initialMolarFlow <= 0 || conversion <= 0 || conversion >= 1 || reactionRate <= 0) {
+                        cstrVolumeResult.innerHTML = '<p class="error">Lütfen tüm alanlara geçerli ve pozitif sayılar giriniz. Dönüşüm 0 ile 1 arasında (dahil değil) olmalıdır.</p>';
+                        cstrVolumeResult.style.display = 'block';
+                        return;
+                    }
+
+                    // CSTR Hacim hesaplaması: V = F_A0 * X_A / (-r_A)
+                    const cstrVolume = (initialMolarFlow * conversion) / reactionRate;
+
+                    cstrVolumeResult.innerHTML = `
+                        <p><strong>A Maddesi Giriş Mol Akış Hızı (F_A0):</strong> ${initialMolarFlow} mol/s</p>
+                        <p><strong>A Maddesi Dönüşümü (X_A):</strong> ${conversion} (yani %${(conversion * 100).toFixed(1)} dönüşüm)</p>
+                        <p><strong>A Maddesinin Reaksiyon Hızı (-r_A):</strong> ${reactionRate} mol/(L·s)</p>
+                        <hr>
+                        <p><strong>Hesaplanan CSTR Hacmi:</strong> <span class="result-value">${cstrVolume.toFixed(3)}</span> Litre</p>
+                    `;
+                    cstrVolumeResult.style.display = 'block';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Günlük Karbonhidrat İhtiyacı Hesaplayıcı - Hesapkolik</title>
+    <meta name="description" content="Yaşınızı, cinsiyetinizi, boyunuzu, kilonuzu ve aktivite seviyenizi girerek günlük karbonhidrat ihtiyacınızı hesaplayın.">
+    <meta name="keywords" content="günlük karbonhidrat ihtiyacı, karbonhidrat hesapla, sağlıklı beslenme, makro besin, kalori, diyet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../index.html"> <img src="../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Ana Sayfa</a></li>
+                    <li><a href="../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="health-calculators-section">
+            <div class="container">
+                <h1 class="main-title">Günlük Karbonhidrat İhtiyacı Hesaplayıcı</h1>
+                <p class="section-description">Yaşınızı, cinsiyetinizi, boyunuzu, kilonuzu ve aktivite seviyenizi girerek günlük tahmini karbonhidrat ihtiyacınızı öğrenin.</p>
+
+                <div class="calculator-group">
+                    <div class="calculator-card-wrapper">
+                        <div class="calculator-header">
+                            <i class="fas fa-bread-slice icon-small"></i>
+                            <h2>Karbonhidrat İhtiyacı Hesapla</h2>
+                        </div>
+                        <div class="calculator-form-container">
+                            <form id="carbForm">
+                                <label for="carb_age">Yaşınız:</label>
+                                <input type="number" id="carb_age" name="age" placeholder="Örn: 30" required min="1" max="100">
+
+                                <label for="carb_gender">Cinsiyet:</label>
+                                <select id="carb_gender" name="gender" required>
+                                    <option value="">Seçiniz</option>
+                                    <option value="male">Erkek</option>
+                                    <option value="female">Kadın</option>
+                                </select>
+
+                                <label for="carb_height">Boy (cm):</label>
+                                <input type="number" id="carb_height" name="height" placeholder="Örn: 175" required min="50" max="250">
+
+                                <label for="carb_weight">Kilo (kg):</label>
+                                <input type="number" id="carb_weight" name="weight" placeholder="Örn: 70" required min="10" max="300">
+
+                                <label for="carb_activity">Aktivite Seviyesi:</label>
+                                <select id="carb_activity" name="activity" required>
+                                    <option value="">Seçiniz</option>
+                                    <option value="sedentary">Hareketsiz (Çok az egzersiz veya hiç yok)</option>
+                                    <option value="lightly_active">Az Aktif (Haftada 1-3 gün hafif egzersiz)</option>
+                                    <option value="moderately_active">Orta Derece Aktif (Haftada 3-5 gün orta egzersiz)</option>
+                                    <option value="very_active">Çok Aktif (Haftada 6-7 gün yoğun egzersiz)</option>
+                                    <option value="super_active">Aşırı Aktif (Günde iki kez yoğun egzersiz, fiziksel iş)</option>
+                                </select>
+
+                                <button type="submit">Karbonhidrat İhtiyacını Hesapla</button>
+                            </form>
+                            <div id="carbResult" class="result-display"></div>
+                            <div id="carbGoal" class="category-display"></div>
+                        </div>
+                    </div>
+                    <section class="info-section">
+                        <h3>Günlük Karbonhidrat İhtiyacı Nedir?</h3>
+                        <p>
+                            **Karbonhidratlar**, vücudun ana enerji kaynağıdır. Beyin fonksiyonları, kas aktivitesi ve genel metabolizma için gereklidirler. Günlük karbonhidrat ihtiyacınız, genel kalori ihtiyacınızın bir yüzdesi olarak belirlenir ve yaşınız, cinsiyetiniz, kilonuz, boyunuz ve fiziksel aktivite seviyeniz gibi birçok faktöre bağlıdır.
+                        </p>
+                        <p>
+                            Sağlıklı bir diyetin önemli bir parçası olan karbonhidratlar, tam tahıllar, meyveler, sebzeler ve baklagiller gibi farklı kaynaklardan alınabilir.
+                        </p>
+
+                        <h4>Günlük Karbonhidrat İhtiyacı Nasıl Hesaplanır?</h4>
+                        <p>
+                            Günlük karbonhidrat ihtiyacınızı hesaplamak için öncelikle günlük toplam kalori ihtiyacınızı (TDEE) bulmanız gerekir. Bu hesaplamada yaygın olarak kullanılan **Mifflin-St Jeor Formülü** tekrar kullanılmaktadır:
+                        </p>
+                        <p class="formula-text">
+                            **Erkekler için BMR:** (10 × kilo (kg)) + (6.25 × boy (cm)) - (5 × yaş (yıl)) + 5 <br>
+                            **Kadınlar için BMR:** (10 × kilo (kg)) + (6.25 × boy (cm)) - (5 × yaş (yıl)) - 161
+                        </p>
+                        <p>
+                            **TDEE = BMR × Aktivite Faktörü** (Aktivite faktörleri önceki "Günlük Kalori İhtiyacı" bölümünde belirtildiği gibidir.)
+                        </p>
+                        <p>
+                            Toplam günlük kalori ihtiyacı bulunduktan sonra, genellikle bu kalorinin belirli bir yüzdesi karbonhidratlardan alınır. Uluslararası sağlık kuruluşları, yetişkinler için günlük kalori alımının **%45 ila %65'inin karbonhidratlardan gelmesini** önermektedir.
+                        </p>
+                        <p class="formula-text">
+                            Karbonhidrat Hedefi (gram) = (TDEE × Hedef Yüzde) / 4 <br>
+                            *(Not: 1 gram karbonhidrat yaklaşık 4 kalori enerji sağlar.)*
+                        </p>
+                        <ul>
+                            <li>Örneğin, günlük 2000 kalori ihtiyacı olan bir kişi için (orta nokta %55 alınırsa):</li>
+                            <li>2000 kalori * 0.55 = 1100 kalori karbonhidrattan</li>
+                            <li>1100 kalori / 4 kalori/gram = 275 gram karbonhidrat</li>
+                        </ul>
+
+                        <h4>Sağlıklı Karbonhidrat Kaynakları ve Önemi</h4>
+                        <p>
+                            Tüm karbonhidratlar eşit yaratılmamıştır. İşlenmiş gıdalarda bulunan basit karbonhidratlar yerine, lif açısından zengin ve besleyici kompleks karbonhidratları tercih etmek önemlidir:
+                        </p>
+                        <ul>
+                            <li>**Kompleks Karbonhidratlar:** Tam tahıllar (yulaf, esmer pirinç, tam buğday ekmeği), sebzeler (brokoli, ıspanak, patates), baklagiller (mercimek, nohut). Bunlar daha uzun süre tokluk sağlar ve kan şekerini dengelemeye yardımcı olur.</li>
+                            <li>**Basit Karbonhidratlar:** Şekerli içecekler, beyaz ekmek, işlenmiş atıştırmalıklar. Bunlar hızlı enerji sağlar ancak kan şekerinde ani yükselişlere neden olabilir.</li>
+                        </ul>
+                        <p class="disclaimer-text">
+                            Bu hesaplayıcı genel bir tahmindir ve beslenme hedefleriniz (kilo verme, kas kazanımı vb.), sağlık durumunuz veya özel diyet ihtiyaçlarınız varsa, en doğru tavsiye için bir beslenme uzmanı veya diyetisyenle görüşmeniz önemlidir.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+    <script src="../js/saglik-hesaplamalari.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('carbForm')) {
+                document.getElementById('carbForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const age = parseInt(document.getElementById('carb_age').value);
+                    const gender = document.getElementById('carb_gender').value;
+                    const heightCm = parseFloat(document.getElementById('carb_height').value);
+                    const weightKg = parseFloat(document.getElementById('carb_weight').value);
+                    const activityLevel = document.getElementById('carb_activity').value;
+
+                    const carbResultDiv = document.getElementById('carbResult');
+                    const carbGoalDiv = document.getElementById('carbGoal');
+
+                    if (isNaN(age) || isNaN(heightCm) || isNaN(weightKg) || age <= 0 || heightCm <= 0 || weightKg <= 0 || !gender || !activityLevel) {
+                        carbResultDiv.innerHTML = '<span style="color: red;">Lütfen tüm alanları doğru ve eksiksiz doldurun.</span>';
+                        carbGoalDiv.textContent = '';
+                        return;
+                    }
+
+                    let bmr; // Bazal Metabolizma Hızı
+
+                    // Mifflin-St Jeor Formülü
+                    if (gender === 'male') {
+                        bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) + 5;
+                    } else { // female
+                        bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) - 161;
+                    }
+
+                    let activityFactor;
+                    switch (activityLevel) {
+                        case 'sedentary':
+                            activityFactor = 1.2;
+                            break;
+                        case 'lightly_active':
+                            activityFactor = 1.375;
+                            break;
+                        case 'moderately_active':
+                            activityFactor = 1.55;
+                            break;
+                        case 'very_active':
+                            activityFactor = 1.725;
+                            break;
+                        case 'super_active':
+                            activityFactor = 1.9;
+                            break;
+                        default:
+                            activityFactor = 1.2; // Varsayılan
+                    }
+
+                    const tdee = bmr * activityFactor; // Toplam Günlük Enerji Harcaması
+
+                    // Karbonhidrat için önerilen aralık %45-%65 arası (ortalama %55 alalım)
+                    const carbPercentage = 0.55; 
+                    const carbCalories = tdee * carbPercentage;
+                    const carbGrams = carbCalories / 4; // 1 gram karbonhidrat = 4 kalori
+
+                    carbResultDiv.innerHTML = `Tahmini Günlük Karbonhidrat İhtiyacınız: <strong>${carbGrams.toFixed(0)} gram</strong>`;
+                    carbGoalDiv.innerHTML = `Bu, toplam kalori ihtiyacınızın yaklaşık %${(carbPercentage * 100).toFixed(0)}'sine denk gelmektedir.`;
+                    carbGoalDiv.style.color = '#2ecc71'; // Yeşil renk
+                });
+            }
+        });
+    </script>
+</body>
+</html>

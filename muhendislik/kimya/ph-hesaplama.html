@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pH Hesaplayıcı - Hesapkolik</title>
+    <meta name="description" content="Çözeltilerin pH, pOH, H+ iyonu ve OH- iyonu konsantrasyonlarını hesaplayın. Zayıf ve kuvvetli asit/bazlar için hesaplama desteği.">
+    <meta name="keywords" content="pH hesaplama, pOH hesaplama, hidrojen iyonu konsantrasyonu, hidroksit iyonu konsantrasyonu, asit baz, kimya, denge, kimya mühendisliği, hesapkolik pH">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="calculator-page-section">
+            <div class="container">
+                <h1 class="main-title">pH Hesaplayıcı</h1>
+                <p class="section-description">Bir çözeltinin pH değerini, asit/baz tipini ve konsantrasyonunu kullanarak hesaplayın. pOH, H⁺ ve OH⁻ konsantrasyonlarını da bulun.</p>
+
+                <div class="calculator-group">
+                    <div class="calculator-card-wrapper">
+                        <div class="calculator-header">
+                            <i class="fas fa-balance-scale-left icon-small"></i>
+                            <h2>pH/pOH Hesapla</h2>
+                        </div>
+                        <div class="calculator-form-container">
+                            <form id="phCalculatorForm">
+                                <p>Hesaplamak istediğiniz değeri veya bilinen verileri girin:</p>
+                                <div class="radio-group">
+                                    <input type="radio" id="calcFrompH" name="calcType" value="pH" checked>
+                                    <label for="calcFrompH">pH değerinden diğerlerini hesapla</label><br>
+                                    <input type="radio" id="calcFrompOH" name="calcType" value="pOH">
+                                    <label for="calcFrompOH">pOH değerinden diğerlerini hesapla</label><br>
+                                    <input type="radio" id="calcFromHplus" name="calcType" value="Hplus">
+                                    <label for="calcFromHplus">[H⁺] konsantrasyonundan hesapla</label><br>
+                                    <input type="radio" id="calcFromOHminus" name="calcType" value="OHminus">
+                                    <label for="calcFromOHminus">[OH⁻] konsantrasyonundan hesapla</label><br>
+                                    <input type="radio" id="calcFromAcidBase" name="calcType" value="acidBase">
+                                    <label for="calcFromAcidBase">Asit/Baz konsantrasyonundan hesapla</label>
+                                </div>
+                                <hr class="form-divider">
+
+                                <div id="inputpH" class="input-with-unit">
+                                    <label for="pHValue">pH Değeri:</label>
+                                    <input type="number" id="pHValue" name="pHValue" placeholder="Örn: 7.0" min="0" max="14" step="0.01">
+                                </div>
+                                <hr class="form-divider">
+
+                                <div id="inputpOH" class="input-with-unit" style="display: none;">
+                                    <label for="pOHValue">pOH Değeri:</label>
+                                    <input type="number" id="pOHValue" name="pOHValue" placeholder="Örn: 7.0" min="0" max="14" step="0.01">
+                                </div>
+                                <hr class="form-divider" id="hr_pOH" style="display: none;">
+
+                                <div id="inputHplus" class="input-with-unit" style="display: none;">
+                                    <label for="HplusValue">[H⁺] Konsantrasyonu (mol/L):</label>
+                                    <input type="number" id="HplusValue" name="HplusValue" placeholder="Örn: 1.0e-7" min="0" step="1e-10">
+                                </div>
+                                <hr class="form-divider" id="hr_Hplus" style="display: none;">
+
+                                <div id="inputOHminus" class="input-with-unit" style="display: none;">
+                                    <label for="OHminusValue">[OH⁻] Konsantrasyonu (mol/L):</label>
+                                    <input type="number" id="OHminusValue" name="OHminusValue" placeholder="Örn: 1.0e-7" min="0" step="1e-10">
+                                </div>
+                                <hr class="form-divider" id="hr_OHminus" style="display: none;">
+
+                                <div id="inputAcidBase" style="display: none;">
+                                    <div class="input-with-unit">
+                                        <label for="acidBaseType">Madde Tipi:</label>
+                                        <select id="acidBaseType">
+                                            <option value="strongAcid">Kuvvetli Asit</option>
+                                            <option value="strongBase">Kuvvetli Baz</option>
+                                            <option value="weakAcid">Zayıf Asit</option>
+                                            <option value="weakBase">Zayıf Baz</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-with-unit" id="concentrationInput">
+                                        <label for="concentrationValue">Konsantrasyon (mol/L):</label>
+                                        <input type="number" id="concentrationValue" name="concentrationValue" placeholder="Örn: 0.1" min="0.000000001" step="0.000000001">
+                                    </div>
+                                    <div class="input-with-unit" id="kaKbInput" style="display: none;">
+                                        <label for="kaKbValue">Ka/Kb Değeri:</label>
+                                        <input type="number" id="kaKbValue" name="kaKbValue" placeholder="Örn: 1.8e-5" min="0" step="1e-10">
+                                    </div>
+                                </div>
+                                <hr class="form-divider" id="hr_AcidBase" style="display: none;">
+                                
+                                <button type="submit">Hesapla</button>
+                            </form>
+                            <div id="phResult" class="result-display"></div>
+                            <p class="small-text">Sadece bir giriş alanı doldurun. Örneğin, pH'ı biliyorsanız sadece pH alanını doldurun, diğerlerini boş bırakın. Kuvvetli asit/bazlar için Ka/Kb değeri gerekli değildir.</p>
+                        </div>
+                    </div>
+
+                    <section class="info-section">
+                        <h3>pH Nedir?</h3>
+                        <p>
+                            **pH**, bir çözeltinin asitliğini veya bazlığını (alkaliliğini) ifade eden bir ölçektir. Sudaki hidrojen iyonu ($ H^+ $) konsantrasyonunu logaritmik olarak belirtir.
+                        </p>
+                        <p>
+                            pH ölçeği genellikle 0 ile 14 arasında değişir:
+                        </p>
+                        <ul>
+                            <li>**pH < 7:** Asidik çözelti</li>
+                            <li>**pH = 7:** Nötr çözelti (saf su)</li>
+                            <li>**pH > 7:** Bazik (alkali) çözelti</li>
+                        </ul>
+                        <p>
+                            pH'ın formülü aşağıdaki gibidir:
+                        </p>
+                        <p class="formula-text">
+                            $ pH = -\log_{10}[H^+] $
+                        </p>
+                        <p>
+                            Burada, $ [H^+] $ çözeltideki hidrojen iyonu konsantrasyonunu (mol/L cinsinden) ifade eder.
+                        </p>
+
+                        <h4>pOH Nedir?</h4>
+                        <p>
+                            **pOH**, bir çözeltinin bazlığını gösteren bir ölçektir ve hidroksit iyonu ($ OH^- $) konsantrasyonuna bağlıdır:
+                        </p>
+                        <p class="formula-text">
+                            $ pOH = -\log_{10}[OH^-] $
+                        </p>
+                        <p>
+                            25°C'de, pH ve pOH arasındaki ilişki şöyledir:
+                        </p>
+                        <p class="formula-text">
+                            $ pH + pOH = 14 $
+                        </p>
+
+                        <h4>İyon Konsantrasyonları ve pH İlişkisi:</h4>
+                        <p>
+                            Hidrojen ve hidroksit iyonu konsantrasyonları (mol/L) ile pH/pOH arasında karşılıklı dönüşümler yapılabilir:
+                        </p>
+                        <ul>
+                            <li>$ [H^+] = 10^{-pH} $</li>
+                            <li>$ [OH^-] = 10^{-pOH} $</li>
+                            <li>25°C'de suyun iyon çarpımı sabiti ($ K_w $): $ [H^+][OH^-] = 1.0 \times 10^{-14} $</li>
+                        </ul>
+
+                        <h4>Kuvvetli ve Zayıf Asit/Bazlar</h4>
+                        <ul>
+                            <li>**Kuvvetli Asitler/Bazlar:** Suda tamamen iyonlaşırlar. Bu nedenle, çözeltinin H⁺ veya OH⁻ konsantrasyonu, asit/bazın başlangıç konsantrasyonuna eşittir (monoprotik ise).</li>
+                            <li>**Zayıf Asitler/Bazlar:** Suda kısmen iyonlaşırlar ve dengeye ulaşırlar. Bu durum için asit ayrışma sabiti ($ K_a $) veya baz ayrışma sabiti ($ K_b $) değerleri kullanılır.
+                                <p class="formula-text small-margin">
+                                    Zayıf Asitler için: $ K_a = \frac{[H^+][A^-]}{[HA]} $
+                                </p>
+                                <p class="formula-text small-margin">
+                                    Zayıf Bazlar için: $ K_b = \frac{[BH^+][OH^-]}{[B]} $
+                                </p>
+                                <p class="formula-text small-margin">
+                                    Zayıf Asit pH (Yaklaşık): $ [H^+] \approx \sqrt{K_a \cdot C_a} $
+                                </p>
+                                <p class="formula-text small-margin">
+                                    Zayıf Baz pOH (Yaklaşık): $ [OH^-] \approx \sqrt{K_b \cdot C_b} $
+                                </p>
+                            </li>
+                        </ul>
+
+                        <h4>Uygulama Alanları:</h4>
+                        <ul>
+                            <li>**Sağlık ve Tıp:** Vücut sıvılarının (kan, idrar) pH dengesi hayati öneme sahiptir.</li>
+                            <li>**Gıda Endüstrisi:** Gıdaların kalitesi, güvenliği ve raf ömrü pH'a bağlıdır.</li>
+                            <li>**Çevre Bilimi:** Toprak ve suyun pH'ı, ekosistem sağlığını ve kirleticilerin davranışını etkiler.</li>
+                            <li>**Tarım:** Toprak pH'ı, bitki büyümesi ve besin alımı için kritiktir.</li>
+                            <li>**Kimya Sanayi:** Birçok kimyasal reaksiyonun hızı ve verimi pH'a bağlıdır.</li>
+                        </ul>
+                        <p class="disclaimer-text">
+                            Bu hesaplayıcı, 25°C sıcaklıkta ideal çözeltiler için temel pH/pOH ve iyon konsantrasyonu hesaplamaları yapar. Zayıf asit/baz hesaplamalarında denge sabiti (Ka/Kb) gereklidir ve genellikle basit bir yaklaşım kullanılır (kare alma). Gerçek dünya uygulamalarında sıcaklık, iyonik kuvvet ve diğer kimyasal etkileşimler pH'ı etkileyebilir. Daha karmaşık senaryolar için ileri düzey kimyasal modelleme ve deneyler gereklidir.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const phCalculatorForm = document.getElementById('phCalculatorForm');
+            const calcTypeRadios = document.querySelectorAll('input[name="calcType"]');
+            
+            const inputpH = document.getElementById('inputpH');
+            const inputpOH = document.getElementById('inputpOH');
+            const inputHplus = document.getElementById('inputHplus');
+            const inputOHminus = document.getElementById('inputOHminus');
+            const inputAcidBase = document.getElementById('inputAcidBase');
+
+            // Ayırıcı çizgiler
+            const hr_pOH = document.getElementById('hr_pOH');
+            const hr_Hplus = document.getElementById('hr_Hplus');
+            const hr_OHminus = document.getElementById('hr_OHminus');
+            const hr_AcidBase = document.getElementById('hr_AcidBase');
+            
+            const pHValueInput = document.getElementById('pHValue');
+            const pOHValueInput = document.getElementById('pOHValue');
+            const HplusValueInput = document.getElementById('HplusValue');
+            const OHminusValueInput = document.getElementById('OHminusValue');
+            const acidBaseTypeSelect = document.getElementById('acidBaseType');
+            const concentrationValueInput = document.getElementById('concentrationValue');
+            const kaKbInputDiv = document.getElementById('kaKbInput');
+            const kaKbValueInput = document.getElementById('kaKbValue');
+            const phResultDiv = document.getElementById('phResult');
+
+            const allInputDivs = [inputpH, inputpOH, inputHplus, inputOHminus, inputAcidBase];
+            const allHrDivs = [hr_pOH, hr_Hplus, hr_OHminus, hr_AcidBase];
+            const allValueInputs = [pHValueInput, pOHValueInput, HplusValueInput, OHminusValueInput, concentrationValueInput, kaKbValueInput];
+
+            function updateInputVisibility() {
+                const selectedCalcType = document.querySelector('input[name="calcType"]:checked').value;
+
+                // Tüm inputları ve ayırıcıları gizle ve required'ı kaldır
+                allInputDivs.forEach(div => { div.style.display = 'none'; });
+                allHrDivs.forEach(hr => { hr.style.display = 'none'; });
+                allValueInputs.forEach(input => { 
+                    input.required = false;
+                    input.value = ''; // Input değerlerini temizle
+                });
+                phResultDiv.innerHTML = ''; // Sonuçları temizle
+                phResultDiv.style.display = 'none';
+
+                // Seçili türe göre ilgili inputu göster ve required yap
+                if (selectedCalcType === 'pH') {
+                    inputpH.style.display = 'flex';
+                    pHValueInput.required = true;
+                } else if (selectedCalcType === 'pOH') {
+                    inputpOH.style.display = 'flex';
+                    hr_pOH.style.display = 'block';
+                    pOHValueInput.required = true;
+                } else if (selectedCalcType === 'Hplus') {
+                    inputHplus.style.display = 'flex';
+                    hr_Hplus.style.display = 'block';
+                    HplusValueInput.required = true;
+                } else if (selectedCalcType === 'OHminus') {
+                    inputOHminus.style.display = 'flex';
+                    hr_OHminus.style.display = 'block';
+                    OHminusValueInput.required = true;
+                } else if (selectedCalcType === 'acidBase') {
+                    inputAcidBase.style.display = 'block'; // Bu bir div, flex değil
+                    hr_AcidBase.style.display = 'block';
+                    concentrationValueInput.required = true;
+                    // Asit/Baz tipi değişimini dinle
+                    acidBaseTypeSelect.dispatchEvent(new Event('change')); // Başlangıçta kaKbInput görünürlüğünü ayarla
+                }
+            }
+
+            // Asit/Baz tipi değiştiğinde Ka/Kb inputunun görünürlüğünü ayarla
+            acidBaseTypeSelect.addEventListener('change', function() {
+                const type = acidBaseTypeSelect.value;
+                if (type === 'weakAcid' || type === 'weakBase') {
+                    kaKbInputDiv.style.display = 'flex';
+                    kaKbValueInput.required = true;
+                } else {
+                    kaKbInputDiv.style.display = 'none';
+                    kaKbValueInput.required = false;
+                    kaKbValueInput.value = ''; // Ka/Kb değerini temizle
+                }
+            });
+
+            calcTypeRadios.forEach(radio => {
+                radio.addEventListener('change', updateInputVisibility);
+            });
+            updateInputVisibility(); // Sayfa yüklendiğinde başlangıç görünürlüğünü ayarla
+
+            phCalculatorForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const selectedCalcType = document.querySelector('input[name="calcType"]:checked').value;
+                let pH, pOH, Hplus, OHminus;
+                let error = '';
+
+                try {
+                    if (selectedCalcType === 'pH') {
+                        pH = parseFloat(pHValueInput.value);
+                        if (isNaN(pH) || pH < 0 || pH > 14) throw new Error("Lütfen 0 ile 14 arasında geçerli bir pH değeri giriniz.");
+                        
+                        Hplus = Math.pow(10, -pH);
+                        pOH = 14 - pH;
+                        OHminus = Math.pow(10, -pOH);
+
+                    } else if (selectedCalcType === 'pOH') {
+                        pOH = parseFloat(pOHValueInput.value);
+                        if (isNaN(pOH) || pOH < 0 || pOH > 14) throw new Error("Lütfen 0 ile 14 arasında geçerli bir pOH değeri giriniz.");
+                        
+                        OHminus = Math.pow(10, -pOH);
+                        pH = 14 - pOH;
+                        Hplus = Math.pow(10, -pH);
+
+                    } else if (selectedCalcType === 'Hplus') {
+                        Hplus = parseFloat(HplusValueInput.value);
+                        if (isNaN(Hplus) || Hplus <= 0) throw new Error("Lütfen pozitif bir [H⁺] konsantrasyonu giriniz.");
+                        
+                        pH = -Math.log10(Hplus);
+                        pOH = 14 - pH;
+                        OHminus = Math.pow(10, -pOH); // Veya 1e-14 / Hplus;
+
+                    } else if (selectedCalcType === 'OHminus') {
+                        OHminus = parseFloat(OHminusValueInput.value);
+                        if (isNaN(OHminus) || OHminus <= 0) throw new Error("Lütfen pozitif bir [OH⁻] konsantrasyonu giriniz.");
+                        
+                        pOH = -Math.log10(OHminus);
+                        pH = 14 - pOH;
+                        Hplus = Math.pow(10, -pH); // Veya 1e-14 / OHminus;
+
+                    } else if (selectedCalcType === 'acidBase') {
+                        const type = acidBaseTypeSelect.value;
+                        const concentration = parseFloat(concentrationValueInput.value);
+                        if (isNaN(concentration) || concentration <= 0) throw new Error("Lütfen pozitif bir konsantrasyon değeri giriniz.");
+
+                        if (type === 'strongAcid') {
+                            Hplus = concentration;
+                            pH = -Math.log10(Hplus);
+                            pOH = 14 - pH;
+                            OHminus = Math.pow(10, -pOH);
+                        } else if (type === 'strongBase') {
+                            OHminus = concentration;
+                            pOH = -Math.log10(OHminus);
+                            pH = 14 - pOH;
+                            Hplus = Math.pow(10, -pH);
+                        } else if (type === 'weakAcid') {
+                            const Ka = parseFloat(kaKbValueInput.value);
+                            if (isNaN(Ka) || Ka <= 0) throw new Error("Zayıf asit için pozitif bir Ka değeri giriniz.");
+                            // Yaklaşık hesaplama: [H+] = sqrt(Ka * Ca)
+                            Hplus = Math.sqrt(Ka * concentration);
+                            pH = -Math.log10(Hplus);
+                            pOH = 14 - pH;
+                            OHminus = Math.pow(10, -pOH);
+                        } else if (type === 'weakBase') {
+                            const Kb = parseFloat(kaKbValueInput.value);
+                            if (isNaN(Kb) || Kb <= 0) throw new Error("Zayıf baz için pozitif bir Kb değeri giriniz.");
+                            // Yaklaşık hesaplama: [OH-] = sqrt(Kb * Cb)
+                            OHminus = Math.sqrt(Kb * concentration);
+                            pOH = -Math.log10(OHminus);
+                            pH = 14 - pOH;
+                            Hplus = Math.pow(10, -pH);
+                        }
+                    }
+
+                    // Sonuçları göster
+                    phResultDiv.innerHTML = `
+                        <p><strong>pH Değeri:</strong> <span class="result-value">${pH.toFixed(3)}</span></p>
+                        <hr>
+                        <p><strong>pOH Değeri:</strong> ${pOH.toFixed(3)}</p>
+                        <p><strong>[H⁺] Konsantrasyonu:</strong> ${Hplus.toExponential(2)} mol/L</p>
+                        <p><strong>[OH⁻] Konsantrasyonu:</strong> ${OHminus.toExponential(2)} mol/L</p>
+                    `;
+                    phResultDiv.style.display = 'block';
+
+                } catch (e) {
+                    phResultDiv.innerHTML = `<p class="error">Hata: ${e.message}</p>`;
+                    phResultDiv.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

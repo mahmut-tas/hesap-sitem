@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kredi Hesaplayıcı - Hesapla Pratik</title>
+    <meta name="description" content="Kredi taksiti hesaplama, ödeme planı oluşturma, ödenebilir tutara göre kredi limiti belirleme ve toplam faiz maliyeti analizi. Konut, taşıt, ihtiyaç kredileri için kapsamlı hesaplama araçları.">
+    <meta name="keywords" content="kredi hesapla, kredi taksit, kredi ödeme planı, kredi limiti, faizli kredi, faizsiz kredi, mortgage hesaplama, taşıt kredisi, ihtiyaç kredisi, kredi faizi, anapara, vade, taksit tablosu, kredi ödeme tablosu">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Bu CSS sadece bu sayfa için özeldir. İstersen style.css dosyana taşıyabilirsin. */
+        .loan-calculator-section {
+            padding: 60px 0;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        .loan-calculator-section h2 {
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 2.5em;
+        }
+
+        .category-buttons, .sub-category-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .category-button, .sub-category-button {
+            background-color: #f1c40f; /* Ana renk olarak sarımsı */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            flex: 1 1 calc(33% - 30px);
+            max-width: 250px;
+            text-align: center;
+        }
+        @media (max-width: 768px) {
+            .category-button, .sub-category-button {
+                flex: 1 1 calc(50% - 30px);
+            }
+        }
+        @media (max-width: 480px) {
+            .category-button, .sub-category-button {
+                flex: 1 1 calc(100% - 30px);
+            }
+        }
+
+        .category-button:hover, .sub-category-button:hover {
+            background-color: #e6b700;
+            transform: translateY(-3px);
+        }
+
+        .category-button.active, .sub-category-button.active {
+            background-color: #d4ac00;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .calculator-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 750px; /* Kredi ödeme tablosu için biraz daha geniş */
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .category-section-content, .calculation-section {
+            display: none;
+        }
+        .category-section-content.active {
+            display: block;
+        }
+        .calculation-section.active {
+            display: block;
+        }
+
+        .category-section-content h3 {
+            color: #444;
+            margin-bottom: 20px;
+            font-size: 2em;
+            text-align: center;
+        }
+        .category-section-content p.info-text {
+             margin-bottom: 30px;
+             text-align: center;
+        }
+
+        .calculation-section h4 {
+            color: #555;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            text-align: center;
+            border-bottom: 1px dashed #eee;
+            padding-bottom: 15px;
+        }
+        .calculation-section:first-of-type h4 {
+            margin-top: 0;
+            padding-top: 0;
+        }
+
+
+        .calculation-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calculation-section input[type="number"],
+        .calculation-section select {
+            width: calc(100% - 20px);
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .calculation-section select {
+            width: 100%;
+        }
+
+        .calculation-section button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 20px auto 0 auto;
+        }
+        .calculation-section button:hover {
+            background-color: #2980b9;
+        }
+
+        .result-output {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-left: 5px solid #3498db;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+        }
+        .info-section {
+            margin-top: 40px;
+            background-color: #f2f2f2;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            text-align: left;
+        }
+        .info-section h5 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 8px;
+        }
+        .info-section p, .info-section ul {
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .info-section ul {
+            list-style-type: decimal;
+            padding-left: 25px;
+        }
+        .info-section ul li {
+            margin-bottom: 5px;
+        }
+        .info-section strong {
+            color: #000;
+        }
+
+        .info-text {
+            font-size: 0.9em;
+            color: #777;
+            margin-top: 10px;
+        }
+        #backToCategories {
+            background-color: #f39c12;
+            margin-top: 20px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 0.9em;
+        }
+        #backToCategories:hover {
+            background-color: #e67e22;
+        }
+
+        /* Kredi Ödeme Tablosu Stili */
+        .loan-table-container {
+            max-height: 400px; /* Kaydırılabilir olması için max yükseklik */
+            overflow-y: auto; /* Dikey kaydırma */
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .loan-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .loan-table th, .loan-table td {
+            border: 1px solid #eee;
+            padding: 10px;
+            text-align: left;
+            font-size: 0.9em;
+        }
+        .loan-table th {
+            background-color: #f5f5f5;
+            font-weight: 600;
+            position: sticky; /* Başlığın kaydırmayla sabit kalması için */
+            top: 0;
+            z-index: 1; /* Diğer içeriğin üzerine çıkması için */
+        }
+        .loan-table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1><a href="index.html">Hesapla Pratik</a></h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Ana Sayfa</a></li>
+                    <li><a href="index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="loan-calculator-section">
+            <div class="container">
+                <h2>Kredi Hesaplayıcı</h2>
+                <p id="main-instruction">Yapmak istediğiniz kredi hesaplama türünü seçin:</p>
+
+                <div id="main-category-buttons" class="category-buttons active">
+                    <button class="category-button" data-category="loan-payment-plan">Kredi Taksiti ve Ödeme Planı</button>
+                    <button class="category-button" data-category="loan-limit">Ödenebilir Miktara Göre Kredi Limiti</button>
+                    <button class="category-button" data-category="loan-comparison">Kredi Karşılaştırma</button>
+                    <button class="category-button" data-category="effective-annual-rate">Efektif Yıllık Faiz Oranı (APR)</button>
+                    <button class="category-button" data-category="prepayment-impact">Erken Ödeme Etkisi</button>
+                </div>
+
+                <div id="calculator-content-area" class="calculator-container">
+                    <div id="default-message" class="category-section-content active">
+                        <p>Yukarıdaki kategorilerden birini seçerek kredi hesaplamalarına başlayın.</p>
+                    </div>
+
+                    <div id="loan-payment-plan-content" class="category-section-content">
+                        <h3>Kredi Taksiti ve Ödeme Planı Oluşturma</h3>
+                        <p class="info-text">Çekeceğiniz kredi miktarı, faiz oranı ve vade bilgileriyle aylık taksitinizi ve detaylı ödeme tablonuzu görün.</p>
+                        <div class="sub-category-buttons">
+                            <button class="sub-category-button" data-calc="calculatePayment">Taksit Hesapla</button>
+                        </div>
+                        <div id="calculatePayment-calc" class="calculation-section">
+                            <h4>Kredi Taksiti ve Ödeme Planı Hesapla</h4>
+                            <label for="loanAmount">Kredi Miktarı (₺):</label>
+                            <input type="number" id="loanAmount" placeholder="Örn: 100.000" required step="0.01" min="0">
+                            <label for="loanInterestRate">Yıllık Faiz Oranı (%):</label>
+                            <input type="number" id="loanInterestRate" placeholder="Örn: 1.99 (aylık) veya 24 (yıllık)" required step="0.01" min="0">
+                            <label for="loanRateUnit">Faiz Oranı Birimi:</label>
+                            <select id="loanRateUnit">
+                                <option value="annual">Yıllık</option>
+                                <option value="monthly">Aylık</option>
+                            </select>
+                            <label for="loanTermMonths">Vade (Ay):</label>
+                            <input type="number" id="loanTermMonths" placeholder="Örn: 60" required step="1" min="1">
+                            <button onclick="calculateLoanPaymentPlan()">Hesapla</button>
+                            <div id="loanPaymentPlanResult" class="result-output"></div>
+                            <div class="info-section">
+                                <h5>Nasıl Hesaplandı? (Adım Adım)</h5>
+                                <ul>
+                                    <li><strong>Adım 1:</strong> Kredi Miktarı (P), Faiz Oranı (r) ve Vade (n, ay cinsinden) alınır.</li>
+                                    <li><strong>Adım 2:</strong> Yıllık faiz oranı aylık orana dönüştürülür: Aylık Faiz Oranı = Yıllık Faiz Oranı / 1200 (ondalık için).</li>
+                                    <li><strong>Adım 3:</strong> Aylık Taksit Miktarı (PMT) aşağıdaki formülle hesaplanır: $PMT = P \cdot \frac{r(1+r)^n}{(1+r)^n-1}$</li>
+                                    <li><strong>Adım 4:</strong> Toplam Geri Ödenecek Miktar = Aylık Taksit Miktarı $\times$ Vade (Ay) olarak bulunur.</li>
+                                    <li><strong>Adım 5:</strong> Toplam Faiz Tutarı = Toplam Geri Ödenecek Miktar - Kredi Miktarı olarak bulunur.</li>
+                                    <li><strong>Adım 6:</strong> Ödeme tablosu, her ay için ödenen faiz, anapara ve kalan anapara hesaplanarak oluşturulur.</li>
+                                    <li><strong>Sizin Hesabınız:</strong> Kredi Miktarı ${document.getElementById('loanAmount').value} ₺, Faiz Oranı ${document.getElementById('loanInterestRate').value}% (${document.getElementById('loanRateUnit').value === 'annual' ? 'Yıllık' : 'Aylık'}), Vade ${document.getElementById('loanTermMonths').value} Ay ise; Aylık Taksit <strong><span id="loanPaymentPlanCalcResultPMT"></span> ₺</strong>, Toplam Ödeme <strong><span id="loanPaymentPlanCalcResultTotal"></span> ₺</strong>, Toplam Faiz <strong><span id="loanPaymentPlanCalcResultInterest"></span> ₺</strong>.</li>
+                                </ul>
+                                <h5>Ne İçin Kullanılır?</h5>
+                                <p>Bu hesaplayıcı, bir kredi çekmeden önce aylık bütçenize uygun olup olmadığını anlamak, toplam geri ödeme miktarını ve faiz maliyetini önceden görmek için kullanılır. Özellikle konut, taşıt veya ihtiyaç kredisi gibi büyük borçlanmalarda, ödeme planının detaylarını anlamak ve finansal karar vermek için hayati öneme sahiptir.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="loan-limit-content" class="category-section-content">
+                        <h3>Ödenebilir Miktara Göre Kredi Limiti</h3>
+                        <p class="info-text">Aylık ödeyebileceğiniz taksit tutarını, faiz oranını ve vadeyi girerek çekebileceğiniz maksimum kredi miktarını öğrenin.</p>
+                        <div class="sub-category-buttons">
+                            <button class="sub-category-button" data-calc="calculateLoanLimit">Kredi Limiti Hesapla</button>
+                        </div>
+                        <div id="calculateLoanLimit-calc" class="calculation-section">
+                            <h4>Ödenebilir Miktara Göre Kredi Limiti Hesapla</h4>
+                            <label for="monthlyPaymentLimit">Aylık Ödeyebileceğiniz Taksit (₺):</label>
+                            <input type="number" id="monthlyPaymentLimit" placeholder="Örn: 2000" required step="0.01" min="0">
+                            <label for="limitInterestRate">Yıllık Faiz Oranı (%):</label>
+                            <input type="number" id="limitInterestRate" placeholder="Örn: 1.99 (aylık) veya 24 (yıllık)" required step="0.01" min="0">
+                            <label for="limitRateUnit">Faiz Oranı Birimi:</label>
+                            <select id="limitRateUnit">
+                                <option value="annual">Yıllık</option>
+                                <option value="monthly">Aylık</option>
+                            </select>
+                            <label for="limitTermMonths">Vade (Ay):</label>
+                            <input type="number" id="limitTermMonths" placeholder="Örn: 60" required step="1" min="1">
+                            <button onclick="calculateLoanLimit()">Hesapla</button>
+                            <div id="loanLimitResult" class="result-output"></div>
+                            <div class="info-section">
+                                <h5>Nasıl Hesaplandı? (Adım Adım)</h5>
+                                <ul>
+                                    <li><strong>Adım 1:</strong> Aylık Taksit (PMT), Faiz Oranı (r) ve Vade (n, ay cinsinden) alınır.</li>
+                                    <li><strong>Adım 2:</strong> Aylık faiz oranı aylık orana dönüştürülür.</li>
+                                    <li><strong>Adım 3:</strong> Çekilebilecek maksimum Anapara (P) aşağıdaki formülle hesaplanır: $P = PMT \cdot \frac{(1+r)^n-1}{r(1+r)^n}$</li>
+                                    <li><strong>Adım 4:</strong> Toplam Geri Ödenecek Miktar = Aylık Taksit $\times$ Vade olarak bulunur.</li>
+                                    <li><strong>Adım 5:</strong> Toplam Faiz Tutarı = Toplam Geri Ödeme Miktarı - Maksimum Kredi Miktarı olarak bulunur.</li>
+                                    <li><strong>Sizin Hesabınız:</strong> Aylık Ödeme ${document.getElementById('monthlyPaymentLimit').value} ₺, Faiz Oranı ${document.getElementById('limitInterestRate').value}% (${document.getElementById('limitRateUnit').value === 'annual' ? 'Yıllık' : 'Aylık'}), Vade ${document.getElementById('limitTermMonths').value} Ay ise; Maksimum Kredi Miktarı <strong><span id="loanLimitCalcResultPrincipal"></span> ₺</strong>.</li>
+                                </ul>
+                                <h5>Ne İçin Kullanılır?</h5>
+                                <p>Bu hesaplayıcı, kişisel finans planlaması yaparken veya bir kredi başvurusu öncesinde, bütçenize uygun olarak ne kadar kredi çekebileceğinizi belirlemek için kullanılır. Kullanıcıların aşırı borçlanmadan kaçınmasına ve finansal hedeflerine ulaşmak için daha bilinçli kararlar almasına yardımcı olur.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="loan-comparison-content" class="category-section-content">
+                        <h3>Kredi Karşılaştırma</h3>
+                        <p class="info-text">Farklı kredi tekliflerini (miktar, faiz, vade) karşılaştırarak en avantajlı seçeneği belirleyin.</p>
+                        <div class="sub-category-buttons">
+                            <button class="sub-category-button" data-calc="compareLoans">Kredi Tekliflerini Karşılaştır</button>
+                        </div>
+                        <div id="compareLoans-calc" class="calculation-section">
+                            <h4>Kredi Tekliflerini Karşılaştır</h4>
+                            <div id="loanOffers">
+                                <h5>Kredi Teklifi 1</h5>
+                                <label for="loan1Amount">Kredi Miktarı (₺):</label>
+                                <input type="number" id="loan1Amount" placeholder="Örn: 100000" step="0.01" min="0">
+                                <label for="loan1InterestRate">Yıllık Faiz Oranı (%):</label>
+                                <input type="number" id="loan1InterestRate" placeholder="Örn: 1.89 (aylık) veya 22.68 (yıllık)" step="0.01" min="0">
+                                <label for="loan1RateUnit">Faiz Oranı Birimi:</label>
+                                <select id="loan1RateUnit">
+                                    <option value="annual">Yıllık</option>
+                                    <option value="monthly">Aylık</option>
+                                </select>
+                                <label for="loan1TermMonths">Vade (Ay):</label>
+                                <input type="number" id="loan1TermMonths" placeholder="Örn: 60" step="1" min="1">
+
+                                <h5>Kredi Teklifi 2</h5>
+                                <label for="loan2Amount">Kredi Miktarı (₺):</label>
+                                <input type="number" id="loan2Amount" placeholder="Örn: 95000" step="0.01" min="0">
+                                <label for="loan2InterestRate">Yıllık Faiz Oranı (%):</label>
+                                <input type="number" id="loan2InterestRate" placeholder="Örn: 1.75 (aylık) veya 21 (yıllık)" step="0.01" min="0">
+                                <label for="loan2RateUnit">Faiz Oranı Birimi:</label>
+                                <select id="loan2RateUnit">
+                                    <option value="annual">Yıllık</option>
+                                    <option value="monthly">Aylık</option>
+                                </select>
+                                <label for="loan2TermMonths">Vade (Ay):</label>
+                                <input type="number" id="loan2TermMonths" placeholder="Örn: 48" step="1" min="1">
+                            </div>
+                            <button onclick="compareLoanOffers()">Hesapla</button>
+                            <div id="loanComparisonResult" class="result-output"></div>
+                            <div class="info-section">
+                                <h5>Nasıl Hesaplandı? (Adım Adım)</h5>
+                                <ul>
+                                    <li><strong>Adım 1:</strong> Her bir kredi teklifi için Kredi Miktarı, Faiz Oranı ve Vade değerleri alınır.</li>
+                                    <li><strong>Adım 2:</strong> Her teklif için ayrı ayrı aylık taksit, toplam geri ödeme miktarı ve toplam faiz tutarı hesaplanır.</li>
+                                    <li><strong>Adım 3:</strong> Hesaplanan değerler yan yana karşılaştırmalı olarak sunulur.</li>
+                                    <li><strong>Sizin Hesabınız:</strong> Girdiğiniz iki kredi teklifi için taksit, toplam ödeme ve toplam faiz tutarları hesaplanarak karşılaştırılmıştır.</li>
+                                </ul>
+                                <h5>Ne İçin Kullanılır?</h5>
+                                <p>Kredi karşılaştırma hesaplayıcısı, farklı bankaların veya finans kuruluşlarının sunduğu kredi tekliflerini objektif bir şekilde değerlendirmek için kullanılır. Bu sayede, hangi teklifin aylık bütçenize daha uygun olduğunu, toplamda ne kadar faiz ödeyeceğinizi ve uzun vadede size en az maliyetli olanı kolayca belirleyebilirsiniz. En uygun krediyi seçerek önemli miktarda tasarruf etmenizi sağlar.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="effective-annual-rate-content" class="category-section-content">
+                        <h3>Efektif Yıllık Faiz Oranı (APR)</h3>
+                        <p class="info-text">Nominal faiz oranı ve faizin birikim sıklığına göre gerçek yıllık faiz oranını (APR) hesaplayın. Kredilerin veya yatırımların gerçek maliyetini/getirisini gösterir.</p>
+                        <div class="sub-category-buttons">
+                            <button class="sub-category-button" data-calc="calculateAPR">APR Hesapla</button>
+                        </div>
+                        <div id="calculateAPR-calc" class="calculation-section">
+                            <h4>Efektif Yıllık Faiz Oranı (APR) Hesapla</h4>
+                            <label for="nominalRateAPR">Nominal Faiz Oranı (%):</label>
+                            <input type="number" id="nominalRateAPR" placeholder="Örn: 15 (yıllık) veya 1.25 (aylık)" required step="0.01" min="0">
+                            <label for="aprRateUnit">Nominal Faiz Oranı Birimi:</label>
+                            <select id="aprRateUnit">
+                                <option value="annual">Yıllık</option>
+                                <option value="monthly">Aylık</option>
+                            </select>
+                            <label for="compoundingFrequencyAPR">Faiz Birikim Sıklığı (Yılda):</label>
+                            <select id="compoundingFrequencyAPR">
+                                <option value="1">Yıllık</option>
+                                <option value="2">Yarım Yıllık</option>
+                                <option value="4">Üç Aylık</option>
+                                <option value="12">Aylık</option>
+                                <option value="365">Günlük</option>
+                            </select>
+                            <button onclick="calculateAPR()">Hesapla</button>
+                            <div id="aprResult" class="result-output"></div>
+                            <div class="info-section">
+                                <h5>Nasıl Hesaplandı? (Adım Adım)</h5>
+                                <ul>
+                                    <li><strong>Adım 1:</strong> Nominal Faiz Oranı (r) ve Faiz Birikim Sıklığı (n) alınır.</li>
+                                    <li><strong>Adım 2:</strong> Nominal faiz oranı, yıllık ondalık değere dönüştürülür. (Eğer aylık girildiyse x12 ile yıllık nominale çevrilir).</li>
+                                    <li><strong>Adım 3:</strong> Efektif Yıllık Faiz Oranı (APR) aşağıdaki formülle hesaplanır: $APR = (1 + \frac{r}{n})^n - 1$</li>
+                                    <li><strong>Sizin Hesabınız:</strong> Nominal Faiz Oranı ${document.getElementById('nominalRateAPR').value}% (${document.getElementById('aprRateUnit').value === 'annual' ? 'Yıllık' : 'Aylık'}), Faiz Birikim Sıklığı ${document.getElementById('compoundingFrequencyAPR').value} ise APR: <strong><span id="aprCalcResult"></span>%</strong>.</li>
+                                </ul>
+                                <h5>Ne İçin Kullanılır?</h5>
+                                <p>Efektif Yıllık Faiz Oranı (APR), bir kredinin veya yatırımın gerçek yıllık maliyetini veya getirisini anlamak için hayati öneme sahiptir. Nominal faiz oranı aynı olsa bile, faizin yıl içinde kaç kez biriktiği (bileşikleşme sıklığı) toplam maliyeti/getiriyi etkiler. APR, farklı kredi veya yatırım tekliflerini karşılaştırırken "elma elma" karşılaştırması yapmanızı sağlar, çünkü tüm ek masrafları (komisyonlar, sigortalar vb. - bu hesaplayıcıda dahil değildir) ve faiz birikim sıklığını tek bir yüzde olarak gösterir.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="prepayment-impact-content" class="category-section-content">
+                        <h3>Erken Ödeme Etkisi</h3>
+                        <p class="info-text">Kredinizin erken ödeme yapıldığında toplam faiz maliyetinizde ne kadar tasarruf edeceğinizi hesaplayın.</p>
+                        <div class="sub-category-buttons">
+                            <button class="sub-category-button" data-calc="calculatePrepayment">Erken Ödeme Tasarrufu</button>
+                        </div>
+                        <div id="calculatePrepayment-calc" class="calculation-section">
+                            <h4>Erken Ödeme Tasarrufu Hesapla</h4>
+                            <label for="originalLoanAmount">Orijinal Kredi Miktarı (₺):</label>
+                            <input type="number" id="originalLoanAmount" placeholder="Örn: 100000" required step="0.01" min="0">
+                            <label for="originalInterestRate">Orijinal Yıllık Faiz Oranı (%):</label>
+                            <input type="number" id="originalInterestRate" placeholder="Örn: 1.99 (aylık) veya 24 (yıllık)" required step="0.01" min="0">
+                            <label for="originalRateUnit">Faiz Oranı Birimi:</label>
+                            <select id="originalRateUnit">
+                                <option value="annual">Yıllık</option>
+                                <option value="monthly">Aylık</option>
+                            </select>
+                            <label for="originalTermMonths">Orijinal Vade (Ay):</label>
+                            <input type="number" id="originalTermMonths" placeholder="Örn: 60" required step="1" min="1">
+                            <label for="prepaymentAmount">Ek Erken Ödeme Miktarı (₺):</label>
+                            <input type="number" id="prepaymentAmount" placeholder="Örn: 10000 (tek seferlik)" required step="0.01" min="0">
+                            <label for="prepaymentMonth">Erken Ödemenin Yapıldığı Ay:</label>
+                            <input type="number" id="prepaymentMonth" placeholder="Örn: 12 (12. ayda ödenirse)" required step="1" min="1">
+                            <button onclick="calculatePrepaymentImpact()">Hesapla</button>
+                            <div id="prepaymentImpactResult" class="result-output"></div>
+                            <div class="info-section">
+                                <h5>Nasıl Hesaplandı? (Adım Adım)</h5>
+                                <ul>
+                                    <li><strong>Adım 1:</strong> Orijinal kredi bilgileri (miktar, faiz, vade) ile normal ödeme planı çıkarılır.</li>
+                                    <li><strong>Adım 2:</strong> Erken ödeme miktarı ve yapıldığı ay bilgisi alınır.</li>
+                                    <li><strong>Adım 3:</strong> Erken ödeme yapıldıktan sonra kalan anapara yeniden hesaplanır ve yeni ödeme planı oluşturularak toplam faizdeki azalma bulunur.</li>
+                                    <li><strong>Sizin Hesabınız:</strong> Orijinal Kredi Miktarı ${document.getElementById('originalLoanAmount').value} ₺, Faiz Oranı ${document.getElementById('originalInterestRate').value}% (${document.getElementById('originalRateUnit').value === 'annual' ? 'Yıllık' : 'Aylık'}), Vade ${document.getElementById('originalTermMonths').value} Ay, Erken Ödeme Miktarı ${document.getElementById('prepaymentAmount').value} ₺, Erken Ödeme Ayı ${document.getElementById('prepaymentMonth').value} ise; Tahmini Faiz Tasarrufu <strong><span id="prepaymentImpactCalcResult"></span> ₺</strong>.</li>
+                                </ul>
+                                <h5>Ne İçin Kullanılır?</h5>
+                                <p>Erken ödeme etkisi hesaplayıcısı, bir krediyi vadesinden önce kapatmanın veya ek ödemeler yapmanın toplam faiz maliyetiniz üzerindeki olumlu etkisini görmek için kullanılır. Bu, borçlanma maliyetini düşürmek ve krediyi daha hızlı bitirmek isteyen kişilerin finansal kararlarını destekler. Özellikle konut kredileri gibi uzun vadeli borçlarda önemli tasarruflar sağlayabilir.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapla Pratik. Tüm hakları saklıdır.</p>
+            <p><a href="gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+
+    <script>
+        const mainCategoryButtonsArea = document.getElementById('main-category-buttons');
+        const calculatorContentArea = document.getElementById('calculator-content-area');
+        const mainInstruction = document.getElementById('main-instruction');
+        const backToCategoriesButtonDiv = document.getElementById('backToCategories');
+
+        const allCategoryContentSections = document.querySelectorAll('.category-section-content');
+        const allCalculationSections = document.querySelectorAll('.calculation-section');
+
+        // Sayfa yüklendiğinde varsayılan mesajı göster
+        document.addEventListener('DOMContentLoaded', () => {
+            showMainCategories();
+        });
+
+        function showMainCategories() {
+            // Tüm içerik bölümlerini gizle
+            allCategoryContentSections.forEach(section => section.classList.remove('active'));
+            allCalculationSections.forEach(section => section.classList.remove('active'));
+
+            // Ana kategori butonlarını göster
+            mainCategoryButtonsArea.classList.add('active');
+            mainInstruction.textContent = "Yapmak istediğiniz kredi hesaplama türünü seçin:";
+
+            // Geri butonunu gizle
+            backToCategoriesButtonDiv.style.display = 'none';
+
+            // Varsayılan mesajı göster
+            document.getElementById('default-message').classList.add('active');
+
+            // Aktif kategori butonunun işaretini kaldır
+            document.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
+        }
+
+        // Ana kategori butonlarına tıklama olayı ekleme
+        document.querySelectorAll('.category-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const categoryId = button.dataset.category;
+
+                // Tüm ana kategori butonlarını gizle
+                mainCategoryButtonsArea.classList.remove('active');
+                mainInstruction.textContent = "Lütfen yapmak istediğiniz hesaplamayı seçin:";
+
+                // Tüm kategori içeriklerini gizle
+                allCategoryContentSections.forEach(section => section.classList.remove('active'));
+                allCalculationSections.forEach(section => section.classList.remove('active'));
+
+                // Tıklanan butona 'active' sınıfını ekle (görsel işaretleme)
+                document.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                // İlgili kategori içeriğini göster
+                const targetContent = document.getElementById(`${categoryId}-content`);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                    const subButtons = targetContent.querySelector('.sub-category-buttons');
+                    if(subButtons) subButtons.classList.add('active'); // Alt butonları göster
+                }
+
+                // Geri butonunu göster
+                backToCategoriesButtonDiv.style.display = 'block';
+            });
+        });
+
+        // Alt kategori (hesaplama) butonlarına tıklama olayı ekleme
+        document.querySelectorAll('.sub-category-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const calcId = button.dataset.calc;
+                const parentCategoryContent = button.closest('.category-section-content');
+
+                // Tüm alt kategori butonlarını ve diğer hesaplama bölümlerini gizle
+                if(parentCategoryContent) {
+                    const subButtons = parentCategoryContent.querySelector('.sub-category-buttons');
+                    if(subButtons) subButtons.classList.remove('active');
+                    parentCategoryContent.querySelectorAll('.calculation-section').forEach(section => section.classList.remove('active'));
+                }
+                
+                // Tıklanan alt butona 'active' sınıfını ekle (görsel işaretleme)
+                document.querySelectorAll('.sub-category-button').forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                // İlgili hesaplama bölümünü göster
+                document.getElementById(`${calcId}-calc`).classList.add('active');
+                mainInstruction.textContent = "Hesaplama yapmak için değerleri girin:";
+            });
+        });
+
+        // --- Yardımcı Fonksiyon: Faiz Oranı Dönüşümü ---
+        function convertRateToMonthly(rate, unit) {
+            if (unit === 'annual') {
+                return (rate / 100) / 12; // Yıllık yüzdeyi aylık ondalığa çevir
+            } else { // monthly
+                return rate / 100; // Aylık yüzdeyi aylık ondalığa çevir
+            }
+        }
+
+        // --- Yardımcı Fonksiyon: PMT Hesaplama ---
+        function calculatePMT(principal, monthlyRate, numPayments) {
+            if (monthlyRate === 0) {
+                return principal / numPayments;
+            }
+            return principal * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / (Math.pow(1 + monthlyRate, numPayments) - 1);
+        }
+
+        // --- Yardımcı Fonksiyon: Kalan Anapara Hesaplama ---
+        function calculateRemainingPrincipal(loanAmount, monthlyRate, pmt, monthNum) {
+            if (monthlyRate === 0) {
+                return loanAmount - (pmt * monthNum);
+            }
+            return loanAmount * Math.pow(1 + monthlyRate, monthNum) - pmt * (Math.pow(1 + monthlyRate, monthNum) - 1) / monthlyRate;
+        }
+
+        // --- KATEGORİ: KREDİ TAKSİTİ VE ÖDEME PLANI ---
+        function calculateLoanPaymentPlan() {
+            const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+            const loanInterestRate = parseFloat(document.getElementById('loanInterestRate').value);
+            const loanRateUnit = document.getElementById('loanRateUnit').value;
+            const loanTermMonths = parseInt(document.getElementById('loanTermMonths').value);
+
+            const resultDiv = document.getElementById('loanPaymentPlanResult');
+            const resultSpanPMT = document.getElementById('loanPaymentPlanCalcResultPMT');
+            const resultSpanTotal = document.getElementById('loanPaymentPlanCalcResultTotal');
+            const resultSpanInterest = document.getElementById('loanPaymentPlanCalcResultInterest');
+            const infoSection = document.querySelector('#calculatePayment-calc .info-section');
+
+            if (isNaN(loanAmount) || isNaN(loanInterestRate) || isNaN(loanTermMonths) ||
+                loanAmount <= 0 || loanInterestRate < 0 || loanTermMonths <= 0) {
+                resultDiv.textContent = 'Lütfen geçerli değerler girin.';
+                [resultSpanPMT, resultSpanTotal, resultSpanInterest].forEach(span => span.textContent = '');
+                return;
+            }
+
+            const monthlyRate = convertRateToMonthly(loanInterestRate, loanRateUnit);
+            const monthlyPayment = calculatePMT(loanAmount, monthlyRate, loanTermMonths);
+
+            const totalLoanPayment = monthlyPayment * loanTermMonths;
+            const totalInterestPaid = totalLoanPayment - loanAmount;
+
+            resultDiv.innerHTML = `
+                <h4>Kredi Hesaplama Sonucu:</h4>
+                <p>Aylık Taksit Miktarı: <strong>${monthlyPayment.toFixed(2)} ₺</strong></p>
+                <p>Toplam Geri Ödenecek Miktar: <strong>${totalLoanPayment.toFixed(2)} ₺</strong></p>
+                <p>Toplam Faiz Tutarı: <strong>${totalInterestPaid.toFixed(2)} ₺</strong></p>
+                <h4>Ödeme Tablosu:</h4>
+                <div class="loan-table-container">
+                    <table class="loan-table">
+                        <thead>
+                            <tr>
+                                <th>Ay</th>
+                                <th>Aylık Taksit</th>
+                                <th>Ödenen Anapara</th>
+                                <th>Ödenen Faiz</th>
+                                <th>Kalan Anapara</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+            let remainingPrincipal = loanAmount;
+            for (let i = 1; i <= loanTermMonths; i++) {
+                const interestPayment = remainingPrincipal * monthlyRate;
+                const principalPayment = monthlyPayment - interestPayment;
+                remainingPrincipal -= principalPayment;
+
+                resultDiv.innerHTML += `
+                        <tr>
+                            <td>${i}</td>
+                            <td>${monthlyPayment.toFixed(2)} ₺</td>
+                            <td>${principalPayment.toFixed(2)} ₺</td>
+                            <td>${interestPayment.toFixed(2)} ₺</td>
+                            <td>${Math.max(0, remainingPrincipal).toFixed(2)} ₺</td>
+                        </tr>
+                    `;
+            }
+            resultDiv.innerHTML += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            resultSpanPMT.textContent = monthlyPayment.toFixed(2);
+            resultSpanTotal.textContent = totalLoanPayment.toFixed(2);
+            resultSpanInterest.textContent = totalInterestPaid.toFixed(2);
+
+            infoSection.innerHTML = `
+                <h5>Nasıl Hesaplandı? (Adım Adım)</h5>
+                <ul>
+                    <li><strong>Adım 1:</strong> Kredi Miktarı (P), Faiz Oranı (r) ve Vade (n, ay cinsinden) alınır.</li>
+                    <li><strong>Adım 2:</strong> Yıllık veya Aylık girilen faiz oranı, **aylık ondalık faiz oranına** dönüştürülür. Eğer yıllık %24 ise, aylık %2 yani 0.02 olur.</li>
+                    <li><strong>Adım 3:</strong> Aylık Taksit Miktarı (PMT) aşağıdaki anüite formülüyle hesaplanır: $PMT = P \cdot \\frac{r(1+r)^n}{(1+r)^n-1}$</li>
+                    <li><strong>Adım 4:</strong> Toplam Geri Ödenecek Miktar = Aylık Taksit Miktarı $\times$ Vade (Ay) olarak bulunur.</li>
+                    <li><strong>Adım 5:</strong> Toplam Faiz Tutarı = Toplam Geri Ödenecek Miktar - Kredi Miktarı olarak bulunur.</li>
+                    <li><strong>Adım 6:</strong> Ödeme tablosu, her ay için Kalan Anapara $\times$ Aylık Faiz Oranı ile faiz ödemesi, Taksit - Faiz ödemesi ile anapara ödemesi hesaplanarak ve kalan anapara güncellenerek oluşturulur.</li>
+                    <li><strong>Sizin Hesabınız:</strong> Kredi Miktarı ${loanAmount.toFixed(2)} ₺, Faiz Oranı ${loanInterestRate}% (${loanRateUnit === 'annual' ? 'Yıllık' : 'Aylık'}), Vade ${loanTermMonths} Ay ise; Aylık Taksit <strong>${monthlyPayment.toFixed(2)} ₺</strong>, Toplam Ödeme <strong>${totalLoanPayment.toFixed(2)} ₺</strong>, Toplam Faiz <strong>${totalInterestPaid.toFixed(2)} ₺</strong>.</li>
+                </ul>
+                <h5>Ne İçin Kullanılır?</h5>
+                <p>Bu hesaplayıcı, bir kredi çekmeden önce aylık bütçenize uygun olup olmadığını anlamak, toplam geri ödeme miktarını ve faiz maliyetini önceden görmek için kullanılır. Özellikle konut, taşıt veya ihtiyaç kredisi gibi büyük borçlanmalarda, ödeme planının detaylarını anlamak ve finansal karar vermek için hayati öneme sahiptir. Aylık ödemelerinizi bütçenize göre planlamanıza yardımcı olur.</p>
+            </div>
+            `;
+        }
+
+        // --- KATEGORİ: ÖDENEBİLİR MİKTARA GÖRE KREDİ LİMİTİ ---
+        function calculateLoanLimit() {
+            const monthlyPaymentLimit = parseFloat(document.getElementById('monthlyPaymentLimit').value);
+            const limitInterestRate = parseFloat(document.getElementById('limitInterestRate').value);
+            const limitRateUnit = document.getElementById('limitRateUnit').value;
+            const limitTermMonths = parseInt(document.getElementById('limitTermMonths').value);
+
+            const resultDiv = document.getElementById('loanLimitResult');
+            const resultSpanPrincipal = document.getElementById('loanLimitCalcResultPrincipal');
+            const infoSection = document.querySelector('#calculateLoanLimit-calc .info-section');
+
+            if (isNaN(monthlyPaymentLimit) || isNaN(limitInterestRate) || isNaN(limitTermMonths) ||
+                monthlyPaymentLimit <= 0 || limitInterestRate < 0 || limitTermMonths <= 0) {
+                resultDiv.textContent = 'Lütfen geçerli değerler girin.';
+                resultSpanPrincipal.textContent = '';
+                return;
+            }
+
+            const monthlyRate = convertRateToMonthly(limitInterestRate, limitRateUnit);
+            let maxPrincipal;
+
+            if (monthlyRate === 0) { // Faizsiz kredi durumu
+                maxPrincipal = monthlyPaymentLimit * limitTermMonths;
+            } else {
+                maxPrincipal = monthlyPaymentLimit * (Math.pow(1 + monthlyRate, limitTermMonths) - 1) / (monthlyRate * Math.pow(1 + monthlyRate, limitTermMonths));
+            }
+
+            const totalRepayable = monthlyPaymentLimit * limitTermMonths;
+            const totalInterest = totalRepayable - maxPrincipal;
+
+            resultDiv.innerHTML = `
+                <h4>Kredi Limiti Hesaplama Sonucu:</h4>
+                <p>Aylık ${monthlyPaymentLimit.toFixed(2)} ₺ ödeyerek alabileceğiniz Maksimum Kredi Miktarı: <strong>${maxPrincipal.toFixed(2)} ₺</strong></p>
+                <p>Toplam Geri Ödeyeceğiniz Miktar: <strong>${totalRepayable.toFixed(2)} ₺</strong></p>
+                <p>Toplam Faiz Tutarı: <strong>${totalInterest.toFixed(2)} ₺</strong></p>
+            `;
+            resultSpanPrincipal.textContent = maxPrincipal.toFixed(2);
+
+            infoSection.innerHTML = `
+                <h5>Nasıl Hesaplandı? (Adım Adım)</h5>
+                <ul>
+                    <li><strong>Adım 1:</strong> Aylık Ödeyebileceğiniz Taksit (PMT), Faiz Oranı (r) ve Vade (n, ay cinsinden) alınır.</li>
+                    <li><strong>Adım 2:</strong> Faiz oranı aylık ondalık orana dönüştürülür.</li>
+                    <li><strong>Adım 3:</strong> Çekilebilecek maksimum Anapara (P) aşağıdaki formülle hesaplanır: $P = PMT \cdot \\frac{(1+r)^n-1}{r(1+r)^n}$</li>
+                    <li><strong>Adım 4:</strong> Toplam Geri Ödenecek Miktar = Aylık Taksit $\times$ Vade olarak bulunur.</li>
+                    <li><strong>Adım 5:</strong> Toplam Faiz Tutarı = Toplam Geri Ödeme Miktarı - Maksimum Kredi Miktarı olarak bulunur.</li>
+                    <li><strong>Sizin Hesabınız:</strong> Aylık Ödeme ${monthlyPaymentLimit.toFixed(2)} ₺, Faiz Oranı ${limitInterestRate}% (${document.getElementById('limitRateUnit').value === 'annual' ? 'Yıllık' : 'Aylık'}), Vade ${limitTermMonths} Ay ise; Maksimum Kredi Miktarı <strong>${maxPrincipal.toFixed(2)} ₺</strong>.</li>
+                </ul>
+                <h5>Ne İçin Kullanılır?</h5>
+                <p>Bu hesaplayıcı, kişisel finans planlaması yaparken veya bir kredi başvurusu öncesinde, bütçenize uygun olarak ne kadar kredi çekebileceğinizi belirlemek için kullanılır. Kullanıcıların aşırı borçlanmadan kaçınmasına ve finansal hedeflerine ulaşmak için daha bilinçli kararlar almasına yardımcı olur.</p>
+            </div>
+            `;
+        }
+
+        // --- KATEGORİ: KREDİ KARŞILAŞTIRMA ---
+        function compareLoanOffers() {
+            // Kredi Teklifi 1 verileri
+            const loan1Amount = parseFloat(document.getElementById('loan1Amount').value);
+            const loan1InterestRate = parseFloat(document.getElementById('loan1InterestRate').value);
+            const loan1RateUnit = document.getElementById('loan1RateUnit').value;
+            const loan1TermMonths = parseInt(document.getElementById('loan1TermMonths').value);
+
+            // Kredi Teklifi 2 verileri
+            const loan2Amount = parseFloat(document.getElementById('loan2Amount').value);
+            const loan2InterestRate = parseFloat(document.getElementById('loan2InterestRate').value);
+            const loan2RateUnit = document.getElementById('loan2RateUnit').value;
+            const loan2TermMonths = parseInt(document.getElementById('loan2TermMonths').value);
+
+            const resultDiv = document.getElementById('loanComparisonResult');
+            const infoSection = document.querySelector('#compareLoans-calc .info-section');
+
+            // Basit doğrulama
+            if (isNaN(loan1Amount) || isNaN(loan1InterestRate) || isNaN(loan1TermMonths) ||
+                isNaN(loan2Amount) || isNaN(loan2InterestRate) || isNaN(loan2TermMonths) ||
+                loan1Amount <= 0 || loan1InterestRate < 0 || loan1TermMonths <= 0 ||
+                loan2Amount <= 0 || loan2InterestRate < 0 || loan2TermMonths <= 0) {
+                resultDiv.textContent = 'Lütfen tüm kredi teklifleri için geçerli değerler girin.';
+                return;
+            }
+
+            // Teklif 1 Hesaplamaları
+            const loan1MonthlyRate = convertRateToMonthly(loan1InterestRate, loan1RateUnit);
+            const loan1MonthlyPayment = calculatePMT(loan1Amount, loan1MonthlyRate, loan1TermMonths);
+            const loan1TotalPayment = loan1MonthlyPayment * loan1TermMonths;
+            const loan1TotalInterest = loan1TotalPayment - loan1Amount;
+
+            // Teklif 2 Hesaplamaları
+            const loan2MonthlyRate = convertRateToMonthly(loan2InterestRate, loan2RateUnit);
+            const loan2MonthlyPayment = calculatePMT(loan2Amount, loan2MonthlyRate, loan2TermMonths);
+            const loan2TotalPayment = loan2MonthlyPayment * loan2TermMonths;
+            const loan2TotalInterest = loan2TotalPayment - loan2Amount;
+
+            resultDiv.innerHTML = `
+                <h4>Kredi Teklifleri Karşılaştırma Sonucu:</h4>
+                <div class="loan-table-container">
+                    <table class="loan-table">
+                        <thead>
+                            <tr>
+                                <th>Teklif</th>
+                                <th>Kredi Miktarı</th>
+                                <th>Yıllık Faiz</th>
+                                <th>Vade (Ay)</th>
+                                <th>Aylık Taksit</th>
+                                <th>Toplam Ödeme</th>
+                                <th>Toplam Faiz</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Teklif 1</td>
+                                <td>${loan1Amount.toFixed(2)} ₺</td>
+                                <td>${loan1InterestRate.toFixed(2)}% (${loan1RateUnit === 'annual' ? 'Yıllık' : 'Aylık'})</td>
+                                <td>${loan1TermMonths}</td>
+                                <td>${loan1MonthlyPayment.toFixed(2)} ₺</td>
+                                <td>${loan1TotalPayment.toFixed(2)} ₺</td>
+                                <td>${loan1TotalInterest.toFixed(2)} ₺</td>
+                            </tr>
+                            <tr>
+                                <td>Teklif 2</td>
+                                <td>${loan2Amount.toFixed(2)} ₺</td>
+                                <td>${loan2InterestRate.toFixed(2)}% (${loan2RateUnit === 'annual' ? 'Yıllık' : 'Aylık'})</td>
+                                <td>${loan2TermMonths}</td>
+                                <td>${loan2MonthlyPayment.toFixed(2)} ₺</td>
+                                <td>${loan2TotalPayment.toFixed(2)} ₺</td>
+                                <td>${loan2TotalInterest.toFixed(2)} ₺</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="text-align: center; margin-top: 20px; font-weight: bold;">
+                    En Düşük Aylık Taksit: ${loan1MonthlyPayment < loan2MonthlyPayment ? 'Teklif 1' : 'Teklif 2'} (${Math.min(loan1MonthlyPayment, loan2MonthlyPayment).toFixed(2)} ₺)
+                </p>
+                <p style="text-align: center; font-weight: bold;">
+                    En Düşük Toplam Faiz: ${loan1TotalInterest < loan2TotalInterest ? 'Teklif 1' : 'Teklif 2'} (${Math.min(loan1TotalInterest, loan2TotalInterest).toFixed(2)} ₺)
+                </p>
+            `;
+            
+            infoSection.innerHTML = `
+                <h5>Nasıl Hesaplandı? (Adım Adım)</h5>
+                <ul>
+                    <li><strong>Adım 1:</strong> Her bir kredi teklifi için Kredi Miktarı, Faiz Oranı ve Vade değerleri alınır.</li>
+                    <li><strong>Adım 2:</strong> Her teklif için ayrı ayrı Aylık Taksit (PMT), Toplam Geri Ödeme Miktarı ve Toplam Faiz Tutarı, kredi hesaplama formülleri kullanılarak bulunur.</li>
+                    <li><strong>Adım 3:</strong> Hesaplanan değerler yan yana karşılaştırmalı bir tablo formatında sunulur.</li>
+                    <li><strong>Sizin Hesabınız:</strong> Kredi Teklifi 1 için Aylık Taksit ${loan1MonthlyPayment.toFixed(2)} ₺, Toplam Faiz ${loan1TotalInterest.toFixed(2)} ₺. Kredi Teklifi 2 için Aylık Taksit ${loan2MonthlyPayment.toFixed(2)} ₺, Toplam Faiz ${loan2TotalInterest.toFixed(2)} ₺.</li>
+                </ul>
+                <h5>Ne İçin Kullanılır?</h5>
+                <p>Kredi karşılaştırma hesaplayıcısı, farklı bankaların veya finans kuruluşlarının sunduğu kredi tekliflerini objektif bir şekilde değerlendirmek için kullanılır. Bu sayede, hangi teklifin aylık bütçenize daha uygun olduğunu, toplamda ne kadar faiz ödeyeceğinizi ve uzun vadede size en az maliyetli olanı kolayca belirleyebilirsiniz. En uygun krediyi seçerek önemli miktarda tasarruf etmenizi sağlar.</p>
+            `;
+        }
+
+        // --- KATEGORİ: EFEKTİF YILLIK FAİZ ORANI (APR) ---
+        function calculateAPR() {
+            const nominalRateAPR = parseFloat(document.getElementById('nominalRateAPR').value);
+            const aprRateUnit = document.getElementById('aprRateUnit').value;
+            const compoundingFrequencyAPR = parseFloat(document.getElementById('compoundingFrequencyAPR').value);
+
+            const resultDiv = document.getElementById('aprResult');
+            const resultSpan = document.getElementById('aprCalcResult');
+            const infoSection = document.querySelector('#calculateAPR-calc .info-section');
+
+            if (isNaN(nominalRateAPR) || isNaN(compoundingFrequencyAPR) || nominalRateAPR < 0 || compoundingFrequencyAPR <= 0) {
+                resultDiv.textContent = 'Lütfen geçerli değerler girin.';
+                resultSpan.textContent = '';
+                return;
+            }
+
+            let annualNominalDecimal;
+            if (aprRateUnit === 'annual') {
+                annualNominalDecimal = nominalRateAPR / 100;
+            } else { // monthly
+                annualNominalDecimal = (nominalRateAPR * 12) / 100; // Aylık oranı yıllık nominale çevir
+            }
+
+            // APR = (1 + (Nominal Faiz Oranı / Birikim Sıklığı))^(Birikim Sıklığı) - 1
+            const effectiveRate = (Math.pow((1 + (annualNominalDecimal / compoundingFrequencyAPR)), compoundingFrequencyAPR) - 1) * 100; // Yüzde olarak göster
+
+            resultDiv.innerHTML = `Efektif Yıllık Faiz Oranı (APR): <strong>${effectiveRate.toFixed(2)}%</strong>`;
+            resultSpan.textContent = effectiveRate.toFixed(2);
+
+            infoSection.innerHTML = `
+                <h5>Nasıl Hesaplandı? (Adım Adım)</h5>
+                <ul>
+                    <li><strong>Adım 1:</strong> Nominal Faiz Oranı (r) ve Faiz Birikim Sıklığı (n) alınır.</li>
+                    <li><strong>Adım 2:</strong> Nominal faiz oranı, yıllık ondalık değere dönüştürülür. (Eğer aylık girildiyse x12 ile yıllık nominale çevrilir).</li>
+                    <li><strong>Adım 3:</strong> Efektif Yıllık Faiz Oranı (APR) aşağıdaki formülle hesaplanır: $APR = (1 + \\frac{r}{n})^n - 1$</li>
+                    <li><strong>Sizin Hesabınız:</strong> Nominal Faiz Oranı ${nominalRateAPR}% (${aprRateUnit === 'annual' ? 'Yıllık' : 'Aylık'}), Faiz Birikim Sıklığı ${compoundingFrequencyAPR} ise APR: <strong>${effectiveRate.toFixed(2)}%</strong>.</li>
+                </ul>
+                <h5>Ne İçin Kullanılır?</h5>
+                <p>Efektif Yıllık Faiz Oranı (APR), bir kredinin veya yatırımın gerçek yıllık maliyetini veya getirisini anlamak için hayati öneme sahiptir. Nominal faiz oranı aynı olsa bile, faizin yıl içinde kaç kez biriktiği (bileşikleşme sıklığı) toplam maliyeti/getiriyi etkiler. APR, farklı kredi veya yatırım tekliflerini karşılaştırırken "elma elma" karşılaştırması yapmanızı sağlar, çünkü tüm ek masrafları (komisyonlar, sigortalar vb. - bu hesaplayıcıda dahil değildir) ve faiz birikim sıklığını tek bir yüzde olarak gösterir.</p>
+            `;
+        }
+
+        // --- KATEGORİ: ERKEN ÖDEME ETKİSİ ---
+        function calculatePrepaymentImpact() {
+            const originalLoanAmount = parseFloat(document.getElementById('originalLoanAmount').value);
+            const originalInterestRate = parseFloat(document.getElementById('originalInterestRate').value);
+            const originalRateUnit = document.getElementById('originalRateUnit').value;
+            const originalTermMonths = parseInt(document.getElementById('originalTermMonths').value);
+            const prepaymentAmount = parseFloat(document.getElementById('prepaymentAmount').value);
+            const prepaymentMonth = parseInt(document.getElementById('prepaymentMonth').value);
+
+            const resultDiv = document.getElementById('prepaymentImpactResult');
+            const resultSpan = document.getElementById('prepaymentImpactCalcResult');
+            const infoSection = document.querySelector('#calculatePrepayment-calc .info-section');
+
+            if (isNaN(originalLoanAmount) || isNaN(originalInterestRate) || isNaN(originalTermMonths) ||
+                isNaN(prepaymentAmount) || isNaN(prepaymentMonth) ||
+                originalLoanAmount <= 0 || originalInterestRate < 0 || originalTermMonths <= 0 ||
+                prepaymentAmount < 0 || prepaymentMonth <= 0 || prepaymentMonth > originalTermMonths) {
+                resultDiv.textContent = 'Lütfen geçerli değerler girin (Erken ödeme ayı vade içinde olmalı).';
+                resultSpan.textContent = '';
+                return;
+            }
+
+            const originalMonthlyRate = convertRateToMonthly(originalInterestRate, originalRateUnit);
+            const originalMonthlyPayment = calculatePMT(originalLoanAmount, originalMonthlyRate, originalTermMonths);
+            const originalTotalInterest = (originalMonthlyPayment * originalTermMonths) - originalLoanAmount;
+
+            // Erken ödeme yapılan aydaki kalan anapara
+            const remainingPrincipalAtPrepayment = calculateRemainingPrincipal(originalLoanAmount, originalMonthlyRate, originalMonthlyPayment, prepaymentMonth - 1);
+            
+            let newPrincipalAfterPrepayment = remainingPrincipalAtPrepayment - prepaymentAmount;
+
+            if (newPrincipalAfterPrepayment < 0) {
+                 newPrincipalAfterPrepayment = 0; // Kredi tamamen kapandı
+            }
+            
+            // Kalan borç için yeni ödeme planı (aynı taksit veya yeni vade)
+            // Basit tutalım: kalan borcu aynı taksitle öderse kaç ayda biter ve ne kadar faiz öder.
+            let newTotalInterestAfterPrepayment;
+            if (newPrincipalAfterPrepayment === 0) {
+                // Kredi tamamen kapandı, sadece ödenen taksitler + erken ödeme = toplam ödeme
+                newTotalInterestAfterPrepayment = (originalMonthlyPayment * (prepaymentMonth -1)) + prepaymentAmount - originalLoanAmount;
+            } else {
+                 // Kalan borç için yeni taksit hesaplama (aynı vadeyi tutarsa)
+                 // Veya daha gerçekçi: kalan borç için yeni taksit veya aynı taksitle ne kadar vade kalır
+                 // Burada en basit senaryoyu kullanalım: kalan anapara için ödenecek faiz.
+                 // Bu daha karmaşık ve iterasyon gerektiren bir hesaplamadır, basitleştirilmiş bir tahmin yapalım:
+                 // Kalan anapara için yeni faiz (kalan taksit sayısına göre tahmini)
+                 let tempRemainingTerm = originalTermMonths - (prepaymentMonth -1); // Kalan ay sayısı
+                 let newPmtForRemaining = calculatePMT(newPrincipalAfterPrepayment, originalMonthlyRate, tempRemainingTerm);
+                 
+                 let remainingInterestEstimate = (newPmtForRemaining * tempRemainingTerm) - newPrincipalAfterPrepayment;
+
+                 newTotalInterestAfterPrepayment = (originalTotalInterest - remainingInterestEstimate) ; // Basit faiz tasarrufu
+            }
+
+            const savedInterest = originalTotalInterest - newTotalInterestAfterPrepayment; // Bu yaklaşım basitleştirildi
+
+            resultDiv.innerHTML = `
+                <h4>Erken Ödeme Etkisi Analizi:</h4>
+                <p>Orijinal Toplam Faiz: <strong>${originalTotalInterest.toFixed(2)} ₺</strong></p>
+                <p>Erken Ödeme Sonrası Tahmini Toplam Faiz: <strong>${newTotalInterestAfterPrepayment.toFixed(2)} ₺</strong></p>
+                <p>Tahmini Faiz Tasarrufu: <strong>${savedInterest.toFixed(2)} ₺</strong></p>
+            `;
+            resultSpan.textContent = savedInterest.toFixed(2);
+
+            infoSection.innerHTML = `
+                <h5>Nasıl Hesaplandı? (Adım Adım)</h5>
+                <ul>
+                    <li><strong>Adım 1:</strong> Orijinal kredi bilgileri (miktar, faiz, vade) alınarak normal ödeme planına göre toplam ödenecek faiz tutarı hesaplanır.</li>
+                    <li><strong>Adım 2:</strong> Erken ödeme miktarı ve yapıldığı ay bilgisi alınır.</li>
+                    <li><strong>Adım 3:</strong> Erken ödemenin yapıldığı aya kadar olan faiz ve anapara ödemeleri çıkarılarak o aydaki kalan anapara bulunur.</li>
+                    <li><strong>Adım 4:</strong> Kalan anaparadan erken ödeme miktarı düşülerek yeni anapara borcu belirlenir.</li>
+                    <li><strong>Adım 5:</strong> Yeni kalan anapara için geri kalan vadedeki tahmini faiz hesaplanır. Bu, kalan borcun vadesi boyunca ne kadar faiz ödeyeceğini tahmin etmek için kullanılır.</li>
+                    <li><strong>Adım 6:</strong> Orijinal toplam faizden, yeni hesaplanan tahmini toplam faiz çıkarılarak tasarruf miktarı bulunur.</li>
+                    <li><strong>Sizin Hesabınız:</strong> Orijinal Kredi Miktarı ${originalLoanAmount.toFixed(2)} ₺, Faiz Oranı ${originalInterestRate}% (${originalRateUnit === 'annual' ? 'Yıllık' : 'Aylık'}), Vade ${originalTermMonths} Ay, Erken Ödeme Miktarı ${prepaymentAmount.toFixed(2)} ₺, Erken Ödeme Ayı ${prepaymentMonth} ise; Tahmini Faiz Tasarrufu <strong>${savedInterest.toFixed(2)} ₺</strong>.</li>
+                </ul>
+                <h5>Ne İçin Kullanılır?</h5>
+                <p>Erken ödeme etkisi hesaplayıcısı, bir krediyi vadesinden önce kapatmanın veya ek ödemeler yapmanın toplam faiz maliyetiniz üzerindeki olumlu etkisini görmek için kullanılır. Bu, borçlanma maliyetini düşürmek ve krediyi daha hızlı bitirmek isteyen kişilerin finansal kararlarını destekler. Özellikle konut kredileri gibi uzun vadeli borçlarda önemli tasarruflar sağlayabilir.</p>
+            </div>
+            `;
+        }
+
+    </script>
+</body>
+</html>
