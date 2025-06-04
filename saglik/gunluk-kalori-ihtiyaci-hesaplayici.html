@@ -135,12 +135,12 @@
             <p><a href="../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../kullanim-sartlari.html">Kullanım Şartları</a></p>
         </div>
     </footer>
-    <script src="../js/saglik-hesaplamalari.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             if (document.getElementById('calorieForm')) {
                 document.getElementById('calorieForm').addEventListener('submit', function(e) {
                     e.preventDefault();
+
                     const age = parseInt(document.getElementById('calorie_age').value);
                     const gender = document.getElementById('calorie_gender').value;
                     const heightCm = parseFloat(document.getElementById('calorie_height').value);
@@ -150,8 +150,9 @@
                     const calorieResultDiv = document.getElementById('calorieResult');
                     const calorieGoalDiv = document.getElementById('calorieGoal');
 
-                    if (isNaN(age) || isNaN(heightCm) || isNaN(weightKg) || age <= 0 || heightCm <= 0 || weightKg <= 0 || !gender || !activityLevel) {
-                        calorieResultDiv.innerHTML = '<span style="color: red;">Lütfen tüm alanları doğru ve eksiksiz doldurun.</span>';
+                    // Giriş doğrulaması
+                    if (isNaN(age) || isNaN(heightCm) || isNaN(weightKg) || age < 1 || age > 100 || heightCm < 50 || heightCm > 250 || weightKg < 10 || weightKg > 300 || !gender || !activityLevel) {
+                        calorieResultDiv.innerHTML = '<span style="color: red;">Lütfen tüm alanları doğru ve eksiksiz doldurun (yaş 1-100, boy 50-250 cm, kilo 10-300 kg).</span>';
                         calorieGoalDiv.textContent = '';
                         return;
                     }
@@ -183,10 +184,10 @@
                             activityFactor = 1.9;
                             break;
                         default:
-                            activityFactor = 1.2; // Varsayılan
+                            activityFactor = 1.2; // Varsayılan olarak hareketsiz
                     }
 
-                    const tdee = bmr * activityFactor; // Toplam Günlük Enerji Harcaması
+                    const tdee = bmr * activityFactor; // Toplam Günlük Enerji Harcaması (TDEE)
 
                     calorieResultDiv.innerHTML = `Tahmini Günlük Kalori İhtiyacınız: <strong>${tdee.toFixed(0)} kalori</strong>`;
                     calorieGoalDiv.innerHTML = `Bu, kilonuzu korumak için gereken tahmini kalori miktarıdır. Kilo hedefiniz için ayarlama yapmalısınız.`;

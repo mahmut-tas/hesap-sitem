@@ -105,12 +105,13 @@
             <p><a href="../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../kullanim-sartlari.html">Kullanım Şartları</a></p>
         </div>
     </footer>
-    <script src="../js/saglik-hesaplamalari.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Sadece 'periodTrackerForm' ID'sine sahip form varsa çalıştır
             if (document.getElementById('periodTrackerForm')) {
                 document.getElementById('periodTrackerForm').addEventListener('submit', function(e) {
-                    e.preventDefault();
+                    e.preventDefault(); // Formun varsayılan gönderimini engelle
+
                     const lastPeriodDateInput = document.getElementById('lastPeriodDate').value;
                     const cycleLength = parseInt(document.getElementById('cycleLength').value);
 
@@ -118,36 +119,38 @@
                     const ovulationResultDiv = document.getElementById('ovulationResult');
                     const fertileWindowResultDiv = document.getElementById('fertileWindowResult');
 
+                    // Giriş doğrulaması
                     if (!lastPeriodDateInput || isNaN(cycleLength) || cycleLength < 20 || cycleLength > 45) {
                         periodResultDiv.innerHTML = '<span style="color: red;">Lütfen geçerli bir tarih ve döngü uzunluğu girin (20-45 gün arası).</span>';
                         ovulationResultDiv.textContent = '';
                         fertileWindowResultDiv.textContent = '';
-                        return;
+                        return; // Fonksiyondan çık
                     }
 
                     const lastPeriod = new Date(lastPeriodDateInput);
                     
-                    // Bir sonraki adet başlangıcı
+                    // Bir sonraki adet başlangıcı hesaplama
                     const nextPeriodDate = new Date(lastPeriod);
                     nextPeriodDate.setDate(lastPeriod.getDate() + cycleLength);
 
-                    // Ovülasyon günü (genellikle bir sonraki adetten 14 gün önce)
+                    // Ovülasyon günü hesaplama (genellikle bir sonraki adetten 14 gün önce)
                     const ovulationDate = new Date(nextPeriodDate);
                     ovulationDate.setDate(nextPeriodDate.getDate() - 14);
 
-                    // Doğurganlık penceresi (ovülasyondan 5 gün önceye kadar ve ovülasyon günü dahil)
+                    // Doğurganlık penceresi hesaplama (ovülasyon gününden 5 gün önce ve ovülasyon günü dahil)
                     const fertileWindowStart = new Date(ovulationDate);
                     fertileWindowStart.setDate(ovulationDate.getDate() - 5);
 
                     const fertileWindowEnd = new Date(ovulationDate);
-                    fertileWindowEnd.setDate(ovulationDate.getDate() + 1); // Ovülasyon gününden sonraki gün de eklenebilir. Genellikle ovülasyon günü ve öncesi daha kritiktir.
+                    fertileWindowEnd.setDate(ovulationDate.getDate()); // Ovülasyon gününü de dahil et.
 
                     const options = { year: 'numeric', month: 'long', day: 'numeric' };
 
+                    // Sonuçları ekrana yazdırma
                     periodResultDiv.innerHTML = `Tahmini Bir Sonraki Adet Başlangıcı: <strong>${nextPeriodDate.toLocaleDateString('tr-TR', options)}</strong>`;
                     ovulationResultDiv.innerHTML = `Tahmini Ovülasyon Günü: <strong>${ovulationDate.toLocaleDateString('tr-TR', options)}</strong>`;
                     fertileWindowResultDiv.innerHTML = `Tahmini Doğurganlık Penceresi: <strong>${fertileWindowStart.toLocaleDateString('tr-TR', options)} - ${fertileWindowEnd.toLocaleDateString('tr-TR', options)}</strong>`;
-                    fertileWindowResultDiv.style.color = '#2ecc71';
+                    fertileWindowResultDiv.style.color = '#2ecc71'; // Yeşil renk ataması
                 });
             }
         });

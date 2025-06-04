@@ -104,18 +104,19 @@
             <p><a href="../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../kullanim-sartlari.html">Kullanım Şartları</a></p>
         </div>
     </footer>
-    <script src="../js/saglik-hesaplamalari.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             if (document.getElementById('waterIntakeForm')) {
                 document.getElementById('waterIntakeForm').addEventListener('submit', function(e) {
-                    e.preventDefault();
+                    e.preventDefault(); // Formun varsayılan gönderimini engelle
+
                     const weightKg = parseFloat(document.getElementById('water_weight').value);
                     const waterIntakeResultDiv = document.getElementById('waterIntakeResult');
                     const waterIntakeGoalDiv = document.getElementById('waterIntakeGoal');
 
-                    if (isNaN(weightKg) || weightKg <= 0) {
-                        waterIntakeResultDiv.innerHTML = '<span style="color: red;">Lütfen geçerli bir kilo değeri girin.</span>';
+                    // Giriş doğrulaması
+                    if (isNaN(weightKg) || weightKg <= 0 || weightKg < 10 || weightKg > 300) { // Kilo aralığı eklendi
+                        waterIntakeResultDiv.innerHTML = '<span style="color: red;">Lütfen geçerli bir kilo değeri girin (10-300 kg arası).</span>';
                         waterIntakeGoalDiv.textContent = '';
                         return;
                     }
@@ -124,12 +125,12 @@
                     const minWaterMl = weightKg * 30;
                     const maxWaterMl = weightKg * 40;
 
-                    // Litreye çevir
+                    // Mililitreyi litreye çevir ve 1 ondalık basamağa yuvarla
                     const minWaterLiters = (minWaterMl / 1000).toFixed(1);
                     const maxWaterLiters = (maxWaterMl / 1000).toFixed(1);
 
                     waterIntakeResultDiv.innerHTML = `Tahmini Günlük Su İhtiyacınız: <strong>${minWaterLiters} - ${maxWaterLiters} litre</strong>`;
-                    waterIntakeGoalDiv.innerHTML = `Bu, kilonuza göre önerilen genel bir aralıktır. Aktivite ve yaşam tarzınıza göre değişebilir.`;
+                    waterIntakeGoalDiv.innerHTML = `Bu, kilonuza göre önerilen genel bir aralıktır. Fiziksel aktivite, iklim ve sağlık durumu gibi faktörlere göre ihtiyacınız değişebilir.`;
                     waterIntakeGoalDiv.style.color = '#2ecc71'; // Yeşil renk
                 });
             }

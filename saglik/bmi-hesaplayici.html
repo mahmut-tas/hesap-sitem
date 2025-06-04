@@ -6,7 +6,8 @@
     <title>BMI Hesaplayıcı - Hesapkolik</title>
     <meta name="description" content="Boy ve kilonuzu girerek Vücut Kitle İndeksinizi (BMI) hesaplayın ve sağlık durumunuzu değerlendirin.">
     <meta name="keywords" content="bmi hesapla, vücut kitle indeksi, sağlıklı kilo, zayıf, normal kilolu, fazla kilolu, obez">
-    <link rel="stylesheet" href="../css/style.css"> <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -22,7 +23,8 @@
                 <ul>
                     <li><a href="../index.html">Ana Sayfa</a></li>
                     <li><a href="../index.html#calculator-list">Hesaplayıcılar</a></li>
-                    <li><a href="../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li> <li><a href="../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../hakkimizda.html">Hakkımızda</a></li>
                     <li><a href="../iletisim.html">İletişim</a></li>
                 </ul>
             </nav>
@@ -58,7 +60,7 @@
                     <section class="info-section">
                         <h3>BMI Nedir ve Neden Önemlidir?</h3>
                         <p>
-                            <strong>Vücut Kitle İndeksi (BMI)</strong>, bir kişinin kilosunun boyuna göre sağlıklı bir aralıkta olup olmadığını gösteren basit bir ölçümdür. Dünya Sağlık Örgütü (WHO) tarafından geliştirilen ve yetişkinler için yaygın olarak kullanılan bir sağlık göstergesidir. BMI değeri, yağ oranı ve kas kütlesi gibi faktörleri doğrudan ölçmez ancak genel bir sınıflandırma sunar.
+                            **Vücut Kitle İndeksi (BMI)**, bir kişinin kilosunun boyuna göre sağlıklı bir aralıkta olup olmadığını gösteren basit bir ölçümdür. Dünya Sağlık Örgütü (WHO) tarafından geliştirilen ve yetişkinler için yaygın olarak kullanılan bir sağlık göstergesidir. BMI değeri, yağ oranı ve kas kütlesi gibi faktörleri doğrudan ölçmez ancak genel bir sınıflandırma sunar.
                         </p>
                         <p>
                             BMI, bireylerin obezite veya zayıflık gibi kilo sorunları yaşayıp yaşamadığını hızlıca belirlemek ve potansiyel sağlık risklerini değerlendirmek için kritik bir araçtır. Yüksek bir BMI değeri genellikle obeziteyle ilişkili kalp hastalığı, diyabet ve yüksek tansiyon gibi durumların riskini artırabilirken, çok düşük bir BMI değeri de bazı sağlık sorunlarına işaret edebilir.
@@ -115,27 +117,40 @@
             <p><a href="../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../kullanim-sartlari.html">Kullanım Şartları</a></p>
         </div>
     </footer>
-    <script src="../js/saglik-hesaplamalari.js"></script> <script>
-        // BMI hesaplayıcısı için özel çağrı
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // BMI hesaplayıcısı için özel çağrı
             if (document.getElementById('bmiForm')) {
                 // BMI formu varsa ilgili kodu çalıştır
                 document.getElementById('bmiForm').addEventListener('submit', function(e) {
-                    e.preventDefault();
+                    e.preventDefault(); // Formun varsayılan gönderimini engelle
+
                     const heightCm = parseFloat(document.getElementById('bmi_height').value);
                     const weightKg = parseFloat(document.getElementById('bmi_weight').value);
+
                     const bmiResultDiv = document.getElementById('bmiResult');
                     const bmiCategoryDiv = document.getElementById('bmiCategory');
-                    if (isNaN(heightCm) || isNaN(weightKg) || heightCm <= 0 || weightKg <= 0) {
-                        bmiResultDiv.innerHTML = '<span style="color: red;">Lütfen geçerli boy ve kilo değerleri girin.</span>';
+
+                    // Giriş doğrulaması
+                    if (isNaN(heightCm) || isNaN(weightKg) || heightCm <= 0 || weightKg <= 0 || heightCm < 50 || heightCm > 250 || weightKg < 10 || weightKg > 300) {
+                        bmiResultDiv.innerHTML = '<span style="color: red;">Lütfen geçerli boy (50-250 cm) ve kilo (10-300 kg) değerleri girin.</span>';
                         bmiCategoryDiv.textContent = '';
-                        return;
+                        return; // Fonksiyondan çık
                     }
+
+                    // Boyu metrekareye çevirme
                     const heightM = heightCm / 100;
+
+                    // BMI hesaplama formülü: Kilo (kg) / (Boy (m) * Boy (m))
                     const bmi = weightKg / (heightM * heightM);
+
+                    // BMI sonucunu ekrana yazdırma
                     bmiResultDiv.innerHTML = `BMI Değeriniz: <strong>${bmi.toFixed(2)}</strong>`;
+
                     let category = '';
-                    let categoryColor = '#333';
+                    let categoryColor = '#333'; // Varsayılan renk
+
+                    // BMI kategorilerini belirleme ve renk atama
                     if (bmi < 18.5) {
                         category = 'Zayıf';
                         categoryColor = '#f1c40f'; // Sarı
@@ -155,6 +170,8 @@
                         category = 'Aşırı Obez (Sınıf III)';
                         categoryColor = '#8b0000'; // Çok koyu kırmızı
                     }
+
+                    // Kategori sonucunu ekrana yazdırma ve rengini ayarlama
                     bmiCategoryDiv.textContent = `Durumunuz: ${category}`;
                     bmiCategoryDiv.style.color = categoryColor;
                 });

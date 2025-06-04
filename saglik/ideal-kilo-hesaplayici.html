@@ -64,7 +64,7 @@
                     <section class="info-section">
                         <h3>İdeal Kilo Nedir ve Neden Önemlidir?</h3>
                         <p>
-                            <strong>İdeal Kilo</strong>, bir kişinin boyuna ve cinsiyetine göre sağlıklı kabul edilen ağırlık aralığını ifade eder. İdeal kiloda olmak, genel sağlığın korunması, kronik hastalık risklerinin azaltılması ve yaşam kalitesinin artırılması açısından büyük önem taşır. Kalp hastalıkları, diyabet, yüksek tansiyon ve eklem rahatsızlıkları gibi birçok sağlık sorunu, ideal kilonun üzerinde veya altında olmakla ilişkilendirilebilir.
+                            **İdeal Kilo**, bir kişinin boyuna ve cinsiyetine göre sağlıklı kabul edilen ağırlık aralığını ifade eder. İdeal kiloda olmak, genel sağlığın korunması, kronik hastalık risklerinin azaltılması ve yaşam kalitesinin artırılması açısından büyük önem taşır. Kalp hastalıkları, diyabet, yüksek tansiyon ve eklem rahatsızlıkları gibi birçok sağlık sorunu, ideal kilonun üzerinde veya altında olmakla ilişkilendirilebilir.
                         </p>
                         <p>
                             Ancak ideal kilo tek bir sayı değildir; yaş, kas kütlesi, vücut yapısı ve genetik faktörler gibi kişisel farklılıklar nedeniyle genellikle bir aralık olarak belirtilir.
@@ -127,24 +127,25 @@
             <p><a href="../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../kullanim-sartlari.html">Kullanım Şartları</a></p>
         </div>
     </footer>
-    <script src="../js/saglik-hesaplamalari.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             if (document.getElementById('idealWeightForm')) {
                 document.getElementById('idealWeightForm').addEventListener('submit', function(e) {
-                    e.preventDefault();
+                    e.preventDefault(); // Formun varsayılan gönderimini engelle
+
                     const heightCm = parseFloat(document.getElementById('ideal_height').value);
                     const gender = document.getElementById('ideal_gender').value;
                     const idealWeightResultDiv = document.getElementById('idealWeightResult');
                     const idealWeightCategoryDiv = document.getElementById('idealWeightCategory');
 
-                    if (isNaN(heightCm) || heightCm <= 0 || !gender) {
-                        idealWeightResultDiv.innerHTML = '<span style="color: red;">Lütfen geçerli boy ve cinsiyet seçimi yapın.</span>';
+                    // Giriş doğrulaması
+                    if (isNaN(heightCm) || heightCm < 100 || heightCm > 220 || !gender) { // Boy aralığı 100-220 cm
+                        idealWeightResultDiv.innerHTML = '<span style="color: red;">Lütfen geçerli boy (100-220 cm) ve cinsiyet seçimi yapın.</span>';
                         idealWeightCategoryDiv.textContent = '';
                         return;
                     }
 
-                    // Boyu inch'e çevir (Bazı formüller için gerekli)
+                    // Boyu inç'e çevir (Robinson ve Hamwi formülleri için)
                     const heightInch = heightCm * 0.393701;
 
                     let idealWeightMiller, idealWeightBroca, idealWeightRobinson, idealWeightHamwi;
@@ -164,6 +165,8 @@
                     }
 
                     // Robinson Formülü (boy inch cinsinden)
+                    // Robinson formülü 60 inç (152.4 cm) üzeri boylar için geçerlidir.
+                    // 152.4 cm altı için formülün uygulanması genelde önerilmez, ancak burada basitlik için uygulanmıştır.
                     if (gender === 'male') {
                         idealWeightRobinson = 52 + 1.9 * (heightInch - 60);
                     } else { // female
@@ -171,21 +174,22 @@
                     }
 
                     // Hamwi Formülü (boy inch cinsinden)
+                    // Hamwi formülü de 60 inç (152.4 cm) üzeri boylar için geçerlidir.
                     if (gender === 'male') {
                         idealWeightHamwi = 48 + 2.7 * (heightInch - 60);
                     } else { // female
                         idealWeightHamwi = 45.5 + 2.2 * (heightInch - 60);
                     }
 
-                    // Ortalama ideal kilo hesaplama (tüm formüllerin ortalaması alınabilir veya belirli bir aralık kullanılabilir)
-                    // Burada basitleştirilmiş bir ortalama ve aralık kullanımı yapılmıştır.
+                    // Tüm formüllerin ortalamasını alarak bir "ana" ideal kilo değeri belirle
                     const idealWeightAvg = (idealWeightMiller + idealWeightBroca + idealWeightRobinson + idealWeightHamwi) / 4;
 
+                    // Bu ortalama değere göre %5'lik bir alt ve üst sınır belirleyerek aralık oluştur
                     const lowerBound = idealWeightAvg * 0.95; // %5 alt sınır
                     const upperBound = idealWeightAvg * 1.05; // %5 üst sınır
 
-                    idealWeightResultDiv.innerHTML = `Tahmini İdeal Kilo Aralığınız: <strong>${lowerBound.toFixed(2)} kg - ${upperBound.toFixed(2)} kg</strong>`;
-                    idealWeightCategoryDiv.innerHTML = 'Bu aralık, farklı ideal kilo formüllerine göre belirlenmiş bir ortalama değerdir.';
+                    idealWeightResultDiv.innerHTML = `Tahmini İdeal Kilo Aralığınız: <strong>${lowerBound.toFixed(1)} kg - ${upperBound.toFixed(1)} kg</strong>`;
+                    idealWeightCategoryDiv.innerHTML = 'Bu aralık, yaygın ideal kilo formüllerinin ortalamasına göre belirlenmiş sağlıklı bir aralıktır.';
                     idealWeightCategoryDiv.style.color = '#2ecc71'; // Yeşil renk
                 });
             }

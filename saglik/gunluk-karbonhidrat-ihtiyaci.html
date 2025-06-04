@@ -133,12 +133,12 @@
             <p><a href="../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../kullanim-sartlari.html">Kullanım Şartları</a></p>
         </div>
     </footer>
-    <script src="../js/saglik-hesaplamalari.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             if (document.getElementById('carbForm')) {
                 document.getElementById('carbForm').addEventListener('submit', function(e) {
                     e.preventDefault();
+
                     const age = parseInt(document.getElementById('carb_age').value);
                     const gender = document.getElementById('carb_gender').value;
                     const heightCm = parseFloat(document.getElementById('carb_height').value);
@@ -148,15 +148,16 @@
                     const carbResultDiv = document.getElementById('carbResult');
                     const carbGoalDiv = document.getElementById('carbGoal');
 
-                    if (isNaN(age) || isNaN(heightCm) || isNaN(weightKg) || age <= 0 || heightCm <= 0 || weightKg <= 0 || !gender || !activityLevel) {
-                        carbResultDiv.innerHTML = '<span style="color: red;">Lütfen tüm alanları doğru ve eksiksiz doldurun.</span>';
+                    // Giriş doğrulaması
+                    if (isNaN(age) || isNaN(heightCm) || isNaN(weightKg) || age < 1 || age > 100 || heightCm < 50 || heightCm > 250 || weightKg < 10 || weightKg > 300 || !gender || !activityLevel) {
+                        carbResultDiv.innerHTML = '<span style="color: red;">Lütfen tüm alanları doğru ve eksiksiz doldurun (yaş 1-100, boy 50-250 cm, kilo 10-300 kg).</span>';
                         carbGoalDiv.textContent = '';
                         return;
                     }
 
                     let bmr; // Bazal Metabolizma Hızı
 
-                    // Mifflin-St Jeor Formülü
+                    // Mifflin-St Jeor Formülü (BMR Hesaplama)
                     if (gender === 'male') {
                         bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) + 5;
                     } else { // female
@@ -181,12 +182,12 @@
                             activityFactor = 1.9;
                             break;
                         default:
-                            activityFactor = 1.2; // Varsayılan
+                            activityFactor = 1.2; // Varsayılan olarak hareketsiz
                     }
 
-                    const tdee = bmr * activityFactor; // Toplam Günlük Enerji Harcaması
+                    const tdee = bmr * activityFactor; // Toplam Günlük Enerji Harcaması (TDEE)
 
-                    // Karbonhidrat için önerilen aralık %45-%65 arası (ortalama %55 alalım)
+                    // Karbonhidrat için önerilen aralık %45-%65 arasıdır. Ortalama %55 kullanıldı.
                     const carbPercentage = 0.55; 
                     const carbCalories = tdee * carbPercentage;
                     const carbGrams = carbCalories / 4; // 1 gram karbonhidrat = 4 kalori

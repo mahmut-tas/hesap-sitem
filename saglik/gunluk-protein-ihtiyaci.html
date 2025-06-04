@@ -129,7 +129,6 @@
             <p><a href="../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../kullanim-sartlari.html">Kullanım Şartları</a></p>
         </div>
     </footer>
-    <script src="../js/saglik-hesaplamalari.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             if (document.getElementById('proteinForm')) {
@@ -144,13 +143,14 @@
                     const proteinResultDiv = document.getElementById('proteinResult');
                     const proteinGoalDiv = document.getElementById('proteinGoal');
 
-                    if (isNaN(age) || isNaN(heightCm) || isNaN(weightKg) || age <= 0 || heightCm <= 0 || weightKg <= 0 || !gender || !activityLevel) {
-                        proteinResultDiv.innerHTML = '<span style="color: red;">Lütfen tüm alanları doğru ve eksiksiz doldurun.</span>';
+                    // Giriş doğrulaması (yaş 1-100, boy 50-250 cm, kilo 10-300 kg)
+                    if (isNaN(age) || isNaN(heightCm) || isNaN(weightKg) || age < 1 || age > 100 || heightCm < 50 || heightCm > 250 || weightKg < 10 || weightKg > 300 || !gender || !activityLevel) {
+                        proteinResultDiv.innerHTML = '<span style="color: red;">Lütfen tüm alanları doğru ve eksiksiz doldurun (yaş 1-100, boy 50-250 cm, kilo 10-300 kg).</span>';
                         proteinGoalDiv.textContent = '';
                         return;
                     }
 
-                    // Önce BMR ve TDEE hesaplama (Kalori İhtiyacı hesaplayıcısı ile aynı mantık)
+                    // BMR ve TDEE hesaplama (önceki hesaplayıcılarla aynı mantık)
                     let bmr;
                     if (gender === 'male') {
                         bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) + 5;
@@ -176,7 +176,7 @@
                             activityFactor = 1.9;
                             break;
                         default:
-                            activityFactor = 1.2;
+                            activityFactor = 1.2; // Varsayılan
                     }
 
                     const tdee = bmr * activityFactor; // Toplam Günlük Enerji Harcaması
@@ -185,7 +185,7 @@
                     let proteinPerKg;
                     switch (activityLevel) {
                         case 'sedentary':
-                            proteinPerKg = 0.8; // Hareketsiz için min. RDA
+                            proteinPerKg = 0.8; 
                             break;
                         case 'lightly_active':
                             proteinPerKg = 1.0;
@@ -197,24 +197,20 @@
                             proteinPerKg = 1.5;
                             break;
                         case 'super_active':
-                            proteinPerKg = 1.8; // Yoğun sporcular için daha yüksek
+                            proteinPerKg = 1.8; 
                             break;
                         default:
                             proteinPerKg = 0.8;
                     }
 
-                    const proteinGrams = weightKg * proteinPerKg;
+                    // Kilo bazlı protein ihtiyacı
+                    const proteinGramsFromKg = weightKg * proteinPerKg;
                     
-                    // Ek olarak, TDEE'nin %'si olarak da bir aralık verilebilir
-                    // Genellikle TDEE'nin %10-35'i protein olur. Ortalama %25 alalım.
+                    // TDEE'nin %'si olarak protein ihtiyacı (bilgi amaçlı, ortalama %25)
                     const proteinCaloriesFromTDEE = tdee * 0.25; 
                     const proteinGramsFromTDEE = proteinCaloriesFromTDEE / 4; // 1 gram protein = 4 kalori
 
-                    // İki yöntemin ortalamasını alarak daha kapsamlı bir aralık sunabiliriz
-                    // Veya sadece kilo bazlı olanı kullanabiliriz. Burada kilo bazlıyı tercih edip, 
-                    // TDEE bazlıyı bilgi olarak vereceğiz.
-                    
-                    proteinResultDiv.innerHTML = `Tahmini Günlük Protein İhtiyacınız: <strong>${proteinGrams.toFixed(0)} gram</strong>`;
+                    proteinResultDiv.innerHTML = `Tahmini Günlük Protein İhtiyacınız: <strong>${proteinGramsFromKg.toFixed(0)} gram</strong>`;
                     proteinGoalDiv.innerHTML = `Bu, aktivite seviyenize göre her kilo başına yaklaşık ${proteinPerKg} gram proteine denk gelmektedir. (Yaklaşık ${proteinGramsFromTDEE.toFixed(0)} gram da toplam kalori ihtiyacınızın %25'ine eşittir.)`;
                     proteinGoalDiv.style.color = '#2ecc71'; // Yeşil renk
                 });
