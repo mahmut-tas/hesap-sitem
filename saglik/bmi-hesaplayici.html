@@ -135,6 +135,8 @@
                     if (isNaN(heightCm) || isNaN(weightKg) || heightCm <= 0 || weightKg <= 0 || heightCm < 50 || heightCm > 250 || weightKg < 10 || weightKg > 300) {
                         bmiResultDiv.innerHTML = '<span style="color: red;">Lütfen geçerli boy (50-250 cm) ve kilo (10-300 kg) değerleri girin.</span>';
                         bmiCategoryDiv.textContent = ''; // Kategoriyi temizle
+                        // Hata durumunda da result div'ini görünür yapın
+                        bmiResultDiv.style.display = 'block'; 
                         return; // Fonksiyondan çık
                     }
 
@@ -146,6 +148,8 @@
 
                     // BMI sonucunu ekrana yazdırma
                     bmiResultDiv.innerHTML = `BMI Değeriniz: <strong>${bmi.toFixed(2)}</strong>`;
+                    // Sonucu göster
+                    bmiResultDiv.style.display = 'block'; 
 
                     let category = '';
                     let categoryColor = '#333'; // Varsayılan renk
@@ -174,6 +178,8 @@
                     // Kategori sonucunu ekrana yazdırma ve rengini ayarlama
                     bmiCategoryDiv.textContent = `Durumunuz: ${category}`;
                     bmiCategoryDiv.style.color = categoryColor;
+                    // Kategoriyi göster
+                    bmiCategoryDiv.style.display = 'block'; 
                 });
             }
         });
