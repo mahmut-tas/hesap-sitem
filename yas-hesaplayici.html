@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <style>
         /* Bu CSS sadece bu sayfa için özeldir. İstersen style.css dosyana taşıyabilirsin. */
         .age-calculator-section {
             padding: 60px 0;
@@ -44,6 +44,7 @@
             flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen */
             max-width: 250px;
             text-align: center;
+            text-decoration: none; /* Link olarak kullanılabilir */
         }
         @media (max-width: 768px) {
             .category-button, .sub-category-button {
@@ -75,16 +76,20 @@
             max-width: 650px;
             margin: 0 auto;
             text-align: left;
+            min-height: 300px; /* İçerik geçişlerinde kaymayı azaltmak için */
+            display: flex; /* İçeriklerin dikeyde ortalanması için */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .category-section-content, .calculation-section {
             display: none; /* Varsayılan olarak tüm bölümler gizli */
+            width: 100%; /* Kapsayıcı genişliğinde olsunlar */
+            text-align: left;
         }
-        .category-section-content.active {
-            display: block; /* Aktif olan ana kategori içeriği gösterilir */
-        }
-        .calculation-section.active {
-            display: block; /* Aktif olan hesaplama bölümü gösterilir */
+        .category-section-content.active, .calculation-section.active {
+            display: block; /* Aktif olan gösterilir */
         }
 
         .category-section-content h3 {
@@ -94,8 +99,10 @@
             text-align: center;
         }
         .category-section-content p.info-text {
-             margin-bottom: 30px;
-             text-align: center;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.1em;
+            color: #666;
         }
 
         .calculation-section h4 {
@@ -105,12 +112,8 @@
             text-align: center;
             border-bottom: 1px dashed #eee;
             padding-bottom: 15px;
+            margin-top: 0; /* İlk h4'ün üst boşluğunu sıfırla */
         }
-        .calculation-section:first-of-type h4 {
-            margin-top: 0;
-            padding-top: 0;
-        }
-
 
         .calculation-section label {
             display: block;
@@ -123,12 +126,13 @@
         .calculation-section input[type="number"],
         .calculation-section input[type="text"],
         .calculation-section select {
-            width: calc(100% - 20px);
+            width: calc(100% - 20px); /* İç padding için */
             padding: 12px 10px;
             margin-bottom: 20px;
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 1em;
+            font-family: 'Poppins', sans-serif; /* Fontu koru */
         }
 
         .calculation-section select {
@@ -161,7 +165,19 @@
             font-weight: 600;
             color: #333;
             text-align: center;
+            display: none; /* Varsayılan olarak gizli */
         }
+        .result-output strong {
+            color: #e74c3c; /* Sonuçlar için belirgin renk */
+        }
+        .result-output p {
+            margin-bottom: 5px; /* Sonuç paragrafı arası boşluk */
+        }
+        .result-output p:last-child {
+            margin-bottom: 0;
+        }
+
+
         .info-text {
             font-size: 0.9em;
             color: #777;
@@ -174,6 +190,10 @@
             border-radius: 8px;
             box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
             text-align: left;
+            display: none; /* Varsayılan olarak gizli */
+        }
+        .calculation-steps-section.active {
+            display: block;
         }
         .calculation-steps-section h3 {
             color: #333;
@@ -208,17 +228,31 @@
             cursor: pointer;
             display: inline-block;
             font-size: 0.9em;
+            text-decoration: none; /* Link görünümü */
         }
         #backToCategories:hover {
             background-color: #2980b9;
         }
+
+        /* Ek olarak, önceki hesaplayıcılardan gelen bazı stiller burada tekrarlanıyor olabilir,
+           genel style.css dosyasında birleştirilirse daha iyi olur. */
     </style>
 </head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+</script>
 <body>
     <header>
         <div class="container">
             <div class="logo">
-                <h1><a href="index.html">Hesapla Pratik</a></h1>
+                <a href="index.html"> 
+                    <img src="images/Hesapkolik_transparent-.png" alt="Hesapla Pratik Logo" class="site-logo">
+                </a>
             </div>
             <nav>
                 <ul>
@@ -234,10 +268,9 @@
     <main>
         <section class="age-calculator-section">
             <div class="container">
-                <h2>Yaş Hesaplayıcı</h2>
-                <p id="main-instruction">Yapmak istediğiniz yaş hesaplama türünü seçin:</p>
+                <h1 class="main-title">Yaş Hesaplayıcı</h1> <p id="main-instruction" class="section-description">Yapmak istediğiniz yaş hesaplama türünü seçin:</p>
 
-                <div id="main-category-buttons" class="category-buttons active">
+                <div id="main-category-buttons" class="category-buttons">
                     <button class="category-button" data-category="basic-age">Doğum Tarihinize Göre Yaşım</button>
                     <button class="category-button" data-category="date-diff">İki Tarih Arası Fark</button>
                     <button class="category-button" data-category="specific-date-age">Belirli Bir Tarihte Yaşım</button>
@@ -246,7 +279,7 @@
 
                 <div id="calculator-content-area" class="calculator-container">
                     <div id="default-message" class="category-section-content active">
-                        <p>Yukarıdaki kategorilerden birini seçerek yaş hesaplamalarına başlayın.</p>
+                        <p class="info-text">Yukarıdaki kategorilerden birini seçerek yaş hesaplamalarına başlayın.</p>
                     </div>
 
                     <div id="basic-age-content" class="category-section-content">
@@ -255,24 +288,6 @@
                         <div class="sub-category-buttons">
                             <button class="sub-category-button" data-calc="fullAge">Tam Yaş ve Doğum Günü</button>
                             <button class="sub-category-button" data-calc="zodiacSigns">Burç Bilgileri</button>
-                        </div>
-
-                        <div id="fullAge-calc" class="calculation-section">
-                            <h4>Tam Yaş ve Doğum Gününe Kalan Süre</h4>
-                            <label for="birthDateFull">Doğum Tarihiniz:</label>
-                            <input type="date" id="birthDateFull" required>
-                            <button onclick="calculateFullAge()">Hesapla</button>
-                            <div id="fullAgeResult" class="result-output"></div>
-                            <div id="fullAgeSteps" class="calculation-steps-section"></div>
-                        </div>
-
-                        <div id="zodiacSigns-calc" class="calculation-section">
-                            <h4>Astrolojik ve Çin Burcu</h4>
-                            <label for="birthDateZodiac">Doğum Tarihiniz:</label>
-                            <input type="date" id="birthDateZodiac" required>
-                            <button onclick="calculateZodiacSigns()">Hesapla</button>
-                            <div id="zodiacSignsResult" class="result-output"></div>
-                            <div id="zodiacSignsSteps" class="calculation-steps-section"></div>
                         </div>
                     </div>
 
@@ -283,28 +298,6 @@
                             <button class="sub-category-button" data-calc="dateDiffYMD">Yıl, Ay, Gün Farkı</button>
                             <button class="sub-category-button" data-calc="dateDiffTotalDays">Toplam Gün/Saat/Dakika Farkı</button>
                         </div>
-
-                        <div id="dateDiffYMD-calc" class="calculation-section">
-                            <h4>Yıl, Ay, Gün Farkı</h4>
-                            <label for="startDateYMD">Başlangıç Tarihi:</label>
-                            <input type="date" id="startDateYMD" required>
-                            <label for="endDateYMD">Bitiş Tarihi:</label>
-                            <input type="date" id="endDateYMD" required>
-                            <button onclick="calculateDateDiffYMD()">Hesapla</button>
-                            <div id="dateDiffYMDResult" class="result-output"></div>
-                            <div id="dateDiffYMDSteps" class="calculation-steps-section"></div>
-                        </div>
-
-                        <div id="dateDiffTotalDays-calc" class="calculation-section">
-                            <h4>Toplam Gün/Saat/Dakika Farkı</h4>
-                            <label for="startDateTotal">Başlangıç Tarihi:</label>
-                            <input type="date" id="startDateTotal" required>
-                            <label for="endDateTotal">Bitiş Tarihi:</label>
-                            <input type="date" id="endDateTotal" required>
-                            <button onclick="calculateDateDiffTotal()">Hesapla</button>
-                            <div id="dateDiffTotalDaysResult" class="result-output"></div>
-                            <div id="dateDiffTotalDaysSteps" class="calculation-steps-section"></div>
-                        </div>
                     </div>
 
                     <div id="specific-date-age-content" class="category-section-content">
@@ -313,28 +306,6 @@
                         <div class="sub-category-buttons">
                             <button class="sub-category-button" data-calc="ageAtFutureDate">Gelecekteki Bir Tarihte Yaşım</button>
                             <button class="sub-category-button" data-calc="ageAtPastDate">Geçmişteki Bir Tarihte Yaşım</button>
-                        </div>
-
-                        <div id="ageAtFutureDate-calc" class="calculation-section">
-                            <h4>Gelecekteki Bir Tarihte Yaşım</h4>
-                            <label for="birthDateFuture">Doğum Tarihiniz:</label>
-                            <input type="date" id="birthDateFuture" required>
-                            <label for="targetDateFuture">Hedef Tarih (Gelecek):</label>
-                            <input type="date" id="targetDateFuture" required>
-                            <button onclick="calculateAgeAtSpecificDate('future')">Hesapla</button>
-                            <div id="ageAtFutureDateResult" class="result-output"></div>
-                            <div id="ageAtFutureDateSteps" class="calculation-steps-section"></div>
-                        </div>
-
-                        <div id="ageAtPastDate-calc" class="calculation-section">
-                            <h4>Geçmişteki Bir Tarihte Yaşım</h4>
-                            <label for="birthDatePast">Doğum Tarihiniz:</label>
-                            <input type="date" id="birthDatePast" required>
-                            <label for="targetDatePast">Hedef Tarih (Geçmiş):</label>
-                            <input type="date" id="targetDatePast" required>
-                            <button onclick="calculateAgeAtSpecificDate('past')">Hesapla</button>
-                            <div id="ageAtPastDateResult" class="result-output"></div>
-                            <div id="ageAtPastDateSteps" class="calculation-steps-section"></div>
                         </div>
                     </div>
 
@@ -346,52 +317,111 @@
                             <button class="sub-category-button" data-calc="milestones">Yaşamdaki Kilometre Taşları</button>
                             <button class="sub-category-button" data-calc="remainingLife">Ortalama Yaşam Süresine Göre Tahmini Kalan Süre</button>
                         </div>
-
-                        <div id="lifeStatistics-calc" class="calculation-section">
-                            <h4>Yaşam Döngüsü İstatistikleri</h4>
-                            <label for="birthDateStats">Doğum Tarihiniz:</label>
-                            <input type="date" id="birthDateStats" required>
-                            <button onclick="calculateLifeStatistics()">Hesapla</button>
-                            <div id="lifeStatisticsResult" class="result-output"></div>
-                            <div id="lifeStatisticsSteps" class="calculation-steps-section"></div>
-                        </div>
-
-                        <div id="milestones-calc" class="calculation-section">
-                            <h4>Yaşamdaki Kilometre Taşları</h4>
-                            <label for="birthDateMilestones">Doğum Tarihiniz:</label>
-                            <input type="date" id="birthDateMilestones" required>
-                            <button onclick="calculateMilestones()">Hesapla</button>
-                            <div id="milestonesResult" class="result-output"></div>
-                            <div id="milestonesSteps" class="calculation-steps-section"></div>
-                        </div>
-
-                        <div id="remainingLife-calc" class="calculation-section">
-                            <h4>Ortalama Yaşam Süresine Göre Tahmini Kalan Süre</h4>
-                            <p class="info-text"><small>Bu hesaplama istatistiksel verilere dayanır ve bireysel bir garanti sunmaz. Ortalama yaşam süresi ülkelere ve cinsiyete göre değişiklik gösterir.</small></p>
-                            <label for="birthDateRemaining">Doğum Tarihiniz:</label>
-                            <input type="date" id="birthDateRemaining" required>
-                            <label for="gender">Cinsiyet:</label>
-                            <select id="gender">
-                                <option value="male">Erkek</option>
-                                <option value="female">Kadın</option>
-                            </select>
-                            <label for="country">Ülke (Ortalama Yaşam Süresi İçin):</label>
-                            <select id="country">
-                                <option value="TR">Türkiye (78.6)</option>
-                                <option value="US">ABD (78.5)</option>
-                                <option value="DE">Almanya (80.9)</option>
-                                <option value="JP">Japonya (84.6)</option>
-                                </select>
-                            <button onclick="calculateRemainingLife()">Hesapla</button>
-                            <div id="remainingLifeResult" class="result-output"></div>
-                            <div id="remainingLifeSteps" class="calculation-steps-section"></div>
-                        </div>
                     </div>
 
-                    <div id="backToCategories" style="display: none;">
-                        <button onclick="showMainCategories()">Geri (Kategorilere Dön)</button>
+                    <div id="fullAge-calc" class="calculation-section">
+                        <h4>Tam Yaş ve Doğum Gününe Kalan Süre</h4>
+                        <label for="birthDateFull">Doğum Tarihiniz:</label>
+                        <input type="date" id="birthDateFull" required>
+                        <button onclick="calculateFullAge()">Hesapla</button>
+                        <div id="fullAgeResult" class="result-output"></div>
+                        <div id="fullAgeSteps" class="calculation-steps-section"></div>
                     </div>
 
+                    <div id="zodiacSigns-calc" class="calculation-section">
+                        <h4>Astrolojik ve Çin Burcu</h4>
+                        <label for="birthDateZodiac">Doğum Tarihiniz:</label>
+                        <input type="date" id="birthDateZodiac" required>
+                        <button onclick="calculateZodiacSigns()">Hesapla</button>
+                        <div id="zodiacSignsResult" class="result-output"></div>
+                        <div id="zodiacSignsSteps" class="calculation-steps-section"></div>
+                    </div>
+
+                    <div id="dateDiffYMD-calc" class="calculation-section">
+                        <h4>Yıl, Ay, Gün Farkı</h4>
+                        <label for="startDateYMD">Başlangıç Tarihi:</label>
+                        <input type="date" id="startDateYMD" required>
+                        <label for="endDateYMD">Bitiş Tarihi:</label>
+                        <input type="date" id="endDateYMD" required>
+                        <button onclick="calculateDateDiffYMD()">Hesapla</button>
+                        <div id="dateDiffYMDResult" class="result-output"></div>
+                        <div id="dateDiffYMDSteps" class="calculation-steps-section"></div>
+                    </div>
+
+                    <div id="dateDiffTotalDays-calc" class="calculation-section">
+                        <h4>Toplam Gün/Saat/Dakika Farkı</h4>
+                        <label for="startDateTotal">Başlangıç Tarihi:</label>
+                        <input type="date" id="startDateTotal" required>
+                        <label for="endDateTotal">Bitiş Tarihi:</label>
+                        <input type="date" id="endDateTotal" required>
+                        <button onclick="calculateDateDiffTotal()">Hesapla</button>
+                        <div id="dateDiffTotalDaysResult" class="result-output"></div>
+                        <div id="dateDiffTotalDaysSteps" class="calculation-steps-section"></div>
+                    </div>
+
+                    <div id="ageAtFutureDate-calc" class="calculation-section">
+                        <h4>Gelecekteki Bir Tarihte Yaşım</h4>
+                        <label for="birthDateFuture">Doğum Tarihiniz:</label>
+                        <input type="date" id="birthDateFuture" required>
+                        <label for="targetDateFuture">Hedef Tarih (Gelecek):</label>
+                        <input type="date" id="targetDateFuture" required>
+                        <button onclick="calculateAgeAtSpecificDate('future')">Hesapla</button>
+                        <div id="ageAtFutureDateResult" class="result-output"></div>
+                        <div id="ageAtFutureDateSteps" class="calculation-steps-section"></div>
+                    </div>
+
+                    <div id="ageAtPastDate-calc" class="calculation-section">
+                        <h4>Geçmişteki Bir Tarihte Yaşım</h4>
+                        <label for="birthDatePast">Doğum Tarihiniz:</label>
+                        <input type="date" id="birthDatePast" required>
+                        <label for="targetDatePast">Hedef Tarih (Geçmiş):</label>
+                        <input type="date" id="targetDatePast" required>
+                        <button onclick="calculateAgeAtSpecificDate('past')">Hesapla</button>
+                        <div id="ageAtPastDateResult" class="result-output"></div>
+                        <div id="ageAtPastDateSteps" class="calculation-steps-section"></div>
+                    </div>
+
+                    <div id="lifeStatistics-calc" class="calculation-section">
+                        <h4>Yaşam Döngüsü İstatistikleri</h4>
+                        <label for="birthDateStats">Doğum Tarihiniz:</label>
+                        <input type="date" id="birthDateStats" required>
+                        <button onclick="calculateLifeStatistics()">Hesapla</button>
+                        <div id="lifeStatisticsResult" class="result-output"></div>
+                        <div id="lifeStatisticsSteps" class="calculation-steps-section"></div>
+                    </div>
+
+                    <div id="milestones-calc" class="calculation-section">
+                        <h4>Yaşamdaki Kilometre Taşları</h4>
+                        <label for="birthDateMilestones">Doğum Tarihiniz:</label>
+                        <input type="date" id="birthDateMilestones" required>
+                        <button onclick="calculateMilestones()">Hesapla</button>
+                        <div id="milestonesResult" class="result-output"></div>
+                        <div id="milestonesSteps" class="calculation-steps-section"></div>
+                    </div>
+
+                    <div id="remainingLife-calc" class="calculation-section">
+                        <h4>Ortalama Yaşam Süresine Göre Tahmini Kalan Süre</h4>
+                        <p class="info-text"><small>Bu hesaplama istatistiksel verilere dayanır ve bireysel bir garanti sunmaz. Ortalama yaşam süresi ülkelere ve cinsiyete göre değişiklik gösterir.</small></p>
+                        <label for="birthDateRemaining">Doğum Tarihiniz:</label>
+                        <input type="date" id="birthDateRemaining" required>
+                        <label for="gender">Cinsiyet:</label>
+                        <select id="gender">
+                            <option value="male">Erkek</option>
+                            <option value="female">Kadın</option>
+                        </select>
+                        <label for="country">Ülke (Ortalama Yaşam Süresi İçin):</label>
+                        <select id="country">
+                            <option value="TR">Türkiye (78.6)</option>
+                            <option value="US">ABD (78.5)</option>
+                            <option value="DE">Almanya (80.9)</option>
+                            <option value="JP">Japonya (84.6)</option>
+                        </select>
+                        <button onclick="calculateRemainingLife()">Hesapla</button>
+                        <div id="remainingLifeResult" class="result-output"></div>
+                        <div id="remainingLifeSteps" class="calculation-steps-section"></div>
+                    </div>
+
+                    <button id="backToCategories" class="category-button" style="display: none;">Geri (Kategorilere Dön)</button>
                 </div>
             </div>
         </section>
@@ -405,80 +435,79 @@
     </footer>
 
     <script>
+        // DOM Elemanları Referansları
         const mainCategoryButtonsArea = document.getElementById('main-category-buttons');
         const calculatorContentArea = document.getElementById('calculator-content-area');
         const mainInstruction = document.getElementById('main-instruction');
-        const backToCategoriesButtonDiv = document.getElementById('backToCategories');
+        const backToCategoriesButton = document.getElementById('backToCategories'); // Buton ID'si değişti
 
         const allCategoryContentSections = document.querySelectorAll('.category-section-content');
         const allCalculationSections = document.querySelectorAll('.calculation-section');
+        const allResultOutputs = document.querySelectorAll('.result-output');
+        const allCalculationSteps = document.querySelectorAll('.calculation-steps-section');
 
-        // Sayfa yüklendiğinde varsayılan mesajı göster
+        // Sayfa yüklendiğinde varsayılan mesajı ve ana kategorileri göster
         document.addEventListener('DOMContentLoaded', () => {
             showMainCategories();
         });
 
-        function showMainCategories() {
-            // Tüm içerik bölümlerini gizle
-            allCategoryContentSections.forEach(section => section.classList.remove('active'));
-            allCalculationSections.forEach(section => section.classList.remove('active'));
+        // --- Navigasyon Fonksiyonları ---
 
-            // Ana kategori butonlarını göster
-            mainCategoryButtonsArea.classList.add('active');
+        // Tüm içeriği gizleyip ana kategorileri gösterir
+        function showMainCategories() {
+            resetAllContent(); // Tüm içeriği sıfırla
+
+            mainCategoryButtonsArea.style.display = 'flex'; // Ana kategori butonlarını göster
             mainInstruction.textContent = "Yapmak istediğiniz yaş hesaplama türünü seçin:";
 
-            // Geri butonunu gizle
-            backToCategoriesButtonDiv.style.display = 'none';
+            backToCategoriesButton.style.display = 'none'; // Geri butonunu gizle
 
-            // Varsayılan mesajı göster
-            document.getElementById('default-message').classList.add('active');
-
+            document.getElementById('default-message').classList.add('active'); // Varsayılan mesajı göster
+            
             // Aktif kategori butonunun işaretini kaldır
             document.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.sub-category-button').forEach(btn => btn.classList.remove('active'));
         }
 
-        // Ana kategori butonlarına tıklama olayı ekleme
-        document.querySelectorAll('.category-button').forEach(button => {
-            button.addEventListener('click', () => {
-                const categoryId = button.dataset.category;
+        // Ana kategori butonlarına tıklama olayı
+        mainCategoryButtonsArea.addEventListener('click', (event) => {
+            const button = event.target.closest('.category-button'); // Tıklanan buton veya ebeveyni yakala
+            if (!button) return; // Buton değilse çık
 
-                // Tüm ana kategori butonlarını gizle
-                mainCategoryButtonsArea.classList.remove('active');
-                mainInstruction.textContent = "Lütfen yapmak istediğiniz hesaplamayı seçin:";
+            const categoryId = button.dataset.category;
 
-                // Tüm kategori içeriklerini gizle
-                allCategoryContentSections.forEach(section => section.classList.remove('active'));
-                allCalculationSections.forEach(section => section.classList.remove('active'));
+            resetAllContent(); // Tüm içeriği sıfırla
 
-                // Tıklanan butona 'active' sınıfını ekle (görsel işaretleme)
-                document.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
+            mainCategoryButtonsArea.style.display = 'none'; // Ana kategori butonlarını gizle
+            mainInstruction.textContent = "Lütfen yapmak istediğiniz hesaplamayı seçin:";
 
-                // İlgili kategori içeriğini göster
-                const targetContent = document.getElementById(`${categoryId}-content`);
-                if (targetContent) {
-                    targetContent.classList.add('active');
-                    const subButtons = targetContent.querySelector('.sub-category-buttons');
-                    if(subButtons) subButtons.classList.add('active'); // Alt butonları göster
-                }
+            // Tıklanan butona 'active' sınıfını ekle (görsel işaretleme)
+            document.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
 
-                // Geri butonunu göster
-                backToCategoriesButtonDiv.style.display = 'block';
-            });
+            // İlgili kategori içeriğini göster
+            const targetContent = document.getElementById(`${categoryId}-content`);
+            if (targetContent) {
+                targetContent.classList.add('active');
+                const subButtons = targetContent.querySelector('.sub-category-buttons');
+                if(subButtons) subButtons.classList.add('active'); // Alt butonları göster
+            }
+
+            backToCategoriesButton.style.display = 'block'; // Geri butonunu göster
         });
 
-        // Alt kategori (hesaplama) butonlarına tıklama olayı ekleme
-        document.querySelectorAll('.sub-category-button').forEach(button => {
-            button.addEventListener('click', () => {
+        // Alt kategori (hesaplama) butonlarına tıklama olayı
+        document.querySelectorAll('.sub-category-buttons').forEach(subButtonsArea => {
+            subButtonsArea.addEventListener('click', (event) => {
+                const button = event.target.closest('.sub-category-button'); // Tıklanan buton veya ebeveyni yakala
+                if (!button) return; // Buton değilse çık
+
                 const calcId = button.dataset.calc;
                 const parentCategoryContent = button.closest('.category-section-content');
 
-                // Tüm alt kategori butonlarını ve diğer hesaplama bölümlerini gizle
-                if(parentCategoryContent) {
-                    const subButtons = parentCategoryContent.querySelector('.sub-category-buttons');
-                    if(subButtons) subButtons.classList.remove('active');
-                    parentCategoryContent.querySelectorAll('.calculation-section').forEach(section => section.classList.remove('active'));
-                }
+                // Önceki hesaplama bölümlerini ve alt butonları gizle
+                parentCategoryContent.querySelectorAll('.sub-category-buttons').forEach(btnArea => btnArea.classList.remove('active'));
+                parentCategoryContent.querySelectorAll('.calculation-section').forEach(section => section.classList.remove('active'));
                 
                 // Tıklanan alt butona 'active' sınıfını ekle (görsel işaretleme)
                 document.querySelectorAll('.sub-category-button').forEach(btn => btn.classList.remove('active'));
@@ -490,7 +519,17 @@
             });
         });
 
-        // --- Yardımcı Fonksiyon: Yaş Farkı Hesaplama ---
+        // Tüm aktif içerikleri, sonuçları ve adımları sıfırlayan yardımcı fonksiyon
+        function resetAllContent() {
+            allCategoryContentSections.forEach(section => section.classList.remove('active'));
+            allCalculationSections.forEach(section => section.classList.remove('active'));
+            allResultOutputs.forEach(div => div.style.display = 'none'); // Sonuçları gizle
+            allResultOutputs.forEach(div => div.innerHTML = ''); // Sonuçları temizle
+            allCalculationSteps.forEach(div => div.style.display = 'none'); // Adımları gizle
+            allCalculationSteps.forEach(div => div.innerHTML = ''); // Adımları temizle
+        }
+
+        // --- Yardımcı Fonksiyon: Yaş Farkı Hesaplama (Yıl, Ay, Gün) ---
         function calculateAgeDifference(startDate, endDate) {
             let years = endDate.getFullYear() - startDate.getFullYear();
             let months = endDate.getMonth() - startDate.getMonth();
@@ -498,7 +537,8 @@
 
             if (days < 0) {
                 months--;
-                days += new Date(endDate.getFullYear(), endDate.getMonth(), 0).getDate(); // Önceki ayın gün sayısı
+                // JavaScript'te getDate(0) bir önceki ayın son gününü verir
+                days += new Date(endDate.getFullYear(), endDate.getMonth(), 0).getDate(); 
             }
             if (months < 0) {
                 years--;
@@ -512,10 +552,12 @@
             const birthDateStr = document.getElementById('birthDateFull').value;
             const resultDiv = document.getElementById('fullAgeResult');
             const stepsDiv = document.getElementById('fullAgeSteps');
+            resultDiv.style.display = 'none'; // Önceki sonucu gizle
+            stepsDiv.style.display = 'none'; // Önceki adımları gizle
 
             if (!birthDateStr) {
-                resultDiv.textContent = 'Lütfen doğum tarihinizi girin.';
-                stepsDiv.innerHTML = '';
+                resultDiv.innerHTML = '<p class="error">Lütfen doğum tarihinizi girin.</p>';
+                resultDiv.style.display = 'block';
                 return;
             }
 
@@ -523,14 +565,12 @@
             const today = new Date();
 
             if (birthDate > today) {
-                resultDiv.textContent = 'Doğum tarihi bugünden büyük olamaz.';
-                stepsDiv.innerHTML = '';
+                resultDiv.innerHTML = '<p class="error">Doğum tarihi bugünden büyük olamaz.</p>';
+                resultDiv.style.display = 'block';
                 return;
             }
 
             const { years, months, days } = calculateAgeDifference(birthDate, today);
-
-            resultDiv.innerHTML = `Yaşınız: <strong>${years} yıl, ${months} ay, ${days} gün</strong>`;
 
             // Sonraki doğum gününe kalan süre
             let nextBirthday = new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate());
@@ -538,33 +578,38 @@
                 nextBirthday.setFullYear(today.getFullYear() + 1);
             }
             const timeToNextBirthday = calculateAgeDifference(today, nextBirthday);
-            resultDiv.innerHTML += `<br>Bir Sonraki Doğum Gününüze Kalan Süre: <strong>${timeToNextBirthday.months} ay, ${timeToNextBirthday.days} gün</strong>`;
 
+            resultDiv.innerHTML = `
+                <p>Yaşınız: <strong>${years} yıl, ${months} ay, ${days} gün</strong></p>
+                <p>Bir Sonraki Doğum Gününüze Kalan Süre: <strong>${timeToNextBirthday.months} ay, ${timeToNextBirthday.days} gün</strong></p>
+            `;
+            resultDiv.style.display = 'block';
 
             stepsDiv.innerHTML = `
                 <h3>Nasıl Hesaplandı? (Adım Adım)</h3>
                 <p>Yaşınız, doğum tarihinizden bugüne kadar geçen süre yıl, ay ve gün olarak hesaplanarak bulunur.</p>
                 <ul>
-                    <li><strong>Adım 1:</strong> Doğum tarihiniz ve bugünün tarihi belirlenir.</li>
-                    <li><strong>Adım 2:</strong> Yıl farkı bulunur. (Bugünün yılı - Doğum yılı)</li>
-                    <li><strong>Adım 3:</strong> Ay farkı bulunur. (Bugünün ayı - Doğum ayı)</li>
-                    <li><strong>Adım 4:</strong> Gün farkı bulunur. (Bugünün günü - Doğum günü)</li>
-                    <li><strong>Adım 5:</strong> Eğer gün farkı negatifse, bir önceki ayın gün sayısı kadar eklenir ve ay farkı 1 azaltılır.</li>
-                    <li><strong>Adım 6:</strong> Eğer ay farkı negatifse, 12 ay eklenir ve yıl farkı 1 azaltılır.</li>
-                    <li><strong>Sizin Hesabınız:</strong> Doğum tarihiniz <strong>${birthDate.toLocaleDateString('tr-TR')}</strong> ise, bugüne göre yaşınız <strong>${years} yıl, ${months} ay, ${days} gün</strong>'dür.</li>
-                    <li><strong>Sonraki Doğum Günü Hesabı:</strong> Bir sonraki doğum gününüz, mevcut yılın veya bir sonraki yılın doğum ay ve gününe göre belirlenir ve bugüne kalan süre aynı yöntemle hesaplanır.</li>
+                    <li><strong>Adım 1:</strong> Doğum tarihiniz (${birthDate.toLocaleDateString('tr-TR')}) ve bugünün tarihi (${today.toLocaleDateString('tr-TR')}) belirlenir.</li>
+                    <li><strong>Adım 2:</strong> Yıl, ay ve gün farkları ayrı ayrı bulunur.</li>
+                    <li><strong>Adım 3:</strong> Gün ve ay farklarının negatif olması durumunda, bir önceki birimden (aydan güne, yıldan aya) "ödünç" alınarak düzeltmeler yapılır.</li>
+                    <li><strong>Adım 4:</strong> Sonraki doğum gününüze kalan süre de aynı yöntemle hesaplanır.</li>
                 </ul>
+                <p><strong>Hesaplama Sonucu:</strong> Doğum tarihiniz ${birthDate.toLocaleDateString('tr-TR')} ise, bugüne göre yaşınız <strong>${years} yıl, ${months} ay, ${days} gün</strong>'dür.</p>
+                <p><strong>Sonraki Doğum Gününe Kalan Süre:</strong> <strong>${timeToNextBirthday.months} ay, ${timeToNextBirthday.days} gün</strong>.</p>
             `;
+            stepsDiv.classList.add('active'); // Adımları göster
         }
 
         function calculateZodiacSigns() {
             const birthDateStr = document.getElementById('birthDateZodiac').value;
             const resultDiv = document.getElementById('zodiacSignsResult');
             const stepsDiv = document.getElementById('zodiacSignsSteps');
+            resultDiv.style.display = 'none';
+            stepsDiv.style.display = 'none';
 
             if (!birthDateStr) {
-                resultDiv.textContent = 'Lütfen doğum tarihinizi girin.';
-                stepsDiv.innerHTML = '';
+                resultDiv.innerHTML = '<p class="error">Lütfen doğum tarihinizi girin.</p>';
+                resultDiv.style.display = 'block';
                 return;
             }
 
@@ -592,11 +637,11 @@
             const chineseZodiacYear = (year - 4) % 12; // M.S. 4 yılı maymun yılıdır.
             const chineseZodiac = chineseZodiacs[chineseZodiacYear];
 
-
             resultDiv.innerHTML = `
-                Astrolojik Burcunuz: <strong>${zodiacSign}</strong><br>
-                Çin Burcunuz: <strong>${chineseZodiac}</strong>
+                <p>Astrolojik Burcunuz: <strong>${zodiacSign}</strong></p>
+                <p>Çin Burcunuz: <strong>${chineseZodiac}</strong></p>
             `;
+            resultDiv.style.display = 'block';
 
             stepsDiv.innerHTML = `
                 <h3>Nasıl Hesaplandı? (Adım Adım)</h3>
@@ -607,8 +652,8 @@
                     <li><strong>Sizin Ay ve Gününüz (${day}.${month}):</strong> Astrolojik burcunuzu belirlemek için kullanılır.</li>
                 </ul>
             `;
+            stepsDiv.classList.add('active'); // Adımları göster
         }
-
 
         // --- KATEGORİ: İKİ TARİH ARASI FARK ---
         function calculateDateDiffYMD() {
@@ -616,10 +661,12 @@
             const endDateStr = document.getElementById('endDateYMD').value;
             const resultDiv = document.getElementById('dateDiffYMDResult');
             const stepsDiv = document.getElementById('dateDiffYMDSteps');
+            resultDiv.style.display = 'none';
+            stepsDiv.style.display = 'none';
 
             if (!startDateStr || !endDateStr) {
-                resultDiv.textContent = 'Lütfen başlangıç ve bitiş tarihlerini girin.';
-                stepsDiv.innerHTML = '';
+                resultDiv.innerHTML = '<p class="error">Lütfen başlangıç ve bitiş tarihlerini girin.</p>';
+                resultDiv.style.display = 'block';
                 return;
             }
 
@@ -627,25 +674,27 @@
             const endDate = new Date(endDateStr);
 
             if (startDate > endDate) {
-                resultDiv.textContent = 'Başlangıç tarihi bitiş tarihinden büyük olamaz.';
-                stepsDiv.innerHTML = '';
+                resultDiv.innerHTML = '<p class="error">Başlangıç tarihi bitiş tarihinden büyük olamaz.</p>';
+                resultDiv.style.display = 'block';
                 return;
             }
 
             const { years, months, days } = calculateAgeDifference(startDate, endDate);
 
-            resultDiv.innerHTML = `İki Tarih Arası Fark: <strong>${years} yıl, ${months} ay, ${days} gün</strong>`;
+            resultDiv.innerHTML = `<p>İki Tarih Arası Fark: <strong>${years} yıl, ${months} ay, ${days} gün</strong></p>`;
+            resultDiv.style.display = 'block';
 
             stepsDiv.innerHTML = `
                 <h3>Nasıl Hesaplandı? (Adım Adım)</h3>
                 <p>İki tarih arasındaki fark, tıpkı yaş hesaplamasında olduğu gibi, yıllar, aylar ve günler bazında kademeli olarak hesaplanır.</p>
                 <ul>
-                    <li><strong>Adım 1:</strong> Başlangıç ve bitiş tarihleri belirlenir.</li>
+                    <li><strong>Adım 1:</strong> Başlangıç (${startDate.toLocaleDateString('tr-TR')}) ve bitiş (${endDate.toLocaleDateString('tr-TR')}) tarihleri belirlenir.</li>
                     <li><strong>Adım 2:</strong> Yıl, ay ve gün farkları ayrı ayrı bulunur.</li>
                     <li><strong>Adım 3:</strong> Gün ve ay farklarının negatif olması durumunda, bir önceki birimden (aydan güne, yıldan aya) "ödünç" alınarak düzeltmeler yapılır.</li>
-                    <li><strong>Sizin Hesabınız:</strong> ${startDate.toLocaleDateString('tr-TR')} ile ${endDate.toLocaleDateString('tr-TR')} arasındaki fark <strong>${years} yıl, ${months} ay, ${days} gün</strong>'dür.</li>
                 </ul>
+                <p><strong>Hesaplama Sonucu:</strong> ${startDate.toLocaleDateString('tr-TR')} ile ${endDate.toLocaleDateString('tr-TR')} arasındaki fark <strong>${years} yıl, ${months} ay, ${days} gün</strong>'dür.</p>
             `;
+            stepsDiv.classList.add('active'); // Adımları göster
         }
 
         function calculateDateDiffTotal() {
@@ -653,10 +702,12 @@
             const endDateStr = document.getElementById('endDateTotal').value;
             const resultDiv = document.getElementById('dateDiffTotalDaysResult');
             const stepsDiv = document.getElementById('dateDiffTotalDaysSteps');
+            resultDiv.style.display = 'none';
+            stepsDiv.style.display = 'none';
 
             if (!startDateStr || !endDateStr) {
-                resultDiv.textContent = 'Lütfen başlangıç ve bitiş tarihlerini girin.';
-                stepsDiv.innerHTML = '';
+                resultDiv.innerHTML = '<p class="error">Lütfen başlangıç ve bitiş tarihlerini girin.</p>';
+                resultDiv.style.display = 'block';
                 return;
             }
 
@@ -664,34 +715,36 @@
             const endDate = new Date(endDateStr);
 
             if (startDate > endDate) {
-                resultDiv.textContent = 'Başlangıç tarihi bitiş tarihinden büyük olamaz.';
-                stepsDiv.innerHTML = '';
+                resultDiv.innerHTML = '<p class="error">Başlangıç tarihi bitiş tarihinden büyük olamaz.</p>';
+                resultDiv.style.display = 'block';
                 return;
             }
 
             const diffTime = Math.abs(endDate.getTime() - startDate.getTime()); // Milisaniye farkı
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Tam gün farkı
             const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
             const diffMinutes = Math.floor(diffTime / (1000 * 60));
             const diffSeconds = Math.floor(diffTime / (1000));
 
             resultDiv.innerHTML = `
-                Toplam Gün Farkı: <strong>${diffDays} gün</strong><br>
-                Toplam Saat Farkı: <strong>${diffHours} saat</strong><br>
-                Toplam Dakika Farkı: <strong>${diffMinutes} dakika</strong><br>
-                Toplam Saniye Farkı: <strong>${diffSeconds} saniye</strong>
+                <p>Toplam Gün Farkı: <strong>${diffDays} gün</strong></p>
+                <p>Toplam Saat Farkı: <strong>${diffHours.toLocaleString()} saat</strong></p>
+                <p>Toplam Dakika Farkı: <strong>${diffMinutes.toLocaleString()} dakika</strong></p>
+                <p>Toplam Saniye Farkı: <strong>${diffSeconds.toLocaleString()} saniye</strong></p>
             `;
+            resultDiv.style.display = 'block';
 
             stepsDiv.innerHTML = `
                 <h3>Nasıl Hesaplandı? (Adım Adım)</h3>
                 <p>İki tarih arasındaki toplam gün, saat, dakika ve saniye farkları, tarihler arasındaki toplam milisaniye farkı üzerinden hesaplanır.</p>
                 <ul>
-                    <li><strong>Adım 1:</strong> Başlangıç ve bitiş tarihlerinin milisaniye cinsinden değerleri alınır (Unix zamanı).</li>
+                    <li><strong>Adım 1:</strong> Başlangıç (${startDate.toLocaleDateString('tr-TR')}) ve bitiş (${endDate.toLocaleDateString('tr-TR')}) tarihlerinin milisaniye cinsinden değerleri alınır.</li>
                     <li><strong>Adım 2:</strong> Bu iki milisaniye değeri arasındaki fark bulunur.</li>
-                    <li><strong>Adım 3:</strong> Bulunan milisaniye farkı, ilgili zaman birimlerinin milisaniye karşılıklarına (örneğin, 1 gün = 86,400,000 milisaniye) bölünerek istenen birime dönüştürülür.</li>
-                    <li><strong>Sizin Hesabınız:</strong> ${startDate.toLocaleDateString('tr-TR')} ile ${endDate.toLocaleDateString('tr-TR')} arasındaki fark ${diffDays} gün, ${diffHours} saat, ${diffMinutes} dakika ve ${diffSeconds} saniyedir.</li>
+                    <li><strong>Adım 3:</strong> Bulunan milisaniye farkı, ilgili zaman birimlerinin milisaniye karşılıklarına bölünerek (örneğin, 1 gün = 86,400,000 milisaniye) toplam süreler bulunur.</li>
                 </ul>
+                <p><strong>Hesaplama Sonucu:</strong> ${startDate.toLocaleDateString('tr-TR')} ile ${endDate.toLocaleDateString('tr-TR')} arasındaki fark ${diffDays} gün, ${diffHours.toLocaleString()} saat, ${diffMinutes.toLocaleString()} dakika ve ${diffSeconds.toLocaleString()} saniyedir.</p>
             `;
+            stepsDiv.classList.add('active'); // Adımları göster
         }
 
         // --- KATEGORİ: BELİRLİ BİR TARİHTE YAŞIM ---
@@ -705,43 +758,40 @@
             const targetDateStr = document.getElementById(targetDateElemId).value;
             const resultDiv = document.getElementById(resultDivId);
             const stepsDiv = document.getElementById(stepsDivId);
+            resultDiv.style.display = 'none';
+            stepsDiv.style.display = 'none';
 
             if (!birthDateStr || !targetDateStr) {
-                resultDiv.textContent = 'Lütfen doğum tarihinizi ve hedef tarihi girin.';
-                stepsDiv.innerHTML = '';
+                resultDiv.innerHTML = '<p class="error">Lütfen doğum tarihinizi ve hedef tarihi girin.</p>';
+                resultDiv.style.display = 'block';
                 return;
             }
 
             const birthDate = new Date(birthDateStr);
             const targetDate = new Date(targetDateStr);
 
-            if (type === 'future' && birthDate > targetDate) {
-                resultDiv.textContent = 'Hedef tarih doğum tarihinden küçük olamaz.';
-                stepsDiv.innerHTML = '';
+            if (birthDate > targetDate) {
+                resultDiv.innerHTML = '<p class="error">Doğum tarihi hedef tarihten büyük olamaz.</p>';
+                resultDiv.style.display = 'block';
                 return;
             }
-            if (type === 'past' && birthDate > targetDate) {
-                 // Geçmişte yaşınızın olmaması durumunda
-                 resultDiv.textContent = 'Doğum tarihiniz, hedef tarihten büyük olamaz.';
-                 stepsDiv.innerHTML = '';
-                 return;
-            }
-
 
             const { years, months, days } = calculateAgeDifference(birthDate, targetDate);
 
-            resultDiv.innerHTML = `O tarihteki yaşınız: <strong>${years} yıl, ${months} ay, ${days} gün</strong>`;
+            resultDiv.innerHTML = `<p>O tarihteki yaşınız: <strong>${years} yıl, ${months} ay, ${days} gün</strong></p>`;
+            resultDiv.style.display = 'block';
 
             stepsDiv.innerHTML = `
                 <h3>Nasıl Hesaplandı? (Adım Adım)</h3>
                 <p>Belirli bir tarihteki yaşınız, doğum tarihiniz ile hedef tarih arasındaki farkın yıl, ay ve gün olarak bulunmasıyla hesaplanır.</p>
                 <ul>
-                    <li><strong>Adım 1:</strong> Doğum tarihiniz ve hedef tarih belirlenir.</li>
+                    <li><strong>Adım 1:</strong> Doğum tarihiniz (${birthDate.toLocaleDateString('tr-TR')}) ve hedef tarih (${targetDate.toLocaleDateString('tr-TR')}) belirlenir.</li>
                     <li><strong>Adım 2:</strong> Yıl, ay ve gün farkları bulunur.</li>
                     <li><strong>Adım 3:</strong> Gün ve ay farklarının negatif olması durumunda, bir önceki birimden (aydan güne, yıldan aya) "ödünç" alınarak düzeltmeler yapılır.</li>
-                    <li><strong>Sizin Hesabınız:</strong> Doğum tarihiniz <strong>${birthDate.toLocaleDateString('tr-TR')}</strong> ise, <strong>${targetDate.toLocaleDateString('tr-TR')}</strong> tarihindeki yaşınız <strong>${years} yıl, ${months} ay, ${days} gün</strong>'dür.</li>
                 </ul>
+                <p><strong>Hesaplama Sonucu:</strong> Doğum tarihiniz ${birthDate.toLocaleDateString('tr-TR')} ise, ${targetDate.toLocaleDateString('tr-TR')} tarihindeki yaşınız <strong>${years} yıl, ${months} ay, ${days} gün</strong>'dür.</p>
             `;
+            stepsDiv.classList.add('active'); // Adımları göster
         }
 
         // --- KATEGORİ: İLGİNÇ YAŞ BİLGİLERİ VE İSTATİSTİKLER ---
@@ -749,10 +799,12 @@
             const birthDateStr = document.getElementById('birthDateStats').value;
             const resultDiv = document.getElementById('lifeStatisticsResult');
             const stepsDiv = document.getElementById('lifeStatisticsSteps');
+            resultDiv.style.display = 'none';
+            stepsDiv.style.display = 'none';
 
             if (!birthDateStr) {
-                resultDiv.textContent = 'Lütfen doğum tarihinizi girin.';
-                stepsDiv.innerHTML = '';
+                resultDiv.innerHTML = '<p class="error">Lütfen doğum tarihinizi girin.</p>';
+                resultDiv.style.display = 'block';
                 return;
             }
 
@@ -760,13 +812,13 @@
             const today = new Date();
 
             if (birthDate > today) {
-                resultDiv.textContent = 'Doğum tarihi bugünden büyük olamaz.';
-                stepsDiv.innerHTML = '';
+                resultDiv.innerHTML = '<p class="error">Doğum tarihi bugünden büyük olamaz.</p>';
+                resultDiv.style.display = 'block';
                 return;
             }
 
             const diffTime = Math.abs(today.getTime() - birthDate.getTime()); // Milisaniye farkı
-            const totalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            const totalDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); // Tam gün farkı (ceil yerine floor kullanıldı)
             const totalHours = Math.floor(diffTime / (1000 * 60 * 60));
             const totalMinutes = Math.floor(diffTime / (1000 * 60));
             const totalSeconds = Math.floor(diffTime / (1000));
@@ -779,38 +831,41 @@
             const totalBreaths = totalMinutes * avgBreathsPerMinute;
 
             resultDiv.innerHTML = `
-                Şu ana kadar yaşadığınız:<br>
-                <strong>${totalDays} gün</strong><br>
-                <strong>${totalHours.toLocaleString()} saat</strong><br>
-                <strong>${totalMinutes.toLocaleString()} dakika</strong><br>
-                <strong>${totalSeconds.toLocaleString()} saniye</strong><br>
-                <br>
-                Yaklaşık:<br>
-                <strong>${totalHeartbeats.toLocaleString()} kere kalbiniz attı</strong><br>
-                <strong>${totalBreaths.toLocaleString()} kere nefes aldınız</strong>
+                <p>Şu ana kadar yaşadığınız:</p>
+                <p><strong>${totalDays.toLocaleString()} gün</strong></p>
+                <p><strong>${totalHours.toLocaleString()} saat</strong></p>
+                <p><strong>${totalMinutes.toLocaleString()} dakika</strong></p>
+                <p><strong>${totalSeconds.toLocaleString()} saniye</strong></p>
+                <p><br>Yaklaşık:</p>
+                <p><strong>${totalHeartbeats.toLocaleString()} kere kalbiniz attı</strong></p>
+                <p><strong>${totalBreaths.toLocaleString()} kere nefes aldınız</strong></p>
             `;
+            resultDiv.style.display = 'block';
 
             stepsDiv.innerHTML = `
                 <h3>Nasıl Hesaplandı? (Adım Adım)</h3>
                 <p>Yaşam döngüsü istatistikleri, doğum tarihinizden bugüne kadar geçen toplam sürenin milisaniye bazında hesaplanması ve ilgili birimlere dönüştürülmesiyle elde edilir.</p>
                 <ul>
-                    <li><strong>Adım 1:</strong> Doğum tarihiniz ve bugünün tarihi milisaniye olarak alınır.</li>
+                    <li><strong>Adım 1:</strong> Doğum tarihiniz (${birthDate.toLocaleDateString('tr-TR')}) ve bugünün tarihi (${today.toLocaleDateString('tr-TR')}) milisaniye olarak alınır.</li>
                     <li><strong>Adım 2:</strong> Bu iki tarih arasındaki milisaniye farkı bulunur.</li>
-                    <li><strong>Adım 3:</strong> Milisaniye farkı, gün (1000*60*60*24), saat (1000*60*60), dakika (1000*60) ve saniyeye (1000) bölünerek toplam süreler bulunur.</li>
+                    <li><strong>Adım 3:</strong> Milisaniye farkı, gün, saat, dakika ve saniyeye bölünerek toplam süreler bulunur.</li>
                     <li><strong>Adım 4:</strong> Kalp atış sayısı ve nefes alma sayısı için ortalama değerler (kalp atışı: 70/dk, nefes: 16/dk) kullanılarak toplam dakika sayısı ile çarpılır.</li>
-                    <li><strong>Sizin Hesabınız:</strong> Doğum tarihinizden bugüne kadar geçen süre ${totalDays} gün, ${totalHours.toLocaleString()} saat vb. olarak hesaplanmıştır.</li>
                 </ul>
+                <p><strong>Hesaplama Sonucu:</strong> Doğum tarihinizden bugüne kadar geçen süre ${totalDays.toLocaleString()} gün, ${totalHours.toLocaleString()} saat vb. olarak hesaplanmıştır.</p>
             `;
+            stepsDiv.classList.add('active'); // Adımları göster
         }
 
         function calculateMilestones() {
             const birthDateStr = document.getElementById('birthDateMilestones').value;
             const resultDiv = document.getElementById('milestonesResult');
             const stepsDiv = document.getElementById('milestonesSteps');
+            resultDiv.style.display = 'none';
+            stepsDiv.style.display = 'none';
 
             if (!birthDateStr) {
-                resultDiv.textContent = 'Lütfen doğum tarihinizi girin.';
-                stepsDiv.innerHTML = '';
+                resultDiv.innerHTML = '<p class="error">Lütfen doğum tarihinizi girin.</p>';
+                resultDiv.style.display = 'block';
                 return;
             }
 
@@ -818,8 +873,8 @@
             const today = new Date();
 
             if (birthDate > today) {
-                resultDiv.textContent = 'Doğum tarihi bugünden büyük olamaz.';
-                stepsDiv.innerHTML = '';
+                resultDiv.innerHTML = '<p class="error">Doğum tarihi bugünden büyük olamaz.</p>';
+                resultDiv.style.display = 'block';
                 return;
             }
 
@@ -832,30 +887,24 @@
                 { name: "500.000. dakikanız", minutes: 500000 }
             ];
 
-            let milestoneResults = [];
+            let milestoneResultsHTML = '<h4>Yaşamdaki Kilometre Taşları</h4>';
             milestones.forEach(m => {
-                let targetDate;
+                let targetDate = new Date(birthDate.getTime()); // Doğum tarihinden başla
+
                 if (m.days) {
-                    targetDate = new Date(birthDate);
                     targetDate.setDate(birthDate.getDate() + m.days);
                 } else if (m.hours) {
-                    targetDate = new Date(birthDate);
                     targetDate.setHours(birthDate.getHours() + m.hours);
                 } else if (m.minutes) {
-                    targetDate = new Date(birthDate);
                     targetDate.setMinutes(birthDate.getMinutes() + m.minutes);
                 }
                 
-                if (targetDate) {
-                    const status = targetDate < today ? 'idi' : 'olacak';
-                    milestoneResults.push(`${m.name}: <strong>${targetDate.toLocaleDateString('tr-TR')}</strong> (${status})`);
-                }
+                const status = targetDate < today ? 'idi' : 'olacak';
+                milestoneResultsHTML += `<p>${m.name}: <strong>${targetDate.toLocaleDateString('tr-TR')}</strong> (${status})</p>`;
             });
 
-            resultDiv.innerHTML = `
-                <h4>Yaşamdaki Kilometre Taşları</h4>
-                ${milestoneResults.join('<br>')}
-            `;
+            resultDiv.innerHTML = milestoneResultsHTML;
+            resultDiv.style.display = 'block';
 
             stepsDiv.innerHTML = `
                 <h3>Nasıl Hesaplandı? (Adım Adım)</h3>
@@ -867,6 +916,7 @@
                     <li><strong>Örnek:</strong> 10.000. gününüzü bulmak için, doğum tarihinize 10.000 gün eklenir.</li>
                 </ul>
             `;
+            stepsDiv.classList.add('active'); // Adımları göster
         }
 
         function calculateRemainingLife() {
@@ -875,10 +925,12 @@
             const country = document.getElementById('country').value;
             const resultDiv = document.getElementById('remainingLifeResult');
             const stepsDiv = document.getElementById('remainingLifeSteps');
+            resultDiv.style.display = 'none';
+            stepsDiv.style.display = 'none';
 
             if (!birthDateStr) {
-                resultDiv.textContent = 'Lütfen doğum tarihinizi girin.';
-                stepsDiv.innerHTML = '';
+                resultDiv.innerHTML = '<p class="error">Lütfen doğum tarihinizi girin.</p>';
+                resultDiv.style.display = 'block';
                 return;
             }
 
@@ -886,8 +938,8 @@
             const today = new Date();
 
             if (birthDate > today) {
-                resultDiv.textContent = 'Doğum tarihi bugünden büyük olamaz.';
-                stepsDiv.innerHTML = '';
+                resultDiv.innerHTML = '<p class="error">Doğum tarihi bugünden büyük olamaz.</p>';
+                resultDiv.style.display = 'block';
                 return;
             }
 
@@ -901,46 +953,52 @@
 
             const selectedLifeExpectancy = lifeExpectancies[country][gender];
             if (!selectedLifeExpectancy) {
-                resultDiv.textContent = 'Seçilen ülke veya cinsiyet için yaşam süresi verisi bulunamadı.';
-                stepsDiv.innerHTML = '';
+                resultDiv.innerHTML = '<p class="error">Seçilen ülke veya cinsiyet için yaşam süresi verisi bulunamadı.</p>';
+                resultDiv.style.display = 'block';
                 return;
             }
 
-            const currentAgeYears = today.getFullYear() - birthDate.getFullYear();
-            const currentAgeMonths = today.getMonth() - birthDate.getMonth();
-            const currentAgeDays = today.getDate() - birthDate.getDate();
+            // Yaşanan gün sayısı (doğruyu yansıtması için yuvarlama yapılmadı, milisaniye üzerinden tam hesap)
+            const msLived = today.getTime() - birthDate.getTime();
+            const daysLived = msLived / (1000 * 60 * 60 * 24); // Gün olarak
 
-            let totalDaysLived = (today.getTime() - birthDate.getTime()) / (1000 * 60 * 60 * 24); // Gün olarak
+            const remainingYearsDecimal = selectedLifeExpectancy - (daysLived / 365.25); // Kalan yıl (ondalıklı)
+
+            if (remainingYearsDecimal <= 0) {
+                resultDiv.innerHTML = '<p>Ortalama yaşam süresini tamamlamış görünüyorsunuz. Teşekkürler!</p>';
+                resultDiv.style.display = 'block';
+                stepsDiv.classList.add('active');
+                stepsDiv.innerHTML = `
+                    <h3>Nasıl Hesaplandı? (Adım Adım)</h3>
+                    <p>Bu hesaplama, doğum tarihinizi, cinsiyetinizi ve seçtiğiniz ülkenin ortalama yaşam süresi istatistiklerini kullanarak tahmini kalan yaşam sürenizi belirler. Yaşınızın ortalama yaşam süresini aştığı durumlarda bu mesaj gösterilir.</p>
+                `;
+                return;
+            }
+
+            // Kalan yaşam süresinin bitiş tarihini hesapla
+            let expectedEndDate = new Date(birthDate);
+            expectedEndDate.setFullYear(birthDate.getFullYear() + selectedLifeExpectancy);
             
-            const remainingYears = selectedLifeExpectancy - (totalDaysLived / 365.25); // Ortalama yıl
-
-            if (remainingYears <= 0) {
-                resultDiv.innerHTML = `Ortalama yaşam süresini tamamlamış görünüyorsunuz. Teşekkürler!`;
-                stepsDiv.innerHTML = '';
-                return;
-            }
-
-            let remainingDate = new Date(birthDate);
-            remainingDate.setFullYear(birthDate.getFullYear() + selectedLifeExpectancy);
-
-            const { years, months, days } = calculateAgeDifference(today, remainingDate);
+            const { years, months, days } = calculateAgeDifference(today, expectedEndDate); // Bugünden kalan süreyi hesapla
 
             resultDiv.innerHTML = `
-                Tahmini Kalan Yaşam Süreniz (${country}, ${gender === 'male' ? 'Erkek' : 'Kadın'} için ortalama ${selectedLifeExpectancy} yıl):<br>
-                <strong>${years} yıl, ${months} ay, ${days} gün</strong>
+                <p>Tahmini Kalan Yaşam Süreniz (${country}, ${gender === 'male' ? 'Erkek' : 'Kadın'} için ortalama ${selectedLifeExpectancy} yıl):</p>
+                <p><strong>${years} yıl, ${months} ay, ${days} gün</strong></p>
             `;
+            resultDiv.style.display = 'block';
 
             stepsDiv.innerHTML = `
                 <h3>Nasıl Hesaplandı? (Adım Adım)</h3>
                 <p>Bu hesaplama, doğum tarihinizi, cinsiyetinizi ve seçtiğiniz ülkenin ortalama yaşam süresi istatistiklerini kullanarak tahmini kalan yaşam sürenizi belirler. Bu istatistikler genel eğilimleri gösterir, kişiye özel değildir.</p>
                 <ul>
-                    <li><strong>Adım 1:</strong> Doğum tarihiniz, cinsiyetiniz ve seçtiğiniz ülke için ortalama yaşam süresi (yıl olarak) belirlenir.</li>
-                    <li><strong>Adım 2:</strong> Bugüne kadar yaşadığınız toplam süre (gün olarak) hesaplanır.</li>
-                    <li><strong>Adım 3:</strong> Ortalama yaşam süresinden yaşadığınız süre çıkarılarak tahmini kalan süre bulunur.</li>
-                    <li><strong>Adım 4:</strong> Kalan süre, yıl, ay ve gün olarak gösterilir.</li>
-                    <li><strong>Sizin Hesabınız:</strong> Ortalama yaşam süresi ${selectedLifeExpectancy} yıl olarak kabul edildiğinde, kalan yaşam süreniz ${years} yıl, ${months} ay, ${days} gün olarak tahmin edilmiştir.</li>
+                    <li><strong>Adım 1:</strong> Doğum tarihiniz (${birthDate.toLocaleDateString('tr-TR')}), cinsiyetiniz ve seçtiğiniz ülke (${country}) için ortalama yaşam süresi (${selectedLifeExpectancy} yıl) belirlenir.</li>
+                    <li><strong>Adım 2:</strong> Bugüne kadar yaşadığınız toplam gün sayısı hassas bir şekilde hesaplanır.</li>
+                    <li><strong>Adım 3:</strong> Ortalama yaşam süresinden (yıl olarak) yaşadığınız süre (yıla çevrilerek) çıkarılarak tahmini kalan süre (yıl olarak) bulunur.</li>
+                    <li><strong>Adım 4:</strong> Kalan süre, yıl, ay ve gün olarak hassas bir şekilde gösterilir.</li>
                 </ul>
+                <p><strong>Hesaplama Sonucu:</strong> Ortalama yaşam süresi ${selectedLifeExpectancy} yıl olarak kabul edildiğinde, kalan yaşam süreniz <strong>${years} yıl, ${months} ay, ${days} gün</strong> olarak tahmin edilmiştir.</p>
             `;
+            stepsDiv.classList.add('active'); // Adımları göster
         }
 
     </script>
