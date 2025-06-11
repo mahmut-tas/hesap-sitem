@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isı Transferi Hesaplayıcı - Hesapkolik</title>
+    <meta name="description" content="İletim (Konduksiyon), Taşınım (Konveksiyon) ve Işınım (Radyasyon) yoluyla ısı transferi hesaplamaları yapın. Mühendislik, fizik ve ısıtma/soğutma uygulamaları için kapsamlı bir araç.">
+    <meta name="keywords" content="ısı transferi, ısı geçişi, konduksiyon, iletim, konveksiyon, taşınım, radyasyon, ışınım, ısı hesaplama, termodinamik, mühendislik hesaplamaları, ısı iletim katsayısı, konveksiyon katsayısı, Stefan-Boltzmann, Fourier yasası, Newton soğuma yasası, hesapkolik ısı">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+    <style>
+        /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        header { background-color: #2c3e50; color: white; padding: 15px 0; }
+        header .logo h1 { margin: 0; font-size: 1.8em; }
+        header .logo h1 a { color: white; text-decoration: none; }
+        header .logo .site-logo { height: 40px; vertical-align: middle; } /* Logo için stil */
+        header nav ul { list-style: none; margin: 0; padding: 0; display: flex; justify-content: flex-end; }
+        header nav ul li { margin-left: 25px; }
+        header nav ul li a { color: white; text-decoration: none; font-weight: 600; transition: color 0.3s ease; }
+        header nav ul li a:hover { color: #ecf0f1; }
+        
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Seçim Bölümü Stilleri */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .calc-type-button {
+            background-color: #3498db; /* Mavi ton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
+            max-width: 250px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        .hidden-calc {
+            display: none;
+        }
+
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin {
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+        }
+        .input-with-unit label {
+            flex-basis: 100%; /* Label her zaman üstte veya solda */
+            margin-bottom: 5px;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input alanı boşluğu doldurur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .input-with-unit select {
+            flex-shrink: 0; /* Select kutusu sabit kalır */
+            width: auto; /* Select kutusu kendi genişliğinde olur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Isı Transferi Hesaplayıcı</h1>
+                <p>İletim (Konduksiyon), Taşınım (Konveksiyon) veya Işınım (Radyasyon) yoluyla ısı geçişi hesaplamalarını kolayca yapın.</p>
+            </div>
+        </section>
+
+        <section class="calculator-selection-section">
+            <div class="container">
+                <h2>Yapmak İstediğiniz Hesaplama Türünü Seçin</h2>
+                <div class="calc-buttons-container">
+                    <button class="calc-type-button active" data-calc-type="conduction">İletim (Konduksiyon) ile Isı Transferi</button>
+                    <button class="calc-type-button" data-calc-type="convection">Taşınım (Konveksiyon) ile Isı Transferi</button>
+                    <button class="calc-type-button" data-calc-type="radiation">Işınım (Radyasyon) ile Isı Transferi</button>
+                </div>
+
+                <div id="calculator-conduction" class="calc-wrapper active-calc">
+                    <h3><i class="fas fa-grip-lines icon-small"></i> İletim (Konduksiyon) ile Isı Transferi</h3>
+                    <div class="calculator-form-container">
+                        <form id="conductionForm">
+                            <div class="input-with-unit">
+                                <label for="thermalConductivity">Isı İletim Katsayısı (k):</label>
+                                <input type="number" id="thermalConductivity" placeholder="Örn: 0.026 (Havada)" min="0.000001" step="any" required>
+                                <select id="thermalConductivityUnit">
+                                    <option value="W/mK">W/(m·K)</option>
+                                    <option value="Btu/hr-ftF">Btu/(hr·ft·°F)</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="area_conduction">Alan (A):</label>
+                                <input type="number" id="area_conduction" placeholder="Örn: 1 (m²)" min="0.000001" step="any" required>
+                                <select id="areaUnit_conduction">
+                                    <option value="m2">m²</option>
+                                    <option value="ft2">ft²</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="tempDiff_conduction">Sıcaklık Farkı (ΔT):</label>
+                                <input type="number" id="tempDiff_conduction" placeholder="Örn: 10 (K)" min="0" step="any" required>
+                                <select id="tempDiffUnit_conduction">
+                                    <option value="K">Kelvin (K)</option>
+                                    <option value="C">Santigrat (°C)</option>
+                                    <option value="F">Fahrenhayt (°F)</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="thickness">Malzeme Kalınlığı (L):</label>
+                                <input type="number" id="thickness" placeholder="Örn: 0.1 (m)" min="0.000001" step="any" required>
+                                <select id="thicknessUnit">
+                                    <option value="m">metre (m)</option>
+                                    <option value="cm">santimetre (cm)</option>
+                                    <option value="mm">milimetre (mm)</option>
+                                    <option value="ft">fit (ft)</option>
+                                    <option value="inch">inç (inç)</option>
+                                </select>
+                            </div>
+                            <button type="submit">Isı Transferini Hesapla</button>
+                        </form>
+                        <div id="conductionResult" class="result-display"></div>
+                        <div class="calc-explanation">
+                            <p>İletim (konduksiyon), ısının bir malzeme içinde veya bir malzemenin iki farklı sıcaklıktaki bölgeleri arasında moleküler titreşimler yoluyla transferidir. Fourier Yasası ile hesaplanır.</p>
+                            <p class="formula-text">
+                                $ Q = -k A \frac{dT}{dx} $
+                            </p>
+                            <p>Basitleştirilmiş hali ($ \Delta T $ ve $ L $ kullanılarak):</p>
+                            <p class="formula-text small-margin">
+                                $ Q = k A \frac{\Delta T}{L} $
+                            </p>
+                            <ul>
+                                <li>$ \mathbf{Q} $: Isı transfer hızı (Watt)</li>
+                                <li>$ \mathbf{k} $: Isı iletim katsayısı (malzemenin ısıyı ne kadar iyi ilettiği)</li>
+                                <li>$ \mathbf{A} $: Isının transfer olduğu yüzey alanı</li>
+                                <li>$ \mathbf{\Delta T} $: Sıcaklık farkı ($ T_{yüksek} - T_{düşük} $)</li>
+                                <li>$ \mathbf{L} $: Isının transfer olduğu malzemenin kalınlığı</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="calculator-convection" class="calc-wrapper hidden-calc">
+                    <h3><i class="fas fa-wind icon-small"></i> Taşınım (Konveksiyon) ile Isı Transferi</h3>
+                    <div class="calculator-form-container">
+                        <form id="convectionForm">
+                            <div class="input-with-unit">
+                                <label for="convectionCoefficient">Konveksiyon Isı Transferi Katsayısı (h):</label>
+                                <input type="number" id="convectionCoefficient" placeholder="Örn: 10 (Sessiz havada)" min="0.000001" step="any" required>
+                                <select id="convectionCoefficientUnit">
+                                    <option value="W/m2K">W/(m²·K)</option>
+                                    <option value="Btu/hr-ft2F">Btu/(hr·ft²·°F)</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="area_convection">Alan (A):</label>
+                                <input type="number" id="area_convection" placeholder="Örn: 1 (m²)" min="0.000001" step="any" required>
+                                <select id="areaUnit_convection">
+                                    <option value="m2">m²</option>
+                                    <option value="ft2">ft²</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="surfaceTemp">Yüzey Sıcaklığı (T_s):</label>
+                                <input type="number" id="surfaceTemp" placeholder="Örn: 300 (K)" min="0.000001" step="any" required>
+                                <select id="surfaceTempUnit">
+                                    <option value="K">Kelvin (K)</option>
+                                    <option value="C">Santigrat (°C)</option>
+                                    <option value="F">Fahrenhayt (°F)</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="fluidTemp">Akışkan Sıcaklığı (T_∞):</label>
+                                <input type="number" id="fluidTemp" placeholder="Örn: 290 (K)" min="0.000001" step="any" required>
+                                <select id="fluidTempUnit">
+                                    <option value="K">Kelvin (K)</option>
+                                    <option value="C">Santigrat (°C)</option>
+                                    <option value="F">Fahrenhayt (°F)</option>
+                                </select>
+                            </div>
+                            <button type="submit">Isı Transferini Hesapla</button>
+                        </form>
+                        <div id="convectionResult" class="result-display"></div>
+                        <div class="calc-explanation">
+                            <p>Taşınım (konveksiyon), ısının bir katı yüzey ile hareketli bir akışkan (sıvı veya gaz) arasında transferidir. Newton'un Soğuma Yasası ile hesaplanır.</p>
+                            <p class="formula-text">
+                                $ Q = h A (T_s - T_{\infty}) $
+                            </p>
+                            <ul>
+                                <li>$ \mathbf{Q} $: Isı transfer hızı (Watt)</li>
+                                <li>$ \mathbf{h} $: Konveksiyon ısı transferi katsayısı (akışkan ve yüzey geometrisine bağlı)</li>
+                                <li>$ \mathbf{A} $: Isının transfer olduğu yüzey alanı</li>
+                                <li>$ \mathbf{T_s} $: Yüzey sıcaklığı</li>
+                                <li>$ \mathbf{T_{\infty}} $: Akışkanın (çevre) sıcaklığı</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="calculator-radiation" class="calc-wrapper hidden-calc">
+                    <h3><i class="fas fa-sun icon-small"></i> Işınım (Radyasyon) ile Isı Transferi</h3>
+                    <div class="calculator-form-container">
+                        <form id="radiationForm">
+                            <div class="input-with-unit">
+                                <label for="emissivity">Yayma Gücü (ε - Emisivite):</label>
+                                <input type="number" id="emissivity" placeholder="Örn: 0.9 (Siyah cisim için 1)" min="0" max="1" step="0.001" required>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="area_radiation">Alan (A):</label>
+                                <input type="number" id="area_radiation" placeholder="Örn: 1 (m²)" min="0.000001" step="any" required>
+                                <select id="areaUnit_radiation">
+                                    <option value="m2">m²</option>
+                                    <option value="ft2">ft²</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="surfaceTemp_radiation">Yüzey Sıcaklığı (T_s):</label>
+                                <input type="number" id="surfaceTemp_radiation" placeholder="Örn: 300 (K)" min="0.000001" step="any" required>
+                                <select id="surfaceTempUnit_radiation">
+                                    <option value="K">Kelvin (K)</option>
+                                    <option value="C">Santigrat (°C)</option>
+                                    <option value="F">Fahrenhayt (°F)</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="ambientTemp_radiation">Ortam Sıcaklığı (T_çevre):</label>
+                                <input type="number" id="ambientTemp_radiation" placeholder="Örn: 290 (K)" min="0.000001" step="any" required>
+                                <select id="ambientTempUnit_radiation">
+                                    <option value="K">Kelvin (K)</option>
+                                    <option value="C">Santigrat (°C)</option>
+                                    <option value="F">Fahrenhayt (°F)</option>
+                                </select>
+                            </div>
+                            <button type="submit">Isı Transferini Hesapla</button>
+                        </form>
+                        <div id="radiationResult" class="result-display"></div>
+                        <div class="calc-explanation">
+                            <p>Işınım (radyasyon), ısının elektromanyetik dalgalar aracılığıyla transferidir ve temas gerektirmez. Stefan-Boltzmann Yasası ile hesaplanır.</p>
+                            <p class="formula-text">
+                                $ Q = \epsilon \sigma A (T_s^4 - T_{çevre}^4) $
+                            </p>
+                            <ul>
+                                <li>$ \mathbf{Q} $: Isı transfer hızı (Watt)</li>
+                                <li>$ \mathbf{\epsilon} $: Yayma gücü (Emisivite - 0 ile 1 arası, siyah cisim için 1)</li>
+                                <li>$ \mathbf{\sigma} $: Stefan-Boltzmann sabiti ($ 5.67 \times 10^{-8} \text{ W/(m²·K}^4) $)</li>
+                                <li>$ \mathbf{A} $: Isının transfer olduğu yüzey alanı</li>
+                                <li>$ \mathbf{T_s} $: Yüzeyin mutlak sıcaklığı (Kelvin)</li>
+                                <li>$ \mathbf{T_{çevre}} $: Ortamın mutlak sıcaklığı (Kelvin)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>Isı Transferi Nedir?</h3>
+            <p>
+                **Isı transferi**, enerjinin sıcak bir sistemden daha soğuk bir sisteme akışını ifade eder. Bu süreç, termodinamiğin ikinci yasasına göre kendiliğinden gerçekleşir ve sıcaklık farkları olduğu sürece devam eder. Mühendislikte, binaların ısıtılması ve soğutulmasından, elektronik cihazların termal yönetimine kadar birçok alanda hayati öneme sahiptir.
+            </p>
+            <p>Üç temel ısı transferi mekanizması vardır:</p>
+
+            <h4>1. İletim (Konduksiyon)</h4>
+            <p>
+                Isının doğrudan temas halindeki maddeler arasında moleküler titreşimler ve serbest elektronlar aracılığıyla transferidir. Katılarda en yaygın olanıdır. Malzemenin ısı iletkenliği ($ k $) bu mekanizmada kritik rol oynar.
+            </p>
+            <p class="formula-text">
+                $ Q_{iletil} = k A \frac{\Delta T}{L} $
+            </p>
+
+            <h4>2. Taşınım (Konveksiyon)</h4>
+            <p>
+                Isının bir yüzey ile hareketli bir akışkan (sıvı veya gaz) arasında transferidir. Akışkanın hareketi ısıyı taşır. Doğal (yoğunluk farklarıyla) ve zorlamalı (pompa/fan ile) konveksiyon olmak üzere iki türü vardır. Konveksiyon ısı transfer katsayısı ($ h $) bu mekanizmada önemlidir.
+            </p>
+            <p class="formula-text">
+                $ Q_{taşınım} = h A (T_s - T_{\infty}) $
+            </p>
+
+            <h4>3. Işınım (Radyasyon)</h4>
+            <p>
+                Isının elektromanyetik dalgalar (genellikle kızılötesi radyasyon) aracılığıyla transferidir. Maddesel bir ortama ihtiyaç duymaz ve boşlukta bile gerçekleşebilir (örn: Güneş'ten Dünya'ya ısı transferi). Stefan-Boltzmann Yasası ile hesaplanır.
+            </p>
+            <p class="formula-text">
+                $ Q_{ışınım} = \epsilon \sigma A (T_s^4 - T_{çevre}^4) $
+            </p>
+
+            <h4>Ortak Birim Dönüşümleri ve Sabitler</h4>
+            <ul>
+                <li>**Isı Transfer Hızı (Q):** Genellikle Watt (W) veya Btu/saat (Btu/hr)</li>
+                <li>**Sıcaklık:** Kelvin (K), Santigrat (°C), Fahrenhayt (°F). Mutlak sıcaklıklar (Kelvin) her zaman kullanılmalıdır.</li>
+                <li>**Alan (A):** Metrekare (m²) veya fit kare (ft²)</li>
+                <li>**Stefan-Boltzmann Sabiti ($ \sigma $):** $ 5.67 \times 10^{-8} \text{ W/(m²·K}^4) $</li>
+            </ul>
+
+            <h4>Uygulama Alanları:</h4>
+            <ul>
+                <li><strong>Bina Tasarımı:</strong> Binaların enerji verimliliği, ısıtma ve soğutma yüklerinin hesaplanması.</li>
+                <li><strong>Otomotiv Endüstrisi:</strong> Motor soğutma sistemleri, egzoz ısı yönetimi.</li>
+                <li><strong>Elektronik Soğutma:</strong> Bilgisayar işlemcileri ve diğer elektronik bileşenlerin aşırı ısınmasını önleme.</li>
+                <li><strong>Gıda İşleme:</strong> Gıdaların pişirilmesi, soğutulması ve dondurulması süreçleri.</li>
+                <li><strong>Enerji Santralleri:</strong> Buhar kazanları, kondenserler ve ısı eşanjörlerinin tasarımı.</li>
+            </ul>
+            <p class="disclaimer-text">
+                Bu hesaplayıcı, ısı transferinin temel prensiplerini uygulamak için tasarlanmıştır. Gerçek dünya uygulamalarında, malzemelerin homojenliği, yüzey pürüzlülüğü, akışkan dinamikleri ve diğer karmaşık faktörler sonuçları etkileyebilir. Özellikle konveksiyon ve radyasyon katsayıları, koşullara göre büyük ölçüde değişebilir. Hassas mühendislik uygulamaları için daha detaylı analizler, deneysel veriler ve ileri düzey simülasyonlar gerekebilir.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainCalcButtons = document.querySelectorAll('.calc-type-button');
+            const calculatorWrappers = document.querySelectorAll('.calc-wrapper');
+
+            // Başlangıçta ilk hesaplayıcıyı göster
+            showCalculator('conduction');
+
+            mainCalcButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const type = button.dataset.calcType;
+                    showCalculator(type);
+                    // Butonların 'active' sınıfını yönet
+                    mainCalcButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    // İlgili bölüme yumuşak kaydırma
+                    const targetCalc = document.getElementById(`calculator-${type}`);
+                    if (targetCalc) {
+                        targetCalc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+
+            function showCalculator(typeToShow) {
+                calculatorWrappers.forEach(wrapper => {
+                    if (wrapper.id === `calculator-${typeToShow}`) {
+                        wrapper.classList.remove('hidden-calc');
+                        wrapper.classList.add('active-calc');
+                    } else {
+                        wrapper.classList.add('hidden-calc');
+                        wrapper.classList.remove('active-calc');
+                    }
+                    // Her geçişte formları ve sonuçları temizle
+                    const form = wrapper.querySelector('form');
+                    if (form) form.reset();
+                    const resultDiv = wrapper.querySelector('.result-display');
+                    if (resultDiv) {
+                        resultDiv.innerHTML = '';
+                        resultDiv.style.display = 'none';
+                    }
+                    // Hata stillerini de temizle
+                    wrapper.querySelectorAll('input').forEach(input => input.classList.remove('error'));
+                });
+            }
+
+            // Ortak hata gösterici fonksiyon
+            function displayError(resultDiv, message, inputsToMark = []) {
+                resultDiv.innerHTML = `<p class="error">Hata: ${message}</p>`;
+                resultDiv.style.display = 'block';
+                inputsToMark.forEach(input => {
+                    if (input && input.value !== '') input.classList.add('error');
+                });
+            }
+
+            // Input hata stilini temizleyici fonksiyon
+            function clearErrorStyles(inputs) {
+                inputs.forEach(input => input.classList.remove('error'));
+            }
+
+            // Ortak sıcaklık dönüşüm fonksiyonları
+            function convertTemperatureToKelvin(value, unit) {
+                if (unit === 'K') return value;
+                if (unit === 'C') return value + 273.15;
+                if (unit === 'F') return (value - 32) * 5/9 + 273.15;
+                return NaN;
+            }
+
+            function convertTemperatureDifferenceToKelvin(value, unit) {
+                // Sıcaklık farkları Kelvin, Celsius ve Fahrenheit için aynıdır (değer olarak).
+                // Yani 10 C fark, 10 K farka eşittir.
+                // 10 F fark, 10 * 5/9 K farka eşittir.
+                if (unit === 'K' || unit === 'C') return value;
+                if (unit === 'F') return value * 5/9;
+                return NaN;
+            }
+
+            // --- İLETİM (KONDUKSİYON) HESAPLAYICI ---
+            const conductionForm = document.getElementById('conductionForm');
+            const thermalConductivityInput = document.getElementById('thermalConductivity');
+            const thermalConductivityUnitSelect = document.getElementById('thermalConductivityUnit');
+            const area_conductionInput = document.getElementById('area_conduction');
+            const areaUnit_conductionSelect = document.getElementById('areaUnit_conduction');
+            const tempDiff_conductionInput = document.getElementById('tempDiff_conduction');
+            const tempDiffUnit_conductionSelect = document.getElementById('tempDiffUnit_conduction');
+            const thicknessInput = document.getElementById('thickness');
+            const thicknessUnitSelect = document.getElementById('thicknessUnit');
+            const conductionResultDiv = document.getElementById('conductionResult');
+
+            // Birim dönüşüm faktörleri (taban birimler: W/(m·K), m², K, m)
+            const k_conversion = {
+                'W/mK': 1,
+                'Btu/hr-ftF': 1.730735 // 1 Btu/(hr·ft·°F) = 1.730735 W/(m·K)
+            };
+            const area_conversion = {
+                'm2': 1,
+                'ft2': 0.092903 // 1 ft² = 0.092903 m²
+            };
+            const thickness_conversion = {
+                'm': 1,
+                'cm': 0.01,
+                'mm': 0.001,
+                'ft': 0.3048,
+                'inch': 0.0254
+            };
+
+            function calculateConduction() {
+                clearErrorStyles([thermalConductivityInput, area_conductionInput, tempDiff_conductionInput, thicknessInput]);
+                conductionResultDiv.innerHTML = '';
+                conductionResultDiv.style.display = 'none';
+
+                const k_val = parseFloat(thermalConductivityInput.value);
+                const A_val = parseFloat(area_conductionInput.value);
+                const dT_val = parseFloat(tempDiff_conductionInput.value);
+                const L_val = parseFloat(thicknessInput.value);
+
+                const k_unit = thermalConductivityUnitSelect.value;
+                const A_unit = areaUnit_conductionSelect.value;
+                const dT_unit = tempDiffUnit_conductionSelect.value;
+                const L_unit = thicknessUnitSelect.value;
+
+                if (isNaN(k_val) || k_val <= 0) { displayError(conductionResultDiv, "Lütfen geçerli ve pozitif bir ısı iletim katsayısı giriniz.", [thermalConductivityInput]); return; }
+                if (isNaN(A_val) || A_val <= 0) { displayError(conductionResultDiv, "Lütfen geçerli ve pozitif bir alan değeri giriniz.", [area_conductionInput]); return; }
+                if (isNaN(dT_val) || dT_val < 0) { displayError(conductionResultDiv, "Lütfen geçerli ve pozitif bir sıcaklık farkı giriniz.", [tempDiff_conductionInput]); return; } // dT = 0 olabilir, Q=0 olur
+                if (isNaN(L_val) || L_val <= 0) { displayError(conductionResultDiv, "Lütfen geçerli ve pozitif bir malzeme kalınlığı giriniz.", [thicknessInput]); return; }
+
+                const k_base = k_val * k_conversion[k_unit];
+                const A_base = A_val * area_conversion[A_unit];
+                const dT_base = convertTemperatureDifferenceToKelvin(dT_val, dT_unit);
+                const L_base = L_val * thickness_conversion[L_unit];
+
+                const Q_conduction = (k_base * A_base * dT_base) / L_base;
+
+                conductionResultDiv.innerHTML = `
+                    <p><strong>Isı İletim Katsayısı (k):</strong> ${k_val} ${k_unit}</p>
+                    <p><strong>Alan (A):</strong> ${A_val} ${A_unit}</p>
+                    <p><strong>Sıcaklık Farkı (ΔT):</strong> ${dT_val} ${dT_unit}</p>
+                    <p><strong>Malzeme Kalınlığı (L):</strong> ${L_val} ${L_unit}</p>
+                    <hr>
+                    <p><strong>İletimle Isı Transfer Hızı (Q):</strong> <span class="result-value">${Q_conduction.toFixed(4)}</span> Watt</p>
+                `;
+                conductionResultDiv.style.display = 'block';
+            }
+
+            if (conductionForm) {
+                conductionForm.addEventListener('submit', function(event) { event.preventDefault(); calculateConduction(); });
+                thermalConductivityInput.addEventListener('input', calculateConduction);
+                thermalConductivityUnitSelect.addEventListener('change', calculateConduction);
+                area_conductionInput.addEventListener('input', calculateConduction);
+                areaUnit_conductionSelect.addEventListener('change', calculateConduction);
+                tempDiff_conductionInput.addEventListener('input', calculateConduction);
+                tempDiffUnit_conductionSelect.addEventListener('change', calculateConduction);
+                thicknessInput.addEventListener('input', calculateConduction);
+                thicknessUnitSelect.addEventListener('change', calculateConduction);
+            }
+
+            // --- TAŞINIM (KONVEKSİYON) HESAPLAYICI ---
+            const convectionForm = document.getElementById('convectionForm');
+            const convectionCoefficientInput = document.getElementById('convectionCoefficient');
+            const convectionCoefficientUnitSelect = document.getElementById('convectionCoefficientUnit');
+            const area_convectionInput = document.getElementById('area_convection');
+            const areaUnit_convectionSelect = document.getElementById('areaUnit_convection');
+            const surfaceTempInput = document.getElementById('surfaceTemp');
+            const surfaceTempUnitSelect = document.getElementById('surfaceTempUnit');
+            const fluidTempInput = document.getElementById('fluidTemp');
+            const fluidTempUnitSelect = document.getElementById('fluidTempUnit');
+            const convectionResultDiv = document.getElementById('convectionResult');
+
+            // Birim dönüşüm faktörleri (taban birimler: W/(m²·K), m², K)
+            const h_conversion = {
+                'W/m2K': 1,
+                'Btu/hr-ft2F': 5.67826 // 1 Btu/(hr·ft²·°F) = 5.67826 W/(m²·K)
+            };
+
+            function calculateConvection() {
+                clearErrorStyles([convectionCoefficientInput, area_convectionInput, surfaceTempInput, fluidTempInput]);
+                convectionResultDiv.innerHTML = '';
+                convectionResultDiv.style.display = 'none';
+
+                const h_val = parseFloat(convectionCoefficientInput.value);
+                const A_val = parseFloat(area_convectionInput.value);
+                const Ts_val = parseFloat(surfaceTempInput.value);
+                const Tfluid_val = parseFloat(fluidTempInput.value);
+
+                const h_unit = convectionCoefficientUnitSelect.value;
+                const A_unit = areaUnit_convectionSelect.value;
+                const Ts_unit = surfaceTempUnitSelect.value;
+                const Tfluid_unit = fluidTempUnitSelect.value;
+
+                if (isNaN(h_val) || h_val <= 0) { displayError(convectionResultDiv, "Lütfen geçerli ve pozitif bir konveksiyon katsayısı giriniz.", [convectionCoefficientInput]); return; }
+                if (isNaN(A_val) || A_val <= 0) { displayError(convectionResultDiv, "Lütfen geçerli ve pozitif bir alan değeri giriniz.", [area_convectionInput]); return; }
+                if (isNaN(Ts_val) || Ts_val < 0) { displayError(convectionResultDiv, "Lütfen geçerli ve pozitif bir yüzey sıcaklığı giriniz.", [surfaceTempInput]); return; }
+                if (isNaN(Tfluid_val) || Tfluid_val < 0) { displayError(convectionResultDiv, "Lütfen geçerli ve pozitif bir akışkan sıcaklığı giriniz.", [fluidTempInput]); return; }
+
+                const h_base = h_val * h_conversion[h_unit];
+                const A_base = A_val * area_conversion[A_unit]; // Alan birim dönüşümü ile aynı
+                const Ts_Kelvin = convertTemperatureToKelvin(Ts_val, Ts_unit);
+                const Tfluid_Kelvin = convertTemperatureToKelvin(Tfluid_val, Tfluid_unit);
+
+                if (Ts_Kelvin < 0 || Tfluid_Kelvin < 0) { displayError(convectionResultDiv, "Sıcaklık mutlak sıfırdan (-273.15°C) düşük olamaz.", [surfaceTempInput, fluidTempInput]); return; }
+
+                const Q_convection = h_base * A_base * (Ts_Kelvin - Tfluid_Kelvin);
+
+                convectionResultDiv.innerHTML = `
+                    <p><strong>Konveksiyon Katsayısı (h):</strong> ${h_val} ${h_unit}</p>
+                    <p><strong>Alan (A):</strong> ${A_val} ${A_unit}</p>
+                    <p><strong>Yüzey Sıcaklığı (T_s):</strong> ${Ts_val} ${Ts_unit} (${Ts_Kelvin.toFixed(2)} K)</p>
+                    <p><strong>Akışkan Sıcaklığı (T_∞):</strong> ${Tfluid_val} ${Tfluid_unit} (${Tfluid_Kelvin.toFixed(2)} K)</p>
+                    <hr>
+                    <p><strong>Taşınımla Isı Transfer Hızı (Q):</strong> <span class="result-value">${Q_convection.toFixed(4)}</span> Watt</p>
+                `;
+                convectionResultDiv.style.display = 'block';
+            }
+
+            if (convectionForm) {
+                convectionForm.addEventListener('submit', function(event) { event.preventDefault(); calculateConvection(); });
+                convectionCoefficientInput.addEventListener('input', calculateConvection);
+                convectionCoefficientUnitSelect.addEventListener('change', calculateConvection);
+                area_convectionInput.addEventListener('input', calculateConvection);
+                areaUnit_convectionSelect.addEventListener('change', calculateConvection);
+                surfaceTempInput.addEventListener('input', calculateConvection);
+                surfaceTempUnitSelect.addEventListener('change', calculateConvection);
+                fluidTempInput.addEventListener('input', calculateConvection);
+                fluidTempUnitSelect.addEventListener('change', calculateConvection);
+            }
+
+            // --- IŞINIM (RADYASYON) HESAPLAYICI ---
+            const radiationForm = document.getElementById('radiationForm');
+            const emissivityInput = document.getElementById('emissivity');
+            const area_radiationInput = document.getElementById('area_radiation');
+            const areaUnit_radiationSelect = document.getElementById('areaUnit_radiation');
+            const surfaceTemp_radiationInput = document.getElementById('surfaceTemp_radiation');
+            const surfaceTempUnit_radiationSelect = document.getElementById('surfaceTempUnit_radiation');
+            const ambientTemp_radiationInput = document.getElementById('ambientTemp_radiation');
+            const ambientTempUnit_radiationSelect = document.getElementById('ambientTempUnit_radiation');
+            const radiationResultDiv = document.getElementById('radiationResult');
+
+            // Stefan-Boltzmann Sabiti
+            const STEFAN_BOLTZMANN_CONSTANT = 5.67e-8; // W/(m²·K^4)
+
+            function calculateRadiation() {
+                clearErrorStyles([emissivityInput, area_radiationInput, surfaceTemp_radiationInput, ambientTemp_radiationInput]);
+                radiationResultDiv.innerHTML = '';
+                radiationResultDiv.style.display = 'none';
+
+                const epsilon_val = parseFloat(emissivityInput.value);
+                const A_val = parseFloat(area_radiationInput.value);
+                const Ts_val = parseFloat(surfaceTemp_radiationInput.value);
+                const Tambient_val = parseFloat(ambientTemp_radiationInput.value);
+
+                const A_unit = areaUnit_radiationSelect.value;
+                const Ts_unit = surfaceTempUnit_radiationSelect.value;
+                const Tambient_unit = ambientTempUnit_radiationSelect.value;
+
+                if (isNaN(epsilon_val) || epsilon_val < 0 || epsilon_val > 1) { displayError(radiationResultDiv, "Lütfen 0 ile 1 arasında geçerli bir yayma gücü (emisivite) değeri giriniz.", [emissivityInput]); return; }
+                if (isNaN(A_val) || A_val <= 0) { displayError(radiationResultDiv, "Lütfen geçerli ve pozitif bir alan değeri giriniz.", [area_radiationInput]); return; }
+                if (isNaN(Ts_val) || Ts_val < 0) { displayError(radiationResultDiv, "Lütfen geçerli ve pozitif bir yüzey sıcaklığı giriniz.", [surfaceTemp_radiationInput]); return; }
+                if (isNaN(Tambient_val) || Tambient_val < 0) { displayError(radiationResultDiv, "Lütfen geçerli ve pozitif bir ortam sıcaklığı giriniz.", [ambientTemp_radiationInput]); return; }
+
+                const A_base = A_val * area_conversion[A_unit]; // Alan birim dönüşümü ile aynı
+                const Ts_Kelvin = convertTemperatureToKelvin(Ts_val, Ts_unit);
+                const Tambient_Kelvin = convertTemperatureToKelvin(Tambient_val, Tambient_unit);
+
+                if (Ts_Kelvin < 0 || Tambient_Kelvin < 0) { displayError(radiationResultDiv, "Sıcaklık mutlak sıfırdan (-273.15°C) düşük olamaz.", [surfaceTemp_radiationInput, ambientTemp_radiationInput]); return; }
+
+                // Q = ε * σ * A * (Ts^4 - Tçevre^4)
+                const Q_radiation = epsilon_val * STEFAN_BOLTZMANN_CONSTANT * A_base * (Math.pow(Ts_Kelvin, 4) - Math.pow(Tambient_Kelvin, 4));
+
+                radiationResultDiv.innerHTML = `
+                    <p><strong>Yayma Gücü (ε):</strong> ${epsilon_val}</p>
+                    <p><strong>Alan (A):</strong> ${A_val} ${A_unit}</p>
+                    <p><strong>Yüzey Sıcaklığı (T_s):</strong> ${Ts_val} ${Ts_unit} (${Ts_Kelvin.toFixed(2)} K)</p>
+                    <p><strong>Ortam Sıcaklığı (T_çevre):</strong> ${Tambient_val} ${Tambient_unit} (${Tambient_Kelvin.toFixed(2)} K)</p>
+                    <hr>
+                    <p><strong>Işınımla Isı Transfer Hızı (Q):</strong> <span class="result-value">${Q_radiation.toFixed(4)}</span> Watt</p>
+                `;
+                radiationResultDiv.style.display = 'block';
+            }
+
+            if (radiationForm) {
+                radiationForm.addEventListener('submit', function(event) { event.preventDefault(); calculateRadiation(); });
+                emissivityInput.addEventListener('input', calculateRadiation);
+                area_radiationInput.addEventListener('input', calculateRadiation);
+                areaUnit_radiationSelect.addEventListener('change', calculateRadiation);
+                surfaceTemp_radiationInput.addEventListener('input', calculateRadiation);
+                surfaceTempUnit_radiationSelect.addEventListener('change', calculateRadiation);
+                ambientTemp_radiationInput.addEventListener('input', calculateRadiation);
+                ambientTempUnit_radiationSelect.addEventListener('change', calculateRadiation);
+            }
+        });
+    </script>
+</body>
+</html>

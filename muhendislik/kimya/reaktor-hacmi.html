@@ -3,24 +3,337 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reaktör Hacmi Hesaplayıcı (CSTR) - Hesapkolik</title>
-    <meta name="description" content="Sürekli Karıştırmalı Tank Reaktörü (CSTR) için gerekli hacmi hesaplayın. Kimyasal reaksiyonlar ve proses tasarımı için temel bir araç.">
-    <meta name="keywords" content="reaktör hacmi, CSTR, sürekli karıştırmalı tank reaktörü, kimyasal reaktör, reaksiyon kinetiği, kimya mühendisliği, proses tasarımı, hesapkolik reaktör">
-    <link rel="stylesheet" href="../../css/style.css">
+    <title>Reaktör Hacmi ve Kinetik Hesaplayıcı - Hesapkolik</title>
+    <meta name="description" content="Sürekli Karıştırmalı Tank (CSTR) ve Plug Akış (PFR) reaktörleri için gerekli hacmi hesaplayın. Reaksiyon kinetiği ve dönüşüm bilgileriyle reaktör boyutlandırması yapın veya reaksiyon hızlarını bulun.">
+    <meta name="keywords" content="reaktör hacmi, CSTR, PFR, sürekli karıştırmalı tank reaktörü, plug akış reaktörü, kimyasal reaktör, reaksiyon kinetiği, kimya mühendisliği, proses tasarımı, reaksiyon hızı, dönüşüm, akış hızı, hesapkolik reaktör">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+    <style>
+        /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        header { background-color: #2c3e50; color: white; padding: 15px 0; }
+        header .logo h1 { margin: 0; font-size: 1.8em; }
+        header .logo h1 a { color: white; text-decoration: none; }
+        header .logo .site-logo { height: 40px; vertical-align: middle; } /* Logo için stil */
+        header nav ul { list-style: none; margin: 0; padding: 0; display: flex; justify-content: flex-end; }
+        header nav ul li { margin-left: 25px; }
+        header nav ul li a { color: white; text-decoration: none; font-weight: 600; transition: color 0.3s ease; }
+        header nav ul li a:hover { color: #ecf0f1; }
+        
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
 
-  gtag('config', 'G-3655KNY8CP');
-</script>
+        /* Hesaplayıcı Seçim Bölümü Stilleri */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .calc-type-button {
+            background-color: #3498db; /* Mavi ton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
+            max-width: 250px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        .hidden-calc {
+            display: none;
+        }
+
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin {
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+        }
+        .input-with-unit label {
+            flex-basis: 100%; /* Label her zaman üstte veya solda */
+            margin-bottom: 5px;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input alanı boşluğu doldurur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .input-with-unit select {
+            flex-shrink: 0; /* Select kutusu sabit kalır */
+            width: auto; /* Select kutusu kendi genişliğinde olur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+
+    </style>
+</head>
 <body>
     <header>
         <div class="container">
@@ -43,72 +356,210 @@
     </header>
 
     <main>
-        <section class="calculator-page-section">
+        <section class="hero-section">
             <div class="container">
-                <h1 class="main-title">Reaktör Hacmi Hesaplayıcı (CSTR)</h1>
-                <p class="section-description">Sürekli Karıştırmalı Tank Reaktörleri (CSTR) için gerekli hacmi, reaksiyon kinetiği ve dönüşüm bilgileriyle hesaplayın.</p>
-
-                <div class="calculator-group">
-                    <div class="calculator-card-wrapper">
-                        <div class="calculator-header">
-                            <i class="fas fa-atom icon-small"></i>
-                            <h2>CSTR Hacmini Hesapla</h2>
-                        </div>
-                        <div class="calculator-form-container">
-                            <form id="cstrVolumeForm">
-                                <label for="initialMolarFlow">A Maddesi Giriş Mol Akış Hızı (mol/s):</label> <input type="number" id="initialMolarFlow" name="initialMolarFlow" placeholder="Örn: 0.1" required min="0.0001" step="0.0001">
-
-                                <label for="conversion">A Maddesi Dönüşümü (X_A) (ondalık, 0-1 arası):</label> <input type="number" id="conversion" name="conversion" placeholder="Örn: 0.8 (yani %80 dönüşüm)" required min="0.001" max="0.999" step="0.001">
-                                
-                                <label for="reactionRate">A Maddesinin Reaksiyon Hızı (-r_A) (mol/(L·s)):</label> <input type="number" id="reactionRate" name="reactionRate" placeholder="Örn: 0.005" required min="0.000001" step="0.000001">
-                                
-                                <button type="submit">Reaktör Hacmini Hesapla</button>
-                            </form>
-                            <div id="cstrVolumeResult" class="result-display"></div>
-                            <p class="small-text">Bu hesaplayıcı ideal Sürekli Karıştırmalı Tank Reaktörleri (CSTR) için tasarlanmıştır. -r_A değeri, verilen dönüşüm (X_A) noktasındaki reaksiyon hızı olmalıdır.</p> </div>
-                    </div>
-
-                    <section class="info-section">
-                        <h3>Reaktör Hacmi Nedir?</h3>
-                        <p>
-                            Kimyasal reaktörler, kimyasal reaksiyonların gerçekleştiği kapalı sistemlerdir. Reaktör hacminin hesaplanması, bir reaksiyonun belirli bir dönüşümle istenen miktarda ürün üretmesi için ne kadar büyük bir reaktöre ihtiyaç duyulduğunu belirlemek için kritik öneme sahiptir. Bu, proses tasarımının ve ekonomik değerlendirmelerin temelini oluşturur.
-                        </p>
-                        <p>
-                            Reaktör tasarımı, reaksiyon kinetiği (reaksiyonun ne kadar hızlı gerçekleştiği), akışkan mekaniği (maddelerin reaktör içinde nasıl hareket ettiği) ve ısı transferi (enerjinin reaktör içinde nasıl aktığı) gibi birçok mühendislik prensibini bir araya getirir.
-                        </p>
-
-                        <h4>Sürekli Karıştırmalı Tank Reaktörü (CSTR)</h4>
-                        <p>
-                            **Sürekli Karıştırmalı Tank Reaktörü (CSTR)**, içindeki tüm akışkanın anında ve tamamen karıştığı varsayılan bir reaktör tipidir. Bu, reaktörün her noktasında konsantrasyon, sıcaklık ve reaksiyon hızının aynı olduğu anlamına gelir. CSTR'ler genellikle sürekli beslemeli ve ürün çıkışlı operasyonlarda kullanılır.
-                        </p>
-                        <p>
-                            CSTR için temel hacim denklemi şöyledir:
-                        </p>
-                        <p class="formula-text">
-                            $V = \frac{F_{A0} \cdot X_A}{(-r_A)}$
-                        </p>
-                        <ul>
-                            <li><strong>$F_{A0}$ (A Maddesi Giriş Mol Akış Hızı):</strong> Reaktöre giren A maddesinin birim zamanda mol cinsinden miktarı.</li>
-                            <li><strong>$X_A$ (A Maddesi Dönüşümü):</strong> A maddesinin reaksiyon sonucunda ne kadarının ürüne dönüştüğünü gösteren oran (0 ile 1 arasında bir değer).</li>
-                            <li><strong>$(-r_A)$ (A Maddesinin Reaksiyon Hızı):</strong> A maddesinin birim hacim ve birim zamanda ne kadar tükendiğini gösteren hız. CSTR'da bu hız, reaktördeki çıkış konsantrasyonundaki hıza eşittir, çünkü karıştırma mükemmeldir.</li>
-                        </ul>
-                        <p>
-                            Bu hesaplayıcı, bu basit CSTR denkliğini kullanarak gerekli reaktör hacmini belirlemenize yardımcı olur.
-                        </p>
-
-                        <h4>Uygulama Alanları:</h4>
-                        <ul>
-                            <li>Polimerizasyon reaksiyonları.</li>
-                            <li>Biyokimyasal reaksiyonlar (fermantasyon).</li>
-                            <li>Atık su arıtma süreçleri.</li>
-                            <li>İlaç üretimi ve ince kimyasalların sentezi.</li>
-                        </ul>
-                        <p class="disclaimer-text">
-                            Bu hesaplayıcı, ideal CSTR koşulları altında temel reaktör hacmi tahmini için basit bir araçtır. Gerçek endüstriyel uygulamalarda mükemmel karıştırma her zaman sağlanamayabilir ve sıcaklık, basınç, birden fazla reaksiyon, katalizör varlığı gibi birçok faktör reaktör tasarımını etkiler. Daha karmaşık senaryolar için detaylı reaktör modellemesi, proses simülasyon yazılımları ve mühendislik uzmanlığı gereklidir.
-                        </p>
-                    </section>
-                </div>
+                <h1>Reaktör Hacmi ve Kinetik Hesaplayıcı</h1>
+                <p>Sürekli Karıştırmalı Tank (CSTR) ve Plug Akış (PFR) reaktörleri için gerekli hacmi hesaplayın veya mevcut reaktörler için reaksiyon hızlarını bulun.</p>
             </div>
+        </section>
+
+        <section class="calculator-selection-section">
+            <div class="container">
+                <h2>Yapmak İstediğiniz Hesaplama Türünü Seçin</h2>
+                <div class="calc-buttons-container">
+                    <button class="calc-type-button active" data-calc-type="cstrVolume">CSTR Hacmini Hesapla</button>
+                    <button class="calc-type-button" data-calc-type="pfrVolume">PFR Hacmini Hesapla (1. Derece Reaksiyonlar İçin)</button>
+                    <button class="calc-type-button" data-calc-type="reactionRate">Reaksiyon Hızını Hesapla (CSTR İçin)</button>
+                </div>
+
+                <div id="calculator-cstrVolume" class="calc-wrapper active-calc">
+                    <h3><i class="fas fa-atom icon-small"></i> CSTR Hacmini Hesapla ($V = F_{A0} \cdot X_A / (-r_A)$)</h3>
+                    <div class="calculator-form-container">
+                        <form id="cstrVolumeForm">
+                            <div class="input-with-unit">
+                                <label for="initialMolarFlow_cstr">A Maddesi Giriş Mol Akış Hızı ($F_{A0}$):</label>
+                                <input type="number" id="initialMolarFlow_cstr" placeholder="Örn: 0.1" min="0.000001" step="any" required>
+                                <select id="initialMolarFlowUnit_cstr">
+                                    <option value="mol/s">mol/s</option>
+                                    <option value="mol/min">mol/min</option>
+                                    <option value="kmol/h">kmol/saat</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="conversion_cstr">A Maddesi Dönüşümü ($X_A$) (ondalık, 0-1 arası):</label>
+                                <input type="number" id="conversion_cstr" placeholder="Örn: 0.8 (yani %80 dönüşüm)" min="0.000001" max="0.999999" step="any" required>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="reactionRate_cstr">A Maddesinin Reaksiyon Hızı ($-r_A$) (çıkış noktasında):</label>
+                                <input type="number" id="reactionRate_cstr" placeholder="Örn: 0.005" min="0.000001" step="any" required>
+                                <select id="reactionRateUnit_cstr">
+                                    <option value="mol/Ls">mol/(L·s)</option>
+                                    <option value="mol/Lmin">mol/(L·min)</option>
+                                    <option value="kmol/m3h">kmol/(m³·saat)</option>
+                                </select>
+                            </div>
+                            <button type="submit">Reaktör Hacmini Hesapla</button>
+                        </form>
+                        <div id="cstrVolumeResult" class="result-display"></div>
+                        <div class="calc-explanation">
+                            <p>İdeal Sürekli Karıştırmalı Tank Reaktörleri (CSTR) için gerekli hacmi hesaplar. $-r_A$ değeri, reaktör çıkışındaki (yani hedeflenen dönüşüm noktasındaki) reaksiyon hızı olmalıdır.</p>
+                            <p class="formula-text">
+                                $V_{CSTR} = \frac{F_{A0} \cdot X_A}{(-r_A)}$
+                            </p>
+                            <ul>
+                                <li>$ \mathbf{F_{A0}} $: A maddesi giriş mol akış hızı</li>
+                                <li>$ \mathbf{X_A} $: A maddesi dönüşümü (0 ile 1 arası ondalık)</li>
+                                <li>$ \mathbf{(-r_A)} $: A maddesinin reaksiyon hızı (reaktör çıkışında)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="calculator-pfrVolume" class="calc-wrapper hidden-calc">
+                    <h3><i class="fas fa-pipe icon-small"></i> PFR Hacmini Hesapla (1. Derece Reaksiyonlar İçin)</h3>
+                    <div class="calculator-form-container">
+                        <form id="pfrVolumeForm">
+                            <div class="input-with-unit">
+                                <label for="initialMolarFlow_pfr">A Maddesi Giriş Mol Akış Hızı ($F_{A0}$):</label>
+                                <input type="number" id="initialMolarFlow_pfr" placeholder="Örn: 0.1" min="0.000001" step="any" required>
+                                <select id="initialMolarFlowUnit_pfr">
+                                    <option value="mol/s">mol/s</option>
+                                    <option value="mol/min">mol/min</option>
+                                    <option value="kmol/h">kmol/saat</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="rateConstant_pfr">Hız Sabiti ($k$) (1. derece için):</label>
+                                <input type="number" id="rateConstant_pfr" placeholder="Örn: 0.05" min="0.000001" step="any" required>
+                                <select id="rateConstantUnit_pfr">
+                                    <option value="1/s">1/s</option>
+                                    <option value="1/min">1/min</option>
+                                    <option value="1/h">1/saat</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="initialConcentration_pfr">A Maddesi Giriş Konsantrasyonu ($C_{A0}$):</label>
+                                <input type="number" id="initialConcentration_pfr" placeholder="Örn: 0.5" min="0.000001" step="any" required>
+                                <select id="initialConcentrationUnit_pfr">
+                                    <option value="mol/L">mol/L</option>
+                                    <option value="kmol/m3">kmol/m³</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="conversion_pfr">A Maddesi Dönüşümü ($X_A$) (ondalık, 0-1 arası):</label>
+                                <input type="number" id="conversion_pfr" placeholder="Örn: 0.8 (yani %80 dönüşüm)" min="0.000001" max="0.999999" step="any" required>
+                            </div>
+                            <button type="submit">Reaktör Hacmini Hesapla</button>
+                        </form>
+                        <div id="pfrVolumeResult" class="result-display"></div>
+                        <div class="calc-explanation">
+                            <p>İdeal Plug Akış Reaktörleri (PFR) için gerekli hacmi, spesifik olarak birinci dereceden reaksiyonlar için hesaplar. PFR'de konsantrasyon ve hız reaktör boyunca değişir.</p>
+                            <p class="formula-text">
+                                $V_{PFR} = \frac{F_{A0}}{k \cdot C_{A0}} \ln\left(\frac{1}{1-X_A}\right)$
+                            </p>
+                            <ul>
+                                <li>$ \mathbf{F_{A0}} $: A maddesi giriş mol akış hızı</li>
+                                <li>$ \mathbf{k} $: Birinci dereceden reaksiyonun hız sabiti</li>
+                                <li>$ \mathbf{C_{A0}} $: A maddesi giriş konsantrasyonu</li>
+                                <li>$ \mathbf{X_A} $: A maddesi dönüşümü (0 ile 1 arası ondalık)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="calculator-reactionRate" class="calc-wrapper hidden-calc">
+                    <h3><i class="fas fa-tachometer-alt icon-small"></i> Reaksiyon Hızını Hesapla (CSTR İçin)</h3>
+                    <div class="calculator-form-container">
+                        <form id="reactionRateForm">
+                            <div class="input-with-unit">
+                                <label for="initialMolarFlow_rr">A Maddesi Giriş Mol Akış Hızı ($F_{A0}$):</label>
+                                <input type="number" id="initialMolarFlow_rr" placeholder="Örn: 0.1" min="0.000001" step="any" required>
+                                <select id="initialMolarFlowUnit_rr">
+                                    <option value="mol/s">mol/s</option>
+                                    <option value="mol/min">mol/min</option>
+                                    <option value="kmol/h">kmol/saat</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="conversion_rr">A Maddesi Dönüşümü ($X_A$) (ondalık, 0-1 arası):</label>
+                                <input type="number" id="conversion_rr" placeholder="Örn: 0.8 (yani %80 dönüşüm)" min="0.000001" max="0.999999" step="any" required>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="reactorVolume_rr">CSTR Hacmi ($V$):</label>
+                                <input type="number" id="reactorVolume_rr" placeholder="Örn: 10" min="0.000001" step="any" required>
+                                <select id="reactorVolumeUnit_rr">
+                                    <option value="L">Litre (L)</option>
+                                    <option value="m3">Metreküp (m³)</option>
+                                </select>
+                            </div>
+                            <button type="submit">Reaksiyon Hızını Hesapla</button>
+                        </form>
+                        <div id="reactionRateResult" class="result-display"></div>
+                        <div class="calc-explanation">
+                            <p>Mevcut bir CSTR'nin hacmi, giriş mol akış hızı ve dönüşüm bilgileriyle, o reaktördeki reaksiyon hızını ($-r_A$) hesaplar. Bu, reaksiyon kinetiğini deneysel olarak belirlemede kullanılabilir.</p>
+                            <p class="formula-text">
+                                $(-r_A) = \frac{F_{A0} \cdot X_A}{V_{CSTR}}$
+                            </p>
+                            <ul>
+                                <li>$ \mathbf{F_{A0}} $: A maddesi giriş mol akış hızı</li>
+                                <li>$ \mathbf{X_A} $: A maddesi dönüşümü (0 ile 1 arası ondalık)</li>
+                                <li>$ \mathbf{V_{CSTR}} $: CSTR hacmi</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>Reaktör Hacmi ve Reaksiyon Kinetiği Nedir?</h3>
+            <p>
+                Kimyasal reaktörler, kimyasal reaksiyonların gerçekleştiği kapalı sistemlerdir. Reaktör hacminin hesaplanması, bir reaksiyonun belirli bir dönüşümle istenen miktarda ürün üretmesi için ne kadar büyük bir reaktöre ihtiyaç duyulduğunu belirlemek için kritik öneme sahiptir. Bu, proses tasarımının ve ekonomik değerlendirmelerin temelini oluşturur. Reaktör tasarımı, reaksiyon kinetiği (reaksiyonun ne kadar hızlı gerçekleştiği), akışkan mekaniği (maddelerin reaktör içinde nasıl hareket ettiği) ve ısı transferi gibi birçok mühendislik prensibini bir araya getirir.
+            </p>
+
+            <h4>Reaktör Tipleri</h4>
+            <ul>
+                <li>
+                    <strong>Sürekli Karıştırmalı Tank Reaktörü (CSTR):</strong> İçindeki tüm akışkanın anında ve tamamen karıştığı varsayılan bir reaktör tipidir. Reaktörün her noktasında konsantrasyon, sıcaklık ve reaksiyon hızı aynıdır ve çıkış koşullarına eşittir. Genellikle sürekli beslemeli ve ürün çıkışlı operasyonlarda kullanılır.
+                    <p class="formula-text small-margin">
+                        $V_{CSTR} = \frac{F_{A0} \cdot X_A}{(-r_A)}$
+                    </p>
+                </li>
+                <li>
+                    <strong>Plug Akış Reaktörü (PFR):</strong> Bir boru veya tüp şeklinde olup, akışkanın reaktör boyunca "fiş" gibi hareket ettiği varsayılır; yani akışkanın farklı dilimleri birbirleriyle karışmaz. Konsantrasyon, sıcaklık ve reaksiyon hızı reaktör boyunca değişir. Genellikle yüksek dönüşüm oranları için tercih edilir.
+                    <p class="formula-text small-margin">
+                        $V_{PFR} = F_{A0} \int_{X_{A0}}^{X_A} \frac{dX_A}{(-r_A)}$
+                    </p>
+                    <p class="small-text">Bu hesaplayıcıda, birinci dereceden reaksiyonlar için basitleştirilmiş formül kullanılmıştır: $V_{PFR} = \frac{F_{A0}}{k \cdot C_{A0}} \ln\left(\frac{1}{1-X_A}\right)$</p>
+                </li>
+            </ul>
+
+            <h4>Reaksiyon Hızı ($-r_A$) Nedir?</h4>
+            <p>
+                Reaksiyon hızı (örneğin $-r_A$, A maddesinin tüketim hızı), bir kimyasal reaksiyonun birim hacimde ve birim zamanda ne kadar hızlı ilerlediğini gösteren bir ölçüdür. Kinetik modelden veya deneysel verilerden elde edilebilir. Reaktör boyutlandırması için kritik bir parametredir.
+            </p>
+            <p class="formula-text small-margin">
+                $(-r_A) = \frac{F_{A0} \cdot X_A}{V_{CSTR}}$ (CSTR için)
+            </p>
+
+            <h4>Uygulama Alanları:</h4>
+            <ul>
+                <li>Polimerizasyon ve biyokimyasal reaksiyonlar (fermantasyon) gibi karmaşık sistemlerin tasarımı.</li>
+                <li>Atık su arıtma tesislerinde biyoreaktörlerin boyutlandırılması.</li>
+                <li>İlaç üretimi ve ince kimyasalların sentezinde proses optimizasyonu.</li>
+                <li>Petrokimya endüstrisinde katalitik reaktörlerin tasarımı.</li>
+            </ul>
+            <p class="disclaimer-text">
+                Bu hesaplayıcı, ideal CSTR ve PFR koşulları altında temel reaktör hacmi ve reaksiyon hızı tahminleri için bir araçtır. Gerçek endüstriyel uygulamalarda mükemmel karıştırma her zaman sağlanamayabilir, ısıtma/soğutma etkileri, basınç düşüşleri, yan reaksiyonlar, katalizör deaktivasyonu ve akışkanların ideal olmayan davranışları gibi birçok karmaşık faktör reaktör tasarımını etkiler. Daha karmaşık senaryolar için detaylı reaktör modellemesi, proses simülasyon yazılımları ve mühendislik uzmanlığı gereklidir. PFR hacim hesaplaması sadece birinci dereceden reaksiyonlar için basitleştirilmiştir.
+            </p>
         </section>
     </main>
 
@@ -120,40 +571,250 @@
     </footer>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const mainCalcButtons = document.querySelectorAll('.calc-type-button');
+            const calculatorWrappers = document.querySelectorAll('.calc-wrapper');
+
+            // Başlangıçta ilk hesaplayıcıyı göster
+            showCalculator('cstrVolume');
+
+            mainCalcButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const type = button.dataset.calcType;
+                    showCalculator(type);
+                    // Butonların 'active' sınıfını yönet
+                    mainCalcButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    // İlgili bölüme yumuşak kaydırma
+                    const targetCalc = document.getElementById(`calculator-${type}`);
+                    if (targetCalc) {
+                        targetCalc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+
+            function showCalculator(typeToShow) {
+                calculatorWrappers.forEach(wrapper => {
+                    if (wrapper.id === `calculator-${typeToShow}`) {
+                        wrapper.classList.remove('hidden-calc');
+                        wrapper.classList.add('active-calc');
+                    } else {
+                        wrapper.classList.add('hidden-calc');
+                        wrapper.classList.remove('active-calc');
+                    }
+                    // Her geçişte formları ve sonuçları temizle
+                    const form = wrapper.querySelector('form');
+                    if (form) form.reset();
+                    const resultDiv = wrapper.querySelector('.result-display');
+                    if (resultDiv) {
+                        resultDiv.innerHTML = '';
+                        resultDiv.style.display = 'none';
+                    }
+                    // Hata stillerini de temizle
+                    wrapper.querySelectorAll('input').forEach(input => input.classList.remove('error'));
+                });
+            }
+
+            // Ortak hata gösterici fonksiyon
+            function displayError(resultDiv, message, inputsToMark = []) {
+                resultDiv.innerHTML = `<p class="error">Hata: ${message}</p>`;
+                resultDiv.style.display = 'block';
+                inputsToMark.forEach(input => {
+                    if (input && input.value !== '') input.classList.add('error');
+                });
+            }
+
+            // Input hata stilini temizleyici fonksiyon
+            function clearErrorStyles(inputs) {
+                inputs.forEach(input => input.classList.remove('error'));
+            }
+
+            // Birim dönüşüm faktörleri (hepsi baz birimlere göre: mol/s, L, mol/(L.s), 1/s, mol/L)
+            const molarFlowConversion = {
+                'mol/s': 1,
+                'mol/min': 1/60,
+                'kmol/h': 1000/3600 // kmol/h -> mol/s
+            };
+
+            const reactionRateConversion = {
+                'mol/Ls': 1,
+                'mol/Lmin': 1/60,
+                'kmol/m3h': 1/3.6 // kmol/m³h -> mol/(L·s) (1 m³ = 1000 L, 1 saat = 3600 s)
+            };
+
+            const volumeConversion = {
+                'L': 1,
+                'm3': 1000 // m³ -> L
+            };
+
+            const rateConstantConversion = {
+                '1/s': 1,
+                '1/min': 1/60,
+                '1/h': 1/3600 // 1/h -> 1/s
+            };
+
+            const concentrationConversion = {
+                'mol/L': 1,
+                'kmol/m3': 1 // kmol/m³ = mol/L
+            };
+
+
+            // --- CSTR HACMİNİ HESAPLA ---
             const cstrVolumeForm = document.getElementById('cstrVolumeForm');
-            const initialMolarFlowInput = document.getElementById('initialMolarFlow');
-            const conversionInput = document.getElementById('conversion');
-            const reactionRateInput = document.getElementById('reactionRate');
-            const cstrVolumeResult = document.getElementById('cstrVolumeResult');
+            const initialMolarFlow_cstrInput = document.getElementById('initialMolarFlow_cstr');
+            const initialMolarFlowUnit_cstrSelect = document.getElementById('initialMolarFlowUnit_cstr');
+            const conversion_cstrInput = document.getElementById('conversion_cstr');
+            const reactionRate_cstrInput = document.getElementById('reactionRate_cstr');
+            const reactionRateUnit_cstrSelect = document.getElementById('reactionRateUnit_cstr');
+            const cstrVolumeResultDiv = document.getElementById('cstrVolumeResult');
+
+            function calculateCSTRVolume() {
+                clearErrorStyles([initialMolarFlow_cstrInput, conversion_cstrInput, reactionRate_cstrInput]);
+                cstrVolumeResultDiv.innerHTML = '';
+                cstrVolumeResultDiv.style.display = 'none';
+
+                const F_A0_val = parseFloat(initialMolarFlow_cstrInput.value);
+                const X_A_val = parseFloat(conversion_cstrInput.value);
+                const r_A_val = parseFloat(reactionRate_cstrInput.value);
+
+                const F_A0_unit = initialMolarFlowUnit_cstrSelect.value;
+                const r_A_unit = reactionRateUnit_cstrSelect.value;
+
+                if (isNaN(F_A0_val) || F_A0_val <= 0) { displayError(cstrVolumeResultDiv, "Lütfen geçerli ve pozitif bir mol akış hızı giriniz.", [initialMolarFlow_cstrInput]); return; }
+                if (isNaN(X_A_val) || X_A_val <= 0 || X_A_val >= 1) { displayError(cstrVolumeResultDiv, "Lütfen 0 ile 1 arasında (dahil değil) geçerli bir dönüşüm giriniz.", [conversion_cstrInput]); return; }
+                if (isNaN(r_A_val) || r_A_val <= 0) { displayError(cstrVolumeResultDiv, "Lütfen geçerli ve pozitif bir reaksiyon hızı giriniz.", [reactionRate_cstrInput]); return; }
+
+                const F_A0_base = F_A0_val * molarFlowConversion[F_A0_unit];
+                const r_A_base = r_A_val * reactionRateConversion[r_A_unit];
+
+                const V_CSTR_L = (F_A0_base * X_A_val) / r_A_base;
+
+                cstrVolumeResultDiv.innerHTML = `
+                    <p><strong>A Maddesi Giriş Mol Akış Hızı ($F_{A0}$):</strong> ${initialMolarFlow_cstrInput.value} ${F_A0_unit}</p>
+                    <p><strong>A Maddesi Dönüşümü ($X_A$):</strong> ${conversion_cstrInput.value} (yani %${(X_A_val * 100).toFixed(1)} dönüşüm)</p>
+                    <p><strong>A Maddesinin Reaksiyon Hızı ($-r_A$):</strong> ${reactionRate_cstrInput.value} ${r_A_unit}</p>
+                    <hr>
+                    <p><strong>Hesaplanan CSTR Hacmi:</strong> <span class="result-value">${V_CSTR_L.toFixed(3)}</span> Litre</p>
+                `;
+                cstrVolumeResultDiv.style.display = 'block';
+            }
 
             if (cstrVolumeForm) {
-                cstrVolumeForm.addEventListener('submit', function(event) {
-                    event.preventDefault(); // Formun varsayılan gönderimini engelle
+                cstrVolumeForm.addEventListener('submit', function(event) { event.preventDefault(); calculateCSTRVolume(); });
+                initialMolarFlow_cstrInput.addEventListener('input', calculateCSTRVolume);
+                initialMolarFlowUnit_cstrSelect.addEventListener('change', calculateCSTRVolume);
+                conversion_cstrInput.addEventListener('input', calculateCSTRVolume);
+                reactionRate_cstrInput.addEventListener('input', calculateCSTRVolume);
+                reactionRateUnit_cstrSelect.addEventListener('change', calculateCSTRVolume);
+            }
 
-                    const initialMolarFlow = parseFloat(initialMolarFlowInput.value);
-                    const conversion = parseFloat(conversionInput.value);
-                    const reactionRate = parseFloat(reactionRateInput.value);
+            // --- PFR HACMİNİ HESAPLA (1. Derece Reaksiyonlar İçin) ---
+            const pfrVolumeForm = document.getElementById('pfrVolumeForm');
+            const initialMolarFlow_pfrInput = document.getElementById('initialMolarFlow_pfr');
+            const initialMolarFlowUnit_pfrSelect = document.getElementById('initialMolarFlowUnit_pfr');
+            const rateConstant_pfrInput = document.getElementById('rateConstant_pfr');
+            const rateConstantUnit_pfrSelect = document.getElementById('rateConstantUnit_pfr');
+            const initialConcentration_pfrInput = document.getElementById('initialConcentration_pfr');
+            const initialConcentrationUnit_pfrSelect = document.getElementById('initialConcentrationUnit_pfr');
+            const conversion_pfrInput = document.getElementById('conversion_pfr');
+            const pfrVolumeResultDiv = document.getElementById('pfrVolumeResult');
 
-                    // Girişlerin geçerli sayı olup olmadığını ve gerekli pozitif değerleri kontrol et
-                    if (isNaN(initialMolarFlow) || isNaN(conversion) || isNaN(reactionRate) ||
-                        initialMolarFlow <= 0 || conversion <= 0 || conversion >= 1 || reactionRate <= 0) {
-                        cstrVolumeResult.innerHTML = '<p class="error">Lütfen tüm alanlara geçerli ve pozitif sayılar giriniz. Dönüşüm 0 ile 1 arasında (dahil değil) olmalıdır.</p>';
-                        cstrVolumeResult.style.display = 'block';
-                        return;
-                    }
+            function calculatePFRVolume() {
+                clearErrorStyles([initialMolarFlow_pfrInput, rateConstant_pfrInput, initialConcentration_pfrInput, conversion_pfrInput]);
+                pfrVolumeResultDiv.innerHTML = '';
+                pfrVolumeResultDiv.style.display = 'none';
 
-                    // CSTR Hacim hesaplaması: V = F_A0 * X_A / (-r_A)
-                    const cstrVolume = (initialMolarFlow * conversion) / reactionRate;
+                const F_A0_val = parseFloat(initialMolarFlow_pfrInput.value);
+                const k_val = parseFloat(rateConstant_pfrInput.value);
+                const C_A0_val = parseFloat(initialConcentration_pfrInput.value);
+                const X_A_val = parseFloat(conversion_pfrInput.value);
 
-                    cstrVolumeResult.innerHTML = `
-                        <p><strong>A Maddesi Giriş Mol Akış Hızı (F_A0):</strong> ${initialMolarFlow} mol/s</p>
-                        <p><strong>A Maddesi Dönüşümü (X_A):</strong> ${conversion} (yani %${(conversion * 100).toFixed(1)} dönüşüm)</p>
-                        <p><strong>A Maddesinin Reaksiyon Hızı (-r_A):</strong> ${reactionRate} mol/(L·s)</p>
-                        <hr>
-                        <p><strong>Hesaplanan CSTR Hacmi:</strong> <span class="result-value">${cstrVolume.toFixed(3)}</span> Litre</p>
-                    `;
-                    cstrVolumeResult.style.display = 'block';
-                });
+                const F_A0_unit = initialMolarFlowUnit_pfrSelect.value;
+                const k_unit = rateConstantUnit_pfrSelect.value;
+                const C_A0_unit = initialConcentrationUnit_pfrSelect.value;
+
+                if (isNaN(F_A0_val) || F_A0_val <= 0) { displayError(pfrVolumeResultDiv, "Lütfen geçerli ve pozitif bir mol akış hızı giriniz.", [initialMolarFlow_pfrInput]); return; }
+                if (isNaN(k_val) || k_val <= 0) { displayError(pfrVolumeResultDiv, "Lütfen geçerli ve pozitif bir hız sabiti giriniz.", [rateConstant_pfrInput]); return; }
+                if (isNaN(C_A0_val) || C_A0_val <= 0) { displayError(pfrVolumeResultDiv, "Lütfen geçerli ve pozitif bir başlangıç konsantrasyonu giriniz.", [initialConcentration_pfrInput]); return; }
+                if (isNaN(X_A_val) || X_A_val <= 0 || X_A_val >= 1) { displayError(pfrVolumeResultDiv, "Lütfen 0 ile 1 arasında (dahil değil) geçerli bir dönüşüm giriniz.", [conversion_pfrInput]); return; }
+
+                const F_A0_base = F_A0_val * molarFlowConversion[F_A0_unit];
+                const k_base = k_val * rateConstantConversion[k_unit];
+                const C_A0_base = C_A0_val * concentrationConversion[C_A0_unit];
+
+                // PFR hacim hesaplaması: V = (F_A0 / (k * C_A0)) * ln(1 / (1 - X_A))
+                const V_PFR_L = (F_A0_base / (k_base * C_A0_base)) * Math.log(1 / (1 - X_A_val));
+
+                pfrVolumeResultDiv.innerHTML = `
+                    <p><strong>A Maddesi Giriş Mol Akış Hızı ($F_{A0}$):</strong> ${initialMolarFlow_pfrInput.value} ${F_A0_unit}</p>
+                    <p><strong>Hız Sabiti ($k$):</strong> ${rateConstant_pfrInput.value} ${k_unit}</p>
+                    <p><strong>A Maddesi Giriş Konsantrasyonu ($C_{A0}$):</strong> ${initialConcentration_pfrInput.value} ${C_A0_unit}</p>
+                    <p><strong>A Maddesi Dönüşümü ($X_A$):</strong> ${conversion_pfrInput.value} (yani %${(X_A_val * 100).toFixed(1)} dönüşüm)</p>
+                    <hr>
+                    <p><strong>Hesaplanan PFR Hacmi:</strong> <span class="result-value">${V_PFR_L.toFixed(3)}</span> Litre</p>
+                `;
+                pfrVolumeResultDiv.style.display = 'block';
+            }
+
+            if (pfrVolumeForm) {
+                pfrVolumeForm.addEventListener('submit', function(event) { event.preventDefault(); calculatePFRVolume(); });
+                initialMolarFlow_pfrInput.addEventListener('input', calculatePFRVolume);
+                initialMolarFlowUnit_pfrSelect.addEventListener('change', calculatePFRVolume);
+                rateConstant_pfrInput.addEventListener('input', calculatePFRVolume);
+                rateConstantUnit_pfrSelect.addEventListener('change', calculatePFRVolume);
+                initialConcentration_pfrInput.addEventListener('input', calculatePFRVolume);
+                initialConcentrationUnit_pfrSelect.addEventListener('change', calculatePFRVolume);
+                conversion_pfrInput.addEventListener('input', calculatePFRVolume);
+            }
+
+            // --- REAKSİYON HIZINI HESAPLA (CSTR İçin) ---
+            const reactionRateForm = document.getElementById('reactionRateForm');
+            const initialMolarFlow_rrInput = document.getElementById('initialMolarFlow_rr');
+            const initialMolarFlowUnit_rrSelect = document.getElementById('initialMolarFlowUnit_rr');
+            const conversion_rrInput = document.getElementById('conversion_rr');
+            const reactorVolume_rrInput = document.getElementById('reactorVolume_rr');
+            const reactorVolumeUnit_rrSelect = document.getElementById('reactorVolumeUnit_rr');
+            const reactionRateResultDiv = document.getElementById('reactionRateResult');
+
+            function calculateReactionRate() {
+                clearErrorStyles([initialMolarFlow_rrInput, conversion_rrInput, reactorVolume_rrInput]);
+                reactionRateResultDiv.innerHTML = '';
+                reactionRateResultDiv.style.display = 'none';
+
+                const F_A0_val = parseFloat(initialMolarFlow_rrInput.value);
+                const X_A_val = parseFloat(conversion_rrInput.value);
+                const V_val = parseFloat(reactorVolume_rrInput.value);
+
+                const F_A0_unit = initialMolarFlowUnit_rrSelect.value;
+                const V_unit = reactorVolumeUnit_rrSelect.value;
+
+                if (isNaN(F_A0_val) || F_A0_val <= 0) { displayError(reactionRateResultDiv, "Lütfen geçerli ve pozitif bir mol akış hızı giriniz.", [initialMolarFlow_rrInput]); return; }
+                if (isNaN(X_A_val) || X_A_val <= 0 || X_A_val >= 1) { displayError(reactionRateResultDiv, "Lütfen 0 ile 1 arasında (dahil değil) geçerli bir dönüşüm giriniz.", [conversion_rrInput]); return; }
+                if (isNaN(V_val) || V_val <= 0) { displayError(reactionRateResultDiv, "Lütfen geçerli ve pozitif bir reaktör hacmi giriniz.", [reactorVolume_rrInput]); return; }
+
+                const F_A0_base = F_A0_val * molarFlowConversion[F_A0_unit];
+                const V_base = V_val * volumeConversion[V_unit];
+
+                // Reaksiyon hızı hesaplaması: (-r_A) = (F_A0 * X_A) / V
+                const r_A_calculated_molLs = (F_A0_base * X_A_val) / V_base;
+
+                reactionRateResultDiv.innerHTML = `
+                    <p><strong>A Maddesi Giriş Mol Akış Hızı ($F_{A0}$):</strong> ${initialMolarFlow_rrInput.value} ${F_A0_unit}</p>
+                    <p><strong>A Maddesi Dönüşümü ($X_A$):</strong> ${conversion_rrInput.value} (yani %${(X_A_val * 100).toFixed(1)} dönüşüm)</p>
+                    <p><strong>CSTR Hacmi ($V$):</strong> ${reactorVolume_rrInput.value} ${V_unit}</p>
+                    <hr>
+                    <p><strong>Hesaplanan Reaksiyon Hızı ($-r_A$):</strong> <span class="result-value">${r_A_calculated_molLs.toFixed(5)}</span> mol/(L·s)</p>
+                `;
+                reactionRateResultDiv.style.display = 'block';
+            }
+
+            if (reactionRateForm) {
+                reactionRateForm.addEventListener('submit', function(event) { event.preventDefault(); calculateReactionRate(); });
+                initialMolarFlow_rrInput.addEventListener('input', calculateReactionRate);
+                initialMolarFlowUnit_rrSelect.addEventListener('change', calculateReactionRate);
+                conversion_rrInput.addEventListener('input', calculateReactionRate);
+                reactorVolume_rrInput.addEventListener('input', calculateReactionRate);
+                reactorVolumeUnit_rrSelect.addEventListener('change', calculateReactionRate);
             }
         });
     </script>
