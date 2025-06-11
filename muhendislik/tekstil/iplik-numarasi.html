@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İplik Numarası Hesaplama - Hesapkolik</title>
+    <meta name="description" content="Farklı iplik numarası sistemleri (Tex, Denye, Ne, Nm vb.) arasında dönüşüm ve hesaplama aracı. İplik numarası ve inceliğiyle ilgili tüm hesaplamalar.">
+    <meta name="keywords" content="iplik numarası, iplik inceliği, tex hesaplama, denye hesaplama, ne hesaplama, nm hesaplama, iplik dönüşüm, tekstil mühendisliği hesaplamaları, hesapkolik tekstil">
+    <link rel="stylesheet" href="../../css/style.css"> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="calculator-detail-section">
+            <div class="container">
+                <h1 class="main-title">İplik Numarası Hesaplayıcı</h1>
+                <p class="section-description">
+                    İplik numarası, tekstilde ipliğin inceliğini veya kalınlığını ifade eden önemli bir özelliktir. 
+                    Farklı iplik numarası sistemleri (Tex, Denye, Ne, Nm vb.) arasında kolayca dönüşüm yapabilir, 
+                    ipliğin inceliği veya kalınlığına göre diğer sistemlerdeki karşılıklarını hesaplayabilirsiniz.
+                </p>
+
+                <div class="calculator-box">
+                    <form id="iplikNumarasiForm">
+                        <div class="input-group">
+                            <label for="inputNumber">İplik Numarası Değeri:</label>
+                            <input type="number" id="inputNumber" step="any" min="0" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="inputSystem">Giriş Sistemi:</label>
+                            <select id="inputSystem">
+                                <option value="tex">Tex (g/1000m)</option>
+                                <option value="denye">Denye (g/9000m)</option>
+                                <option value="ne">Ne (Pamuk Numarası - 840 yard/lb)</option>
+                                <option value="nm">Nm (Metrik Numara - m/g)</option>
+                                <option value="dtex">dTex (g/10000m)</option>
+                                <option value="denye">Denye (g/9000m)</option>
+                            </select>
+                        </div>
+                        
+                        <button type="button" onclick="hesaplaIplikNumarasi()">Hesapla</button>
+                    </form>
+
+                    <div class="result-box" id="resultBox">
+                        <h3>Sonuçlar:</h3>
+                        <p><strong>Tex:</strong> <span id="resultTex"></span></p>
+                        <p><strong>Denye:</strong> <span id="resultDenye"></span></p>
+                        <p><strong>Ne (Pamuk Numarası):</strong> <span id="resultNe"></span></p>
+                        <p><strong>Nm (Metrik Numara):</strong> <span id="resultNm"></span></p>
+                        <p><strong>dTex:</strong> <span id="resultDtex"></span></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+
+    <script>
+        function hesaplaIplikNumarasi() {
+            const inputNumber = parseFloat(document.getElementById('inputNumber').value);
+            const inputSystem = document.getElementById('inputSystem').value;
+
+            if (isNaN(inputNumber) || inputNumber < 0) {
+                alert("Lütfen geçerli bir iplik numarası değeri girin.");
+                return;
+            }
+
+            let tex, denye, ne, nm, dtex;
+
+            switch (inputSystem) {
+                case 'tex':
+                    tex = inputNumber;
+                    denye = tex * 9;
+                    ne = 590.54 / tex;
+                    nm = 1000 / tex;
+                    dtex = tex * 10;
+                    break;
+                case 'denye':
+                    denye = inputNumber;
+                    tex = denye / 9;
+                    ne = 5314.96 / denye;
+                    nm = 9000 / denye;
+                    dtex = denye * 10 / 9; // denye = g/9000m => dtex = g/10000m
+                    break;
+                case 'ne':
+                    ne = inputNumber;
+                    tex = 590.54 / ne;
+                    denye = 5314.96 / ne;
+                    nm = 1693.6 / ne; // Nm = 1693.6 / Ne
+                    dtex = tex * 10;
+                    break;
+                case 'nm':
+                    nm = inputNumber;
+                    tex = 1000 / nm;
+                    denye = 9000 / nm;
+                    ne = 1693.6 / nm; // Ne = 1693.6 / Nm
+                    dtex = tex * 10;
+                    break;
+                case 'dtex':
+                    dtex = inputNumber;
+                    tex = dtex / 10;
+                    denye = tex * 9;
+                    ne = 590.54 / tex;
+                    nm = 1000 / tex;
+                    break;
+                default:
+                    alert("Geçersiz iplik numarası sistemi.");
+                    return;
+            }
+
+            // Sonuçları göster
+            document.getElementById('resultTex').textContent = tex.toFixed(3);
+            document.getElementById('resultDenye').textContent = denye.toFixed(3);
+            document.getElementById('resultNe').textContent = ne.toFixed(3);
+            document.getElementById('resultNm').textContent = nm.toFixed(3);
+            document.getElementById('resultDtex').textContent = dtex.toFixed(3);
+        }
+    </script>
+</body>
+</html>
