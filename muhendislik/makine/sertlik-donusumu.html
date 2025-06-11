@@ -334,12 +334,18 @@
         .tablo-container {
             margin-top: 30px;
             text-align: left;
+            background-color: #fcfcfc;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 20px;
         }
         .tablo-container h4 {
             font-size: 1.4em;
             color: #34495e;
             margin-bottom: 15px;
             text-align: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
         }
         .tablo-container table {
             width: 100%;
@@ -352,7 +358,7 @@
             text-align: center;
         }
         .tablo-container th {
-            background-color: #f2f2f2;
+            background-color: #eaf0f0;
             font-weight: 600;
             color: #555;
         }
@@ -588,43 +594,38 @@
             // Kaynak: Çeşitli mühendislik el kitapları ve online referanslar.
             // Önemli Not: Gerçek uygulamalarda malzemenin türü ve sertlik aralığına göre hassasiyet değişir.
             const conversions = {
-                // HRC -> Diğerleri
                 'HRC': {
                     'HB': (hrc) => {
-                        if (hrc >= 20 && hrc <= 67) return 0.000305 * Math.pow(hrc, 3.491) + 12.0; // Kestirme
-                        if (hrc >= 20 && hrc <= 60) return (1.0000000000000001 - 0.0000000000000002161 * hrc + 0.0000000000000001083 * Math.pow(hrc, 2) - 0.0000000000000000139 * Math.pow(hrc, 3)) * 4.952 * Math.pow(Math.E, (0.0456 * hrc)); // Daha detaylı
+                        if (hrc >= 20 && hrc <= 67) return (76 * hrc) - 1380; // Yaklaşık
                         return NaN;
                     },
                     'HV': (hrc) => {
-                        if (hrc >= 20 && hrc <= 67) return (0.0000782 * Math.pow(hrc, 3.86) + 16.0); // Kestirme
-                        if (hrc >= 20 && hrc <= 60) return 1.0000000000000001 + 0.0000000000000001594 * hrc + 0.00000000000000000806 * Math.pow(hrc, 2) - 0.00000000000000000989 * Math.pow(hrc, 3)) * 4.908 * Math.pow(Math.E, (0.0458 * hrc));
+                        if (hrc >= 20 && hrc <= 67) return (10 * hrc) + 700; // Yaklaşık
                         return NaN;
                     },
                     'HRB': (hrc) => {
-                        if (hrc >= 20 && hrc <= 67) return 100 - (100 - hrc) * 0.985; // Basit yaklaşı
+                        if (hrc >= 20 && hrc <= 67) return (0.98 * hrc) + 84.5; // Çok kaba tahmin, aslında bu aralıkta HRC-HRB direkt dönüşüm grafiği daha karmaşıktır.
                         return NaN;
                     },
                     'HRA': (hrc) => {
-                        if (hrc >= 20 && hrc <= 67) return 88 - (88 - hrc) * 0.985; // Basit yaklaşı
+                        if (hrc >= 20 && hrc <= 67) return (0.85 * hrc) + 64.5; // Çok kaba tahmin
                         return NaN;
                     },
                     'HK': (hrc) => {
-                        // Knoop genellikle Vickers'a daha yakın, HV üzerinden tahmin edilebilir
-                        return conversions['HRC']['HV'](hrc); // HK için genellikle HV değeri kullanılır.
+                        return conversions.HRC.HV(hrc); // Knoop genellikle Vickers'a daha yakın
                     }
                 },
-                // HRB -> Diğerleri
                 'HRB': {
                     'HRC': (hrb) => {
-                        if (hrb >= 0 && hrb <= 100) return (hrb - 60) / 2; // Çok kaba tahmin
+                        if (hrb >= 0 && hrb <= 100) return (hrb - 84.5) / 0.98; // HRC'den HRB'nin tersi, kaba
                         return NaN;
                     },
                     'HB': (hrb) => {
-                        if (hrb >= 0 && hrb <= 100) return 0.000494 * Math.pow(hrb, 2) + 0.447 * hrb + 50.0;
+                        if (hrb >= 0 && hrb <= 100) return (100 - hrb) * 1.6 + 80; // Yaklaşık
                         return NaN;
                     },
                     'HV': (hrb) => {
-                        if (hrb >= 0 && hrb <= 100) return 0.000494 * Math.pow(hrb, 2) + 0.447 * hrb + 50.0; // Genellikle HB ile aynı yaklaşık formül kullanılır
+                        if (hrb >= 0 && hrb <= 100) return (100 - hrb) * 1.6 + 80; // HV ≈ HB
                         return NaN;
                     },
                     'HRA': (hrb) => {
@@ -632,13 +633,12 @@
                         return NaN;
                     },
                     'HK': (hrb) => {
-                        return conversions['HRB']['HV'](hrb); // HK için genellikle HV değeri kullanılır.
+                        return conversions.HRB.HV(hrb); // Knoop genellikle Vickers'a daha yakın
                     }
                 },
-                // HRA -> Diğerleri
                 'HRA': {
                     'HRC': (hra) => {
-                        if (hra >= 20 && hra <= 88) return 1.0000000000000001 + 0.0000000000000001083 * hra + 0.0000000000000000000139 * Math.pow(hra, 2) - 0.00000000000000000000001 * Math.pow(hra, 3)) * 4.952 * Math.pow(Math.E, (0.0456 * hra)); // Daha detaylı
+                        if (hra >= 20 && hra <= 88) return (hra - 64.5) / 0.85; // HRC'den HRA'nın tersi, kaba
                         return NaN;
                     },
                     'HRB': (hra) => {
@@ -646,87 +646,79 @@
                         return NaN;
                     },
                     'HB': (hra) => {
-                        if (hra >= 20 && hra <= 88) return 0.000494 * Math.pow(hra, 2) + 0.447 * hra + 50.0; // HB/HV ile aynı
+                        if (hra >= 20 && hra <= 88) return (hra - 20) * 2.5 + 100; // Yaklaşık
                         return NaN;
                     },
                     'HV': (hra) => {
-                        if (hra >= 20 && hra <= 88) return 0.000494 * Math.pow(hra, 2) + 0.447 * hra + 50.0; // HB/HV ile aynı
+                        if (hra >= 20 && hra <= 88) return (hra - 20) * 2.5 + 100; // HV ≈ HB
                         return NaN;
                     },
                     'HK': (hra) => {
-                        return conversions['HRA']['HV'](hra); // HK için genellikle HV değeri kullanılır.
+                        return conversions.HRA.HV(hra); // Knoop genellikle Vickers'a daha yakın
                     }
                 },
-                // HB -> Diğerleri
                 'HB': {
                     'HRC': (hb) => {
-                        if (hb >= 100 && hb <= 600) return (hb - 180) / 4.75; // Kaba tahmin
+                        if (hb >= 100 && hb <= 600) return (hb + 1380) / 76; // HRC'den HB'nin tersi, yaklaşık
                         return NaN;
                     },
                     'HRB': (hb) => {
-                        if (hb >= 50 && hb <= 250) return -0.00001 * Math.pow(hb, 2) + 0.16 * hb - 1.6; // Kaba tahmin
+                        if (hb >= 80 && hb <= 250) return 100 - (hb - 80) / 1.6; // HRB'den HB'nin tersi, yaklaşık
                         return NaN;
                     },
                     'HRA': (hb) => {
-                        if (hb >= 50 && hb <= 250) return (hb * 0.25) + 50; // Kaba tahmin
+                        if (hb >= 100 && hb <= 250) return (hb - 100) / 2.5 + 20; // HRA'dan HB'nin tersi, yaklaşık
                         return NaN;
                     },
                     'HV': (hb) => {
-                        if (hb > 0) return hb * 1.05; // Çoğu durumda HV ≈ HB (1.05 katı gibi)
+                        if (hb > 0) return hb * 1.05; // Genel yaklaşım
                         return NaN;
                     },
                     'HK': (hb) => {
-                        return conversions['HB']['HV'](hb); // HK için genellikle HV değeri kullanılır.
+                        return conversions.HB.HV(hb); // HK genellikle HV'ye yakın
                     }
                 },
-                // HV -> Diğerleri
                 'HV': {
                     'HRC': (hv) => {
-                        if (hv >= 100 && hv <= 800) return (hv - 190) / 8; // Kaba tahmin
+                        if (hv >= 100 && hv <= 800) return (hv - 700) / 10; // HRC'den HV'nin tersi, yaklaşık
                         return NaN;
                     },
                     'HRB': (hv) => {
-                        if (hv >= 50 && hv <= 250) return (-0.00001 * Math.pow(hv, 2) + 0.16 * hv - 1.6); // Kaba tahmin
+                        if (hv >= 80 && hv <= 250) return 100 - (hv - 80) / 1.6; // HRB'den HV'nin tersi, yaklaşık
                         return NaN;
                     },
                     'HRA': (hv) => {
-                        if (hv >= 50 && hv <= 250) return (hv * 0.25) + 50; // Kaba tahmin
+                        if (hv >= 100 && hv <= 250) return (hv - 100) / 2.5 + 20; // HRA'dan HV'nin tersi, yaklaşık
                         return NaN;
                     },
                     'HB': (hv) => {
-                        if (hv > 0) return hv * 0.95; // Çoğu durumda HB ≈ HV (0.95 katı gibi)
+                        if (hv > 0) return hv * 0.95; // Genel yaklaşım
                         return NaN;
                     },
                     'HK': (hv) => {
-                        // Knoop'tan Vickers'a dönüşüm karmaşıktır, ancak genellikle Vickers ve Knoop değerleri birbirine yakındır.
-                        // Yüklemeye bağlı olarak farklılık gösterir. Basitçe HV olarak alabiliriz.
+                        // Knoop genellikle HV ile aynı veya çok yakın kabul edilir.
                         return hv; 
                     }
                 },
-                // HK -> Diğerleri (Knoop genellikle çok spesifik ve diğerlerine dönüşümü daha az yaygın veya ampirik)
                 'HK': {
                     'HRC': (hk) => {
-                        // HK'dan diğerlerine dönüşümler daha az standarttır. Genellikle HV'ye yakındır.
-                        // Buradaki yaklaşımlar çok kaba olacaktır.
-                        if (hk > 0) return conversions['HV']['HRC'](hk); 
+                        if (hk > 0) return conversions.HV.HRC(hk); // HK'dan HV'ye sonra HV'den HRC'ye
                         return NaN;
                     },
                     'HRB': (hk) => {
-                        if (hk > 0) return conversions['HV']['HRB'](hk);
+                        if (hk > 0) return conversions.HV.HRB(hk); // HK'dan HV'ye sonra HV'den HRB'ye
                         return NaN;
                     },
                     'HRA': (hk) => {
-                        if (hk > 0) return conversions['HV']['HRA'](hk);
+                        if (hk > 0) return conversions.HV.HRA(hk); // HK'dan HV'ye sonra HV'den HRA'ya
                         return NaN;
                     },
                     'HB': (hk) => {
-                        if (hk > 0) return conversions['HV']['HB'](hk);
+                        if (hk > 0) return conversions.HV.HB(hk); // HK'dan HV'ye sonra HV'den HB'ye
                         return NaN;
                     },
                     'HV': (hk) => {
-                        // Knoop genellikle HV'ye yakın kabul edilir, ancak daha hassas bir dönüşüm için
-                        // malzemenin elastic modülü gibi ek parametreler gerekebilir.
-                        return hk; 
+                        return hk; // HK'dan HV'ye doğrudan eşitlik
                     }
                 }
             };
@@ -751,24 +743,16 @@
 
                 let convertedValue;
 
-                // Direkt dönüşüm varsa kullan
-                if (conversions[sourceScale] && conversions[sourceScale][targetScale]) {
+                // Dönüşüm fonksiyonunu bul ve çağır
+                if (conversions[sourceScale] && typeof conversions[sourceScale][targetScale] === 'function') {
                     convertedValue = conversions[sourceScale][targetScale](value);
-                } else if (conversions[targetScale] && conversions[targetScale][sourceScale]) {
-                    // Ters dönüşüm varsa (örn: HV'den HRC'ye direkt yok ama HRC'den HV var)
-                    // Not: Bu kısım, dönüşüm fonksiyonlarının çift yönlü çalışmadığı durumlar için eklenebilir.
-                    // Mevcut yapıdaki fonksiyonlar genellikle tek yönlüdür.
-                    // Karmaşık çapraz dönüşümler için daha gelişmiş bir dönüşüm matrisi/algoritması gerekir.
-                    displayError(hardnessConversionResultDiv, `Doğrudan ${sourceScale} - ${targetScale} dönüşümü için yeterli veri yok veya bu dönüşüm tipi için kesin bir formül bulunmamaktadır. Bilinen dönüşüm aralıklarını kontrol edin.`, [hardnessValueInput]);
-                    return;
-                }
-                else {
-                    displayError(hardnessConversionResultDiv, `Belirtilen ölçekler (${sourceScale} ve ${targetScale}) arasında doğrudan dönüşüm formülü mevcut değil veya güvenilir değildir.`, [hardnessValueInput]);
+                } else {
+                    displayError(hardnessConversionResultDiv, `Belirtilen kaynak ölçekten (${sourceScale}) hedef ölçeğe (${targetScale}) doğrudan dönüşüm formülü mevcut değildir.`, [hardnessValueInput]);
                     return;
                 }
                 
-                if (isNaN(convertedValue)) {
-                    displayError(hardnessConversionResultDiv, `Dönüşüm, girilen sertlik değeri (${value} ${sourceScale}) için bu ölçekler arasında güvenilir değil. Lütfen giriş aralığını kontrol edin veya farklı bir ölçek deneyin.`, [hardnessValueInput]);
+                if (isNaN(convertedValue) || convertedValue <= 0) { // Dönüşüm NaN döndürürse veya geçersizse
+                    displayError(hardnessConversionResultDiv, `Dönüşüm, girilen sertlik değeri (${value} ${sourceScale}) için bu ölçekler arasında güvenilir veya tanımlı değil. Lütfen giriş aralığını kontrol edin veya farklı bir ölçek deneyin.`, [hardnessValueInput]);
                     return;
                 }
 
