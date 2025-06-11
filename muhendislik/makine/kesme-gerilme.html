@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kesme Gerilmesi Hesaplayıcı - Hesapkolik</title>
+    <meta name="description" content="Bir kesit alanına paralel uygulanan kuvvetin oluşturduğu kesme gerilmesini kolayca hesaplayın. Mühendislik, makine tasarımı ve mukavemet analizi için temel bir araç.">
+    <meta name="keywords" content="kesme gerilmesi, gerilme hesaplama, mukavemet, mekanik, mühendislik hesaplamaları, kuvvet, alan, kesme kuvveti, kesme alanı, hesapkolik gerilme">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+    <style>
+        /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        header { background-color: #2c3e50; color: white; padding: 15px 0; }
+        header .logo h1 { margin: 0; font-size: 1.8em; }
+        header .logo h1 a { color: white; text-decoration: none; }
+        header .logo .site-logo { height: 40px; vertical-align: middle; }
+        header nav ul { list-style: none; margin: 0; padding: 0; display: flex; justify-content: flex-end; }
+        header nav ul li { margin-left: 25px; }
+        header nav ul li a { color: white; text-decoration: none; font-weight: 600; transition: color 0.3s ease; }
+        header nav ul li a:hover { color: #ecf0f1; }
+        
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Seçim Bölümü Stilleri */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .calc-type-button {
+            background-color: #3498db; /* Mavi ton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
+            max-width: 250px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        .hidden-calc {
+            display: none;
+        }
+
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin {
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+        }
+        .input-with-unit label {
+            flex-basis: 100%; /* Label her zaman üstte veya solda */
+            margin-bottom: 5px;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input alanı boşluğu doldurur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .input-with-unit select {
+            flex-shrink: 0; /* Select kutusu sabit kalır */
+            width: auto; /* Select kutusu kendi genişliğinde olur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+                <h1><a href="../../index.html">Hesapkolik</a></h1> 
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Kesme Gerilmesi Hesaplayıcı</h1>
+                <p>Bir kesit alanına paralel uygulanan kuvvetin oluşturduğu kesme gerilmesini kolayca hesaplayın.</p>
+            </div>
+        </section>
+
+        <section class="calculator-selection-section">
+            <div class="container">
+                <h2>Kesme Gerilmesi Hesapla</h2>
+                <div class="calc-buttons-container">
+                    <button class="calc-type-button active" data-calc-type="shearStress">Kesme Gerilmesi Hesapla</button>
+                </div>
+
+                <div id="calculator-shearStress" class="calc-wrapper active-calc">
+                    <h3><i class="fas fa-cut icon-small"></i> Kesme Gerilmesi Hesapla ($\tau = F/A$)</h3>
+                    <div class="calculator-form-container">
+                        <form id="shearStressForm">
+                            <div class="input-with-unit">
+                                <label for="force_shear">Uygulanan Kesme Kuvveti (F):</label>
+                                <input type="number" id="force_shear" placeholder="Örn: 500" min="0.000001" step="any" required>
+                                <select id="forceUnit_shear">
+                                    <option value="N">Newton (N)</option>
+                                    <option value="kN">Kilonewton (kN)</option>
+                                    <option value="lbf">Pound-kuvvet (lbf)</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="area_shear">Kesme Alanı (A):</label>
+                                <input type="number" id="area_shear" placeholder="Örn: 0.0005" min="0.000001" step="any" required>
+                                <select id="areaUnit_shear">
+                                    <option value="m2">metrekare (m²)</option>
+                                    <option value="mm2">milimetrekare (mm²)</option>
+                                    <option value="cm2">santimetrekare (cm²)</option>
+                                    <option value="in2">inç kare (in²)</option>
+                                </select>
+                            </div>
+                            <button type="submit">Kesme Gerilmesini Hesapla</button>
+                        </form>
+                        <div id="shearStressResult" class="result-display"></div>
+                        <div class="calc-explanation">
+                            <p>Kesme gerilmesi, bir malzemenin kesit alanına paralel olarak uygulanan kuvvetin o alana oranıdır. Bağlantı elemanları (cıvata, perçin) ve kaynaklı birleşimler gibi yapılarda kritik öneme sahiptir.</p>
+                            <p class="formula-text">
+                                $ \tau = \frac{F}{A} $
+                            </p>
+                            <ul>
+                                <li>$ \mathbf{\tau} $: Kesme gerilmesi (Pascal, MPa, psi vb.)</li>
+                                <li>$ \mathbf{F} $: Uygulanan kesme kuvveti</li>
+                                <li>$ \mathbf{A} $: Kuvvetin uygulandığı kesme alanı</li>
+                            </ul>
+                            <p>Sonuç, metrik birimler için **Paskal (Pa)** veya **Megapaskal (MPa)**, emperyal birimler için ise **psi (pound per square inch)** olarak verilecektir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>Kesme Gerilmesi Nedir?</h3>
+            <p>
+                **Kesme gerilmesi ($\tau$)**, bir malzemenin kesit alanına **paralel** olarak etki eden kuvvetin, o kesit alanına bölünmesiyle elde edilen iç kuvvettir. Normal gerilmeden farklı olarak, cismi kesme veya kaydırma eğilimindedir. Cıvata, perçin, kaynaklı birleşimler ve kirişlerdeki enine yükler gibi uygulamalarda kesme gerilmesi analizi hayati öneme sahiptir.
+            </p>
+            <p>
+                Formülü aşağıdaki gibidir:
+            </p>
+            <p class="formula-text">
+                $ \tau = \frac{F}{A} $
+            </p>
+            <ul>
+                <li>$ \mathbf{F} $: Uygulanan kesme kuvveti (Newton, lbf vb.)</li>
+                <li>$ \mathbf{A} $: Kesme kuvvetinin uygulandığı kesme alanı (m², mm², in² vb.)</li>
+                <li>$ \mathbf{\tau} $: Kesme gerilmesi (Pascal (Pa), Megapaskal (MPa), psi (pound per square inch) vb.)</li>
+            </ul>
+
+            <h4>Birimi ve Dönüşümleri</h4>
+            <p>Gerilme için kullanılan yaygın birimler, normal gerilmedekiyle aynıdır:</p>
+            <ul>
+                <li>**Pascal (Pa):** $1 \text{ N/m}^2$</li>
+                <li>**Kilopaskal (kPa):** $10^3 \text{ Pa}$</li>
+                <li>**Megapaskal (MPa):** $10^6 \text{ Pa}$ veya $1 \text{ N/mm}^2$</li>
+                <li>**Gigapaskal (GPa):** $10^9 \text{ Pa}$</li>
+                <li>**Pound per Square Inch (psi):** $1 \text{ lbf/in}^2$</li>
+                <li>**Kilopound per Square Inch (ksi):** $1000 \text{ psi}$</li>
+                <li>**$1 \text{ MPa} \approx 145.038 \text{ psi}$**</li>
+            </ul>
+
+            <h4>Kesme Gerilmesinin Önemli Olduğu Durumlar:</h4>
+            <ul>
+                <li><strong>Cıvata ve Perçinler:</strong> Birleştirilen parçaları birbirine tutan cıvata ve perçinler kesme kuvvetlerine maruz kalır.</li>
+                <li><strong>Kaynaklı ve Yapıştırılmış Birleşimler:</strong> Birleşim bölgelerinde kayma gerilmeleri oluşur.</li>
+                <li><strong>Kirişler:</strong> Enine yükler altındaki kirişlerde, kesit boyunca kesme gerilmeleri oluşur.</li>
+                <li><strong>Makaslama Aletleri:</strong> Malzemeleri kesmek için kullanılan makas veya zımba gibi aletlerde kesme gerilmesi prensibi kullanılır.</li>
+                <li><strong>Mil ve Şaftlar:</strong> Burulma momenti altında kesme gerilmeleri oluşur (burulma gerilmesi olarak da bilinir).</li>
+            </ul>
+            <p class="disclaimer-text">
+                Bu hesaplayıcı, homojen malzemeler ve düzgün kesme alanları için basit kesme gerilmesi hesaplamaları yapar. Gerçek mühendislik uygulamalarında, gerilme konsantrasyonları, dinamik yükler, yorulma, sıcaklık etkileri ve karmaşık yükleme koşulları gibi faktörler kesme gerilmesi dağılımını ve malzeme davranışını etkileyebilir. Daha karmaşık senaryolar için ileri düzey mukavemet analizleri ve mühendislik uzmanlığı gereklidir.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainCalcButtons = document.querySelectorAll('.calc-type-button');
+            const calculatorWrappers = document.querySelectorAll('.calc-wrapper');
+
+            // Başlangıçta ilk hesaplayıcıyı göster (zaten tek var)
+            showCalculator('shearStress');
+
+            mainCalcButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const type = button.dataset.calcType;
+                    showCalculator(type);
+                    // Butonların 'active' sınıfını yönet
+                    mainCalcButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    const targetCalc = document.getElementById(`calculator-${type}`);
+                    if (targetCalc) {
+                        targetCalc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+
+            function showCalculator(typeToShow) {
+                calculatorWrappers.forEach(wrapper => {
+                    if (wrapper.id === `calculator-${typeToShow}`) {
+                        wrapper.classList.remove('hidden-calc');
+                        wrapper.classList.add('active-calc');
+                    } else {
+                        wrapper.classList.add('hidden-calc');
+                        wrapper.classList.remove('active-calc');
+                    }
+                    // Her geçişte formları ve sonuçları temizle
+                    const form = wrapper.querySelector('form');
+                    if (form) form.reset();
+                    const resultDiv = wrapper.querySelector('.result-display');
+                    if (resultDiv) {
+                        resultDiv.innerHTML = '';
+                        resultDiv.style.display = 'none';
+                    }
+                    // Hata stillerini de temizle
+                    wrapper.querySelectorAll('input').forEach(input => input.classList.remove('error'));
+                });
+            }
+
+            // Ortak hata gösterici fonksiyon
+            function displayError(resultDiv, message, inputsToMark = []) {
+                resultDiv.innerHTML = `<p class="error">Hata: ${message}</p>`;
+                resultDiv.style.display = 'block';
+                inputsToMark.forEach(input => {
+                    if (input && input.value !== '') input.classList.add('error');
+                });
+            }
+
+            // Input hata stilini temizleyici fonksiyon
+            function clearErrorStyles(inputs) {
+                inputs.forEach(input => input.classList.remove('error'));
+            }
+
+            // Birim dönüşüm faktörleri (temel birimler: Newton (N) ve metrekare (m²))
+            const forceConversion = {
+                'N': 1,
+                'kN': 1000,
+                'lbf': 4.44822 // 1 lbf = 4.44822 N
+            };
+
+            const areaConversion = {
+                'm2': 1,
+                'mm2': 1e-6, // 1 mm² = 1e-6 m²
+                'cm2': 1e-4, // 1 cm² = 1e-4 m²
+                'in2': 0.00064516 // 1 in² = 0.00064516 m²
+            };
+
+            // --- KESME GERİLMESİ HESAPLAYICI ---
+            const shearStressForm = document.getElementById('shearStressForm');
+            const force_shearInput = document.getElementById('force_shear');
+            const forceUnit_shearSelect = document.getElementById('forceUnit_shear');
+            const area_shearInput = document.getElementById('area_shear');
+            const areaUnit_shearSelect = document.getElementById('areaUnit_shear');
+            const shearStressResultDiv = document.getElementById('shearStressResult');
+
+            function calculateShearStress() {
+                clearErrorStyles([force_shearInput, area_shearInput]);
+                shearStressResultDiv.innerHTML = '';
+                shearStressResultDiv.style.display = 'none';
+
+                const F_val = parseFloat(force_shearInput.value);
+                const A_val = parseFloat(area_shearInput.value);
+
+                const F_unit = forceUnit_shearSelect.value;
+                const A_unit = areaUnit_shearSelect.value;
+
+                if (isNaN(F_val) || F_val <= 0) { displayError(shearStressResultDiv, "Lütfen geçerli ve pozitif bir kesme kuvveti değeri giriniz.", [force_shearInput]); return; }
+                if (isNaN(A_val) || A_val <= 0) { displayError(shearStressResultDiv, "Lütfen geçerli ve pozitif bir kesme alanı giriniz.", [area_shearInput]); return; }
+
+                const F_newton = F_val * forceConversion[F_unit];
+                const A_meter2 = A_val * areaConversion[A_unit];
+
+                const tau_pascal = F_newton / A_meter2; // Sonuç Pascal (Pa) cinsinden
+
+                let resultDisplay = '';
+                let resultValue = tau_pascal;
+                let resultUnit = 'Pa';
+
+                // Sonuçları uygun birimlerde göster
+                if (tau_pascal >= 1e6) { // MPa'dan büyükse
+                    resultValue = tau_pascal / 1e6;
+                    resultUnit = 'MPa';
+                } else if (tau_pascal >= 1e3) { // kPa'dan büyükse
+                    resultValue = tau_pascal / 1e3;
+                    resultUnit = 'kPa';
+                }
+
+                // Eğer giriş birimlerinden biri emperyal ise psi olarak da göster
+                if (F_unit === 'lbf' || A_unit === 'in2') {
+                    const tau_psi = F_val / A_val; // lbf/in² doğrudan psi verir
+                    resultDisplay = `
+                        <p><strong>Kesme Gerilmesi ($\tau$):</strong> <span class="result-value">${resultValue.toFixed(4)}</span> ${resultUnit}</p>
+                        <p class="small-text">(Yaklaşık ${tau_psi.toFixed(4)} psi)</p>
+                    `;
+                } else {
+                    resultDisplay = `
+                        <p><strong>Kesme Gerilmesi ($\tau$):</strong> <span class="result-value">${resultValue.toFixed(4)}</span> ${resultUnit}</p>
+                    `;
+                }
+                
+                shearStressResultDiv.innerHTML = `
+                    <p><strong>Uygulanan Kesme Kuvveti (F):</strong> ${force_shearInput.value} ${F_unit}</p>
+                    <p><strong>Kesme Alanı (A):</strong> ${area_shearInput.value} ${A_unit}</p>
+                    <hr>
+                    ${resultDisplay}
+                `;
+                shearStressResultDiv.style.display = 'block';
+            }
+
+            if (shearStressForm) {
+                shearStressForm.addEventListener('submit', function(event) { event.preventDefault(); calculateShearStress(); });
+                force_shearInput.addEventListener('input', calculateShearStress);
+                forceUnit_shearSelect.addEventListener('change', calculateShearStress);
+                area_shearInput.addEventListener('input', calculateShearStress);
+                areaUnit_shearSelect.addEventListener('change', calculateShearStress);
+            }
+        });
+    </script>
+</body>
+</html>
