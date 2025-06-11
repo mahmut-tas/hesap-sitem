@@ -104,6 +104,7 @@
             <p><a href="../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../kullanim-sartlari.html">Kullanım Şartları</a></p>
         </div>
     </footer>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             if (document.getElementById('waterIntakeForm')) {
@@ -114,10 +115,17 @@
                     const waterIntakeResultDiv = document.getElementById('waterIntakeResult');
                     const waterIntakeGoalDiv = document.getElementById('waterIntakeGoal');
 
+                    // Her hesaplama başlangıcında sonuç div'lerini temizle ve gizle
+                    waterIntakeResultDiv.innerHTML = '';
+                    waterIntakeGoalDiv.textContent = '';
+                    waterIntakeResultDiv.style.display = 'none';
+                    waterIntakeGoalDiv.style.display = 'none';
+
                     // Giriş doğrulaması
-                    if (isNaN(weightKg) || weightKg <= 0 || weightKg < 10 || weightKg > 300) { // Kilo aralığı eklendi
+                    if (isNaN(weightKg) || weightKg <= 0 || weightKg < 10 || weightKg > 300) { 
                         waterIntakeResultDiv.innerHTML = '<span style="color: red;">Lütfen geçerli bir kilo değeri girin (10-300 kg arası).</span>';
-                        waterIntakeGoalDiv.textContent = '';
+                        waterIntakeGoalDiv.textContent = ''; // Hata durumunda hedefi temizle
+                        waterIntakeResultDiv.style.display = 'block'; // Hata mesajını göster
                         return;
                     }
 
@@ -130,8 +138,11 @@
                     const maxWaterLiters = (maxWaterMl / 1000).toFixed(1);
 
                     waterIntakeResultDiv.innerHTML = `Tahmini Günlük Su İhtiyacınız: <strong>${minWaterLiters} - ${maxWaterLiters} litre</strong>`;
+                    waterIntakeResultDiv.style.display = 'block'; // Su ihtiyacı sonucunu göster
+
                     waterIntakeGoalDiv.innerHTML = `Bu, kilonuza göre önerilen genel bir aralıktır. Fiziksel aktivite, iklim ve sağlık durumu gibi faktörlere göre ihtiyacınız değişebilir.`;
                     waterIntakeGoalDiv.style.color = '#2ecc71'; // Yeşil renk
+                    waterIntakeGoalDiv.style.display = 'block'; // Hedef açıklamasını göster
                 });
             }
         });

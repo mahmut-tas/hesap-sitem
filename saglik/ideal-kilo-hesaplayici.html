@@ -127,6 +127,7 @@
             <p><a href="../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../kullanim-sartlari.html">Kullanım Şartları</a></p>
         </div>
     </footer>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             if (document.getElementById('idealWeightForm')) {
@@ -138,10 +139,17 @@
                     const idealWeightResultDiv = document.getElementById('idealWeightResult');
                     const idealWeightCategoryDiv = document.getElementById('idealWeightCategory');
 
+                    // Her hesaplama başlangıcında sonuç div'lerini temizle ve gizle
+                    idealWeightResultDiv.innerHTML = '';
+                    idealWeightCategoryDiv.textContent = '';
+                    idealWeightResultDiv.style.display = 'none';
+                    idealWeightCategoryDiv.style.display = 'none';
+
                     // Giriş doğrulaması
-                    if (isNaN(heightCm) || heightCm < 100 || heightCm > 220 || !gender) { // Boy aralığı 100-220 cm
+                    if (isNaN(heightCm) || heightCm < 100 || heightCm > 220 || !gender) { 
                         idealWeightResultDiv.innerHTML = '<span style="color: red;">Lütfen geçerli boy (100-220 cm) ve cinsiyet seçimi yapın.</span>';
-                        idealWeightCategoryDiv.textContent = '';
+                        idealWeightCategoryDiv.textContent = ''; // Hata durumunda kategoriyi temizle
+                        idealWeightResultDiv.style.display = 'block'; // Hata mesajını göster
                         return;
                     }
 
@@ -189,8 +197,11 @@
                     const upperBound = idealWeightAvg * 1.05; // %5 üst sınır
 
                     idealWeightResultDiv.innerHTML = `Tahmini İdeal Kilo Aralığınız: <strong>${lowerBound.toFixed(1)} kg - ${upperBound.toFixed(1)} kg</strong>`;
+                    idealWeightResultDiv.style.display = 'block'; // İdeal kilo sonucunu göster
+
                     idealWeightCategoryDiv.innerHTML = 'Bu aralık, yaygın ideal kilo formüllerinin ortalamasına göre belirlenmiş sağlıklı bir aralıktır.';
                     idealWeightCategoryDiv.style.color = '#2ecc71'; // Yeşil renk
+                    idealWeightCategoryDiv.style.display = 'block'; // Kategori açıklamasını göster
                 });
             }
         });

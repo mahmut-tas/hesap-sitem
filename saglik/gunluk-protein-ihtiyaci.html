@@ -129,11 +129,13 @@
             <p><a href="../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../kullanim-sartlari.html">Kullanım Şartları</a></p>
         </div>
     </footer>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             if (document.getElementById('proteinForm')) {
                 document.getElementById('proteinForm').addEventListener('submit', function(e) {
                     e.preventDefault();
+                    
                     const age = parseInt(document.getElementById('protein_age').value);
                     const gender = document.getElementById('protein_gender').value;
                     const heightCm = parseFloat(document.getElementById('protein_height').value);
@@ -143,10 +145,16 @@
                     const proteinResultDiv = document.getElementById('proteinResult');
                     const proteinGoalDiv = document.getElementById('proteinGoal');
 
-                    // Giriş doğrulaması (yaş 1-100, boy 50-250 cm, kilo 10-300 kg)
+                    // Her hesaplama başlangıcında sonuç div'lerini temizle ve gizle
+                    proteinResultDiv.innerHTML = '';
+                    proteinGoalDiv.textContent = '';
+                    proteinResultDiv.style.display = 'none';
+                    proteinGoalDiv.style.display = 'none';
+
+                    // Giriş doğrulaması (yaş 1-100, boy 50-250 cm, kilo 10-300 kg, cinsiyet ve aktivite seçimi gerekli)
                     if (isNaN(age) || isNaN(heightCm) || isNaN(weightKg) || age < 1 || age > 100 || heightCm < 50 || heightCm > 250 || weightKg < 10 || weightKg > 300 || !gender || !activityLevel) {
-                        proteinResultDiv.innerHTML = '<span style="color: red;">Lütfen tüm alanları doğru ve eksiksiz doldurun (yaş 1-100, boy 50-250 cm, kilo 10-300 kg).</span>';
-                        proteinGoalDiv.textContent = '';
+                        proteinResultDiv.innerHTML = '<span style="color: red;">Lütfen tüm alanları doğru ve eksiksiz doldurun (yaş 1-100, boy 50-250 cm, kilo 10-300 kg, cinsiyet ve aktivite seçimi gerekli).</span>';
+                        proteinResultDiv.style.display = 'block'; // Hata mesajını göster
                         return;
                     }
 
@@ -207,12 +215,16 @@
                     const proteinGramsFromKg = weightKg * proteinPerKg;
                     
                     // TDEE'nin %'si olarak protein ihtiyacı (bilgi amaçlı, ortalama %25)
+                    // Not: Bu hesaplama sadece bilgilendirme amaçlıdır, ana sonuç kilo bazlı olandır.
                     const proteinCaloriesFromTDEE = tdee * 0.25; 
                     const proteinGramsFromTDEE = proteinCaloriesFromTDEE / 4; // 1 gram protein = 4 kalori
 
                     proteinResultDiv.innerHTML = `Tahmini Günlük Protein İhtiyacınız: <strong>${proteinGramsFromKg.toFixed(0)} gram</strong>`;
+                    proteinResultDiv.style.display = 'block'; // Protein sonucunu göster
+
                     proteinGoalDiv.innerHTML = `Bu, aktivite seviyenize göre her kilo başına yaklaşık ${proteinPerKg} gram proteine denk gelmektedir. (Yaklaşık ${proteinGramsFromTDEE.toFixed(0)} gram da toplam kalori ihtiyacınızın %25'ine eşittir.)`;
                     proteinGoalDiv.style.color = '#2ecc71'; // Yeşil renk
+                    proteinGoalDiv.style.display = 'block'; // Hedef açıklamasını göster
                 });
             }
         });

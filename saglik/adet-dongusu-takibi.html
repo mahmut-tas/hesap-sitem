@@ -105,11 +105,13 @@
             <p><a href="../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../kullanim-sartlari.html">Kullanım Şartları</a></p>
         </div>
     </footer>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Sadece 'periodTrackerForm' ID'sine sahip form varsa çalıştır
-            if (document.getElementById('periodTrackerForm')) {
-                document.getElementById('periodTrackerForm').addEventListener('submit', function(e) {
+            const periodTrackerForm = document.getElementById('periodTrackerForm');
+            if (periodTrackerForm) {
+                periodTrackerForm.addEventListener('submit', function(e) {
                     e.preventDefault(); // Formun varsayılan gönderimini engelle
 
                     const lastPeriodDateInput = document.getElementById('lastPeriodDate').value;
@@ -119,11 +121,19 @@
                     const ovulationResultDiv = document.getElementById('ovulationResult');
                     const fertileWindowResultDiv = document.getElementById('fertileWindowResult');
 
+                    // Her hesaplama başlangıcında sonuç div'lerini temizle ve gizle
+                    periodResultDiv.innerHTML = '';
+                    ovulationResultDiv.innerHTML = ''; // textContent yerine innerHTML kullandım daha esnek olsun diye
+                    fertileWindowResultDiv.innerHTML = ''; // textContent yerine innerHTML kullandım daha esnek olsun diye
+                    
+                    periodResultDiv.style.display = 'none';
+                    ovulationResultDiv.style.display = 'none';
+                    fertileWindowResultDiv.style.display = 'none';
+
                     // Giriş doğrulaması
                     if (!lastPeriodDateInput || isNaN(cycleLength) || cycleLength < 20 || cycleLength > 45) {
                         periodResultDiv.innerHTML = '<span style="color: red;">Lütfen geçerli bir tarih ve döngü uzunluğu girin (20-45 gün arası).</span>';
-                        ovulationResultDiv.textContent = '';
-                        fertileWindowResultDiv.textContent = '';
+                        periodResultDiv.style.display = 'block'; // Hata durumunda mesajı göster
                         return; // Fonksiyondan çık
                     }
 
@@ -150,7 +160,16 @@
                     periodResultDiv.innerHTML = `Tahmini Bir Sonraki Adet Başlangıcı: <strong>${nextPeriodDate.toLocaleDateString('tr-TR', options)}</strong>`;
                     ovulationResultDiv.innerHTML = `Tahmini Ovülasyon Günü: <strong>${ovulationDate.toLocaleDateString('tr-TR', options)}</strong>`;
                     fertileWindowResultDiv.innerHTML = `Tahmini Doğurganlık Penceresi: <strong>${fertileWindowStart.toLocaleDateString('tr-TR', options)} - ${fertileWindowEnd.toLocaleDateString('tr-TR', options)}</strong>`;
-                    fertileWindowResultDiv.style.color = '#2ecc71'; // Yeşil renk ataması
+                    
+                    // Sonuçları göster ve renklerini ayarla
+                    periodResultDiv.style.display = 'block'; // <<< Bu satırı ekledim
+                    ovulationResultDiv.style.display = 'block'; // <<< Bu satırı ekledim
+                    fertileWindowResultDiv.style.display = 'block'; // <<< Bu satırı ekledim
+                    
+                    // Renk atamaları (mevcut renkleriniz)
+                    periodResultDiv.style.color = '#3498db'; 
+                    ovulationResultDiv.style.color = '#2ecc71';
+                    fertileWindowResultDiv.style.color = '#e74c3c'; 
                 });
             }
         });

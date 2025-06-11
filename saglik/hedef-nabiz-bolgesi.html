@@ -108,6 +108,7 @@
             <p><a href="../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../kullanim-sartlari.html">Kullanım Şartları</a></p>
         </div>
     </footer>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             if (document.getElementById('heartRateForm')) {
@@ -118,10 +119,17 @@
                     const heartRateResultDiv = document.getElementById('heartRateResult');
                     const heartRateGoalDiv = document.getElementById('heartRateGoal');
 
+                    // Her hesaplama başlangıcında sonuç div'lerini temizle ve gizle
+                    heartRateResultDiv.innerHTML = '';
+                    heartRateGoalDiv.textContent = '';
+                    heartRateResultDiv.style.display = 'none';
+                    heartRateGoalDiv.style.display = 'none';
+
                     // Giriş doğrulaması
-                    if (isNaN(age) || age < 10 || age > 80) { // Yaş aralığı 10-80 olarak belirtildi
+                    if (isNaN(age) || age < 10 || age > 80) { 
                         heartRateResultDiv.innerHTML = '<span style="color: red;">Lütfen geçerli bir yaş girin (10-80 arası).</span>';
-                        heartRateGoalDiv.textContent = '';
+                        heartRateGoalDiv.textContent = ''; // Hata durumunda hedefi temizle
+                        heartRateResultDiv.style.display = 'block'; // Hata mesajını göster
                         return;
                     }
 
@@ -133,8 +141,11 @@
                     const targetHeartRateMax = mhr * 0.80;
 
                     heartRateResultDiv.innerHTML = `Tahmini Hedef Nabız Bölgeniz: <strong>${targetHeartRateMin.toFixed(0)} - ${targetHeartRateMax.toFixed(0)} atım/dakika</strong>`;
+                    heartRateResultDiv.style.display = 'block'; // Nabız sonucunu göster
+
                     heartRateGoalDiv.innerHTML = `Bu aralık, yaşınıza göre orta yoğunluklu egzersizler için önerilir ve kardiyovasküler faydalar sağlamanıza yardımcı olur.`;
                     heartRateGoalDiv.style.color = '#2ecc71'; // Yeşil renk
+                    heartRateGoalDiv.style.display = 'block'; // Hedef açıklamasını göster
                 });
             }
         });
