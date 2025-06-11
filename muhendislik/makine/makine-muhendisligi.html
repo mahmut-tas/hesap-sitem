@@ -44,6 +44,23 @@
             margin-right: auto;
         }
 
+        .category-section {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-bottom: 40px; /* Kategoriler arasında boşluk */
+        }
+
+        .category-section h3 {
+            font-size: 2em;
+            color: #e74c3c; /* Kategori başlık rengi */
+            margin-bottom: 25px;
+            text-align: center;
+            border-bottom: 2px solid #eee; /* Alt çizgi */
+            padding-bottom: 10px;
+        }
+
         .calculator-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -53,59 +70,55 @@
         }
 
         .calculator-card {
-            background-color: #ffffff;
+            background-color: #f9f9f9; /* Kart arka planı */
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Hafif gölge */
+            padding: 25px;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative; /* Buton konumu için */
-            min-height: 220px; /* Kartların minimum yüksekliği */
+            min-height: 200px; /* Kartların minimum yüksekliği */
         }
 
         .calculator-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .calculator-card .icon-big {
-            font-size: 3.5em;
+            font-size: 3em; /* İkon boyutu */
             color: #3498db; /* İkon rengi */
             margin-bottom: 15px;
         }
 
         .calculator-card h3 {
-            font-size: 1.5em;
+            font-size: 1.4em; /* Kart başlığı */
             color: #2c3e50;
             margin-bottom: 10px;
-            flex-grow: 1; /* Başlık ve açıklamanın alanı doldurması için */
+            flex-grow: 1; 
+            font-weight: 600;
         }
 
         .calculator-card p {
-            font-size: 0.95em;
+            font-size: 0.9em;
             color: #777;
             margin-bottom: 20px;
-            flex-grow: 1; /* Başlık ve açıklamanın alanı doldurması için */
+            flex-grow: 1; 
         }
 
         .calculator-card .card-button {
             display: inline-block;
             background-color: #e74c3c; /* Buton rengi */
             color: white;
-            padding: 12px 25px;
+            padding: 10px 20px;
             border-radius: 5px;
             text-decoration: none;
             font-weight: 600;
             transition: background-color 0.3s ease, transform 0.2s ease;
-            /* position: absolute; */ /* Butonu alta sabitlemek için */
-            /* bottom: 20px; */
-            /* left: 50%; */
-            /* transform: translateX(-50%); */
             width: 80%; /* Buton genişliği */
-            max-width: 200px;
+            max-width: 180px;
         }
 
         .calculator-card .card-button:hover {
@@ -139,11 +152,21 @@
             .health-calculator-landing-section .main-title {
                 font-size: 2.2em;
             }
+            .category-section h3 {
+                font-size: 1.8em;
+            }
             .calculator-grid {
                 grid-template-columns: 1fr; /* Tek sütun */
             }
             .calculator-card {
-                min-height: 200px;
+                min-height: auto; /* Daha küçük ekranlarda otomatik yükseklik */
+                padding: 20px;
+            }
+            .calculator-card h3 {
+                font-size: 1.3em;
+            }
+            .calculator-card .icon-big {
+                font-size: 2.5em;
             }
         }
     </style>
@@ -155,7 +178,8 @@
                 <a href="../../index.html"> 
                     <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
                 </a>
-                <h1><a href="../../index.html">Hesapkolik</a></h1> </div>
+                <h1><a href="../../index.html">Hesapkolik</a></h1> 
+            </div>
             <nav>
                 <ul>
                     <li><a href="../../index.html">Ana Sayfa</a></li>
@@ -175,98 +199,127 @@
                 <h1 class="main-title">Makine Mühendisliği Hesaplamaları</h1>
                 <p class="section-description">Makine mühendisliği projelerinizde, tasarımlarınızda ve öğreniminizde ihtiyaç duyacağınız temel ve ileri seviye hesaplama araçları:</p>
 
-                <div class="calculator-grid">
-                    <div class="calculator-card">
-                        <i class="fas fa-ruler-combined icon-big"></i>
-                        <h3>Normal Gerilme Hesaplama</h3>
-                        <p>Basit çekme ve basma yükleri altındaki gerilmeleri hesaplar.</p>
-                        <a href="makine-muhendisligi/normal-gerilme.html" class="card-button">Hesapla</a>
-                    </div>
+                <div class="category-section">
+                    <h3><i class="fas fa-hammer"></i> Mekanik Hesaplamalar</h3>
+                    <div class="calculator-grid">
+                        <div class="calculator-card">
+                            <i class="fas fa-ruler-combined icon-big"></i>
+                            <h3>Normal Gerilme Hesaplama</h3>
+                            <p>Basit çekme ve basma yükleri altındaki gerilmeleri hesaplar.</p>
+                            <a href="makine-muhendisligi/normal-gerilme.html" class="card-button">Hesapla</a>
+                        </div>
 
-                    <div class="calculator-card">
-                        <i class="fas fa-cut icon-big"></i>
-                        <h3>Kesme Gerilmesi Hesaplama</h3>
-                        <p>Bir kesit alanındaki kesme kuvvetlerinin oluşturduğu gerilmeyi bulur.</p>
-                        <a href="makine-muhendisligi/kesme-gerilmesi.html" class="card-button">Hesapla</a>
-                    </div>
+                        <div class="calculator-card">
+                            <i class="fas fa-cut icon-big"></i>
+                            <h3>Kesme Gerilmesi Hesaplama</h3>
+                            <p>Bir kesit alanındaki kesme kuvvetlerinin oluşturduğu gerilmeyi bulur.</p>
+                            <a href="makine-muhendisligi/kesme-gerilmesi.html" class="card-button">Hesapla</a>
+                        </div>
 
-                    <div class="calculator-card">
-                        <i class="fas fa-drafting-compass icon-big"></i>
-                        <h3>Eğilme Gerilmesi Hesaplama</h3>
-                        <p>Kirişler gibi elemanlarda oluşan eğilme momenti kaynaklı gerilmeleri belirler.</p>
-                        <a href="makine-muhendisligi/egilme-gerilmesi.html" class="card-button">Hesapla</a>
-                    </div>
+                        <div class="calculator-card">
+                            <i class="fas fa-drafting-compass icon-big"></i>
+                            <h3>Eğilme Gerilmesi Hesaplama</h3>
+                            <p>Kirişler gibi elemanlarda oluşan eğilme momenti kaynaklı gerilmeleri belirler.</p>
+                            <a href="makine-muhendisligi/egilme-gerilmesi.html" class="card-button">Hesapla</a>
+                        </div>
 
-                    <div class="calculator-card">
-                        <i class="fas fa-wrench icon-big"></i>
-                        <h3>Burulma Gerilmesi Hesaplama</h3>
-                        <p>Miller ve benzeri elemanlarda burulma momentinin oluşturduğu gerilmeleri hesaplar.</p>
-                        <a href="makine-muhendisligi/burulma-gerilmesi.html" class="card-button">Hesapla</a>
-                    </div>
-
-                    <div class="calculator-card">
-                        <i class="fas fa-shield-alt icon-big"></i>
-                        <h3>Emniyet Faktörü Hesaplama</h3>
-                        <p>Tasarımın güvenilirlik derecesini (yük ve malzeme dayanımı oranı) belirler.</p>
-                        <a href="makine-muhendisligi/emniyet-faktoru.html" class="card-button">Hesapla</a>
-                    </div>
-
-                    <div class="calculator-card">
-                        <i class="fas fa-compress-arrows-alt icon-big"></i>
-                        <h3>Kritik Burkulma Yükü (Kolonlar)</h3>
-                        <p>Basınç altındaki kolonların burkulacağı kritik yükü tahmin eder.</p>
-                        <a href="makine-muhendisligi/burkulma-yuku.html" class="card-button">Hesapla</a>
-                    </div>
-
-                    <div class="calculator-card">
-                        <i class="fas fa-fire-alt icon-big"></i>
-                        <h3>Isı Eşanjörü LMTD Hesaplama</h3>
-                        <p>Isı eşanjörlerinde Logaritmik Ortalama Sıcaklık Farkını (LMTD) bulur.</p>
-                        <a href="makine-muhendisligi/isi-esanjörü-lmtd.html" class="card-button">Hesapla</a>
-                    </div>
-
-                    <div class="calculator-card">
-                        <i class="fas fa-snowflake icon-big"></i>
-                        <h3>Soğutma Yükü Hesaplama</h3>
-                        <p>Bir alanın ısıtma veya soğutma sistemi tasarımında gerekli olan ısı yükünü belirler.</p>
-                        <a href="makine-muhendisligi/sogutma-yuku.html" class="card-button">Hesapla</a>
-                    </div>
-
-                    <div class="calculator-card">
-                        <i class="fas fa-water icon-big"></i>
-                        <h3>Pompa Gücü Hesaplama</h3>
-                        <p>Belirli bir debi ve basma yüksekliği için gerekli pompa gücünü bulur.</p>
-                        <a href="makine-muhendisligi/pompa-gucu.html" class="card-button">Hesapla</a>
-                    </div>
-
-                    <div class="calculator-card">
-                        <i class="fas fa-faucet-drip icon-big"></i>
-                        <h3>Boru Basınç Düşüşü Hesaplama</h3>
-                        <p>Borulardaki akışkan akışı nedeniyle oluşan basınç düşüşlerini hesaplar.</p>
-                        <a href="makine-muhendisligi/boru-basinc-dususu.html" class="card-button">Hesapla</a>
-                    </div>
-
-                    <div class="calculator-card">
-                        <i class="fas fa-arrows-alt-h icon-big"></i>
-                        <h3>Reynolds Sayısı Hesaplama</h3>
-                        <p>Akışkanların boru veya kanal içindeki akış rejimini (laminer/türbülanslı) belirler.</p>
-                        <a href="makine-muhendisligi/reynolds-sayisi.html" class="card-button">Hesapla</a>
-                    </div>
-
-                    <div class="calculator-card">
-                        <i class="fas fa-wave-square icon-big"></i>
-                        <h3>Doğal Titreşim Frekansı</h3>
-                        <p>Basit kütle-yay sistemleri için doğal titreşim frekansını hesaplar.</p>
-                        <a href="makine-muhendisligi/dogal-titresim-frekansi.html" class="card-button">Hesapla</a>
-                    </div>
-
-                    <div class="calculator-card">
-                        <i class="fas fa-hard-hat icon-big"></i>
-                        <h3>Sertlik Dönüşümü</h3>
-                        <p>Farklı sertlik ölçekleri (Rockwell, Brinell vb.) arasında dönüşüm yapar.</p>
-                        <a href="makine-muhendisligi/sertlik-donusumu.html" class="card-button">Hesapla</a>
+                        <div class="calculator-card">
+                            <i class="fas fa-wrench icon-big"></i>
+                            <h3>Burulma Gerilmesi Hesaplama</h3>
+                            <p>Miller ve benzeri elemanlarda burulma momentinin oluşturduğu gerilmeleri hesaplar.</p>
+                            <a href="makine-muhendisligi/burulma-gerilmesi.html" class="card-button">Hesapla</a>
+                        </div>
                     </div>
                 </div>
+
+                <div class="category-section">
+                    <h3><i class="fas fa-weight-hanging"></i> Mukavemet Hesaplamaları</h3>
+                    <div class="calculator-grid">
+                        <div class="calculator-card">
+                            <i class="fas fa-shield-alt icon-big"></i>
+                            <h3>Emniyet Faktörü Hesaplama</h3>
+                            <p>Tasarımın güvenilirlik derecesini (yük ve malzeme dayanımı oranı) belirler.</p>
+                            <a href="makine-muhendisligi/emniyet-faktoru.html" class="card-button">Hesapla</a>
+                        </div>
+
+                        <div class="calculator-card">
+                            <i class="fas fa-compress-arrows-alt icon-big"></i>
+                            <h3>Kritik Burkulma Yükü (Kolonlar)</h3>
+                            <p>Basınç altındaki kolonların burkulacağı kritik yükü tahmin eder.</p>
+                            <a href="makine-muhendisligi/burkulma-yuku.html" class="card-button">Hesapla</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="category-section">
+                    <h3><i class="fas fa-thermometer-half"></i> Termodinamik ve Isı Transferi Hesaplamaları</h3>
+                    <div class="calculator-grid">
+                        <div class="calculator-card">
+                            <i class="fas fa-fire-alt icon-big"></i>
+                            <h3>Isı Eşanjörü LMTD Hesaplama</h3>
+                            <p>Isı eşanjörlerinde Logaritmik Ortalama Sıcaklık Farkını (LMTD) bulur.</p>
+                            <a href="makine-muhendisligi/isi-esanjörü-lmtd.html" class="card-button">Hesapla</a>
+                        </div>
+
+                        <div class="calculator-card">
+                            <i class="fas fa-snowflake icon-big"></i>
+                            <h3>Soğutma Yükü Hesaplama</h3>
+                            <p>Bir alanın ısıtma veya soğutma sistemi tasarımında gerekli olan ısı yükünü belirler.</p>
+                            <a href="makine-muhendisligi/sogutma-yuku.html" class="card-button">Hesapla</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="category-section">
+                    <h3><i class="fas fa-water"></i> Akışkanlar Mekaniği Hesaplamaları</h3>
+                    <div class="calculator-grid">
+                        <div class="calculator-card">
+                            <i class="fas fa-tint icon-big"></i>
+                            <h3>Pompa Gücü Hesaplama</h3>
+                            <p>Belirli bir debi ve basma yüksekliği için gerekli pompa gücünü bulur.</p>
+                            <a href="makine-muhendisligi/pompa-gucu.html" class="card-button">Hesapla</a>
+                        </div>
+
+                        <div class="calculator-card">
+                            <i class="fas fa-faucet-drip icon-big"></i>
+                            <h3>Boru Basınç Düşüşü Hesaplama</h3>
+                            <p>Borulardaki akışkan akışı nedeniyle oluşan basınç düşüşlerini hesaplar.</p>
+                            <a href="makine-muhendisligi/boru-basinc-dususu.html" class="card-button">Hesapla</a>
+                        </div>
+
+                        <div class="calculator-card">
+                            <i class="fas fa-arrows-alt-h icon-big"></i>
+                            <h3>Reynolds Sayısı Hesaplama</h3>
+                            <p>Akışkanların boru veya kanal içindeki akış rejimini (laminer/türbülanslı) belirler.</p>
+                            <a href="makine-muhendisligi/reynolds-sayisi.html" class="card-button">Hesapla</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="category-section">
+                    <h3><i class="fas fa-wave-square"></i> Titreşim ve Dinamik Sistemler Hesaplamaları</h3>
+                    <div class="calculator-grid">
+                        <div class="calculator-card">
+                            <i class="fas fa-bell icon-big"></i>
+                            <h3>Doğal Titreşim Frekansı</h3>
+                            <p>Basit kütle-yay sistemleri için doğal titreşim frekansını hesaplar.</p>
+                            <a href="makine-muhendisligi/dogal-titresim-frekansi.html" class="card-button">Hesapla</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="category-section">
+                    <h3><i class="fas fa-flask-process"></i> Malzeme Bilimi ve Üretim Hesaplamaları</h3>
+                    <div class="calculator-grid">
+                        <div class="calculator-card">
+                            <i class="fas fa-hard-hat icon-big"></i>
+                            <h3>Sertlik Dönüşümü</h3>
+                            <p>Farklı sertlik ölçekleri (Rockwell, Brinell vb.) arasında dönüşüm yapar.</p>
+                            <a href="makine-muhendisligi/sertlik-donusumu.html" class="card-button">Hesapla</a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </section>
     </main>
