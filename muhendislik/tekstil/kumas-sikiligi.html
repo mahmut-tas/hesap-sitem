@@ -81,11 +81,11 @@
                                 <div id="ormeInputs" style="display: none;">
                                     <h4>Örme Kumaş Bilgileri</h4>
                                     <div class="input-with-unit">
-                                        <label for="courseCount">Kurs Sayısı (cm'de):</label>
+                                        <label for="courseCount">Kurs Sayısı (birim uzunluktaki):</label>
                                         <input type="number" id="courseCount" step="1" min="1" placeholder="Örn: 25">
                                     </div>
                                     <div class="input-with-unit">
-                                        <label for="waleCount">Sıra Sayısı (cm'de):</label>
+                                        <label for="waleCount">Sıra Sayısı (birim uzunluktaki):</label>
                                         <input type="number" id="waleCount" step="1" min="1" placeholder="Örn: 20">
                                     </div>
                                 </div>
@@ -94,11 +94,7 @@
                             </form>
                             <div id="resultBox" class="result-display">
                                 <h3>Sonuçlar:</h3>
-                                <p id="resultDokumaWarp"><strong>Çözgü Sıklığı:</strong> <span class="result-value"></span> tel/cm</p>
-                                <p id="resultDokumaWeft"><strong>Atkı Sıklığı:</strong> <span class="result-value"></span> tel/cm</p>
-                                <p id="resultOrmeCourse"><strong>Kurs Sıklığı:</strong> <span class="result-value"></span> kurs/cm</p>
-                                <p id="resultOrmeWale"><strong>Sıra Sıklığı:</strong> <span class="result-value"></span> sıra/cm</p>
-                            </div>
+                                </div>
                             <p class="small-text">Ölçümleri doğru birimlerde ve hassasiyetle yaptığınızdan emin olun. Sonuçlar, kumaşın yapısına ve kullanılan ipliklere göre değişiklik gösterebilir.</p>
                         </div>
                     </div>
@@ -131,8 +127,8 @@
                         </p>
                          <p class="formula-text">
                             **Örme Kumaşlar İçin:**<br>
-                            Kurs Sıklığı (kurs/cm) = Belirli Uzunluktaki Kurs Sayısı / Ölçüm Uzunluğu (cm)<br>
-                            Sıra Sıklığı (sıra/cm) = Belirli Uzunluktaki Sıra Sayısı / Ölçüm Uzunluğu (cm)
+                            Kurs Sıklığı (kurs/cm) = Girilen Kurs Sayısı (cm'deki)<br>
+                            Sıra Sıklığı (sıra/cm) = Girilen Sıra Sayısı (cm'deki)
                         </p>
                         <p>
                             **Açıklamalar:**
@@ -218,24 +214,19 @@
         }
 
         function resetResultBox() {
-            document.getElementById('resultBox').style.display = 'none';
-            document.getElementById('resultDokumaWarp').style.display = 'none';
-            document.getElementById('resultDokumaWeft').style.display = 'none';
-            document.getElementById('resultOrmeCourse').style.display = 'none';
-            document.getElementById('resultOrmeWale').style.display = 'none';
+            const resultBox = document.getElementById('resultBox');
+            resultBox.style.display = 'none';
+            resultBox.innerHTML = '<h3>Sonuçlar:</h3>'; // İçeriği sıfırla
         }
 
         function calculateFabricDensity() {
             const fabricType = document.getElementById('fabricType').value;
             const resultBox = document.getElementById('resultBox');
-            resultBox.style.display = 'block'; // Sonuç kutusunu görünür yap
+            let resultsHTML = '<h3>Sonuçlar:</h3>'; // Sonuçları buraya biriktireceğiz
 
-            // Tüm sonuçları başlangıçta gizle
-            document.getElementById('resultDokumaWarp').style.display = 'none';
-            document.getElementById('resultDokumaWeft').style.display = 'none';
-            document.getElementById('resultOrmeCourse').style.display = 'none';
-            document.getElementById('resultOrmeWale').style.display = 'none';
-            resultBox.innerHTML = '<h3>Sonuçlar:</h3>'; // İçeriği sıfırla
+            // Önceki hataları ve sonuçları temizle
+            resultBox.innerHTML = resultsHTML; 
+            resultBox.style.display = 'none'; // Hesaplama başarılı olana kadar gizli kalsın
 
             if (fabricType === 'dokuma') {
                 const warpCount = parseFloat(document.getElementById('warpCount').value);
@@ -246,39 +237,31 @@
                 if (isNaN(warpCount) || warpCount <= 0 || isNaN(warpMeasureLength) || warpMeasureLength <= 0 ||
                     isNaN(weftCount) || weftCount <= 0 || isNaN(weftMeasureLength) || weftMeasureLength <= 0) {
                     resultBox.innerHTML = '<p class="error">Lütfen tüm dokuma kumaş ölçüleri için geçerli (pozitif) sayılar girin.</p>';
+                    resultBox.style.display = 'block';
                     return;
                 }
 
                 const warpDensity = warpCount / warpMeasureLength;
                 const weftDensity = weftCount / weftMeasureLength;
 
-                document.getElementById('resultDokumaWarp').innerHTML = `<strong>Çözgü Sıklığı:</strong> <span class="result-value">${warpDensity.toFixed(2)}</span> tel/cm`;
-                document.getElementById('resultDokumaWeft').innerHTML = `<strong>Atkı Sıklığı:</strong> <span class="result-value">${weftDensity.toFixed(2)}</span> tel/cm`;
-                document.getElementById('resultDokumaWarp').style.display = 'block';
-                document.getElementById('resultDokumaWeft').style.display = 'block';
-
+                resultsHTML += `<p><strong>Çözgü Sıklığı:</strong> <span class="result-value">${warpDensity.toFixed(2)}</span> tel/cm</p>`;
+                resultsHTML += `<p><strong>Atkı Sıklığı:</strong> <span class="result-value">${weftDensity.toFixed(2)}</span> tel/cm</p>`;
             } else { // Örme Kumaş
                 const courseCount = parseFloat(document.getElementById('courseCount').value);
                 const waleCount = parseFloat(document.getElementById('waleCount').value);
 
                 if (isNaN(courseCount) || courseCount <= 0 || isNaN(waleCount) || waleCount <= 0) {
                     resultBox.innerHTML = '<p class="error">Lütfen tüm örme kumaş ölçüleri için geçerli (pozitif) sayılar girin.</p>';
+                    resultBox.style.display = 'block';
                     return;
                 }
-
-                // Örme kumaşlarda kurs ve sıra sıklığı direkt cm'deki sayı olarak giriliyorsa
-                // (Bu durumda direkt girilen değerler sıklık olur)
-                // Eğer belirli bir uzunluktaki toplam kurs/sıra sayısı girilecekse, bu kısım güncellenmeli.
-                // Şimdilik, input'un zaten cm'deki sıklığı temsil ettiği varsayılıyor.
-                // Eğer "belirli bir uzunluktaki kurs/sıra sayısı" girilecekse
-                // ve "ölçüm uzunluğu" ayrı bir input olarak eklenecekse, o zaman formüller güncellenmeli.
-                // Şu anki input placeholder'ı (cm'de) sıklık değeri olduğu için direkt kullanıldı.
                 
-                document.getElementById('resultOrmeCourse').innerHTML = `<strong>Kurs Sıklığı:</strong> <span class="result-value">${courseCount.toFixed(2)}</span> kurs/cm`;
-                document.getElementById('resultOrmeWale').innerHTML = `<strong>Sıra Sıklığı:</strong> <span class="result-value">${waleCount.toFixed(2)}</span> sıra/cm`;
-                document.getElementById('resultOrmeCourse').style.display = 'block';
-                document.getElementById('resultOrmeWale').style.display = 'block';
+                resultsHTML += `<p><strong>Kurs Sıklığı:</strong> <span class="result-value">${courseCount.toFixed(2)}</span> kurs/cm</p>`;
+                resultsHTML += `<p><strong>Sıra Sıklığı:</strong> <span class="result-value">${waleCount.toFixed(2)}</span> sıra/cm</p>`;
             }
+            
+            resultBox.innerHTML = resultsHTML; // Sonuçları bir kerede yazdır
+            resultBox.style.display = 'block'; // Sonuç kutusunu görünür yap
         }
     </script>
 </body>
