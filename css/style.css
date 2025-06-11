@@ -946,3 +946,84 @@ footer a:hover {
     background-color: #f0f0f0; /* "Hesaplama Çeşitleri" yazısının üzerine gelince arka plan rengi */
     color: #3498db; /* "Hesaplama Çeşitleri" yazısının üzerine gelince metin rengi */
 }
+
+/* --- Dropdown Menü İçin Ek Düzenlemeler --- */
+
+/* Genel navigasyon li öğeleri için varsayılan display ayarı */
+/* Eğer nav li öğeleriniz yanyana gelmiyorsa veya kayıyorsa bu ayar yardımcı olabilir */
+nav ul li {
+    position: relative; /* Dropdown için bu çok önemli */
+    display: inline-block; /* Menü öğelerinin yan yana durmasını sağlar */
+    /* Eğer nav ul li'lerinizde başka bir display değeri varsa, onu koruyun ve buraya ekleyin.
+       Örn: display: flex; veya float: left; */
+}
+
+/* Dropdown içeriğinin (açılır menü) konumlandırılması ve görünümü */
+.dropdown-content {
+    left: 0; /* Dropdown'ın ana menü öğesiyle aynı hizadan başlamasını sağlar */
+    top: 100%; /* Dropdown'ın ana menü öğesinin hemen altında başlamasını sağlar */
+    white-space: nowrap; /* Menüdeki yazıların tek satırda kalmasını sağlar */
+    min-width: 200px; /* Menünün minimum genişliği, içeriğin sığmasını garantiler */
+    box-sizing: border-box; /* Padding ve border'ın genişliğe dahil olmasını sağlar */
+}
+
+/* Dropdown linklerinin genişliği ve hizalaması */
+.dropdown-content a {
+    width: 100%; /* Linklerin dropdown kutusunu tamamen doldurmasını sağlar */
+    text-align: left; /* Link metinlerini sola hizala */
+    padding: 10px 15px; /* Okunurluk için iç boşluk */
+    box-sizing: border-box;
+}
+
+/* Eğer nav ul'nizde float kullanılıyorsa (eski tip menülerde sık görülür) */
+/* Navigasyon elemanlarının kapsayıcı div'inden taşmasını engellemek için */
+nav ul::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Navbar'daki li öğelerinin arasında boşluk bırakmak için (isteğe bağlı) */
+nav ul li:not(:last-child) {
+    margin-right: 15px; /* Menü öğeleri arasına boşluk ekler */
+}
+
+/* Dropdown linklerinin üzerine gelince arka plan rengi */
+.dropdown-content a:hover {
+    background-color: #e0e0e0; /* Hafif bir gri tonu */
+    color: #3498db; /* Hesapkolik ana rengi */
+}
+
+/* Dropdown butonu üzerine gelince stil */
+.dropdown:hover .dropbtn {
+    background-color: #f5f5f5; /* Hafif bir arka plan vurgusu */
+    color: #3498db;
+}
+
+/* Eğer header veya nav'ınızda flexbox kullanılıyorsa, menü öğelerinin hizalanması */
+header .container nav ul {
+    display: flex; /* Ana menü öğelerini flexbox ile hizala */
+    justify-content: flex-end; /* Menüyü sağa hizala (eğer logo soldaysa) */
+    align-items: center; /* Dikeyde ortala */
+    list-style: none; /* Liste işaretlerini kaldır */
+    padding: 0;
+    margin: 0;
+}
+
+/* Dropdown öğesini flexbox içinde ortalamak için */
+.dropdown {
+    display: flex;
+    align-items: center;
+}
+
+/* Dropdown ok ikonunu eklemek (isteğe bağlı, daha iyi UX için) */
+/* Eğer Font Awesome gibi bir ikon kütüphanesi kullanıyorsanız: */
+/*
+.dropbtn::after {
+    content: "\f0d7"; // Font Awesome için aşağı ok ikonu kodu
+    font-family: "Font Awesome 5 Free"; // Font Awesome font ailesi
+    font-weight: 900;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+*/
