@@ -70,23 +70,25 @@
 
                                 <h4>İplik Bilgileri (Ortalama)</h4>
                                 <div class="input-with-unit">
-                                    <label for="warpYarnCount">Çözgü İplik Numarası (Nm):</label>
+                                    <label for="warpYarnCount">Çözgü İplik Numarası:</label>
                                     <input type="number" id="warpYarnCount" step="0.01" min="0.01" required placeholder="Örn: 50">
                                     <select id="warpCountSystem">
                                         <option value="nm">Nm</option>
                                         <option value="tex">Tex</option>
                                         <option value="denye">Denye</option>
                                         <option value="ne">Ne</option>
+                                        <option value="dtex">dTex</option>
                                     </select>
                                 </div>
                                 <div class="input-with-unit">
-                                    <label for="weftYarnCount">Atkı İplik Numarası (Nm):</label>
+                                    <label for="weftYarnCount">Atkı İplik Numarası:</label>
                                     <input type="number" id="weftYarnCount" step="0.01" min="0.01" required placeholder="Örn: 40">
                                     <select id="weftCountSystem">
                                         <option value="nm">Nm</option>
                                         <option value="tex">Tex</option>
                                         <option value="denye">Denye</option>
                                         <option value="ne">Ne</option>
+                                        <option value="dtex">dTex</option>
                                     </select>
                                 </div>
 
@@ -143,19 +145,19 @@
                             Bu hesaplamada, iplik numaraları Tex veya Nm gibi standart birimlere dönüştürülerek kullanılır.
                         </p>
                         <p class="formula-text">
-                            **Çözgü İpliği Miktarı (kg):**<br>
-                            = (Üretilecek Kumaş Uzunluğu (m) * Mamul Kumaş Eni (cm) * Çözgü Sıklığı (tel/cm)) / (İplik Numarası (Nm) * 100000) * (1 + Çözgü Fire Oranı (%)/100)
+                            **Çözgü İpliği Miktarı (kg) Formülü:**<br>
+                            = (Kumaş Uzunluğu (m) * Mamul Kumaş Eni (cm) * Çözgü Sıklığı (tel/cm) * Çözgü İplik Numarası (Tex)) / 1000
                             <br>
-                            *(Not: Nm için 100000 faktörü = 1000 (g->kg) * 100 (cm->m) ile gelir, çünkü Nm = m/g)*
+                            *(Not: Bu formülde Tex kullanılır. Eğer iplik numarası başka bir sistemdeyse, önce Tex'e dönüştürülmelidir.)*
                         </p>
                         <p class="formula-text">
-                            **Atkı İpliği Miktarı (kg):**<br>
-                            = (Üretilecek Kumaş Uzunluğu (m) * Mamul Kumaş Eni (cm) * Atkı Sıklığı (tel/cm)) / (İplik Numarası (Nm) * 100000) * (1 + Atkı Fire Oranı (%)/100)
+                            **Atkı İpliği Miktarı (kg) Formülü:**<br>
+                            = (Kumaş Uzunluğu (m) * Mamul Kumaş Eni (cm) * Atkı Sıklığı (tel/cm) * Atkı İplik Numarası (Tex)) / 1000
                             <br>
-                            *(Not: Formüller, iplik numarası sistemine göre dönüşüm gerektirecektir. Hesaplayıcı bunu otomatik yapar.)*
+                            *(Not: Bu formülde Tex kullanılır. Eğer iplik numarası başka bir sistemdeyse, önce Tex'e dönüştürülmelidir.)*
                         </p>
                         <p>
-                            Hesaplayıcımız, girdiğiniz iplik numarası sistemini (Tex, Denye, Ne, Nm) otomatik olarak ortak bir birime dönüştürerek bu hesaplamaları yapar.
+                            Hesaplayıcımız, girdiğiniz iplik numarası sistemini (Tex, Denye, Ne, Nm, dTex) otomatik olarak Tex birimine dönüştürerek bu hesaplamaları yapar ve fire oranlarını da hesaba katar.
                         </p>
 
                         <h4>Uygulama Alanları:</h4>
@@ -193,22 +195,23 @@
             }
         });
 
-        // Helper function to convert any count system to Nm
-        function convertToNm(count, system) {
+        // Helper function to convert any count system to Tex
+        function convertToTex(count, system) {
             switch (system) {
-                case 'nm': return count;
-                case 'tex': return 1000 / count;
-                case 'denye': return 9000 / count;
-                case 'ne': return count * 1.6936; // Ne to Nm conversion factor
+                case 'tex': return count;
+                case 'denye': return count / 9;
+                case 'ne': return 590.54 / count; // Ne to Tex conversion factor
+                case 'nm': return 1000 / count; // Nm to Tex conversion factor
+                case 'dtex': return count / 10; // dTex to Tex conversion factor
                 default: return 0; // Should not happen with validation
             }
         }
 
         function calculateYarnConsumption() {
             const fabricLength = parseFloat(document.getElementById('fabricLength').value);
-            const fabricWidth = parseFloat(document.getElementById('fabricWidth').value);
-            const warpDensity = parseFloat(document.getElementById('warpDensity').value);
-            const weftDensity = parseFloat(document.getElementById('weftDensity').value);
+            const fabricWidth = parseFloat(document.getElementById('fabricWidth').value); // cm
+            const warpDensity = parseFloat(document.getElementById('warpDensity').value); // tel/cm
+            const weftDensity = parseFloat(document.getElementById('weftDensity').value); // tel/cm
             const warpYarnCount = parseFloat(document.getElementById('warpYarnCount').value);
             const warpCountSystem = document.getElementById('warpCountSystem').value;
             const weftYarnCount = parseFloat(document.getElementById('weftYarnCount').value);
@@ -232,29 +235,44 @@
                 return;
             }
 
-            // İplik numaralarını Nm'ye çevir
-            const warpYarnCountNm = convertToNm(warpYarnCount, warpCountSystem);
-            const weftYarnCountNm = convertToNm(weftYarnCount, weftCountSystem);
+            // İplik numaralarını Tex'e çevir
+            const warpYarnCountTex = convertToTex(warpYarnCount, warpCountSystem);
+            const weftYarnCountTex = convertToTex(weftYarnCount, weftCountSystem);
 
-            // Çözgü İpliği Hesaplama
-            // Toplam çözgü teli uzunluğu (metre) = Üretilecek Kumaş Uzunluğu (m) * Çözgü Sıklığı (tel/cm) * Kumaş Eni (cm)
-            // Çözgü ipliği uzunluğu (km) = (Üretilecek Kumaş Uzunluğu (m) * Mamul Kumaş Eni (cm) * Çözgü Sıklığı (tel/cm)) / 100
-            // Nm = m/g olduğu için, kg cinsinden ağırlık = (uzunluk_m / Nm) / 1000
-            // Son formül: (uzunluk_m * genişlik_cm * çözgü_tel/cm) / (Nm * 100000)
-            const theoreticalWarpYarnKg = (fabricLength * fabricWidth * warpDensity) / (warpYarnCountNm * 100000);
-            const totalWarpYarnKg = theoreticalWarpYarnKg * (1 + (warpWastePercentage / 100));
+            // Eğer dönüşüm sonucu 0 veya NaN ise hata ver
+            if (warpYarnCountTex <= 0 || isNaN(warpYarnCountTex) || weftYarnCountTex <= 0 || isNaN(weftYarnCountTex)) {
+                 resultBox.innerHTML = '<p class="error">İplik numarası dönüşümünde hata oluştu. Lütfen geçerli iplik numaraları ve sistemleri girin.</p>';
+                 resultBox.style.display = 'block';
+                 return;
+            }
 
-            // Atkı İpliği Hesaplama
-            // Toplam atkı teli uzunluğu (metre) = Üretilecek Kumaş Uzunluğu (m) * Atkı Sıklığı (tel/cm) * Kumaş Eni (cm)
-            // Atkı ipliği uzunluğu (km) = (Üretilecek Kumaş Uzunluğu (m) * Mamul Kumaş Eni (cm) * Atkı Sıklığı (tel/cm)) / 100
-            const theoreticalWeftYarnKg = (fabricLength * fabricWidth * weftDensity) / (weftYarnCountNm * 100000);
-            const totalWeftYarnKg = theoreticalWeftYarnKg * (1 + (weftWastePercentage / 100));
+
+            // Çözgü İpliği Hesaplama (kg)
+            // Formül: (Kumaş Uzunluğu (m) * Kumaş Eni (m) * Çözgü Sıklığı (tel/m) * Çözgü İplik Numarası (Tex)) / 1000
+            // Kumaş Eni (m) = fabricWidth / 100
+            // Çözgü Sıklığı (tel/m) = warpDensity * 100
+            // Paydadaki 1000, gramdan kilograma çevirmek için (Tex = g/km, yani g/1000m)
+
+            const totalWarpLengthInMeters = fabricLength * (fabricWidth / 100) * (warpDensity * 100); // Toplam çözgü ipliği uzunluğu (metre)
+            const theoreticalWarpYarnKg = (totalWarpLengthInMeters * warpYarnCountTex) / 1000; // Tex = g/km -> (m * g/km) / 1000 (g->kg) = kg
+            const finalWarpYarnKg = theoreticalWarpYarnKg * (1 + (warpWastePercentage / 100));
+
+
+            // Atkı İpliği Hesaplama (kg)
+            // Toplam atkı ipliği uzunluğu (metre) = Üretilecek Kumaş Uzunluğu (m) * Atkı Sıklığı (tel/cm) * Kumaş Eni (cm)
+            // Burada atkı, kumaşın eni boyunca atılır. Her bir metre kumaş üretimi için
+            // gerekli atkı ipliği uzunluğu = (Kumaş Eni (m) * Atkı Sıklığı (tel/m))
+            // Toplam atkı ipliği uzunluğu = Kumaş Uzunluğu (m) * Kumaş Eni (m) * Atkı Sıklığı (tel/m)
+            const totalWeftLengthInMeters = fabricLength * (fabricWidth / 100) * (weftDensity * 100); // Toplam atkı ipliği uzunluğu (metre)
+            const theoreticalWeftYarnKg = (totalWeftLengthInMeters * weftYarnCountTex) / 1000; // Tex = g/km -> (m * g/km) / 1000 (g->kg) = kg
+            const finalWeftYarnKg = theoreticalWeftYarnKg * (1 + (weftWastePercentage / 100));
+
 
             // Sonuçları göster
             resultBox.innerHTML = `
                 <h3>Sonuçlar (Gerekli Miktarlar):</h3>
-                <p><strong>Toplam Çözgü Miktarı:</strong> <span class="result-value">${totalWarpYarnKg.toFixed(2)}</span> kg</p>
-                <p><strong>Toplam Atkı Miktarı:</strong> <span class="result-value">${totalWeftYarnKg.toFixed(2)}</span> kg</p>
+                <p><strong>Toplam Çözgü Miktarı:</strong> <span class="result-value">${finalWarpYarnKg.toFixed(2)}</span> kg</p>
+                <p><strong>Toplam Atkı Miktarı:</strong> <span class="result-value">${finalWeftYarnKg.toFixed(2)}</span> kg</p>
                 <p class="small-text">Hesaplamalar fire oranları dahil edilerek yapılmıştır.</p>
             `;
             resultBox.style.display = 'block'; // Sonuç kutusunu görünür yap
