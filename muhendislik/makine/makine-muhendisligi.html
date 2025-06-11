@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Makine Mühendisliği Hesaplamaları - Hesapkolik</title>
+    <meta name="description" content="Makine Mühendisliği alanına özel hesaplama araçları: Mekanik, termodinamik, ısı transferi, akışkanlar mekaniği, titreşim, malzeme bilimi ve daha fazlası.">
+    <meta name="keywords" content="makine mühendisliği hesaplamaları, gerilme, mukavemet, termodinamik çevrim, ısı eşanjörü, pompa, reynolds, titreşim, malzeme, işleme, hesapkolik makine">
+    <link rel="stylesheet" href="../../css/style.css"> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Genel Stil, Tekstil Mühendisliği sayfanızdaki ile aynı */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        header { background-color: #2c3e50; color: white; padding: 15px 0; }
+        header .logo { display: flex; align-items: center; } /* Logo ve site adı hizalaması için */
+        header .logo a { display: flex; align-items: center; text-decoration: none; color: white; }
+        header .logo .site-logo { height: 40px; vertical-align: middle; margin-right: 10px; } /* Logo boyutu ve sağ boşluk */
+        header .logo h1 { margin: 0; font-size: 1.8em; }
+        header .logo h1 a { color: white; text-decoration: none; }
+        header nav ul { list-style: none; margin: 0; padding: 0; display: flex; justify-content: flex-end; }
+        header nav ul li { margin-left: 25px; }
+        header nav ul li a { color: white; text-decoration: none; font-weight: 600; transition: color 0.3s ease; }
+        header nav ul li a:hover { color: #ecf0f1; }
+        
+        .health-calculator-landing-section { /* Genel bir kategori sayfası bölümü adı */
+            padding: 50px 0;
+            text-align: center;
+        }
+        .health-calculator-landing-section .main-title {
+            font-size: 2.8em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .health-calculator-landing-section .section-description {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            justify-content: center;
+            align-items: stretch; /* Kartların yüksekliklerini eşitlemek için */
+        }
+
+        .calculator-card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative; /* Buton konumu için */
+            min-height: 220px; /* Kartların minimum yüksekliği */
+        }
+
+        .calculator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .calculator-card .icon-big {
+            font-size: 3.5em;
+            color: #3498db; /* İkon rengi */
+            margin-bottom: 15px;
+        }
+
+        .calculator-card h3 {
+            font-size: 1.5em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            flex-grow: 1; /* Başlık ve açıklamanın alanı doldurması için */
+        }
+
+        .calculator-card p {
+            font-size: 0.95em;
+            color: #777;
+            margin-bottom: 20px;
+            flex-grow: 1; /* Başlık ve açıklamanın alanı doldurması için */
+        }
+
+        .calculator-card .card-button {
+            display: inline-block;
+            background-color: #e74c3c; /* Buton rengi */
+            color: white;
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            /* position: absolute; */ /* Butonu alta sabitlemek için */
+            /* bottom: 20px; */
+            /* left: 50%; */
+            /* transform: translateX(-50%); */
+            width: 80%; /* Buton genişliği */
+            max-width: 200px;
+        }
+
+        .calculator-card .card-button:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        /* Footer Stilleri */
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 50px;
+        }
+        footer p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        footer a {
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        footer a:hover {
+            color: #3498db;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .health-calculator-landing-section .main-title {
+                font-size: 2.2em;
+            }
+            .calculator-grid {
+                grid-template-columns: 1fr; /* Tek sütun */
+            }
+            .calculator-card {
+                min-height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+                <h1><a href="../../index.html">Hesapkolik</a></h1> </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="health-calculator-landing-section">
+            <div class="container">
+                <h1 class="main-title">Makine Mühendisliği Hesaplamaları</h1>
+                <p class="section-description">Makine mühendisliği projelerinizde, tasarımlarınızda ve öğreniminizde ihtiyaç duyacağınız temel ve ileri seviye hesaplama araçları:</p>
+
+                <div class="calculator-grid">
+                    <div class="calculator-card">
+                        <i class="fas fa-ruler-combined icon-big"></i>
+                        <h3>Normal Gerilme Hesaplama</h3>
+                        <p>Basit çekme ve basma yükleri altındaki gerilmeleri hesaplar.</p>
+                        <a href="makine-muhendisligi/normal-gerilme.html" class="card-button">Hesapla</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-cut icon-big"></i>
+                        <h3>Kesme Gerilmesi Hesaplama</h3>
+                        <p>Bir kesit alanındaki kesme kuvvetlerinin oluşturduğu gerilmeyi bulur.</p>
+                        <a href="makine-muhendisligi/kesme-gerilmesi.html" class="card-button">Hesapla</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-drafting-compass icon-big"></i>
+                        <h3>Eğilme Gerilmesi Hesaplama</h3>
+                        <p>Kirişler gibi elemanlarda oluşan eğilme momenti kaynaklı gerilmeleri belirler.</p>
+                        <a href="makine-muhendisligi/egilme-gerilmesi.html" class="card-button">Hesapla</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-wrench icon-big"></i>
+                        <h3>Burulma Gerilmesi Hesaplama</h3>
+                        <p>Miller ve benzeri elemanlarda burulma momentinin oluşturduğu gerilmeleri hesaplar.</p>
+                        <a href="makine-muhendisligi/burulma-gerilmesi.html" class="card-button">Hesapla</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-shield-alt icon-big"></i>
+                        <h3>Emniyet Faktörü Hesaplama</h3>
+                        <p>Tasarımın güvenilirlik derecesini (yük ve malzeme dayanımı oranı) belirler.</p>
+                        <a href="makine-muhendisligi/emniyet-faktoru.html" class="card-button">Hesapla</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-compress-arrows-alt icon-big"></i>
+                        <h3>Kritik Burkulma Yükü (Kolonlar)</h3>
+                        <p>Basınç altındaki kolonların burkulacağı kritik yükü tahmin eder.</p>
+                        <a href="makine-muhendisligi/burkulma-yuku.html" class="card-button">Hesapla</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-fire-alt icon-big"></i>
+                        <h3>Isı Eşanjörü LMTD Hesaplama</h3>
+                        <p>Isı eşanjörlerinde Logaritmik Ortalama Sıcaklık Farkını (LMTD) bulur.</p>
+                        <a href="makine-muhendisligi/isi-esanjörü-lmtd.html" class="card-button">Hesapla</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-snowflake icon-big"></i>
+                        <h3>Soğutma Yükü Hesaplama</h3>
+                        <p>Bir alanın ısıtma veya soğutma sistemi tasarımında gerekli olan ısı yükünü belirler.</p>
+                        <a href="makine-muhendisligi/sogutma-yuku.html" class="card-button">Hesapla</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-water icon-big"></i>
+                        <h3>Pompa Gücü Hesaplama</h3>
+                        <p>Belirli bir debi ve basma yüksekliği için gerekli pompa gücünü bulur.</p>
+                        <a href="makine-muhendisligi/pompa-gucu.html" class="card-button">Hesapla</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-faucet-drip icon-big"></i>
+                        <h3>Boru Basınç Düşüşü Hesaplama</h3>
+                        <p>Borulardaki akışkan akışı nedeniyle oluşan basınç düşüşlerini hesaplar.</p>
+                        <a href="makine-muhendisligi/boru-basinc-dususu.html" class="card-button">Hesapla</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-arrows-alt-h icon-big"></i>
+                        <h3>Reynolds Sayısı Hesaplama</h3>
+                        <p>Akışkanların boru veya kanal içindeki akış rejimini (laminer/türbülanslı) belirler.</p>
+                        <a href="makine-muhendisligi/reynolds-sayisi.html" class="card-button">Hesapla</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-wave-square icon-big"></i>
+                        <h3>Doğal Titreşim Frekansı</h3>
+                        <p>Basit kütle-yay sistemleri için doğal titreşim frekansını hesaplar.</p>
+                        <a href="makine-muhendisligi/dogal-titresim-frekansi.html" class="card-button">Hesapla</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-hard-hat icon-big"></i>
+                        <h3>Sertlik Dönüşümü</h3>
+                        <p>Farklı sertlik ölçekleri (Rockwell, Brinell vb.) arasında dönüşüm yapar.</p>
+                        <a href="makine-muhendisligi/sertlik-donusumu.html" class="card-button">Hesapla</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+</body>
+</html>
