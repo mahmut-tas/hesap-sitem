@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reynolds Sayısı Hesaplayıcı - Hesapkolik</title>
+    <meta name="description" content="Bir akışkanın akış rejimini (laminer, türbülanslı, geçiş) belirlemek için Reynolds sayısını kolayca hesaplayın. Akışkanlar mekaniği, boru akışı ve mühendislik tasarımı için temel bir araç.">
+    <meta name="keywords" content="reynolds sayısı, akış rejimi, laminer akış, türbülanslı akış, akışkanlar mekaniği, boru akışı, hidrolik çap, yoğunluk, viskozite, hız, mühendislik hesaplamaları, hesapkolik reynolds">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+    <style>
+        /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        header { background-color: #2c3e50; color: white; padding: 15px 0; }
+        header .logo h1 { margin: 0; font-size: 1.8em; }
+        header .logo h1 a { color: white; text-decoration: none; }
+        header .logo .site-logo { height: 40px; vertical-align: middle; }
+        header nav ul { list-style: none; margin: 0; padding: 0; display: flex; justify-content: flex-end; }
+        header nav ul li { margin-left: 25px; }
+        header nav ul li a { color: white; text-decoration: none; font-weight: 600; transition: color 0.3s ease; }
+        header nav ul li a:hover { color: #ecf0f1; }
+        
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Seçim Bölümü Stilleri */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .calc-type-button {
+            background-color: #3498db; /* Mavi ton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
+            max-width: 250px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        .hidden-calc {
+            display: none;
+        }
+
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin {
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+        }
+        .input-with-unit label {
+            flex-basis: 100%; /* Label her zaman üstte veya solda */
+            margin-bottom: 5px;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input alanı boşluğu doldurur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .input-with-unit select {
+            flex-shrink: 0; /* Select kutusu sabit kalır */
+            width: auto; /* Select kutusu kendi genişliğinde olur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .tablo-container {
+            margin-top: 30px;
+            text-align: left;
+            background-color: #fcfcfc;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 20px;
+        }
+        .tablo-container h4 {
+            font-size: 1.4em;
+            color: #34495e;
+            margin-bottom: 15px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .tablo-container table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .tablo-container th, .tablo-container td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        .tablo-container th {
+            background-color: #eaf0f0;
+            font-weight: 600;
+            color: #555;
+        }
+        .tablo-container tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+                <h1><a href="../../index.html">Hesapkolik</a></h1> 
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Reynolds Sayısı Hesaplayıcı</h1>
+                <p>Bir akışkanın akış rejimini (laminer, türbülanslı, geçiş) belirlemek için Reynolds sayısını kolayca hesaplayın.</p>
+            </div>
+        </section>
+
+        <section class="calculator-selection-section">
+            <div class="container">
+                <h2>Reynolds Sayısını Hesapla</h2>
+                <div class="calc-buttons-container">
+                    <button class="calc-type-button active" data-calc-type="reynoldsNumber">Reynolds Sayısını Hesapla</button>
+                </div>
+
+                <div id="calculator-reynoldsNumber" class="calc-wrapper active-calc">
+                    <h3><i class="fas fa-arrows-alt-h icon-small"></i> Reynolds Sayısını Hesapla ($\text{Re} = \frac{\rho \cdot v \cdot D_h}{\mu}$)</h3>
+                    <div class="calculator-form-container">
+                        <form id="reynoldsNumberForm">
+                            <div class="input-with-unit">
+                                <label for="fluidDensity">Akışkan Yoğunluğu ($\rho$):</label>
+                                <input type="number" id="fluidDensity" placeholder="Örn: 1000 (Su için)" min="0.000001" step="any" required>
+                                <select id="fluidDensityUnit">
+                                    <option value="kg/m3">kg/m³</option>
+                                    <option value="g/cm3">g/cm³</option>
+                                    <option value="lb/ft3">lb/ft³</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="fluidVelocity">Akışkan Hızı ($v$):</label>
+                                <input type="number" id="fluidVelocity" placeholder="Örn: 1 (m/s)" min="0.000001" step="any" required>
+                                <select id="fluidVelocityUnit">
+                                    <option value="m/s">m/s</option>
+                                    <option value="cm/s">cm/s</option>
+                                    <option value="ft/s">ft/s</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="characteristicLength">Karakteristik Uzunluk ($D_h$ - Boru Çapı/Hidrolik Çap):</label>
+                                <input type="number" id="characteristicLength" placeholder="Örn: 0.05 (m)" min="0.000001" step="any" required>
+                                <select id="characteristicLengthUnit">
+                                    <option value="m">metre (m)</option>
+                                    <option value="cm">santimetre (cm)</option>
+                                    <option value="mm">milimetre (mm)</option>
+                                    <option value="in">inç (in)</option>
+                                    <option value="ft">fit (ft)</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="dynamicViscosity">Dinamik Viskozite ($\mu$):</label>
+                                <input type="number" id="dynamicViscosity" placeholder="Örn: 0.001 (Su için)" min="0.000000001" step="any" required>
+                                <select id="dynamicViscosityUnit">
+                                    <option value="Pa-s">Pa·s</option>
+                                    <option value="cP">cP (centipoise)</option>
+                                    <option value="lbf-s/ft2">lbf·s/ft²</option>
+                                </select>
+                            </div>
+                            <button type="submit">Reynolds Sayısını Hesapla</button>
+                        </form>
+                        <div id="reynoldsNumberResult" class="result-display"></div>
+                        <div class="calc-explanation">
+                            <p>Reynolds sayısı, bir akışkanın akış rejimini (laminer, türbülanslı veya geçiş) belirlemek için kullanılan boyutsuz bir sayıdır. Akışkanın atalet kuvvetlerinin viskoz kuvvetlerine oranını temsil eder.</p>
+                            <p class="formula-text">
+                                $ \text{Re} = \frac{\rho \cdot v \cdot D_h}{\mu} $
+                            </p>
+                            <p>Veya kinematik viskozite ($\nu = \mu/\rho$) cinsinden:</p>
+                            <p class="formula-text small-margin">
+                                $ \text{Re} = \frac{v \cdot D_h}{\nu} $
+                            </p>
+                            <ul>
+                                <li>$ \mathbf{\rho} $: Akışkan yoğunluğu</li>
+                                <li>$ \mathbf{v} $: Ortalama akışkan hızı</li>
+                                <li>$ \mathbf{D_h} $: Karakteristik uzunluk (genellikle boru çapı veya hidrolik çap)</li>
+                                <li>$ \mathbf{\mu} $: Akışkanın dinamik viskozitesi</li>
+                                <li>$ \mathbf{\nu} $: Akışkanın kinematik viskozitesi</li>
+                            </ul>
+                            <p>Hesaplamadan sonra akış rejimi yorumu:</p>
+                            <ul>
+                                <li>**Re < 2300:** Laminer Akış (Düzgün, katmanlı akış)</li>
+                                <li>**2300 < Re < 4000:** Geçiş Rejimi (Kararsız akış, laminerden türbülansa geçiş)</li>
+                                <li>**Re > 4000:** Türbülanslı Akış (Düzensiz, girdaplı akış)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>Reynolds Sayısı Nedir?</h3>
+            <p>
+                **Reynolds Sayısı (Re)**, akışkanlar mekaniğinde bir akışın dinamik benzerliğini tanımlayan, yani farklı akış koşulları altında akış paternlerinin ne kadar benzer olduğunu gösteren boyutsuz bir sayıdır. İngiliz mühendis Osborne Reynolds tarafından geliştirilmiştir. En önemli kullanım alanı, akışkan akışının **laminer** (düzgün, katmanlı) mi yoksa **türbülanslı** (düzensiz, girdaplı) mı olacağını tahmin etmektir.
+            </p>
+            <p>
+                Reynolds sayısı, akışkanın atalet kuvvetlerinin viskoz kuvvetlere oranı olarak yorumlanabilir:
+            </p>
+            <p class="formula-text">
+                $ \text{Re} = \frac{\text{Atalet Kuvvetleri}}{\text{Viskoz Kuvvetler}} $
+            </p>
+            <p>
+                Formülü aşağıdaki gibidir:
+            </p>
+            <p class="formula-text">
+                $ \text{Re} = \frac{\rho \cdot v \cdot D_h}{\mu} $
+            </p>
+            <p>Veya kinematik viskozite ($\nu = \mu/\rho$) cinsinden:</p>
+            <p class="formula-text small-margin">
+                $ \text{Re} = \frac{v \cdot D_h}{\nu} $
+            </p>
+            <ul>
+                <li>$ \mathbf{\rho} $: Akışkan yoğunluğu (kg/m³, g/cm³ vb.)</li>
+                <li>$ \mathbf{v} $: Akışkanın karakteristik hızı (m/s, cm/s vb.)</li>
+                <li>$ \mathbf{D_h} $: Karakteristik uzunluk (genellikle boru çapı veya hidrolik çap) (m, cm, inç vb.)</li>
+                <li>$ \mathbf{\mu} $: Akışkanın dinamik (mutlak) viskozitesi (Pa·s, cP, lbf·s/ft² vb.)</li>
+                <li>$ \mathbf{\nu} $: Akışkanın kinematik viskozitesi (m²/s, St, cSt vb.)</li>
+            </ul>
+
+            <h4>Akış Rejimleri:</h4>
+            <ul>
+                <li>**Re < 2300 (veya yaklaşık 2100): Laminer Akış**
+                    <p>Akışkan parçacıkları düzgün ve paralel katmanlar halinde hareket eder. Akış pürüzsüzdür ve karışım azdır. Viskoz kuvvetler baskındır.</p>
+                </li>
+                <li>**2300 < Re < 4000: Geçiş Rejimi**
+                    <p>Akış düzensizleşmeye başlar, laminer ve türbülanslı özellikler arasında gidip gelir. Akışın öngörülebilirliği düşüktür.</p>
+                </li>
+                <li>**Re > 4000 (veya yaklaşık 4000): Türbülanslı Akış**
+                    <p>Akışkan parçacıkları rastgele ve düzensiz hareket eder, yoğun bir karışım ve girdaplar oluşur. Atalet kuvvetleri baskındır. Boru sürtünme kayıpları genellikle daha yüksektir.</p>
+                </li>
+            </ul>
+            <p class="small-text">Bu kritik Reynolds sayıları (2300, 4000) genellikle dairesel borulardaki iç akışlar için geçerlidir. Diğer geometriler veya dış akışlar için farklı değerler olabilir.</p>
+
+            <h4>Karakteristik Uzunluk ve Hidrolik Çap:</h4>
+            <p>
+                Dairesel borular için karakteristik uzunluk genellikle boru çapı ($D$) alınır. Dairesel olmayan kanallar (örneğin dikdörtgen kanallar) için ise **hidrolik çap ($D_h$)** kullanılır:
+            </p>
+            <p class="formula-text small-margin">
+                $ D_h = \frac{4 \cdot A}{P_w} $
+            </p>
+            <ul>
+                <li>$ \mathbf{A} $: Kanalın akış kesit alanı</li>
+                <li>$ \mathbf{P_w} $: Kanalın ıslatılmış çevresi (akışkanla temas eden çevre uzunluğu)</li>
+            </ul>
+
+            <h4>Uygulama Alanları:</h4>
+            <ul>
+                <li><strong>Boru Hatları Tasarımı:</strong> Su, petrol, gaz boru hatlarında basınç düşüşü ve pompa gücü hesaplamaları.</li>
+                <li><strong>Isı Eşanjörleri:</strong> Akışkanın ısı transfer verimliliğini etkileyen akış rejimini belirlemek.</li>
+                <li><strong>Uçak ve Otomotiv Aerodinamiği:</strong> Hava akışının araçlar üzerindeki etkisini (sürüklenme, kaldırma) analiz etmek.</li>
+                <li><strong>Kimya Mühendisliği Prosesleri:</strong> Karıştırıcılar, reaktörler ve ayırma ekipmanlarının tasarımı.</li>
+                <li><strong>Biyomedikal Mühendisliği:</strong> Kan akışı analizi ve tıbbi cihazların tasarımı.</li>
+            </ul>
+            <p class="disclaimer-text">
+                Bu hesaplayıcı, idealize edilmiş ve sabit haldeki akışlar için Reynolds sayısı hesaplamaları yapar. Gerçek dünya uygulamalarında, akışkanın sıkıştırılabilirliği, sıcaklık değişimleri, yüzey pürüzlülüğü, akışkanın Newton tipi olmaması ve akış gelişim bölgeleri gibi faktörler Reynolds sayısının yorumunu ve akış davranışını etkileyebilir. Daha karmaşık senaryolar için ileri düzey akışkanlar mekaniği analizleri ve deneysel veriler gerekebilir.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainCalcButtons = document.querySelectorAll('.calc-type-button');
+            const calculatorWrappers = document.querySelectorAll('.calc-wrapper');
+
+            // Başlangıçta ilk hesaplayıcıyı göster (zaten tek var)
+            showCalculator('reynoldsNumber');
+
+            mainCalcButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const type = button.dataset.calcType;
+                    showCalculator(type);
+                    // Butonların 'active' sınıfını yönet
+                    mainCalcButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    const targetCalc = document.getElementById(`calculator-${type}`);
+                    if (targetCalc) {
+                        targetCalc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+
+            function showCalculator(typeToShow) {
+                calculatorWrappers.forEach(wrapper => {
+                    if (wrapper.id === `calculator-${typeToShow}`) {
+                        wrapper.classList.remove('hidden-calc');
+                        wrapper.classList.add('active-calc');
+                    } else {
+                        wrapper.classList.add('hidden-calc');
+                        wrapper.classList.remove('active-calc');
+                    }
+                    // Her geçişte formları ve sonuçları temizle
+                    const form = wrapper.querySelector('form');
+                    if (form) form.reset();
+                    const resultDiv = wrapper.querySelector('.result-display');
+                    if (resultDiv) {
+                        resultDiv.innerHTML = '';
+                        resultDiv.style.display = 'none';
+                    }
+                    // Hata stillerini de temizle
+                    wrapper.querySelectorAll('input').forEach(input => input.classList.remove('error'));
+                });
+            }
+
+            // Ortak hata gösterici fonksiyon
+            function displayError(resultDiv, message, inputsToMark = []) {
+                resultDiv.innerHTML = `<p class="error">Hata: ${message}</p>`;
+                resultDiv.style.display = 'block';
+                inputsToMark.forEach(input => {
+                    if (input && input.value !== '') input.classList.add('error');
+                });
+            }
+
+            // Input hata stilini temizleyici fonksiyon
+            function clearErrorStyles(inputs) {
+                inputs.forEach(input => input.classList.remove('error'));
+            }
+
+            // Birim dönüşüm faktörleri (temel birimler: kg/m³, m/s, m, Pa·s)
+            const densityConversion = {
+                'kg/m3': 1,
+                'g/cm3': 1000,   // 1 g/cm³ = 1000 kg/m³
+                'lb/ft3': 16.0185 // 1 lb/ft³ = 16.0185 kg/m³
+            };
+
+            const velocityConversion = {
+                'm/s': 1,
+                'cm/s': 0.01,  // 1 cm/s = 0.01 m/s
+                'ft/s': 0.3048 // 1 ft/s = 0.3048 m/s
+            };
+
+            const lengthConversion = {
+                'm': 1,
+                'cm': 0.01,   // 1 cm = 0.01 m
+                'mm': 0.001,  // 1 mm = 0.001 m
+                'in': 0.0254, // 1 in = 0.0254 m
+                'ft': 0.3048  // 1 ft = 0.3048 m
+            };
+
+            const viscosityConversion = {
+                'Pa-s': 1,
+                'cP': 0.001, // 1 cP = 0.001 Pa·s
+                'lbf-s/ft2': 47.8803 // 1 lbf·s/ft² = 47.8803 Pa·s
+            };
+
+
+            // --- REYNOLDS SAYISI HESAPLAYICI ---
+            const reynoldsNumberForm = document.getElementById('reynoldsNumberForm');
+            const fluidDensityInput = document.getElementById('fluidDensity');
+            const fluidDensityUnitSelect = document.getElementById('fluidDensityUnit');
+            const fluidVelocityInput = document.getElementById('fluidVelocity');
+            const fluidVelocityUnitSelect = document.getElementById('fluidVelocityUnit');
+            const characteristicLengthInput = document.getElementById('characteristicLength');
+            const characteristicLengthUnitSelect = document.getElementById('characteristicLengthUnit');
+            const dynamicViscosityInput = document.getElementById('dynamicViscosity');
+            const dynamicViscosityUnitSelect = document.getElementById('dynamicViscosityUnit');
+            const reynoldsNumberResultDiv = document.getElementById('reynoldsNumberResult');
+
+            function calculateReynoldsNumber() {
+                clearErrorStyles([fluidDensityInput, fluidVelocityInput, characteristicLengthInput, dynamicViscosityInput]);
+                reynoldsNumberResultDiv.innerHTML = '';
+                reynoldsNumberResultDiv.style.display = 'none';
+
+                const rho_val = parseFloat(fluidDensityInput.value);
+                const v_val = parseFloat(fluidVelocityInput.value);
+                const Dh_val = parseFloat(characteristicLengthInput.value);
+                const mu_val = parseFloat(dynamicViscosityInput.value);
+
+                const rho_unit = fluidDensityUnitSelect.value;
+                const v_unit = fluidVelocityUnitSelect.value;
+                const Dh_unit = characteristicLengthUnitSelect.value;
+                const mu_unit = dynamicViscosityUnitSelect.value;
+
+                if (isNaN(rho_val) || rho_val <= 0) { displayError(reynoldsNumberResultDiv, "Lütfen geçerli ve pozitif bir akışkan yoğunluğu giriniz.", [fluidDensityInput]); return; }
+                if (isNaN(v_val) || v_val <= 0) { displayError(reynoldsNumberResultDiv, "Lütfen geçerli ve pozitif bir akışkan hızı giriniz.", [fluidVelocityInput]); return; }
+                if (isNaN(Dh_val) || Dh_val <= 0) { displayError(reynoldsNumberResultDiv, "Lütfen geçerli ve pozitif bir karakteristik uzunluk (çap/hidrolik çap) giriniz.", [characteristicLengthInput]); return; }
+                if (isNaN(mu_val) || mu_val <= 0) { displayError(reynoldsNumberResultDiv, "Lütfen geçerli ve pozitif bir dinamik viskozite giriniz.", [dynamicViscosityInput]); return; }
+
+                const rho_base = rho_val * densityConversion[rho_unit];     // kg/m³
+                const v_base = v_val * velocityConversion[v_unit];         // m/s
+                const Dh_base = Dh_val * lengthConversion[Dh_unit];        // m
+                const mu_base = mu_val * viscosityConversion[mu_unit];     // Pa·s
+
+                const Re_number = (rho_base * v_base * Dh_base) / mu_base;
+
+                let flowRegime = "";
+                if (Re_number < 2300) {
+                    flowRegime = "Laminer Akış";
+                } else if (Re_number >= 2300 && Re_number <= 4000) {
+                    flowRegime = "Geçiş Rejimi";
+                } else {
+                    flowRegime = "Türbülanslı Akış";
+                }
+
+                reynoldsNumberResultDiv.innerHTML = `
+                    <p><strong>Akışkan Yoğunluğu ($\rho$):</strong> ${fluidDensityInput.value} ${rho_unit}</p>
+                    <p><strong>Akışkan Hızı ($v$):</strong> ${fluidVelocityInput.value} ${v_unit}</p>
+                    <p><strong>Karakteristik Uzunluk ($D_h$):</strong> ${characteristicLengthInput.value} ${Dh_unit}</p>
+                    <p><strong>Dinamik Viskozite ($\mu$):</strong> ${dynamicViscosityInput.value} ${mu_unit}</p>
+                    <hr>
+                    <p><strong>Reynolds Sayısı (Re):</strong> <span class="result-value">${Re_number.toFixed(2)}</span> (Boyutsuz)</p>
+                    <p><strong>Akış Rejimi:</strong> <strong>${flowRegime}</strong></p>
+                `;
+                reynoldsNumberResultDiv.style.display = 'block';
+            }
+
+            if (reynoldsNumberForm) {
+                reynoldsNumberForm.addEventListener('submit', function(event) { event.preventDefault(); calculateReynoldsNumber(); });
+                fluidDensityInput.addEventListener('input', calculateReynoldsNumber);
+                fluidDensityUnitSelect.addEventListener('change', calculateReynoldsNumber);
+                fluidVelocityInput.addEventListener('input', calculateReynoldsNumber);
+                fluidVelocityUnitSelect.addEventListener('change', calculateReynoldsNumber);
+                characteristicLengthInput.addEventListener('input', calculateReynoldsNumber);
+                characteristicLengthUnitSelect.addEventListener('change', calculateReynoldsNumber);
+                dynamicViscosityInput.addEventListener('input', calculateReynoldsNumber);
+                dynamicViscosityUnitSelect.addEventListener('change', calculateReynoldsNumber);
+            }
+        });
+    </script>
+</body>
+</html>
