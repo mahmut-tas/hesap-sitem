@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baskı Patı Hesaplama - Hesapkolik</title>
+    <meta name="description" content="Tekstil baskısında kullanılacak patın toplam ağırlığına ve her bir bileşenin yüzdesine göre boya ve kimyasal madde miktarlarını hesaplayın. Hassas baskı patı formülasyonu için pratik araç.">
+    <meta name="keywords" content="baskı patı, baskı boyası, pigment baskı, kimyasal miktar, kıvamlaştırıcı, bağlayıcı, fiksatör, tekstil baskı, tekstil mühendisliği hesaplamaları, hesapkolik tekstil">
+    <link rel="stylesheet" href="../../css/style.css"> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="health-calculators-section">
+            <div class="container">
+                <h1 class="main-title">Baskı Patı Hesaplayıcı</h1>
+                <p class="section-description">Tekstil baskısında renk ve kalitenin anahtarı, doğru formüle edilmiş baskı patıdır. Bu hesaplayıcı, hazırlayacağınız toplam pat miktarına ve her bir bileşenin yüzde oranına göre gerekli boya, kıvamlaştırıcı, bağlayıcı ve diğer yardımcı madde miktarlarını kolayca belirlemenize yardımcı olur.</p>
+
+                <div class="calculator-group">
+                    <div class="calculator-card-wrapper">
+                        <div class="calculator-header">
+                            <i class="fas fa-spray-can icon-small"></i> <h2>Baskı Patı Miktarlarını Hesapla</h2>
+                        </div>
+                        <div class="calculator-form-container">
+                            <form id="printingPasteForm">
+                                <p class="small-text">Lütfen hazırlayacağınız toplam baskı patı miktarını ve her bir bileşenin yüzde oranını girin. Yüzde oranları, toplam pat ağırlığına göre (%) belirtilir.</p>
+                                
+                                <div class="input-with-unit">
+                                    <label for="totalPasteWeight">Toplam Baskı Patı Miktarı (kg):</label>
+                                    <input type="number" id="totalPasteWeight" step="0.01" min="0.01" required placeholder="Örn: 100">
+                                </div>
+
+                                <div class="form-divider"></div>
+                                
+                                <h4>Bileşen Bilgileri (Boya, Kıvamlaştırıcı vb.)</h4>
+                                <div id="componentInputs">
+                                    <div class="input-with-unit component-input-row">
+                                        <label for="component1Name">Bileşen Adı 1:</label>
+                                        <input type="text" id="component1Name" class="component-name" placeholder="Örn: Pigment Boya">
+                                        <label for="component1Percentage">Yüzde (%):</label>
+                                        <input type="number" id="component1Percentage" class="component-percentage" step="0.01" min="0" required placeholder="Örn: 3">
+                                    </div>
+                                    <div class="input-with-unit component-input-row">
+                                        <label for="component2Name">Bileşen Adı 2:</label>
+                                        <input type="text" id="component2Name" class="component-name" placeholder="Örn: Kıvamlaştırıcı">
+                                        <label for="component2Percentage">Yüzde (%):</label>
+                                        <input type="number" id="component2Percentage" class="component-percentage" step="0.01" min="0" required placeholder="Örn: 20">
+                                    </div>
+                                    <div class="input-with-unit component-input-row">
+                                        <label for="component3Name">Bileşen Adı 3:</label>
+                                        <input type="text" id="component3Name" class="component-name" placeholder="Örn: Binder (Bağlayıcı)">
+                                        <label for="component3Percentage">Yüzde (%):</label>
+                                        <input type="number" id="component3Percentage" class="component-percentage" step="0.01" min="0" required placeholder="Örn: 15">
+                                    </div>
+                                </div>
+                                <button type="button" onclick="addComponentInput()" class="add-fiber-button">Yeni Bileşen Ekle</button>
+                                <button type="button" onclick="calculatePrintingPaste()">Hesapla</button>
+                            </form>
+                            <div id="resultBox" class="result-display">
+                                <h3>Sonuçlar (Gerekli Miktarlar):</h3>
+                                </div>
+                            <p class="small-text">Hesaplanan miktarlar kilogram cinsindendir. Bileşen yüzdelerinin toplamı %100'e yakın olmalıdır; kalan kısım genellikle su veya açma patıdır.</p>
+                        </div>
+                    </div>
+                    <section class="info-section">
+                        <h3>Baskı Patı Nedir?</h3>
+                        <p>
+                            **Baskı patı (printing paste)**, tekstil yüzeyine baskı deseni uygulamak için kullanılan, boya maddeleri (pigment veya reaktif boya gibi), kıvamlaştırıcılar, bağlayıcılar, fiksatörler ve diğer yardımcı kimyasallardan oluşan viskoz (kıvamlı) bir karışımdır. Baskı patı, desenin kumaş üzerinde net ve keskin hatlarla kalmasını, boyanın elyafa tutunmasını ve istenen haslık özelliklerini kazanmasını sağlar.
+                        </p>
+                        <p>
+                            Patın kıvamı, uygulama yöntemine (elek baskı, rotasyon baskı vb.) ve kumaşın cinsine göre ayarlanır. Patın doğru formüle edilmesi, baskı kalitesi, renk verimi ve üretim verimliliği için kritik öneme sahiptir.
+                        </p>
+
+                        <h4>Baskı Patı Bileşenleri ve Görevleri:</h4>
+                        <ul>
+                            <li><strong>Boya Maddesi:</strong> Desen rengini veren pigmentler veya boyar maddeler.</li>
+                            <li><strong>Kıvamlaştırıcı:</strong> Patın viskozitesini (kıvamını) ayarlayarak boyanın kumaşa yayılmasını engeller ve desen netliğini sağlar (örn. alginat, sentetik polimerler).</li>
+                            <li><strong>Bağlayıcı (Binder):</strong> Pigment boyaların kumaş yüzeyine kalıcı olarak tutunmasını sağlayan polimerik maddeler.</li>
+                            <li><strong>Fiksatör (Katalizatör):</strong> Boyanın lifle reaksiyona girmesini veya bağlayıcının sertleşmesini hızlandıran madde.</li>
+                            <li><strong>Yumuşatıcı:</strong> Baskı sonrası kumaşın sertleşmesini önleyerek tuşesini iyileştiren madde.</li>
+                            <li><strong>Antipilling Ajanı:</strong> Tüylenmeyi önleyen veya azaltan madde.</li>
+                            <li><strong>Köpük Kesici:</strong> Pat hazırlığı sırasında oluşan köpüğü gideren madde.</li>
+                            <li><strong>Üre:</strong> Higroskopik özelliği sayesinde boyanın çözünürlüğünü artırır, buharlama sırasında nemi çeker.</li>
+                            <li><strong>Su:</strong> Patın ana çözücüsü ve dolgu maddesidir.</li>
+                        </ul>
+                        
+                        <h4>Baskı Patı Miktarları Nasıl Hesaplanır?</h4>
+                        <p>
+                            Her bir bileşenin miktarı, genellikle toplam baskı patı ağırlığına göre yüzde (%) cinsinden verilir. Hesaplama oldukça basittir:
+                        </p>
+                        <p class="formula-text">
+                            Bileşen Miktarı (kg) = (Toplam Baskı Patı Ağırlığı (kg) * Bileşenin Yüzdesi (%)) / 100
+                        </p>
+                        <p>
+                            Bu hesaplayıcı, girdiğiniz toplam pat miktarına ve her bir bileşenin yüzdesine göre ayrı ayrı gerekli miktarları belirler.
+                        </p>
+
+                        <h4>Uygulama Alanları:</h4>
+                        <ul>
+                            <li>Tekstil baskıhaneleri (pigment baskı, reaktif baskı vb.).</li>
+                            <li>Boya ve kimyasal üreticileri.</li>
+                            <li>Kumaş tasarım ve prototipleme laboratuvarları.</li>
+                            <li>Kalite kontrol ve Ar-Ge departmanları.</li>
+                        </ul>
+                        <p class="disclaimer-text">
+                            Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Gerçek baskı patı formülasyonları, kumaş türü, baskı yöntemi, boya tipi, istenen haslıklar, çevre koşulları ve maliyet hedefleri gibi birçok faktöre bağlı olarak değişir. Laboratuvar denemeleri ve uzman deneyimi, en doğru reçeteyi oluşturmak için vazgeçilmezdir. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize <a href="../../iletisim.html">iletişim</a> sayfamızdan ulaşın.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+
+    <script>
+        let componentCount = 3; // Başlangıçta 3 bileşen girişi var
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const printingPasteForm = document.getElementById('printingPasteForm');
+            if (printingPasteForm) {
+                printingPasteForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Formun varsayılan gönderimini engelle
+                    calculatePrintingPaste(); // Fonksiyonu çağır
+                });
+            }
+            // Başlangıçta inputlardaki değişimleri dinle
+            document.querySelectorAll('.component-percentage').forEach(input => {
+                input.addEventListener('input', validateComponents);
+            });
+            document.getElementById('totalPasteWeight').addEventListener('input', validateComponents);
+            validateComponents(); // Sayfa yüklendiğinde buton durumunu ayarla
+        });
+
+        function addComponentInput() {
+            componentCount++;
+            const componentInputsDiv = document.getElementById('componentInputs');
+            const newComponentInputRow = document.createElement('div');
+            newComponentInputRow.classList.add('input-with-unit', 'component-input-row');
+            newComponentInputRow.innerHTML = `
+                <label for="component${componentCount}Name">Bileşen Adı ${componentCount}:</label>
+                <input type="text" id="component${componentCount}Name" class="component-name" placeholder="Örn: Fiksatör">
+                <label for="component${componentCount}Percentage">Yüzde (%):</label>
+                <input type="number" id="component${componentCount}Percentage" class="component-percentage" step="0.01" min="0" required placeholder="Örn: 0.5">
+                <button type="button" class="remove-fiber-button" onclick="removeComponentInput(this)">Kaldır</button>
+            `;
+            componentInputsDiv.appendChild(newComponentInputRow);
+
+            // Yeni eklenen inputların validasyonunu dinle
+            newComponentInputRow.querySelector('.component-percentage').addEventListener('input', validateComponents);
+            validateComponents(); // Yeni input eklenince mevcutları da kontrol et
+        }
+
+        function removeComponentInput(buttonElement) {
+            const rowToRemove = buttonElement.closest('.component-input-row');
+            rowToRemove.remove();
+            componentCount--; // Bileşen sayısını düşür
+            updateComponentInputLabels(); // Etiketleri güncelle
+            calculatePrintingPaste(); // Kaldırma sonrası tekrar hesapla
+            validateComponents(); // Kaldırma sonrası validasyonu kontrol et
+        }
+
+        function updateComponentInputLabels() {
+            const componentRows = document.querySelectorAll('.component-input-row');
+            componentRows.forEach((row, index) => {
+                const compNum = index + 1;
+                row.querySelector('label[for^="component"][for$="Name"]').textContent = `Bileşen Adı ${compNum}:`;
+                row.querySelector('label[for^="component"][for$="Percentage"]').textContent = `Yüzde (%):`;
+                row.querySelector('input[id^="component"][id$="Name"]').id = `component${compNum}Name`;
+                row.querySelector('input[id^="component"][id$="Percentage"]').id = `component${compNum}Percentage`;
+            });
+        }
+
+        function validateComponents() {
+            const totalPasteWeightInput = document.getElementById('totalPasteWeight');
+            const componentPercentageInputs = document.querySelectorAll('.component-percentage');
+            let allInputsValid = true;
+
+            if (isNaN(parseFloat(totalPasteWeightInput.value)) || parseFloat(totalPasteWeightInput.value) <= 0) {
+                allInputsValid = false;
+            }
+
+            componentPercentageInputs.forEach(input => {
+                if (input.value === "" || parseFloat(input.value) < 0 || isNaN(parseFloat(input.value))) {
+                    allInputsValid = false;
+                }
+            });
+
+            const calculateButton = document.querySelector('#printingPasteForm button[onclick="calculatePrintingPaste()"]');
+            if (calculateButton) {
+                calculateButton.disabled = !allInputsValid;
+            }
+            return allInputsValid;
+        }
+
+        function calculatePrintingPaste() {
+            const totalPasteWeight = parseFloat(document.getElementById('totalPasteWeight').value);
+            const componentNames = document.querySelectorAll('.component-name');
+            const componentPercentages = document.querySelectorAll('.component-percentage');
+            const resultBox = document.getElementById('resultBox');
+            resultBox.innerHTML = ''; // Önceki sonuçları temizle
+
+            if (!validateComponents()) {
+                resultBox.innerHTML = '<p class="error">Lütfen toplam pat ağırlığı ve tüm bileşen yüzdeleri için geçerli (pozitif) sayılar girin.</p>';
+                resultBox.style.display = 'block';
+                return;
+            }
+
+            let resultsHTML = '<h3>Sonuçlar (Gerekli Miktarlar):</h3>';
+            let totalPercentageSum = 0; // Toplam yüzdeyi kontrol etmek için
+
+            componentPercentages.forEach((input, index) => {
+                const percentage = parseFloat(input.value);
+                const name = componentNames[index] ? componentNames[index].value || `Bileşen ${index + 1}` : `Bileşen ${index + 1}`;
+                
+                const requiredAmount = (totalPasteWeight * percentage) / 100; // Miktarı kg cinsinden hesapla
+                totalPercentageSum += percentage;
+
+                resultsHTML += `<p><strong>${name}:</strong> <span class="result-value">${requiredAmount.toFixed(3)} kg</span></p>`;
+            });
+
+            // Yüzdelerin toplamı %100'ü geçiyorsa uyarı, veya %100 değilse bilgilendirme
+            if (totalPercentageSum > 100.01) { // Küçük ondalık farkları için tolerans
+                 resultsHTML += `<p class="small-text error">UYARI: Bileşen yüzdelerinin toplamı %${totalPercentageSum.toFixed(2)} oldu. Bu, %100'ü aşıyor.</p>`;
+            } else if (totalPercentageSum < 99.99) {
+                 const remainingPercentage = 100 - totalPercentageSum;
+                 const remainingAmount = (totalPasteWeight * remainingPercentage) / 100;
+                 resultsHTML += `<p><strong>Kalan (Genellikle Su/Açma Patı):</strong> <span class="result-value">${remainingAmount.toFixed(3)} kg</span> (Yüzde: ${remainingPercentage.toFixed(2)}%)</p>`;
+            }
+
+            resultsHTML += `<p><hr><strong>Tüm Bileşenlerin Toplam Yüzdesi:</strong> <span class="result-value">${totalPercentageSum.toFixed(2)}%</span></p>`;
+            resultBox.innerHTML = resultsHTML;
+            resultBox.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
