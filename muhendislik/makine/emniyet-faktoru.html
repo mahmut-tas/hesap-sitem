@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emniyet Faktörü Hesaplayıcı - Hesapkolik</title>
+    <meta name="description" content="Bir mühendislik tasarımının veya bileşenin emniyet faktörünü (güvenlik faktörünü) kolayca hesaplayın. Tasarım dayanımı ve uygulanan yük değerlerini kullanarak güvenilirlik oranını belirleyin.">
+    <meta name="keywords" content="emniyet faktörü, güvenlik faktörü, mukavemet, mekanik tasarım, gerilme, akma dayanımı, çekme dayanımı, tasarım yükü, maksimum yük, mühendislik hesaplamaları, hesapkolik emniyet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+    <style>
+        /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        header { background-color: #2c3e50; color: white; padding: 15px 0; }
+        header .logo h1 { margin: 0; font-size: 1.8em; }
+        header .logo h1 a { color: white; text-decoration: none; }
+        header .logo .site-logo { height: 40px; vertical-align: middle; }
+        header nav ul { list-style: none; margin: 0; padding: 0; display: flex; justify-content: flex-end; }
+        header nav ul li { margin-left: 25px; }
+        header nav ul li a { color: white; text-decoration: none; font-weight: 600; transition: color 0.3s ease; }
+        header nav ul li a:hover { color: #ecf0f1; }
+        
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Seçim Bölümü Stilleri */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .calc-type-button {
+            background-color: #3498db; /* Mavi ton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
+            max-width: 250px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        .hidden-calc {
+            display: none;
+        }
+
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin {
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+        }
+        .input-with-unit label {
+            flex-basis: 100%; /* Label her zaman üstte veya solda */
+            margin-bottom: 5px;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input alanı boşluğu doldurur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .input-with-unit select {
+            flex-shrink: 0; /* Select kutusu sabit kalır */
+            width: auto; /* Select kutusu kendi genişliğinde olur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+                <h1><a href="../../index.html">Hesapkolik</a></h1> 
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Emniyet Faktörü Hesaplayıcı</h1>
+                <p>Bir mühendislik tasarımının veya bileşenin emniyet faktörünü (güvenlik faktörünü) kolayca hesaplayın. Tasarım dayanımı ve uygulanan yük değerlerini kullanarak güvenilirlik oranını belirleyin.</p>
+            </div>
+        </section>
+
+        <section class="calculator-selection-section">
+            <div class="container">
+                <h2>Emniyet Faktörünü Hesapla</h2>
+                <div class="calc-buttons-container">
+                    <button class="calc-type-button active" data-calc-type="factorOfSafety">Emniyet Faktörü Hesapla</button>
+                </div>
+
+                <div id="calculator-factorOfSafety" class="calc-wrapper active-calc">
+                    <h3><i class="fas fa-shield-alt icon-small"></i> Emniyet Faktörü Hesapla ($\text{FS} = \text{Dayanım} / \text{Yük}$)</h3>
+                    <div class="calculator-form-container">
+                        <form id="factorOfSafetyForm">
+                            <div class="input-with-unit">
+                                <label for="designStrength">Tasarım Dayanımı (Akma veya Çekme Dayanımı):</label>
+                                <input type="number" id="designStrength" placeholder="Örn: 250" min="0.000001" step="any" required>
+                                <select id="designStrengthUnit">
+                                    <option value="MPa">Megapaskal (MPa)</option>
+                                    <option value="Pa">Pascal (Pa)</option>
+                                    <option value="kPa">Kilopaskal (kPa)</option>
+                                    <option value="GPa">Gigapaskal (GPa)</option>
+                                    <option value="psi">psi</option>
+                                    <option value="ksi">ksi</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="appliedLoad">Uygulanan Gerilme veya Yük (Tasarım Yükü):</label>
+                                <input type="number" id="appliedLoad" placeholder="Örn: 100" min="0.000001" step="any" required>
+                                <select id="appliedLoadUnit">
+                                    <option value="MPa">Megapaskal (MPa)</option>
+                                    <option value="Pa">Pascal (Pa)</option>
+                                    <option value="kPa">Kilopaskal (kPa)</option>
+                                    <option value="GPa">Gigapaskal (GPa)</option>
+                                    <option value="psi">psi</option>
+                                    <option value="ksi">ksi</option>
+                                </select>
+                            </div>
+                            <button type="submit">Emniyet Faktörünü Hesapla</button>
+                        </form>
+                        <div id="factorOfSafetyResult" class="result-display"></div>
+                        <div class="calc-explanation">
+                            <p>Emniyet faktörü (Güvenlik faktörü), bir yapının veya makine parçasının beklenen yükler altında ne kadar güvenli olduğunu gösteren bir orandır. Genellikle malzemenin akma veya çekme dayanımının, uygulanan veya tasarım gerilmesine oranı olarak hesaplanır.</p>
+                            <p class="formula-text">
+                                $ \text{FS} = \frac{\text{Tasarım Dayanımı}}{\text{Uygulanan Yük}} $
+                            </p>
+                            <ul>
+                                <li>$ \mathbf{\text{FS}} $: Emniyet Faktörü (birimsiz oran)</li>
+                                <li>$ \mathbf{\text{Tasarım Dayanımı}} $: Malzemenin akma dayanımı ($\sigma_y$) veya çekme dayanımı ($\sigma_u$).</li>
+                                <li>$ \mathbf{\text{Uygulanan Yük}} $: Tasarım gerilmesi ($\sigma_{tasarım}$) veya maksimum beklenen gerilme.</li>
+                            </ul>
+                            <p>Emniyet faktörü 1'den büyük olmalıdır. Genellikle 1.5 ile 5 arasında değerler kullanılır, bu uygulamanın kritiklik derecesine ve belirsizliklere bağlıdır.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>Emniyet Faktörü Nedir?</h3>
+            <p>
+                **Emniyet Faktörü (FS)** veya **Güvenlik Faktörü**, mühendislik tasarımında bir yapının veya makine parçasının beklenen yükler altında ne kadar güvenli olduğunu değerlendirmek için kullanılan kritik bir orandır. Bir bileşenin nihai dayanımının (genellikle akma veya çekme dayanımı), üzerinde beklenen maksimum yüke (veya gerilmeye) oranı olarak tanımlanır.
+            </p>
+            <p>
+                Formülü aşağıdaki gibidir:
+            </p>
+            <p class="formula-text">
+                $ \text{FS} = \frac{\text{Malzeme Dayanımı}}{\text{Uygulanan Yük / Gerilme}} $
+            </p>
+            <ul>
+                <li>$ \mathbf{\text{Malzeme Dayanımı}} $: Genellikle malzemenin akma dayanımı (yield strength, $\sigma_y$) kullanılır, bu noktadan sonra kalıcı deformasyon başlar. Bazı durumlarda çekme dayanımı (ultimate tensile strength, $\sigma_u$) de kullanılabilir.</li>
+                <li>$ \mathbf{\text{Uygulanan Yük / Gerilme}} $: Tasarım yükü, beklenen maksimum işletme yükü veya bu yükün neden olduğu gerilme.</li>
+            </ul>
+
+            <h4>Emniyet Faktörünün Önemi</h4>
+            <ul>
+                <li>**Güvenlik:** Yapıların veya makinelerin beklenmedik yüklemeler, malzeme kusurları, üretim hataları veya çevresel koşullar altında arızalanmasını önler.</li>
+                <li>**Belirsizlikleri Giderme:** Malzeme özelliklerindeki, yük tahminlerindeki ve üretim toleranslarındaki belirsizlikleri hesaba katar.</li>
+                <li>**Yasal ve Standartlara Uygunluk:** Birçok endüstri standardı ve yasal düzenleme, belirli uygulamalar için minimum emniyet faktörleri gerektirir.</li>
+            </ul>
+
+            <h4>Emniyet Faktörü Seçimi</h4>
+            <p>Emniyet faktörünün değeri, uygulamanın kritikliği, malzemenin özellikleri, yükleme koşullarının doğası ve arıza riskinin kabul edilebilirliği gibi birçok faktöre bağlıdır:</p>
+            <ul>
+                <li>**Kritik Olmayan Uygulamalar (örn: mobilya):** FS = 1.25 - 2</li>
+                <li>**Genel Makine Tasarımı:** FS = 2 - 3</li>
+                <li>**İnsan Güvenliğinin Önemli Olduğu Uygulamalar (örn: asansörler, uçaklar):** FS = 3 - 5 veya daha yüksek</li>
+                <li>**Yüksek Belirsizlik veya Ani Yüklemeler:** Daha yüksek FS değerleri tercih edilir.</li>
+            </ul>
+
+            <h4>Uygulama Alanları:</h4>
+            <ul>
+                <li><strong>Yapısal Mühendislik:</strong> Binalar, köprüler, kuleler ve diğer altyapıların tasarımında.</li>
+                <li><strong>Makine Tasarımı:</strong> Şaftlar, dişliler, bağlantı elemanları, basınçlı kaplar ve diğer makine bileşenlerinin boyutlandırılmasında.</li>
+                <li><strong>Havacılık ve Uzay:</strong> Uçak gövdeleri ve uzay araçlarının güvenilirlik analizi.</li>
+                <li><strong>Otomotiv Endüstrisi:</strong> Araç şasi, süspansiyon ve motor parçalarının dayanım hesaplamalarında.</li>
+            </ul>
+            <p class="disclaimer-text">
+                Bu hesaplayıcı, emniyet faktörünün temel tanımına göre hesaplama yapar. Gerçek mühendislik tasarımında, emniyet faktörü seçimi ve uygulaması daha karmaşık olabilir ve dinamik yükler, yorulma, termal etkiler, korozyon, çatlak büyümesi gibi faktörlerin ayrıntılı analizini gerektirebilir. Mühendislik standartları, malzeme test verileri ve uzman yargısı her zaman göz önünde bulundurulmalıdır.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanim Şartları</a></p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainCalcButtons = document.querySelectorAll('.calc-type-button');
+            const calculatorWrappers = document.querySelectorAll('.calc-wrapper');
+
+            // Başlangıçta ilk hesaplayıcıyı göster (zaten tek var)
+            showCalculator('factorOfSafety');
+
+            mainCalcButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const type = button.dataset.calcType;
+                    showCalculator(type);
+                    // Butonların 'active' sınıfını yönet
+                    mainCalcButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    const targetCalc = document.getElementById(`calculator-${type}`);
+                    if (targetCalc) {
+                        targetCalc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+
+            function showCalculator(typeToShow) {
+                calculatorWrappers.forEach(wrapper => {
+                    if (wrapper.id === `calculator-${typeToShow}`) {
+                        wrapper.classList.remove('hidden-calc');
+                        wrapper.classList.add('active-calc');
+                    } else {
+                        wrapper.classList.add('hidden-calc');
+                        wrapper.classList.remove('active-calc');
+                    }
+                    // Her geçişte formları ve sonuçları temizle
+                    const form = wrapper.querySelector('form');
+                    if (form) form.reset();
+                    const resultDiv = wrapper.querySelector('.result-display');
+                    if (resultDiv) {
+                        resultDiv.innerHTML = '';
+                        resultDiv.style.display = 'none';
+                    }
+                    // Hata stillerini de temizle
+                    wrapper.querySelectorAll('input').forEach(input => input.classList.remove('error'));
+                });
+            }
+
+            // Ortak hata gösterici fonksiyon
+            function displayError(resultDiv, message, inputsToMark = []) {
+                resultDiv.innerHTML = `<p class="error">Hata: ${message}</p>`;
+                resultDiv.style.display = 'block';
+                inputsToMark.forEach(input => {
+                    if (input && input.value !== '') input.classList.add('error');
+                });
+            }
+
+            // Input hata stilini temizleyici fonksiyon
+            function clearErrorStyles(inputs) {
+                inputs.forEach(input => input.classList.remove('error'));
+            }
+
+            // Birim dönüşüm faktörleri (temel birim: MPa)
+            const stressConversion = {
+                'Pa': 1e-6,   // Pa -> MPa
+                'kPa': 1e-3,  // kPa -> MPa
+                'MPa': 1,     // MPa -> MPa
+                'GPa': 1e3,   // GPa -> MPa
+                'psi': 0.00689476, // psi -> MPa
+                'ksi': 6.89476   // ksi -> MPa
+            };
+
+            // --- EMNİYET FAKTÖRÜ HESAPLAYICI ---
+            const factorOfSafetyForm = document.getElementById('factorOfSafetyForm');
+            const designStrengthInput = document.getElementById('designStrength');
+            const designStrengthUnitSelect = document.getElementById('designStrengthUnit');
+            const appliedLoadInput = document.getElementById('appliedLoad');
+            const appliedLoadUnitSelect = document.getElementById('appliedLoadUnit');
+            const factorOfSafetyResultDiv = document.getElementById('factorOfSafetyResult');
+
+            function calculateFactorOfSafety() {
+                clearErrorStyles([designStrengthInput, appliedLoadInput]);
+                factorOfSafetyResultDiv.innerHTML = '';
+                factorOfSafetyResultDiv.style.display = 'none';
+
+                const strength_val = parseFloat(designStrengthInput.value);
+                const load_val = parseFloat(appliedLoadInput.value);
+
+                const strength_unit = designStrengthUnitSelect.value;
+                const load_unit = appliedLoadUnitSelect.value;
+
+                if (isNaN(strength_val) || strength_val <= 0) { displayError(factorOfSafetyResultDiv, "Lütfen geçerli ve pozitif bir tasarım dayanımı giriniz.", [designStrengthInput]); return; }
+                if (isNaN(load_val) || load_val <= 0) { displayError(factorOfSafetyResultDiv, "Lütfen geçerli ve pozitif bir uygulanan yük değeri giriniz.", [appliedLoadInput]); return; }
+
+                // Her iki değeri de MPa'ya dönüştürerek oranlayalım
+                const strength_MPa = strength_val * stressConversion[strength_unit];
+                const load_MPa = load_val * stressConversion[load_unit];
+
+                const factorOfSafety = strength_MPa / load_MPa;
+
+                factorOfSafetyResultDiv.innerHTML = `
+                    <p><strong>Tasarım Dayanımı:</strong> ${designStrengthInput.value} ${strength_unit}</p>
+                    <p><strong>Uygulanan Gerilme/Yük:</strong> ${appliedLoadInput.value} ${load_unit}</p>
+                    <hr>
+                    <p><strong>Emniyet Faktörü (FS):</strong> <span class="result-value">${factorOfSafety.toFixed(3)}</span></p>
+                    <p class="small-text">Değer 1'den büyük olmalıdır. Genellikle 1.5 ile 5 arasında değerler kullanılır.</p>
+                `;
+                factorOfSafetyResultDiv.style.display = 'block';
+            }
+
+            if (factorOfSafetyForm) {
+                factorOfSafetyForm.addEventListener('submit', function(event) { event.preventDefault(); calculateFactorOfSafety(); });
+                designStrengthInput.addEventListener('input', calculateFactorOfSafety);
+                designStrengthUnitSelect.addEventListener('change', calculateFactorOfSafety);
+                appliedLoadInput.addEventListener('input', calculateFactorOfSafety);
+                appliedLoadUnitSelect.addEventListener('change', calculateFactorOfSafety);
+            }
+        });
+    </script>
+</body>
+</html>
