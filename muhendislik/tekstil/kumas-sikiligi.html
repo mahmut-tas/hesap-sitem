@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kumaş Sıklığı Hesaplama (Örme/Dokuma) - Hesapkolik</title>
+    <meta name="description" content="Kumaşın dokuma (çözgü/atkı sıklığı) veya örme (sıra/kurs sıklığı) yoğunluğunu hesaplayın. Kumaş kalitesi, maliyet ve performans için kritik bir parametre.">
+    <meta name="keywords" content="kumaş sıklığı, dokuma sıklığı, örme sıklığı, çözgü sıklığı, atkı sıklığı, sıra sıklığı, kurs sıklığı, kumaş yoğunluğu, tekstil mühendisliği hesaplamaları, hesapkolik tekstil">
+    <link rel="stylesheet" href="../../css/style.css"> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="health-calculators-section">
+            <div class="container">
+                <h1 class="main-title">Kumaş Sıklığı Hesaplayıcı</h1>
+                <p class="section-description">Kumaş sıklığı, birim uzunluktaki iplik veya ilmek sayısını ifade eder ve kumaşın gramajı, tuşesi, dayanıklılığı gibi birçok özelliğini doğrudan etkiler. Bu hesaplayıcı ile hem dokuma hem de örme kumaşlar için sıklık değerlerini kolayca belirleyebilirsiniz.</p>
+
+                <div class="calculator-group">
+                    <div class="calculator-card-wrapper">
+                        <div class="calculator-header">
+                            <i class="fas fa-compress-arrows-alt icon-small"></i> <h2>Kumaş Sıklığını Hesapla</h2>
+                        </div>
+                        <div class="calculator-form-container">
+                            <form id="fabricDensityForm">
+                                <p class="small-text">Lütfen kumaş tipini seçin ve ilgili ölçüleri girin:</p>
+                                
+                                <div class="input-with-unit">
+                                    <label for="fabricType">Kumaş Tipi:</label>
+                                    <select id="fabricType" onchange="toggleInputs()">
+                                        <option value="dokuma">Dokuma Kumaş</option>
+                                        <option value="orme">Örme Kumaş</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-divider"></div>
+
+                                <div id="dokumaInputs">
+                                    <h4>Dokuma Kumaş Bilgileri</h4>
+                                    <div class="input-with-unit">
+                                        <label for="warpCount">Çözgü Teli Sayısı:</label>
+                                        <input type="number" id="warpCount" step="1" min="1" placeholder="Örn: 100">
+                                    </div>
+                                    <div class="input-with-unit">
+                                        <label for="warpMeasureLength">Çözgü Ölçüm Uzunluğu (cm):</label>
+                                        <input type="number" id="warpMeasureLength" step="0.1" min="0.1" placeholder="Örn: 5">
+                                    </div>
+                                    <div class="input-with-unit">
+                                        <label for="weftCount">Atkı Teli Sayısı:</label>
+                                        <input type="number" id="weftCount" step="1" min="1" placeholder="Örn: 90">
+                                    </div>
+                                    <div class="input-with-unit">
+                                        <label for="weftMeasureLength">Atkı Ölçüm Uzunluğu (cm):</label>
+                                        <input type="number" id="weftMeasureLength" step="0.1" min="0.1" placeholder="Örn: 5">
+                                    </div>
+                                </div>
+
+                                <div id="ormeInputs" style="display: none;">
+                                    <h4>Örme Kumaş Bilgileri</h4>
+                                    <div class="input-with-unit">
+                                        <label for="courseCount">Kurs Sayısı (cm'de):</label>
+                                        <input type="number" id="courseCount" step="1" min="1" placeholder="Örn: 25">
+                                    </div>
+                                    <div class="input-with-unit">
+                                        <label for="waleCount">Sıra Sayısı (cm'de):</label>
+                                        <input type="number" id="waleCount" step="1" min="1" placeholder="Örn: 20">
+                                    </div>
+                                </div>
+                                
+                                <button type="button" onclick="calculateFabricDensity()">Hesapla</button>
+                            </form>
+                            <div id="resultBox" class="result-display">
+                                <h3>Sonuçlar:</h3>
+                                <p id="resultDokumaWarp"><strong>Çözgü Sıklığı:</strong> <span class="result-value"></span> tel/cm</p>
+                                <p id="resultDokumaWeft"><strong>Atkı Sıklığı:</strong> <span class="result-value"></span> tel/cm</p>
+                                <p id="resultOrmeCourse"><strong>Kurs Sıklığı:</strong> <span class="result-value"></span> kurs/cm</p>
+                                <p id="resultOrmeWale"><strong>Sıra Sıklığı:</strong> <span class="result-value"></span> sıra/cm</p>
+                            </div>
+                            <p class="small-text">Ölçümleri doğru birimlerde ve hassasiyetle yaptığınızdan emin olun. Sonuçlar, kumaşın yapısına ve kullanılan ipliklere göre değişiklik gösterebilir.</p>
+                        </div>
+                    </div>
+                    <section class="info-section">
+                        <h3>Kumaş Sıklığı Nedir?</h3>
+                        <p>
+                            **Kumaş sıklığı**, bir kumaşın birim uzunluğundaki (genellikle santimetre veya inç) iplik veya ilmek sayısını ifade eder. Kumaşın ne kadar "sıkı" veya "gevşek" olduğunu gösterir. Bu parametre, kumaşın gramajı, kalınlığı, dayanıklılığı, tuşesi (dokunma hissi), hava geçirgenliği ve drape (dökümlülük) gibi birçok fiziksel özelliğini doğrudan etkiler.
+                        </p>
+                        <p>
+                            Dokuma kumaşlarda çözgü ve atkı sıklığı, örme kumaşlarda ise sıra (wale) ve kurs (course) sıklığı olarak adlandırılır.
+                        </p>
+
+                        <h4>Neden Kumaş Sıklığı Önemlidir?</h4>
+                        <ul>
+                            <li>**Kalite Kontrol:** Üretilen kumaşın standartlara uygunluğunu sağlamak.</li>
+                            <li>**Maliyet ve Ağırlık:** Sıklık arttıkça kumaşın ağırlığı ve dolayısıyla maliyeti artar.</li>
+                            <li>**Performans Özellikleri:** Mukavemet, aşınma direnci, hava/su geçirgenliği gibi özellikler sıklığa bağlıdır.</li>
+                            <li>**Görünüm ve Tuşe:** Kumaşın görünümü, örtücülüğü ve dokunma hissi sıklıkla ilişkilidir.</li>
+                            <li>**Üretim Ayarları:** Dokuma veya örme makinelerinin ayarları, sıklık değerlerine göre yapılır.</li>
+                        </ul>
+                        
+                        <h4>Kumaş Sıklığı Nasıl Hesaplanır?</h4>
+                        <p>
+                            Sıklık, belirli bir uzunluktaki (örneğin 1 cm veya 1 inç) iplik/ilmek sayısının bir lup veya büyülteç yardımıyla sayılarak bulunur.
+                        </p>
+                        <p class="formula-text">
+                            **Dokuma Kumaşlar İçin:**<br>
+                            Çözgü Sıklığı (tel/cm) = Toplam Çözgü Teli Sayısı / Ölçüm Uzunluğu (cm)<br>
+                            Atkı Sıklığı (tel/cm) = Toplam Atkı Teli Sayısı / Ölçüm Uzunluğu (cm)
+                        </p>
+                         <p class="formula-text">
+                            **Örme Kumaşlar İçin:**<br>
+                            Kurs Sıklığı (kurs/cm) = Belirli Uzunluktaki Kurs Sayısı / Ölçüm Uzunluğu (cm)<br>
+                            Sıra Sıklığı (sıra/cm) = Belirli Uzunluktaki Sıra Sayısı / Ölçüm Uzunluğu (cm)
+                        </p>
+                        <p>
+                            **Açıklamalar:**
+                            <ul>
+                                <li>**Çözgü/Atkı Sıklığı:** Dokuma kumaşın cm'deki çözgü (boyuna) veya atkı (enine) ipliği sayısıdır. Genellikle kumaşın eni ve boyu boyunca farklı noktalardan ölçülerek ortalaması alınır.</li>
+                                <li>**Kurs Sıklığı:** Örme kumaşta ilmeklerin yataydaki yoğunluğunu, yani cm'deki kurs sayısını belirtir.</li>
+                                <li>**Sıra Sıklığı:** Örme kumaşta ilmeklerin düşeydeki yoğunluğunu, yani cm'deki sıra sayısını belirtir.</li>
+                            </ul>
+                        </p>
+
+                        <h4>Uygulama Alanları:</h4>
+                        <ul>
+                            <li>Kumaş kalite kontrol laboratuvarları.</li>
+                            <li>Dokuma ve örme üretim planlaması.</li>
+                            <li>Yeni kumaş geliştirme ve prototipleme.</li>
+                            <li>Maliyet hesaplamaları ve kumaş fiyatlandırması.</li>
+                            <li>Teknik tekstillerin performansı ve spesifikasyonu.</li>
+                        </ul>
+                        <p class="disclaimer-text">
+                            Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Gerçek ölçümlerde, kumaşın stabilizasyonu (örneğin kondisyonlama), ölçüm aletlerinin hassasiyeti ve operatörün deneyimi gibi faktörler sonuçları etkileyebilir. Hassas ticari veya sertifikasyon amaçlı uygulamalar için uluslararası standartlara (ISO, ASTM gibi) uygun test yöntemleri ve ekipmanları esas alınmalıdır. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize <a href="../../iletisim.html">iletişim</a> sayfamızdan ulaşın.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fabricDensityForm = document.getElementById('fabricDensityForm');
+            if (fabricDensityForm) {
+                fabricDensityForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Formun varsayılan gönderimini engelle
+                    calculateFabricDensity(); // Fonksiyonu çağır
+                });
+            }
+            toggleInputs(); // Sayfa yüklendiğinde varsayılan olarak dokuma inputlarını göster
+        });
+
+        function toggleInputs() {
+            const fabricType = document.getElementById('fabricType').value;
+            const dokumaInputs = document.getElementById('dokumaInputs');
+            const ormeInputs = document.getElementById('ormeInputs');
+
+            if (fabricType === 'dokuma') {
+                dokumaInputs.style.display = 'block';
+                ormeInputs.style.display = 'none';
+                // Örme inputlarını temizle ve required'ı kaldır
+                document.getElementById('courseCount').required = false;
+                document.getElementById('waleCount').required = false;
+                document.getElementById('courseCount').value = '';
+                document.getElementById('waleCount').value = '';
+                // Dokuma inputlarına required ekle
+                document.getElementById('warpCount').required = true;
+                document.getElementById('warpMeasureLength').required = true;
+                document.getElementById('weftCount').required = true;
+                document.getElementById('weftMeasureLength').required = true;
+            } else { // orme
+                dokumaInputs.style.display = 'none';
+                ormeInputs.style.display = 'block';
+                // Dokuma inputlarını temizle ve required'ı kaldır
+                document.getElementById('warpCount').required = false;
+                document.getElementById('warpMeasureLength').required = false;
+                document.getElementById('weftCount').required = false;
+                document.getElementById('weftMeasureLength').required = false;
+                document.getElementById('warpCount').value = '';
+                document.getElementById('warpMeasureLength').value = '';
+                document.getElementById('weftCount').value = '';
+                document.getElementById('weftMeasureLength').value = '';
+                // Örme inputlarına required ekle
+                document.getElementById('courseCount').required = true;
+                document.getElementById('waleCount').required = true;
+            }
+            // Inputlar değişince sonuç kutusunu sıfırla ve gizle
+            resetResultBox();
+        }
+
+        function resetResultBox() {
+            document.getElementById('resultBox').style.display = 'none';
+            document.getElementById('resultDokumaWarp').style.display = 'none';
+            document.getElementById('resultDokumaWeft').style.display = 'none';
+            document.getElementById('resultOrmeCourse').style.display = 'none';
+            document.getElementById('resultOrmeWale').style.display = 'none';
+        }
+
+        function calculateFabricDensity() {
+            const fabricType = document.getElementById('fabricType').value;
+            const resultBox = document.getElementById('resultBox');
+            resultBox.style.display = 'block'; // Sonuç kutusunu görünür yap
+
+            // Tüm sonuçları başlangıçta gizle
+            document.getElementById('resultDokumaWarp').style.display = 'none';
+            document.getElementById('resultDokumaWeft').style.display = 'none';
+            document.getElementById('resultOrmeCourse').style.display = 'none';
+            document.getElementById('resultOrmeWale').style.display = 'none';
+            resultBox.innerHTML = '<h3>Sonuçlar:</h3>'; // İçeriği sıfırla
+
+            if (fabricType === 'dokuma') {
+                const warpCount = parseFloat(document.getElementById('warpCount').value);
+                const warpMeasureLength = parseFloat(document.getElementById('warpMeasureLength').value);
+                const weftCount = parseFloat(document.getElementById('weftCount').value);
+                const weftMeasureLength = parseFloat(document.getElementById('weftMeasureLength').value);
+
+                if (isNaN(warpCount) || warpCount <= 0 || isNaN(warpMeasureLength) || warpMeasureLength <= 0 ||
+                    isNaN(weftCount) || weftCount <= 0 || isNaN(weftMeasureLength) || weftMeasureLength <= 0) {
+                    resultBox.innerHTML = '<p class="error">Lütfen tüm dokuma kumaş ölçüleri için geçerli (pozitif) sayılar girin.</p>';
+                    return;
+                }
+
+                const warpDensity = warpCount / warpMeasureLength;
+                const weftDensity = weftCount / weftMeasureLength;
+
+                document.getElementById('resultDokumaWarp').innerHTML = `<strong>Çözgü Sıklığı:</strong> <span class="result-value">${warpDensity.toFixed(2)}</span> tel/cm`;
+                document.getElementById('resultDokumaWeft').innerHTML = `<strong>Atkı Sıklığı:</strong> <span class="result-value">${weftDensity.toFixed(2)}</span> tel/cm`;
+                document.getElementById('resultDokumaWarp').style.display = 'block';
+                document.getElementById('resultDokumaWeft').style.display = 'block';
+
+            } else { // Örme Kumaş
+                const courseCount = parseFloat(document.getElementById('courseCount').value);
+                const waleCount = parseFloat(document.getElementById('waleCount').value);
+
+                if (isNaN(courseCount) || courseCount <= 0 || isNaN(waleCount) || waleCount <= 0) {
+                    resultBox.innerHTML = '<p class="error">Lütfen tüm örme kumaş ölçüleri için geçerli (pozitif) sayılar girin.</p>';
+                    return;
+                }
+
+                // Örme kumaşlarda kurs ve sıra sıklığı direkt cm'deki sayı olarak giriliyorsa
+                // (Bu durumda direkt girilen değerler sıklık olur)
+                // Eğer belirli bir uzunluktaki toplam kurs/sıra sayısı girilecekse, bu kısım güncellenmeli.
+                // Şimdilik, input'un zaten cm'deki sıklığı temsil ettiği varsayılıyor.
+                // Eğer "belirli bir uzunluktaki kurs/sıra sayısı" girilecekse
+                // ve "ölçüm uzunluğu" ayrı bir input olarak eklenecekse, o zaman formüller güncellenmeli.
+                // Şu anki input placeholder'ı (cm'de) sıklık değeri olduğu için direkt kullanıldı.
+                
+                document.getElementById('resultOrmeCourse').innerHTML = `<strong>Kurs Sıklığı:</strong> <span class="result-value">${courseCount.toFixed(2)}</span> kurs/cm`;
+                document.getElementById('resultOrmeWale').innerHTML = `<strong>Sıra Sıklığı:</strong> <span class="result-value">${waleCount.toFixed(2)}</span> sıra/cm`;
+                document.getElementById('resultOrmeCourse').style.display = 'block';
+                document.getElementById('resultOrmeWale').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
