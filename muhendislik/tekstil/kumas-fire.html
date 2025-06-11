@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kumaş Kesim Fire Oranı Hesaplama - Hesapkolik</title>
+    <meta name="description" content="Konfeksiyon üretiminde kesim işlemi sonrası oluşan kumaş fire oranını (yüzde olarak) hesaplayın. Maliyet analizi ve üretim verimliliği için pratik bir araç.">
+    <meta name="keywords" content="kumaş fire oranı, kesim fire, fire hesaplama, tekstil üretimi, konfeksiyon, maliyet, verimlilik, tekstil mühendisliği hesaplamaları, hesapkolik tekstil">
+    <link rel="stylesheet" href="../../css/style.css"> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="health-calculators-section">
+            <div class="container">
+                <h1 class="main-title">Kumaş Kesim Fire Oranı Hesaplayıcı</h1>
+                <p class="section-description">Konfeksiyon ve hazır giyim üretiminde, kumaş kesim işlemleri sırasında kaçınılmaz olarak bir miktar fire (atık) oluşur. Bu hesaplayıcı, kullanılan toplam kumaş miktarı ve üretilen ürünler için harcanan net kumaş miktarı üzerinden kesim fire oranını yüzde olarak belirlemenize yardımcı olur. Bu oran, maliyet kontrolü ve üretim verimliliği için kritik bir göstergedir.</p>
+
+                <div class="calculator-group">
+                    <div class="calculator-card-wrapper">
+                        <div class="calculator-header">
+                            <i class="fas fa-cut icon-small"></i> <h2>Kesim Fire Oranını Hesapla</h2>
+                        </div>
+                        <div class="calculator-form-container">
+                            <form id="fabricWasteForm">
+                                <p class="small-text">Lütfen kumaş ve üretim bilgilerini girin (aynı birimde: metre, kg, yarda vb.):</p>
+                                
+                                <div class="input-with-unit">
+                                    <label for="totalFabricUsed">Toplam Kullanılan Kumaş Miktarı:</label>
+                                    <input type="number" id="totalFabricUsed" step="0.01" min="0.01" required placeholder="Örn: 1000">
+                                </div>
+
+                                <div class="input-with-unit">
+                                    <label for="netFabricConsumed">Net Harcanan Kumaş Miktarı (Ürünler İçin):</label>
+                                    <input type="number" id="netFabricConsumed" step="0.01" min="0" required placeholder="Örn: 950">
+                                </div>
+                                
+                                <button type="button" onclick="calculateFabricWaste()">Hesapla</button>
+                            </form>
+                            <div id="resultBox" class="result-display">
+                                <h3>Sonuç:</h3>
+                                <p><strong>Kesim Fire Miktarı:</strong> <span id="wasteAmount" class="result-value"></span></p>
+                                <p><strong>Kesim Fire Oranı (%):</strong> <span id="wastePercentage" class="result-value"></span>%</p>
+                            </div>
+                            <p class="small-text">Fire oranı, toplam kullanılan kumaşın ne kadarının ürüne dönüşmediğini gösterir. Birimler (metre, kg vb.) aynı olmalıdır.</p>
+                        </div>
+                    </div>
+                    <section class="info-section">
+                        <h3>Kumaş Kesim Fire Oranı Nedir?</h3>
+                        <p>
+                            **Kumaş kesim fire oranı**, konfeksiyon sektöründe, bir ürünü dikmek için serilen kumaşın kesim aşamasında ürün parçaları dışında kalan ve atık olarak ayrılan kısmının, toplam kullanılan kumaş miktarına oranının yüzde (%) cinsinden ifadesidir. Bu fire, kumaşın deseninden, ürün modelinin tasarımından, kesim kalıplarının yerleşiminden (pastal yerleşimi) ve kesim teknolojisinden kaynaklanır.
+                        </p>
+                        <p>
+                            Fire oranı, tekstil işletmeleri için önemli bir maliyet kalemi ve verimlilik göstergesidir. Minimum fire ile çalışmak, hem hammadde israfını azaltır hem de üretim maliyetlerini düşürür.
+                        </p>
+
+                        <h4>Kumaş Kesim Fire Oranı Neden Önemlidir?</h4>
+                        <ul>
+                            <li>**Maliyet Kontrolü:** Kumaş, hazır giyim üretimindeki en büyük maliyet kalemidir. Düşük fire oranı, hammadde maliyetini doğrudan düşürür.</li>
+                            <li>**Verimlilik:** Fire oranını düşürmek, mevcut kumaş miktarıyla daha fazla ürün üretmek anlamına gelir.</li>
+                            <li>**Sürdürülebilirlik:** Atık miktarını azaltarak çevresel etkiyi minimize etmeye yardımcı olur.</li>
+                            <li>**Fiyatlandırma:** Ürün maliyetinin doğru hesaplanması ve rekabetçi fiyatlandırma için fire oranının bilinmesi şarttır.</li>
+                            <li>**Planlama:** Kumaş siparişlerinin ve üretim planlamasının daha doğru yapılmasını sağlar.</li>
+                        </ul>
+                        
+                        <h4>Kumaş Kesim Fire Oranı Nasıl Hesaplanır?</h4>
+                        <p>
+                            Kesim fire oranı, genellikle aşağıdaki formülle hesaplanır:
+                        </p>
+                        <p class="formula-text">
+                            Kesim Fire Miktarı = Toplam Kullanılan Kumaş Miktarı - Net Harcanan Kumaş Miktarı
+                        </p>
+                        <p class="formula-text">
+                            Kesim Fire Oranı (%) = (Kesim Fire Miktarı / Toplam Kullanılan Kumaş Miktarı) * 100
+                        </p>
+                        <p>
+                            **Açıklamalar:**
+                            <ul>
+                                <li>**Toplam Kullanılan Kumaş Miktarı:** Kesim işlemi için serilen ve kullanılan toplam kumaş miktarı (metre, kilogram veya yarda cinsinden).</li>
+                                <li>**Net Harcanan Kumaş Miktarı (Ürünler İçin):** Kesilen ve ürüne dönüşen kumaş parçalarının toplam miktarı.</li>
+                            </ul>
+                            Her iki değerin de aynı birimde (örneğin hepsi metre veya hepsi kilogram) olması kritik öneme sahiptir.
+                        </p>
+
+                        <h4>Fire Oranını Etkileyen Faktörler:</h4>
+                        <ul>
+                            <li>**Kumaş Eni ve Deseni:** Kumaşın deseni (tek yönlü, çok yönlü, ekose vb.) ve eni, kalıp yerleşimini ve dolayısıyla fireyi etkiler.</li>
+                            <li>**Kalıp Tasarımı ve Yerleşimi (Pastal Yerleşimi):** Kalıpların kumaş üzerine ne kadar verimli yerleştirildiği fireyi doğrudan etkiler. Otomatik pastal sistemleri fireyi minimize eder.</li>
+                            <li>**Ürün Modeli Karmaşıklığı:** Çok sayıda küçük parça içeren veya asimetrik modeller daha fazla fireye neden olabilir.</li>
+                            <li>**Kesim Teknolojisi:** Lazer kesim gibi hassas teknolojiler, manuel kesime göre daha az fire oluşturabilir.</li>
+                            <li>**Operatör Deneyimi:** Manuel kesimde operatörün tecrübesi fireyi etkiler.</li>
+                        </ul>
+                        <p class="disclaimer-text">
+                            Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Gerçek üretimde, kumaşın hataları, kesim hataları, test ve numune kayıpları gibi ek faktörler fire oranını etkileyebilir. Hassas ticari veya endüstriyel uygulamalar için detaylı fabrika verileri, optimizasyon yazılımları ve deneyimli üretim mühendislerinin analizi esas alınmalıdır. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize <a href="../../iletisim.html">iletişim</a> sayfamızdan ulaşın.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fabricWasteForm = document.getElementById('fabricWasteForm');
+            if (fabricWasteForm) {
+                fabricWasteForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Formun varsayılan gönderimini engelle
+                    calculateFabricWaste(); // Fonksiyonu çağır
+                });
+            }
+        });
+
+        function calculateFabricWaste() {
+            const totalFabricUsed = parseFloat(document.getElementById('totalFabricUsed').value);
+            const netFabricConsumed = parseFloat(document.getElementById('netFabricConsumed').value);
+            
+            const resultBox = document.getElementById('resultBox');
+            const wasteAmountSpan = document.getElementById('wasteAmount');
+            const wastePercentageSpan = document.getElementById('wastePercentage');
+
+            // Giriş değerlerinin geçerliliğini kontrol et
+            if (isNaN(totalFabricUsed) || totalFabricUsed <= 0 ||
+                isNaN(netFabricConsumed) || netFabricConsumed < 0) { // Net harcanan sıfır olabilir
+                resultBox.innerHTML = '<p class="error">Lütfen "Toplam Kullanılan Kumaş Miktarı" için pozitif, "Net Harcanan Kumaş Miktarı" için ise sıfır veya pozitif geçerli sayılar girin.</p>';
+                resultBox.style.display = 'block';
+                return;
+            }
+
+            // Mantıksal kontrol: Net harcanan, toplamdan büyük olamaz
+            if (netFabricConsumed > totalFabricUsed) {
+                resultBox.innerHTML = '<p class="error">Net harcanan kumaş miktarı, toplam kullanılan kumaş miktarından fazla olamaz.</p>';
+                resultBox.style.display = 'block';
+                return;
+            }
+
+            const wasteAmount = totalFabricUsed - netFabricConsumed;
+            let wastePercentage = 0;
+
+            if (totalFabricUsed > 0) { // Bölme hatasını önle
+                wastePercentage = (wasteAmount / totalFabricUsed) * 100;
+            }
+
+            // Sonuçları göster
+            wasteAmountSpan.textContent = wasteAmount.toFixed(2);
+            wastePercentageSpan.textContent = wastePercentage.toFixed(2);
+            
+            resultBox.style.display = 'block'; // Sonuç kutusunu görünür yap
+        }
+    </script>
+</body>
+</html>
