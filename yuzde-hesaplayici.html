@@ -94,6 +94,11 @@
             max-width: 650px;
             margin: 30px auto;
             text-align: left;
+            display: none; /* Başlangıçta tüm hesaplayıcıları gizle */
+        }
+
+        .percent-calculator-wrapper.active-calc {
+            display: block; /* Aktif olanı göster */
         }
 
         .percent-calculator-wrapper h3 {
@@ -128,6 +133,25 @@
 
         .percent-calculator-wrapper input.error {
             border-color: red !important;
+        }
+
+        .calc-button { /* Hesapla butonu stili */
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calc-button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
         }
 
         .calc-result {
@@ -264,7 +288,7 @@
                     <button class="calc-type-button" data-calc-type="percentageChange">A'dan B'ye Yüzde Değişim?</button>
                 </div>
 
-                <div id="calculator-increase" class="percent-calculator-wrapper active-calc">
+                <div id="calculator-increase" class="percent-calculator-wrapper">
                     <h3>Yüzde Artırma Hesaplayıcı (Zam ve KDV Dahil Hesaplama)</h3>
                     <form>
                         <label for="increase-valueA">Başlangıç Sayısı (A):</label>
@@ -273,6 +297,7 @@
                         <label for="increase-valueB">Yüzde Oranı (%B):</label>
                         <input type="number" id="increase-valueB" placeholder="Örn: 20 (Zam veya KDV oranı)" required step="any">
                         
+                        <button type="button" class="calc-button" onclick="calculatePercentage('calculator-increase', document.querySelectorAll('#calculator-increase input[type=\"number\"]'), document.getElementById('increase-result'))">Hesapla</button>
                         <div class="calc-result" id="increase-result"></div>
                     </form>
                     <div class="calc-explanation">
@@ -281,7 +306,7 @@
                     </div>
                 </div>
 
-                <div id="calculator-decrease" class="percent-calculator-wrapper hidden-calc">
+                <div id="calculator-decrease" class="percent-calculator-wrapper">
                     <h3>Yüzde Azaltma Hesaplayıcı (İndirim ve KDV Hariç Hesaplama)</h3>
                     <form>
                         <label for="decrease-valueA">Başlangıç Sayısı (A):</label>
@@ -290,15 +315,16 @@
                         <label for="decrease-valueB">Yüzde Oranı (%B):</label>
                         <input type="number" id="decrease-valueB" placeholder="Örn: 10 (İndirim veya KDV oranı)" required step="any">
                         
+                        <button type="button" class="calc-button" onclick="calculatePercentage('calculator-decrease', document.querySelectorAll('#calculator-decrease input[type=\"number\"]'), document.getElementById('decrease-result'))">Hesapla</button>
                         <div class="calc-result" id="decrease-result"></div>
                     </form>
-                     <div class="calc-explanation">
+                    <div class="calc-explanation">
                         <p>Bu hesaplayıcı, başlangıçta verdiğiniz bir sayıyı belirli bir yüzde oranında azaltarak kalan değeri bulur. İndirimli fiyatları hesaplamak veya bir fiyattan KDV'yi çıkarmak için kullanışlıdır.</p>
                         <p><strong>Formül:</strong> Yeni Değer = Sayı A - (Sayı A * %B / 100)</p>
                     </div>
                 </div>
 
-                <div id="calculator-whatPercent" class="percent-calculator-wrapper hidden-calc">
+                <div id="calculator-whatPercent" class="percent-calculator-wrapper">
                     <h3>Yüzde Kaçı Hesaplayıcı (Oran Bulma)</h3>
                     <form>
                         <label for="whatPercent-valueA">Küçük Sayı (A):</label>
@@ -307,15 +333,16 @@
                         <label for="whatPercent-valueB">Büyük Sayı (B):</label>
                         <input type="number" id="whatPercent-valueB" placeholder="Örn: 80 (Toplam değer)" required step="any">
                         
+                        <button type="button" class="calc-button" onclick="calculatePercentage('calculator-whatPercent', document.querySelectorAll('#calculator-whatPercent input[type=\"number\"]'), document.getElementById('whatPercent-result'))">Hesapla</button>
                         <div class="calc-result" id="whatPercent-result"></div>
                     </form>
-                     <div class="calc-explanation">
+                    <div class="calc-explanation">
                         <p>Bu hesaplayıcı, bir sayının (A) başka bir sayının (B) yüzde kaçı olduğunu bulur. Not ortalaması, başarı oranı veya herhangi bir oransal ilişkiyi yüzde cinsinden ifade etmek için idealdir.</p>
                         <p><strong>Formül:</strong> Yüzde = (Sayı A / Sayı B) * 100</p>
                     </div>
                 </div>
 
-                <div id="calculator-valueFromPercent" class="percent-calculator-wrapper hidden-calc">
+                <div id="calculator-valueFromPercent" class="percent-calculator-wrapper">
                     <h3>Bir Sayının Yüzdesini Bulma (Belirli Yüzde Değeri)</h3>
                     <form>
                         <label for="valueFromPercent-valueA">Ana Sayı (A):</label>
@@ -324,15 +351,16 @@
                         <label for="valueFromPercent-valueB">Yüzde Oranı (%B):</label>
                         <input type="number" id="valueFromPercent-valueB" placeholder="Örn: 15 (Bulunmak istenen yüzde)" required step="any">
                         
+                        <button type="button" class="calc-button" onclick="calculatePercentage('calculator-valueFromPercent', document.querySelectorAll('#calculator-valueFromPercent input[type=\"number\"]'), document.getElementById('valueFromPercent-result'))">Hesapla</button>
                         <div class="calc-result" id="valueFromPercent-result"></div>
                     </form>
-                     <div class="calc-explanation">
+                    <div class="calc-explanation">
                         <p>Bu hesaplayıcı, verilen bir sayının belirli bir yüzdelik dilimine karşılık gelen değeri bulur. Bir ürünün indirim tutarını, ödenecek komisyonu veya bir bütünün belirli bir kısmını bulmak için kullanışlıdır.</p>
                         <p><strong>Formül:</strong> Parça Değer = Sayı A * (%B / 100)</p>
                     </div>
                 </div>
 
-                <div id="calculator-originalValue" class="percent-calculator-wrapper hidden-calc">
+                <div id="calculator-originalValue" class="percent-calculator-wrapper">
                     <h3>Orijinal Değeri Bulma Hesaplayıcı (KDV Hariç Fiyat/İndirim Öncesi)</h3>
                     <form>
                         <label for="originalValue-valueA">Parça Değer (A):</label>
@@ -341,6 +369,7 @@
                         <label for="originalValue-valueB">Yüzde Oranı (%C):</label>
                         <input type="number" id="originalValue-valueB" placeholder="Örn: 20 (Parçanın temsil ettiği yüzde)" required step="any">
                         
+                        <button type="button" class="calc-button" onclick="calculatePercentage('calculator-originalValue', document.querySelectorAll('#calculator-originalValue input[type=\"number\"]'), document.getElementById('originalValue-result'))">Hesapla</button>
                         <div class="calc-result" id="originalValue-result"></div>
                     </form>
                     <div class="calc-explanation">
@@ -348,7 +377,8 @@
                         <p><strong>Formül:</strong> Bütün Sayı = Sayı A / (%C / 100)</p>
                     </div>
                 </div>
-                <div id="calculator-percentageChange" class="percent-calculator-wrapper hidden-calc">
+
+                <div id="calculator-percentageChange" class="percent-calculator-wrapper">
                     <h3>Yüzde Değişim Hesaplayıcı (Artış/Azalış)</h3>
                     <form>
                         <label for="percentageChange-valueA">Başlangıç Sayısı (A):</label>
@@ -357,6 +387,7 @@
                         <label for="percentageChange-valueB">Bitiş Sayısı (B):</label>
                         <input type="number" id="percentageChange-valueB" placeholder="Örn: 120 (Yeni değer)" required step="any">
         
+                        <button type="button" class="calc-button" onclick="calculatePercentage('calculator-percentageChange', document.querySelectorAll('#calculator-percentageChange input[type=\"number\"]'), document.getElementById('percentageChange-result'))">Hesapla</button>
                         <div class="calc-result" id="percentageChange-result"></div>
                     </form>
                     <div class="calc-explanation">
@@ -472,28 +503,23 @@
             function showCalculator(typeToShow) {
                 calculatorWrappers.forEach(wrapper => {
                     if (wrapper.id === `calculator-${typeToShow}`) {
-                        wrapper.classList.remove('hidden-calc');
-                        wrapper.classList.add('active-calc');
+                        wrapper.classList.add('active-calc'); // display: block uygula
                     } else {
-                        wrapper.classList.add('hidden-calc');
-                        wrapper.classList.remove('active-calc');
+                        wrapper.classList.remove('active-calc'); // display: none uygula
                     }
+                    // Hesap makinesi değiştiğinde sonuç alanını ve hataları temizle
+                    const resultDiv = wrapper.querySelector('.calc-result');
+                    if (resultDiv) resultDiv.innerHTML = '';
+                    const inputs = wrapper.querySelectorAll('input[type="number"]');
+                    inputs.forEach(input => {
+                        input.value = ''; // Inputları temizle
+                        input.classList.remove('error'); // Hata stilini kaldır
+                    });
                 });
             }
 
-            // Her bir hesaplayıcı formu için event listener ekle
-            calculatorWrappers.forEach(wrapper => {
-                const formInputs = wrapper.querySelectorAll('input[type="number"]');
-                const resultDiv = wrapper.querySelector('.calc-result');
-
-                formInputs.forEach(input => {
-                    input.addEventListener('input', () => {
-                        calculatePercentage(wrapper.id, formInputs, resultDiv);
-                    });
-                });
-            });
-
-            function calculatePercentage(calculatorId, inputs, resultDiv) {
+            // Hesapla fonksiyonu dışarıda tanımlandı, böylece onclick ile erişilebilir
+            window.calculatePercentage = function(calculatorId, inputs, resultDiv) {
                 const valueAInput = inputs[0];
                 const valueBInput = inputs[1];
 
@@ -507,7 +533,7 @@
 
                 if (isNaN(valueA) || isNaN(valueB)) {
                     // Sadece bir input doluysa hata verme, boşsa temizle
-                    if (!isNaN(valueA) || !isNaN(valueB)) { // En az bir input doluysa
+                    if (valueAInput.value !== '' || valueBInput.value !== '') { // En az bir input doluysa
                         resultDiv.innerHTML = '<span style="color: #e74c3c; font-size: 0.8em;">Lütfen her iki alanı da doldurun.</span>';
                     }
                     if (isNaN(valueA) && valueAInput.value !== '') valueAInput.classList.add('error');
@@ -554,50 +580,7 @@
                         result = valueA / (valueB / 100);
                         resultText = `${valueA} sayısı, %${valueB}'ye denk geliyorsa orijinal sayı: <strong>${result.toFixed(2)}</strong>`;
                         break;
-                }
-                // ... (mevcut JavaScript kodunuzun devamı)
-
-            function calculatePercentage(calculatorId, inputs, resultDiv) {
-                const valueAInput = inputs[0];
-                const valueBInput = inputs[1];
-
-                const valueA = parseFloat(valueAInput.value);
-                const valueB = parseFloat(valueBInput.value);
-
-                // Hata mesajlarını ve input stilini sıfırla
-                resultDiv.innerHTML = '';
-                valueAInput.classList.remove('error');
-                valueBInput.classList.remove('error');
-
-                if (isNaN(valueA) || isNaN(valueB)) {
-                    if (!isNaN(valueA) || !isNaN(valueB)) { 
-                        resultDiv.innerHTML = '<span style="color: #e74c3c; font-size: 0.8em;">Lütfen her iki alanı da doldurun.</span>';
-                    }
-                    if (isNaN(valueA) && valueAInput.value !== '') valueAInput.classList.add('error');
-                    if (isNaN(valueB) && valueBInput.value !== '') valueBInput.classList.add('error');
-                    return;
-                }
-
-                let result;
-                let resultText = '';
-
-                switch (calculatorId) {
-                    case 'calculator-increase':
-                        // ... (mevcut kod)
-                        break;
-                    case 'calculator-decrease':
-                        // ... (mevcut kod)
-                        break;
-                    case 'calculator-whatPercent':
-                        // ... (mevcut kod)
-                        break;
-                    case 'calculator-valueFromPercent':
-                        // ... (mevcut kod)
-                        break;
-                    case 'calculator-originalValue':
-                        // ... (mevcut kod)
-                        break;
-                    case 'calculator-percentageChange': // YENİ EKLENEN KISIM
+                    case 'calculator-percentageChange':
                         if (valueA === 0) {
                             resultDiv.innerHTML = '<span style="color: #e74c3c; font-size: 0.8em;">Başlangıç değeri sıfır olamaz.</span>';
                             valueAInput.classList.add('error');
@@ -612,9 +595,7 @@
                         break;
                 }
                 resultDiv.innerHTML = resultText;
-            }
-// ... (mevcut JavaScript kodunuzun geri kalanı)
-            }
+            };
         });
     </script>
 </body>
