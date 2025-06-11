@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boya Reçetesi Hesaplama - Hesapkolik</title>
+    <meta name="description" content="İstenilen renk tonu için kumaşın ağırlığına ve boya/kimyasal yüzdelerine göre gerekli madde miktarını hesaplayın. Boyahane süreçleri için pratik reçete aracı.">
+    <meta name="keywords" content="boya reçetesi, boya hesaplama, kimyasal miktar, tekstil boyama, boyahane, renk tonu, tekstil mühendisliği hesaplamaları, hesapkolik tekstil">
+    <link rel="stylesheet" href="../../css/style.css"> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts2.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="health-calculators-section">
+            <div class="container">
+                <h1 class="main-title">Boya Reçetesi Hesaplayıcı</h1>
+                <p class="section-description">Tekstil boyama işlemlerinde, istenilen renk tonunu ve kalitesini elde etmek için doğru boya ve yardımcı kimyasal madde miktarlarını belirlemek çok önemlidir. Bu araç, kumaş ağırlığına ve yüzdesel değerlere göre ihtiyaç duyduğunuz madde miktarlarını hesaplamanıza yardımcı olur.</p>
+
+                <div class="calculator-group">
+                    <div class="calculator-card-wrapper">
+                        <div class="calculator-header">
+                            <i class="fas fa-tint icon-small"></i> <h2>Boya ve Kimyasal Miktarı Hesapla</h2>
+                        </div>
+                        <div class="calculator-form-container">
+                            <form id="dyeRecipeForm">
+                                <p class="small-text">Lütfen boyanacak kumaşın kuru ağırlığını ve her bir boya/kimyasal için yüzde (%) değerini girin. Yüzde değeri kumaş ağırlığına oranla (%) hesaplanır (OWF - On Weight of Fabric).</p>
+                                
+                                <div class="input-with-unit">
+                                    <label for="fabricWeight">Kumaş Ağırlığı (kg):</label>
+                                    <input type="number" id="fabricWeight" step="0.01" min="0.01" required placeholder="Örn: 100">
+                                </div>
+
+                                <div class="form-divider"></div> <h4>Boya ve Kimyasal Bilgileri</h4>
+                                <div id="materialInputs">
+                                    <div class="input-with-unit material-input-row">
+                                        <label for="material1Name">Madde Adı 1:</label>
+                                        <input type="text" id="material1Name" class="material-name" placeholder="Örn: Kırmızı Boya">
+                                        <label for="material1Percentage">Yüzde (%) (OWF):</label>
+                                        <input type="number" id="material1Percentage" class="material-percentage" step="0.01" min="0" required placeholder="Örn: 1.5">
+                                    </div>
+                                    <div class="input-with-unit material-input-row">
+                                        <label for="material2Name">Madde Adı 2:</label>
+                                        <input type="text" id="material2Name" class="material-name" placeholder="Örn: Tuz">
+                                        <label for="material2Percentage">Yüzde (%) (OWF):</label>
+                                        <input type="number" id="material2Percentage" class="material-percentage" step="0.01" min="0" required placeholder="Örn: 60">
+                                    </div>
+                                </div>
+                                <button type="button" onclick="addMaterialInput()" class="add-fiber-button">Yeni Madde Ekle</button>
+                                <button type="button" onclick="calculateDyeRecipe()">Hesapla</button>
+                            </form>
+                            <div id="resultBox" class="result-display">
+                                <h3>Sonuçlar (Gerekli Miktarlar):</h3>
+                                </div>
+                            <p class="small-text">Hesaplanan miktarlar kumaşın kuru ağırlığına göre gram veya kilogram cinsindendir. Laboratuvar uygulamalarında boya/kimyasalın konsantrasyonu ve stok çözelti oranları dikkate alınmalıdır.</p>
+                        </div>
+                    </div>
+                    <section class="info-section">
+                        <h3>Boya Reçetesi Nedir?</h3>
+                        <p>
+                            **Boya reçetesi**, tekstil materyalini (iplik, kumaş, elyaf) istenilen renk ve tuşeye ulaştırmak için gerekli olan boya maddelerinin ve yardımcı kimyasalların miktarını, oranlarını, uygulama koşullarını (sıcaklık, süre, pH vb.) ve sırasını belirten detaylı bir talimat setidir. Her renk tonu ve her elyaf türü için özel bir reçete oluşturulur.
+                        </p>
+                        <p>
+                            Reçeteler genellikle "Kumaş Ağırlığına Göre Yüzde" (OWF - On Weight of Fabric/Fiber) prensibine göre hazırlanır. Bu, kullanılacak boya veya kimyasalın, boyanacak materyalin kuru ağırlığına oranla yüzde kaçının kullanılacağını belirtir.
+                        </p>
+
+                        <h4>Boya Reçetesi Neden Önemlidir?</h4>
+                        <ul>
+                            <li>**Renk Tutarlılığı:** Aynı rengin farklı üretim partilerinde veya farklı makinelerde aynı tonu vermesini sağlamak.</li>
+                            <li>**Maliyet Kontrolü:** Boya ve kimyasal israfını önleyerek üretim maliyetlerini düşürmek.</li>
+                            <li>**Kalite Güvencesi:** Boyama hatalarını (lekelenme, ton farkı vb.) minimize etmek.</li>
+                            <li>**Çevresel Etki:** Kimyasal kullanımını optimize ederek atık miktarını azaltmak.</li>
+                            <li>**Verimlilik:** Boyama proseslerinin hızlı ve etkin bir şekilde yürütülmesini sağlamak.</li>
+                        </ul>
+                        
+                        <h4>Boya ve Kimyasal Miktarı Nasıl Hesaplanır?</h4>
+                        <p>
+                            Gerekli boya veya kimyasal miktarı, kumaşın kuru ağırlığı ve reçetedeki yüzde değeri kullanılarak basit bir orantıyla hesaplanır:
+                        </p>
+                        <p class="formula-text">
+                            Madde Miktarı (kg) = (Kumaş Ağırlığı (kg) * Madde Yüzdesi (%)) / 100
+                        </p>
+                        <p>
+                            Bu formül, kumaş ağırlığı kilogram cinsinden ise sonuç miktarı da kilogram cinsinden verecektir. Gram cinsinden bir hesaplama için kumaş ağırlığını gram cinsinden girmeniz yeterlidir.
+                        </p>
+
+                        <h4>Uygulama Alanları:</h4>
+                        <ul>
+                            <li>Tekstil boyahaneleri ve baskı işletmeleri.</li>
+                            <li>Kimyasal tedarikçiler ve formülasyon geliştirme.</li>
+                            <li>Kalite kontrol laboratuvarları.</li>
+                            <li>Ar-Ge departmanları (yeni renkler ve prosesler geliştirme).</li>
+                            <li>Hazır giyim ve ev tekstili üretim tesisleri.</li>
+                        </ul>
+                        <p class="disclaimer-text">
+                            Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Gerçek boyahane operasyonlarında, laboratuvar ölçekli denemeler, boya verimi, suyun sertliği, yardımcı kimyasalların pH'ı etkileme gücü, makine tipi ve boya banyosu oranı gibi birçok ek faktör dikkate alınmalıdır. Hassas ve ticari boyama uygulamaları için deneyimli boyama mühendislerine ve detaylı laboratuvar analizlerine başvurulmalıdır. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize <a href="../../iletisim.html">iletişim</a> sayfamızdan ulaşın.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+
+    <script>
+        let materialCount = 2; // Başlangıçta 2 madde girişi var
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const dyeRecipeForm = document.getElementById('dyeRecipeForm');
+            if (dyeRecipeForm) {
+                dyeRecipeForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Formun varsayılan gönderimini engelle
+                    calculateDyeRecipe(); // Fonksiyonu çağır
+                });
+            }
+            // Başlangıçta inputlardaki değişimleri dinle
+            document.querySelectorAll('.material-percentage').forEach(input => {
+                input.addEventListener('input', validateMaterials);
+            });
+            document.getElementById('fabricWeight').addEventListener('input', validateMaterials);
+            validateMaterials(); // Sayfa yüklendiğinde buton durumunu ayarla
+        });
+
+        function addMaterialInput() {
+            materialCount++;
+            const materialInputsDiv = document.getElementById('materialInputs');
+            const newMaterialInputRow = document.createElement('div');
+            newMaterialInputRow.classList.add('input-with-unit', 'material-input-row');
+            newMaterialInputRow.innerHTML = `
+                <label for="material${materialCount}Name">Madde Adı ${materialCount}:</label>
+                <input type="text" id="material${materialCount}Name" class="material-name" placeholder="Örn: Sodyum Hidroksit">
+                <label for="material${materialCount}Percentage">Yüzde (%) (OWF):</label>
+                <input type="number" id="material${materialCount}Percentage" class="material-percentage" step="0.01" min="0" required placeholder="Örn: 2">
+                <button type="button" class="remove-fiber-button" onclick="removeMaterialInput(this)">Kaldır</button>
+            `;
+            materialInputsDiv.appendChild(newMaterialInputRow);
+
+            // Yeni eklenen inputların validasyonunu dinle
+            newMaterialInputRow.querySelector('.material-percentage').addEventListener('input', validateMaterials);
+            validateMaterials(); // Yeni input eklenince mevcutları da kontrol et
+        }
+
+        function removeMaterialInput(buttonElement) {
+            const rowToRemove = buttonElement.closest('.material-input-row');
+            rowToRemove.remove();
+            materialCount--; // Madde sayısını düşür
+            updateMaterialInputLabels(); // Etiketleri güncelle
+            calculateDyeRecipe(); // Kaldırma sonrası tekrar hesapla
+            validateMaterials(); // Kaldırma sonrası validasyonu kontrol et
+        }
+
+        function updateMaterialInputLabels() {
+            const materialRows = document.querySelectorAll('.material-input-row');
+            materialRows.forEach((row, index) => {
+                const materialNum = index + 1;
+                row.querySelector('label[for^="material"][for$="Name"]').textContent = `Madde Adı ${materialNum}:`;
+                row.querySelector('label[for^="material"][for$="Percentage"]').textContent = `Yüzde (%) (OWF):`;
+                row.querySelector('input[id^="material"][id$="Name"]').id = `material${materialNum}Name`;
+                row.querySelector('input[id^="material"][id$="Percentage"]').id = `material${materialNum}Percentage`;
+            });
+        }
+
+        function validateMaterials() {
+            const fabricWeightInput = document.getElementById('fabricWeight');
+            const materialPercentageInputs = document.querySelectorAll('.material-percentage');
+            let allInputsValid = true;
+
+            if (isNaN(parseFloat(fabricWeightInput.value)) || parseFloat(fabricWeightInput.value) <= 0) {
+                allInputsValid = false;
+            }
+
+            materialPercentageInputs.forEach(input => {
+                if (input.value === "" || parseFloat(input.value) < 0 || isNaN(parseFloat(input.value))) {
+                    allInputsValid = false;
+                }
+            });
+
+            const calculateButton = document.querySelector('#dyeRecipeForm button[onclick="calculateDyeRecipe()"]');
+            if (calculateButton) {
+                calculateButton.disabled = !allInputsValid;
+            }
+            return allInputsValid;
+        }
+
+        function calculateDyeRecipe() {
+            const fabricWeight = parseFloat(document.getElementById('fabricWeight').value);
+            const materialNames = document.querySelectorAll('.material-name');
+            const materialPercentages = document.querySelectorAll('.material-percentage');
+            const resultBox = document.getElementById('resultBox');
+            resultBox.innerHTML = ''; // Önceki sonuçları temizle
+
+            if (!validateMaterials()) {
+                resultBox.innerHTML = '<p class="error">Lütfen kumaş ağırlığı ve tüm madde yüzdeleri için geçerli (pozitif) sayılar girin.</p>';
+                resultBox.style.display = 'block';
+                return;
+            }
+
+            let resultsHTML = '<h3>Sonuçlar (Gerekli Miktarlar):</h3>';
+            let totalPercentage = 0; // Toplam yüzdeyi kontrol etmek için
+
+            materialPercentages.forEach((input, index) => {
+                const percentage = parseFloat(input.value);
+                const name = materialNames[index] ? materialNames[index].value || `Madde ${index + 1}` : `Madde ${index + 1}`;
+                
+                const requiredAmount = (fabricWeight * percentage) / 100; // Miktarı kg cinsinden hesapla
+                totalPercentage += percentage;
+
+                resultsHTML += `<p><strong>${name}:</strong> <span class="result-value">${requiredAmount.toFixed(3)} kg</span></p>`;
+            });
+
+            resultsHTML += `<p><hr><strong>Toplam Boya/Kimyasal Yüzdesi:</strong> <span class="result-value">${totalPercentage.toFixed(2)}% (OWF)</span></p>`;
+            resultBox.innerHTML = resultsHTML;
+            resultBox.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

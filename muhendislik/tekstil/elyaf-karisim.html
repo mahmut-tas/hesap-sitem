@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elyaf Karışım Oranı Hesaplama - Hesapkolik</title>
+    <meta name="description" content="Tekstil liflerinin (pamuk, polyester, viskon vb.) bir karışımdaki yüzdesel oranlarını hesaplayın. Elyaf karışımı kalitesi ve üretim maliyeti için kritik araç.">
+    <meta name="keywords" content="elyaf karışım oranı, tekstil lifleri, pamuk polyester karışımı, viskon karışımı, elyaf yüzdesi, tekstil mühendisliği hesaplamaları, hesapkolik tekstil">
+    <link rel="stylesheet" href="../../css/style.css"> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="health-calculators-section">
+            <div class="container">
+                <h1 class="main-title">Elyaf Karışım Oranı Hesaplayıcı</h1>
+                <p class="section-description">Tekstil endüstrisinde kullanılan iplik ve kumaşların üretiminde birden fazla elyaf türünün karıştırılması yaygındır. Bu hesaplayıcı ile farklı elyafların toplam karışımdaki yüzdesel oranlarını kolayca belirleyebilirsiniz.</p>
+
+                <div class="calculator-group">
+                    <div class="calculator-card-wrapper">
+                        <div class="calculator-header">
+                            <i class="fas fa-percentage icon-small"></i> <h2>Elyaf Oranlarını Hesapla</h2>
+                        </div>
+                        <div class="calculator-form-container">
+                            <form id="fiberBlendForm">
+                                <p class="small-text">Lütfen karışımdaki her bir elyafın miktarını (gram veya kilogram cinsinden) girin. İstediğiniz kadar elyaf ekleyebilirsiniz.</p>
+                                
+                                <div id="fiberInputs">
+                                    <div class="input-with-unit fiber-input-row">
+                                        <label for="fiber1Name">Elyaf Adı 1:</label>
+                                        <input type="text" id="fiber1Name" class="fiber-name" placeholder="Örn: Pamuk">
+                                        <label for="fiber1Weight">Miktar (gr/kg):</label>
+                                        <input type="number" id="fiber1Weight" class="fiber-weight" step="0.01" min="0" required placeholder="Örn: 500">
+                                    </div>
+                                    <div class="input-with-unit fiber-input-row">
+                                        <label for="fiber2Name">Elyaf Adı 2:</label>
+                                        <input type="text" id="fiber2Name" class="fiber-name" placeholder="Örn: Polyester">
+                                        <label for="fiber2Weight">Miktar (gr/kg):</label>
+                                        <input type="number" id="fiber2Weight" class="fiber-weight" step="0.01" min="0" required placeholder="Örn: 500">
+                                    </div>
+                                </div>
+                                <button type="button" onclick="addFiberInput()" class="add-fiber-button">Yeni Elyaf Ekle</button>
+                                <button type="button" onclick="calculateFiberBlend()">Hesapla</button>
+                            </form>
+                            <div id="resultBox" class="result-display">
+                                <h3>Sonuçlar:</h3>
+                                </div>
+                            <p class="small-text">Miktarları aynı birimde (hepsi gram veya hepsi kilogram) girdiğinizden emin olun.</p>
+                        </div>
+                    </div>
+                    <section class="info-section">
+                        <h3>Elyaf Karışım Oranı Nedir?</h3>
+                        <p>
+                            Elyaf karışım oranı, bir tekstil ürününde (iplik, kumaş vb.) kullanılan farklı elyaf türlerinin toplam kütleye oranını ifade eder. Bu oran genellikle yüzde (%) cinsinden belirtilir. Örneğin, %60 Pamuk / %40 Polyester karışımı, toplam elyafın %60'ının pamuk, %40'ının polyester olduğunu gösterir.
+                        </p>
+                        <p>
+                            Farklı elyafların karıştırılması, tek bir elyafın sahip olamayacağı özellik kombinasyonlarını elde etmek için yapılır. Bu, ürünün performansı, tuşesi, maliyeti ve estetiği üzerinde doğrudan etkilidir.
+                        </p>
+
+                        <h4>Neden Elyaf Karışımı Yapılır?</h4>
+                        <ul>
+                            <li>**Performans İyileştirme:** Örneğin, pamuğun nem emiciliği ile polyesterin dayanıklılığı ve kırışmazlığı birleştirilebilir.</li>
+                            <li>**Maliyet Optimizasyonu:** Daha pahalı bir elyafın (örn. yün) daha ucuz bir elyafla (örn. akrilik) karıştırılarak maliyetin düşürülmesi.</li>
+                            <li>**Tuşe ve Konfor:** İpeksi bir his veya yumuşaklık gibi belirli dokunsal özelliklerin kazandırılması.</li>
+                            <li>**Görsel ve Estetik Özellikler:** Parlaklık, matlık veya farklı boyama özellikleri elde etmek.</li>
+                            <li>**Kolay Bakım:** Hızlı kuruma, kolay ütülenme gibi özelliklerin eklenmesi.</li>
+                        </ul>
+                        
+                        <h4>Elyaf Karışım Oranı Nasıl Hesaplanır?</h4>
+                        <p>
+                            Her bir elyafın karışımdaki yüzdesi, o elyafın miktarının toplam elyaf miktarına bölünmesi ve 100 ile çarpılmasıyla bulunur.
+                        </p>
+                        <p class="formula-text">
+                            Elyaf A Yüzdesi (%) = (Elyaf A Miktarı / Toplam Elyaf Miktarı) * 100
+                        </p>
+                        <p>
+                            Bu hesaplayıcı, girdiğiniz tüm elyaf miktarlarını toplayarak toplam miktarı bulur ve ardından her bir elyafın bu toplama oranını yüzde olarak sunar.
+                        </p>
+
+                        <h4>Uygulama Alanları:</h4>
+                        <ul>
+                            <li>İplik üretiminde doğru karışım reçetelerinin oluşturulması.</li>
+                            <li>Kumaş üretiminde hammadde kontrolü ve kalite güvencesi.</li>
+                            <li>Tekstil ürünlerinin etiketleme standartlarına uyumun sağlanması.</li>
+                            <li>Ar-Ge çalışmalarında yeni elyaf kombinasyonlarının denenmesi.</li>
+                            <li>Maliyet analizleri ve stok yönetimi.</li>
+                        </ul>
+                        <p class="disclaimer-text">
+                            Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Gerçek üretimde ve ticarette, elyafın nem içeriği, test standartları ve homojen karışım gibi faktörler sonuçları etkileyebilir. Hassas ticari veya endüstriyel uygulamalar için sertifikalı laboratuvar testleri ve uluslararası standartlar esas alınmalıdır. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize <a href="../../iletisim.html">iletişim</a> sayfamızdan ulaşın.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+
+    <script>
+        let fiberCount = 2; // Başlangıçta 2 elyaf girişi var
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const fiberBlendForm = document.getElementById('fiberBlendForm');
+            if (fiberBlendForm) {
+                fiberBlendForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Formun varsayılan gönderimini engelle
+                    calculateFiberBlend(); // Fonksiyonu çağır
+                });
+            }
+        });
+
+        function addFiberInput() {
+            fiberCount++;
+            const fiberInputsDiv = document.getElementById('fiberInputs');
+            const newFiberInputRow = document.createElement('div');
+            newFiberInputRow.classList.add('input-with-unit', 'fiber-input-row');
+            newFiberInputRow.innerHTML = `
+                <label for="fiber${fiberCount}Name">Elyaf Adı ${fiberCount}:</label>
+                <input type="text" id="fiber${fiberCount}Name" class="fiber-name" placeholder="Örn: Viskon">
+                <label for="fiber${fiberCount}Weight">Miktar (gr/kg):</label>
+                <input type="number" id="fiber${fiberCount}Weight" class="fiber-weight" step="0.01" min="0" required placeholder="Örn: 200">
+                <button type="button" class="remove-fiber-button" onclick="removeFiberInput(this)">Kaldır</button>
+            `;
+            fiberInputsDiv.appendChild(newFiberInputRow);
+
+            // Yeni eklenen inputların validasyonunu kontrol et
+            newFiberInputRow.querySelector('.fiber-weight').addEventListener('input', validateFiberWeights);
+            validateFiberWeights(); // Yeni input eklenince mevcutları da kontrol et
+        }
+
+        function removeFiberInput(buttonElement) {
+            const rowToRemove = buttonElement.closest('.fiber-input-row');
+            rowToRemove.remove();
+            fiberCount--; // Elyaf sayısını düşür
+            // Kaldırma sonrası elyaf adlarını güncelle (isteğe bağlı ama düzenli görünüm için iyi olur)
+            updateFiberInputLabels();
+            calculateFiberBlend(); // Kaldırma sonrası tekrar hesapla
+        }
+
+        function updateFiberInputLabels() {
+            const fiberRows = document.querySelectorAll('.fiber-input-row');
+            fiberRows.forEach((row, index) => {
+                const fiberNum = index + 1;
+                row.querySelector('label[for^="fiber"][for$="Name"]').textContent = `Elyaf Adı ${fiberNum}:`;
+                row.querySelector('label[for^="fiber"][for$="Weight"]').textContent = `Miktar (gr/kg):`;
+                row.querySelector('input[id^="fiber"][id$="Name"]').id = `fiber${fiberNum}Name`;
+                row.querySelector('input[id^="fiber"][id$="Weight"]').id = `fiber${fiberNum}Weight`;
+            });
+        }
+
+
+        function validateFiberWeights() {
+            const fiberWeightInputs = document.querySelectorAll('.fiber-weight');
+            let allInputsValid = true;
+            fiberWeightInputs.forEach(input => {
+                if (input.value === "" || parseFloat(input.value) < 0 || isNaN(parseFloat(input.value))) {
+                    allInputsValid = false;
+                    // input.setCustomValidity("Lütfen pozitif bir sayı girin."); // HTML5 validasyonu için
+                } else {
+                    // input.setCustomValidity("");
+                }
+            });
+
+            // Hesapla butonunu etkinleştir/pasifleştir
+            const calculateButton = document.querySelector('#fiberBlendForm button[onclick="calculateFiberBlend()"]');
+            if (calculateButton) {
+                calculateButton.disabled = !allInputsValid;
+            }
+            return allInputsValid;
+        }
+
+        function calculateFiberBlend() {
+            const fiberNames = document.querySelectorAll('.fiber-name');
+            const fiberWeights = document.querySelectorAll('.fiber-weight');
+            const resultBox = document.getElementById('resultBox');
+            resultBox.innerHTML = ''; // Önceki sonuçları temizle
+
+            if (!validateFiberWeights()) {
+                resultBox.innerHTML = '<p class="error">Lütfen tüm elyaf miktarları için geçerli (pozitif) sayılar girin.</p>';
+                resultBox.style.display = 'block';
+                return;
+            }
+
+            let totalWeight = 0;
+            const fiberData = [];
+
+            fiberWeights.forEach((input, index) => {
+                const weight = parseFloat(input.value);
+                const name = fiberNames[index] ? fiberNames[index].value || `Elyaf ${index + 1}` : `Elyaf ${index + 1}`;
+                
+                totalWeight += weight;
+                fiberData.push({ name, weight });
+            });
+
+            if (totalWeight === 0) {
+                resultBox.innerHTML = '<p class="error">Toplam elyaf miktarı sıfır olamaz. Lütfen en az bir elyaf için pozitif bir miktar girin.</p>';
+                resultBox.style.display = 'block';
+                return;
+            }
+
+            let resultsHTML = '<h3>Sonuçlar:</h3>';
+            fiberData.forEach(fiber => {
+                const percentage = (fiber.weight / totalWeight) * 100;
+                resultsHTML += `<p><strong>${fiber.name}:</strong> <span class="result-value">${percentage.toFixed(2)}%</span></p>`;
+            });
+
+            resultsHTML += `<p><hr><strong>Toplam Ağırlık:</strong> <span class="result-value">${totalWeight.toFixed(2)}</span></p>`; // Toplam ağırlığı da göster
+            resultBox.innerHTML = resultsHTML;
+            resultBox.style.display = 'block';
+
+            // Sayfa yüklendiğinde ve input değerleri değiştiğinde validasyonu tetikle
+            document.querySelectorAll('.fiber-weight').forEach(input => {
+                input.addEventListener('input', calculateFiberBlend); // Her input değiştiğinde hesapla
+            });
+            // Initial calculation on load if inputs are filled
+            // calculateFiberBlend();
+        }
+
+        // Sayfa yüklendiğinde inputlardaki değişimleri dinle
+        document.querySelectorAll('.fiber-weight').forEach(input => {
+            input.addEventListener('input', validateFiberWeights);
+        });
+        // Başlangıçta buton durumunu ayarla
+        validateFiberWeights();
+    </script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dokuma Makinesi Verimliliği Hesaplama - Hesapkolik</title>
+    <meta name="description" content="Dokuma tezgahlarının fiili üretim miktarı ve çalışma süresine göre verimlilik (randıman) oranını hesaplayın. Üretim kapasitesi ve maliyet optimizasyonu için pratik araç.">
+    <meta name="keywords" content="dokuma makinesi verimliliği, dokuma randıman, tezgah verimliliği, üretim kapasitesi, dokuma hesabı, tekstil mühendisliği hesaplamaları, hesapkolik tekstil">
+    <link rel="stylesheet" href="../../css/style.css"> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="health-calculators-section">
+            <div class="container">
+                <h1 class="main-title">Dokuma Makinesi Verimliliği Hesaplayıcı</h1>
+                <p class="section-description">Dokuma makinelerinin verimliliği (randımanı), planlanan üretim ile gerçekleşen üretim arasındaki oranı gösterir. Bu hesaplayıcı ile makine devri, atkı sıklığı, çalışma süresi ve fiili üretim gibi parametreleri kullanarak dokuma makinenizin verimliliğini yüzde olarak belirleyebilirsiniz.</p>
+
+                <div class="calculator-group">
+                    <div class="calculator-card-wrapper">
+                        <div class="calculator-header">
+                            <i class="fas fa-cogs icon-small"></i> <h2>Makine Verimliliğini Hesapla</h2>
+                        </div>
+                        <div class="calculator-form-container">
+                            <form id="loomEfficiencyForm">
+                                <p class="small-text">Lütfen dokuma makinesi verimliliği için gerekli parametreleri girin:</p>
+                                
+                                <div class="input-with-unit">
+                                    <label for="machineRPM">Makine Devri (Atkı/dakika):</label>
+                                    <input type="number" id="machineRPM" step="1" min="1" required placeholder="Örn: 500">
+                                </div>
+
+                                <div class="input-with-unit">
+                                    <label for="weftDensity">Atkı Sıklığı (Atkı/cm):</label>
+                                    <input type="number" id="weftDensity" step="0.1" min="0.1" required placeholder="Örn: 28">
+                                </div>
+
+                                <div class="input-with-unit">
+                                    <label for="workingHours">Çalışma Süresi (saat):</label>
+                                    <input type="number" id="workingHours" step="0.1" min="0.1" required placeholder="Örn: 8">
+                                </div>
+
+                                <div class="input-with-unit">
+                                    <label for="actualProduction">Fiili Üretim (metre):</label>
+                                    <input type="number" id="actualProduction" step="0.01" min="0" required placeholder="Örn: 183.6">
+                                </div>
+                                
+                                <button type="button" onclick="calculateLoomEfficiency()">Hesapla</button>
+                            </form>
+                            <div id="resultBox" class="result-display">
+                                <h3>Sonuçlar:</h3>
+                                <p><strong>Teorik Üretim (metre):</strong> <span id="theoreticalProduction" class="result-value"></span></p>
+                                <p><strong>Dokuma Makinesi Verimliliği (%):</strong> <span id="efficiencyPercentage" class="result-value"></span></p>
+                            </div>
+                            <p class="small-text">Verimlilik, fiili üretimin teorik üretime oranının yüzdesidir. %100'den düşük olması normaldir.</p>
+                        </div>
+                    </div>
+                    <section class="info-section">
+                        <h3>Dokuma Makinesi Verimliliği Nedir?</h3>
+                        <p>
+                            **Dokuma makinesi verimliliği** (veya **randımanı**), bir dokuma tezgahının belirli bir zaman diliminde teorik olarak üretebileceği maksimum kumaş miktarına kıyasla fiilen ürettiği kumaş miktarının yüzde (%) cinsinden ifadesidir. Yüksek verimlilik, makinenin daha az duruşla, daha az hata ile ve daha hızlı çalıştığı anlamına gelir.
+                        </p>
+                        <p>
+                            Verimlilik, yalnızca makine hızına değil; iplik kopuşları, arıza duruşları, operatör müdahaleleri, bakım süreleri, kumaş hataları ve desen değişimleri gibi pek çok faktöre bağlıdır. Tekstil işletmeleri için verimlilik, maliyet etkinliği ve zamanında teslimat açısından hayati önem taşır.
+                        </p>
+
+                        <h4>Dokuma Makinesi Verimliliği Neden Önemlidir?</h4>
+                        <ul>
+                            <li>**Maliyet Optimizasyonu:** Düşük verimlilik, yüksek işçilik, enerji ve amortisman maliyetleri anlamına gelir.</li>
+                            <li>**Üretim Kapasitesi:** Verimlilik artışı, mevcut makine parkuruyla daha fazla üretim yapılmasını sağlar.</li>
+                            <li>**Teslim Süresi Yönetimi:** Yüksek verimli makineler, siparişleri daha kısa sürede tamamlayabilir.</li>
+                            <li>**Kalite İyileştirme:** Genellikle verimlilik artışı, daha az hata ve daha iyi proses kontrolü ile ilişkilidir.</li>
+                            <li>**İşletme Karar Alma:** Makine alımı, işgücü planlaması ve yatırım kararları için temel veri sağlar.</li>
+                        </ul>
+                        
+                        <h4>Dokuma Makinesi Verimliliği Nasıl Hesaplanır?</h4>
+                        <p>
+                            Dokuma makinesi verimliliğinin hesaplanmasında çeşitli yöntemler olmakla birlikte, en yaygın formüllerden biri aşağıdaki gibidir:
+                        </p>
+                        <p class="formula-text">
+                            Teorik Üretim (m/saat) = (Makine Devri (atkı/dakika) * 60 (dak/saat)) / (Atkı Sıklığı (atkı/cm) * 100 (cm/m))
+                        </p>
+                         <p class="formula-text">
+                            Teorik Toplam Üretim (metre) = Teorik Üretim (m/saat) * Çalışma Süresi (saat)
+                        </p>
+                        <p class="formula-text">
+                            Verimlilik (%) = (Fiili Üretim (metre) / Teorik Toplam Üretim (metre)) * 100
+                        </p>
+                        <p>
+                            **Açıklamalar:**
+                            <ul>
+                                <li>**Makine Devri (Atkı/dakika):** Makinenin bir dakikada attığı atkı sayısı (RPM - Revolutions Per Minute olarak da geçer).</li>
+                                <li>**Atkı Sıklığı (Atkı/cm):** Dokunan kumaşın bir santimetresindeki atkı ipliği sayısı.</li>
+                                <li>**Çalışma Süresi (saat):** Makinenin fiilen çalıştığı toplam süre.</li>
+                                <li>**Fiili Üretim (metre):** Belirtilen çalışma süresi boyunca makinenin gerçekten ürettiği kumaş miktarı.</li>
+                            </ul>
+                            Bu hesaplayıcı, bu prensipleri kullanarak teorik üretimi ve ardından verimlilik yüzdesini belirler.
+                        </p>
+
+                        <h4>Verimliliği Etkileyen Başlıca Faktörler:</h4>
+                        <ul>
+                            <li>**İplik Kalitesi:** Kopuşlar verimliliği düşürür.</li>
+                            <li>**Makine Bakımı ve Ayarları:** Düzenli bakım ve doğru ayarlar duruşları minimize eder.</li>
+                            <li>**Operatör Yetkinliği:** Hızlı müdahale ve doğru işlem, duruş sürelerini azaltır.</li>
+                            <li>**Atkı/Çözgü Kopuşları:** En büyük verimlilik kayıplarından biridir.</li>
+                            <li>**Kumaş Deseni ve Yapısı:** Karmaşık desenler ve yüksek sıklıklar makine hızını etkileyebilir.</li>
+                            <li>**Çevresel Koşullar:** Sıcaklık ve nem gibi faktörler iplik davranışını etkileyebilir.</li>
+                        </ul>
+                        <p class="disclaimer-text">
+                            Bu hesaplayıcı temel dokuma makinesi verimliliği prensiplerini uygulamak için bir araçtır. Gerçek endüstriyel ortamlarda verimlilik analizi, duruş süreleri, hata oranları, OEE (Overall Equipment Effectiveness) gibi daha karmaşık metrikleri ve detaylı veri toplama sistemlerini içerir. Hassas ticari veya endüstriyel uygulamalar için fabrika verileri ve uzman mühendislik analizi gereklidir. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize <a href="../../iletisim.html">iletişim</a> sayfamızdan ulaşın.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loomEfficiencyForm = document.getElementById('loomEfficiencyForm');
+            if (loomEfficiencyForm) {
+                loomEfficiencyForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Formun varsayılan gönderimini engelle
+                    calculateLoomEfficiency(); // Fonksiyonu çağır
+                });
+            }
+        });
+
+        function calculateLoomEfficiency() {
+            const machineRPM = parseFloat(document.getElementById('machineRPM').value); // Makine Devri (Atkı/dakika)
+            const weftDensity = parseFloat(document.getElementById('weftDensity').value); // Atkı Sıklığı (Atkı/cm)
+            const workingHours = parseFloat(document.getElementById('workingHours').value); // Çalışma Süresi (saat)
+            const actualProduction = parseFloat(document.getElementById('actualProduction').value); // Fiili Üretim (metre)
+            
+            const resultBox = document.getElementById('resultBox');
+
+            // Giriş değerlerinin geçerliliğini kontrol et
+            if (isNaN(machineRPM) || isNaN(weftDensity) || isNaN(workingHours) || isNaN(actualProduction) ||
+                machineRPM <= 0 || weftDensity <= 0 || workingHours <= 0 || actualProduction < 0) { // Actual production can be 0 but not negative
+                resultBox.innerHTML = '<p class="error">Lütfen tüm alanlara geçerli (pozitif) sayılar girin. Fiili Üretim sıfır veya daha büyük olabilir.</p>';
+                resultBox.style.display = 'block';
+                return;
+            }
+
+            // 1. Teorik Üretim (metre/saat) hesaplama: (Devir * 60) / (Atkı Sıklığı * 100)
+            const theoreticalProductionPerHour = (machineRPM * 60) / (weftDensity * 100);
+
+            // 2. Teorik Toplam Üretim (metre) hesaplama: Teorik Üretim/Saat * Çalışma Süresi
+            const theoreticalTotalProduction = theoreticalProductionPerHour * workingHours;
+
+            // 3. Verimlilik (%) hesaplama: (Fiili Üretim / Teorik Toplam Üretim) * 100
+            let efficiencyPercentage;
+            if (theoreticalTotalProduction === 0) { // Bölme hatasını önle
+                efficiencyPercentage = 0; // Teorik üretim sıfırsa verimlilik de sıfır
+            } else {
+                efficiencyPercentage = (actualProduction / theoreticalTotalProduction) * 100;
+            }
+
+            // Sonuçları göster
+            resultBox.innerHTML = `
+                <h3>Sonuçlar:</h3>
+                <p><strong>Teorik Üretim (metre/saat):</strong> <span class="result-value">${theoreticalProductionPerHour.toFixed(2)}</span></p>
+                <p><strong>Toplam Teorik Üretim (metre):</strong> <span class="result-value">${theoreticalTotalProduction.toFixed(2)}</span></p>
+                <p><strong>Dokuma Makinesi Verimliliği (%):</strong> <span class="result-value">${efficiencyPercentage.toFixed(2)}%</span></p>
+            `;
+            resultBox.style.display = 'block'; // Sonuç kutusunu görünür yap
+        }
+    </script>
+</body>
+</html>

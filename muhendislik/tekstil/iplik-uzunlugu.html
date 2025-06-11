@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İplik Uzunluğu Hesaplama - Hesapkolik</title>
+    <meta name="description" content="Belirli bir ağırlıktaki (gram/kg) ipliğin uzunluğunu (metre/yarda) farklı iplik numarası sistemlerine (Tex, Denye, Ne, Nm) göre hesaplayın. İplik tedarik ve üretim planlaması için pratik araç.">
+    <meta name="keywords" content="iplik uzunluğu, iplik ağırlığı, iplik metre, tex, denye, ne, nm, iplik hesaplama, tekstil mühendisliği hesaplamaları, hesapkolik tekstil">
+    <link rel="stylesheet" href="../../css/style.css"> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="health-calculators-section">
+            <div class="container">
+                <h1 class="main-title">İplik Uzunluğu Hesaplayıcı</h1>
+                <p class="section-description">Belirli bir ağırlıktaki (gram veya kilogram) ipliğin, seçilen iplik numarası sistemine (Tex, Denye, Ne, Nm) göre yaklaşık uzunluğunu (metre veya yarda) kolayca hesaplayın. İplik siparişleri, üretim planlaması ve stok yönetimi için pratik bir araçtır.</p>
+
+                <div class="calculator-group">
+                    <div class="calculator-card-wrapper">
+                        <div class="calculator-header">
+                            <i class="fas fa-arrows-alt-h icon-small"></i> <h2>İplik Uzunluğunu Hesapla</h2>
+                        </div>
+                        <div class="calculator-form-container">
+                            <form id="yarnLengthForm">
+                                <div class="input-with-unit">
+                                    <label for="yarnWeight">İplik Ağırlığı:</label>
+                                    <input type="number" id="yarnWeight" step="0.001" min="0" required placeholder="Örn: 500">
+                                    <select id="weightUnit">
+                                        <option value="gram">Gram (gr)</option>
+                                        <option value="kg">Kilogram (kg)</option>
+                                        <option value="pound">Pound (lb)</option>
+                                    </select>
+                                </div>
+
+                                <div class="input-with-unit">
+                                    <label for="yarnCount">İplik Numarası:</label>
+                                    <input type="number" id="yarnCount" step="0.01" min="0.01" required placeholder="Örn: 20">
+                                    <select id="countSystem">
+                                        <option value="tex">Tex</option>
+                                        <option value="denye">Denye</option>
+                                        <option value="ne">Ne (Pamuk Numarası)</option>
+                                        <option value="nm">Nm (Metrik Numara)</option>
+                                        <option value="dtex">dTex</option>
+                                    </select>
+                                </div>
+                                
+                                <button type="button" onclick="calculateYarnLength()">Hesapla</button>
+                            </form>
+                            <div id="resultBox" class="result-display">
+                                <h3>Sonuç:</h3>
+                                <p><strong>Tahmini İplik Uzunluğu:</strong> <span id="yarnLengthResult" class="result-value"></span></p>
+                            </div>
+                            <p class="small-text">İplik numarası ve ağırlık birimlerini doğru girdiğinizden emin olun. Hesaplamalar ortalama değerlere dayanır.</p>
+                        </div>
+                    </div>
+                    <section class="info-section">
+                        <h3>İplik Uzunluğu Hesaplaması Nedir?</h3>
+                        <p>
+                            **İplik uzunluğu hesaplaması**, belirli bir ağırlıktaki (örneğin 1 kilogram) ipliğin, o ipliğin inceliğini (numarasını) temsil eden birimlere göre kaç metre veya yarda geleceğini belirleme işlemidir. Bu hesaplama, tekstil üretiminde hammadde yönetimi, maliyet analizi, bobinleme, sarım ve kumaş üretiminde iplik tüketiminin tahmin edilmesi için kritik öneme sahiptir.
+                        </p>
+                        <p>
+                            İplik numarası, ipliğin birim ağırlık başına uzunluğunu (dolaylı sistemler) veya birim uzunluk başına ağırlığını (doğrudan sistemler) gösterir. Bu iki bilgiyle, herhangi bir ağırlıktaki ipliğin toplam uzunluğu bulunabilir.
+                        </p>
+
+                        <h4>İplik Uzunluğu Neden Önemlidir?</h4>
+                        <ul>
+                            <li>**Hammadde Planlaması:** Belirli bir üretim siparişi için ne kadar iplik gerekeceğinin tahmin edilmesi.</li>
+                            <li>**Maliyet Analizi:** İplik maliyetinin birim uzunluk (metre) başına düşen değerini hesaplamak.</li>
+                            <li>**Stok Yönetimi:** Depodaki iplik bobinlerinin veya partilerinin toplam uzunluğunu tahmin etmek.</li>
+                            <li>**Üretim Verimliliği:** Dokuma veya örme makinelerinde iplik besleme ve tüketimini optimize etmek.</li>
+                            <li>**Kalite Kontrol:** İplik numarası ve uzunluk tutarlılığını kontrol etmek.</li>
+                        </ul>
+                        
+                        <h4>İplik Uzunluğu Nasıl Hesaplanır?</h4>
+                        <p>
+                            İplik numarası sistemine ve ağırlık birimine bağlı olarak farklı formüller kullanılır. Hesaplamalar genellikle ipliğin belirli bir uzunluğunun ağırlığını (Tex, Denye, dTex gibi doğrudan sistemler) veya belirli bir ağırlığının uzunluğunu (Ne, Nm gibi dolaylı sistemler) temel alır.
+                        </p>
+                        <p class="formula-text">
+                            **Genel Prensip:** Uzunluk = Ağırlık / (İplik Numarası * Dönüşüm Faktörü)
+                            <br> veya
+                            Uzunluk = Ağırlık * (İplik Numarası * Dönüşüm Faktörü)
+                        </p>
+                        <p>
+                            **Bazı Örnek Formüller:**
+                            <ul>
+                                <li>**Tex (Metre):** Uzunluk (m) = (Ağırlık (gr) / Tex) * 1000</li>
+                                <li>**Denye (Metre):** Uzunluk (m) = (Ağırlık (gr) / Denye) * 9000</li>
+                                <li>**Nm (Metre):** Uzunluk (m) = Ağırlık (gr) * Nm</li>
+                                <li>**Ne (Yarda):** Uzunluk (yarda) = Ağırlık (lb) * Ne * 840</li>
+                            </ul>
+                            Hesaplayıcımız, seçtiğiniz birimlere ve iplik numarası sistemine göre ilgili formülü otomatik olarak uygulayarak uzunluğu belirler.
+                        </p>
+
+                        <h4>Uygulama Alanları:</h4>
+                        <ul>
+                            <li>İplik eğirme tesisleri ve bobinleme departmanları.</li>
+                            <li>Dokuma ve örme fabrikalarının üretim planlama birimleri.</li>
+                            <li>Tekstil laboratuvarları ve Ar-Ge çalışmaları.</li>
+                            <li>Hammaddeleri iplik olan tüm tekstil ürünleri üreticileri.</li>
+                        </ul>
+                        <p class="disclaimer-text">
+                            Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Gerçek iplik uzunluğu, ipliğin bükümü, nem oranı, sarım gerginliği ve test koşulları gibi faktörlerden etkilenebilir. Hassas ticari veya endüstriyel uygulamalar için uluslararası standartlara uygun ölçüm ekipmanları ve deneyimli personel tarafından yapılan testler esas alınmalıdır. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize <a href="../../iletisim.html">iletişim</a> sayfamızdan ulaşın.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const yarnLengthForm = document.getElementById('yarnLengthForm');
+            if (yarnLengthForm) {
+                yarnLengthForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Formun varsayılan gönderimini engelle
+                    calculateYarnLength(); // Fonksiyonu çağır
+                });
+            }
+        });
+
+        function calculateYarnLength() {
+            const yarnWeight = parseFloat(document.getElementById('yarnWeight').value);
+            const weightUnit = document.getElementById('weightUnit').value;
+            const yarnCount = parseFloat(document.getElementById('yarnCount').value);
+            const countSystem = document.getElementById('countSystem').value;
+            
+            const resultBox = document.getElementById('resultBox');
+            const yarnLengthResultSpan = document.getElementById('yarnLengthResult');
+
+            // Giriş değerlerinin geçerliliğini kontrol et
+            if (isNaN(yarnWeight) || yarnWeight <= 0 || isNaN(yarnCount) || yarnCount <= 0) {
+                resultBox.innerHTML = '<p class="error">Lütfen iplik ağırlığı ve iplik numarası için geçerli (pozitif) sayılar girin.</p>';
+                resultBox.style.display = 'block';
+                return;
+            }
+
+            let weightInGram; // Tüm ağırlıkları grama çevirelim
+            if (weightUnit === 'kg') {
+                weightInGram = yarnWeight * 1000;
+            } else if (weightUnit === 'pound') {
+                weightInGram = yarnWeight * 453.592; // 1 pound = 453.592 gram
+            } else { // gram
+                weightInGram = yarnWeight;
+            }
+
+            let lengthInMeter; // Sonucu metre cinsinden hesaplayalım
+            let resultUnit = "metre"; // Sonucun birimi
+
+            switch (countSystem) {
+                case 'tex':
+                    lengthInMeter = (weightInGram / yarnCount) * 1000; // Uzunluk (m) = (Ağırlık (gr) / Tex) * 1000
+                    break;
+                case 'denye':
+                    lengthInMeter = (weightInGram / yarnCount) * 9000; // Uzunluk (m) = (Ağırlık (gr) / Denye) * 9000
+                    break;
+                case 'ne': // Pamuk Numarası (yarda/pound)
+                    // Ne'yi önce Nm'ye çevirip sonra metre cinsinden hesaplayabiliriz
+                    // Nm = Ne * 1.6936 (yaklaşık)
+                    // Uzunluk (m) = Ağırlık (gr) * Nm
+                    // Veya doğrudan Ne formülü ile yarda hesaplayıp metreye çevirebiliriz
+                    // Uzunluk (yarda) = Ağırlık (pound) * Ne * 840
+                    const weightInPoundForNe = weightInGram / 453.592; // Ağırlığı pound'a çevir
+                    let lengthInYards = weightInPoundForNe * yarnCount * 840;
+                    lengthInMeter = lengthInYards * 0.9144; // Yarda'yı metreye çevir
+                    resultUnit = "metre"; // Sonucu metre olarak gösterelim
+                    break;
+                case 'nm': // Metrik Numara (metre/gram)
+                    lengthInMeter = weightInGram * yarnCount; // Uzunluk (m) = Ağırlık (gr) * Nm
+                    break;
+                case 'dtex':
+                    lengthInMeter = (weightInGram / yarnCount) * 10000; // Uzunluk (m) = (Ağırlık (gr) / dTex) * 10000
+                    break;
+                default:
+                    resultBox.innerHTML = '<p class="error">Geçersiz iplik numarası sistemi seçimi.</p>';
+                    resultBox.style.display = 'block';
+                    return;
+            }
+
+            // Sonucu formatla ve göster
+            yarnLengthResultSpan.textContent = `${lengthInMeter.toFixed(2)} ${resultUnit}`; // Metre olarak gösterimi tercih edildi
+            resultBox.style.display = 'block'; // Sonuç kutusunu görünür yap
+        }
+    </script>
+</body>
+</html>

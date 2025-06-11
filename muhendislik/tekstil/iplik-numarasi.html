@@ -16,7 +16,8 @@
     <header>
         <div class="container">
             <div class="logo">
-                <a href="../../index.html"> <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
                 </a>
             </div>
             <nav>
@@ -33,109 +34,139 @@
     </header>
 
     <main>
-        <section class="calculator-detail-section">
-            <div class="container">
+        <section class="health-calculators-section"> <div class="container">
                 <h1 class="main-title">İplik Numarası Hesaplayıcı</h1>
-                <p class="section-description">
-                    İplik numarası, tekstilde ipliğin inceliğini veya kalınlığını ifade eden önemli bir özelliktir. 
-                    Farklı iplik numarası sistemleri (Tex, Denye, Ne, Nm vb.) arasında kolayca dönüşüm yapabilir, 
-                    ipliğin inceliği veya kalınlığına göre diğer sistemlerdeki karşılıklarını hesaplayabilirsiniz.
-                </p>
+                <p class="section-description">İplik numarası, tekstilde ipliğin inceliğini veya kalınlığını ifade eden önemli bir özelliktir. Farklı iplik numarası sistemleri (Tex, Denye, Ne, Nm vb.) arasında kolayca dönüşüm yapabilir, ipliğin inceliği veya kalınlığına göre diğer sistemlerdeki karşılıklarını hesaplayabilirsiniz.</p>
 
-                <div class="calculator-card-wrapper"> <div class="calculator-header">
-                        <i class="fas fa-ruler-combined icon-small"></i>
-                        <h2>İplik Numarası Dönüşümü</h2>
+                <div class="calculator-group">
+                    <div class="calculator-card-wrapper">
+                        <div class="calculator-header">
+                            <i class="fas fa-ruler-combined icon-small"></i> <h2>İplik Numarası Dönüşümü</h2>
+                        </div>
+                        <div class="calculator-form-container">
+                            <form id="iplikNumarasiForm">
+                                <div class="input-with-unit"> <label for="inputNumber">İplik Numarası Değeri:</label>
+                                    <input type="number" id="inputNumber" step="any" min="0" required>
+                                </div>
+
+                                <div class="input-with-unit"> <label for="inputSystem">Giriş Sistemi:</label>
+                                    <select id="inputSystem">
+                                        <option value="tex">Tex (g/1000m)</option>
+                                        <option value="denye">Denye (g/9000m)</option>
+                                        <option value="ne">Ne (Pamuk Numarası - 840 yard/lb)</option>
+                                        <option value="nm">Nm (Metrik Numara - m/g)</option>
+                                        <option value="dtex">dTex (g/10000m)</option>
+                                    </select>
+                                </div>
+                                
+                                <button type="button" onclick="hesaplaIplikNumarasi()">Hesapla</button> </form>
+                            <div id="resultBox" class="result-display"> <h3>Sonuçlar:</h3>
+                                <p><strong>Tex:</strong> <span id="resultTex"></span></p>
+                                <p><strong>Denye:</strong> <span id="resultDenye"></span></p>
+                                <p><strong>Ne (Pamuk Numarası):</strong> <span id="resultNe"></span></p>
+                                <p><strong>Nm (Metrik Numara):</strong> <span id="resultNm"></span></p>
+                                <p><strong>dTex:</strong> <span id="resultDtex"></span></p>
+                            </div>
+                            <p class="small-text">Bu hesaplayıcı, iplik numarası sistemleri arasındaki temel dönüşümleri sağlar. Daha karmaşık senaryolar ve spesifik elyaf tipleri için endüstriyel standartlara başvurulması önerilir.</p>
+                        </div>
                     </div>
-                    <p>Lütfen bir değer ve sistem seçerek hesaplama yapın.</p>
+                    <section class="info-section">
+                        <h3>İplik Numarası Sistemleri Hakkında Bilgi</h3>
+                        <p>
+                            <strong>İplik numarası</strong>, tekstilde ipliğin inceliğini veya kalınlığını ifade eden önemli bir özelliktir. İplik numarası, genellikle ipliğin belirli bir uzunluğunun ağırlığına (doğrudan sistemler) veya belirli bir ağırlığının uzunluğuna (dolaylı sistemler) göre ifade edilir.
+                        </p>
+                        <p>
+                            İplik numarası, üretim süreçlerinde (eğirme, dokuma, örme), kalite kontrolde ve nihai ürün özelliklerinin belirlenmesinde kritik bir parametredir. Doğru iplik numarası seçimi, kumaşın mukavemeti, tuşesi ve genel performansı üzerinde büyük etkiye sahiptir.
+                        </p>
 
-                    <form id="iplikNumarasiForm" class="calculator-form-container"> <div class="input-with-unit"> <label for="inputNumber">İplik Numarası Değeri:</label>
-                            <input type="number" id="inputNumber" step="any" min="0" required>
-                        </div>
+                        <h4>Doğrudan İplik Numarası Sistemleri (Uzunluk Sabit, Ağırlık Değişken)</h4>
+                        <ul>
+                            <li>
+                                <strong>Tex:</strong> 1000 metre ipliğin gram cinsinden ağırlığı. Tex numarası yükseldikçe iplik kalınlaşır. (g/1000m)
+                                <span class="formula-text">Tex = (Ağırlık (g) / Uzunluk (km))</span>
+                            </li>
+                            <li>
+                                <strong>Denye:</strong> 9000 metre ipliğin gram cinsinden ağırlığı. Genellikle filament (sentetik) ipliklerde kullanılır. Denye yükseldikçe iplik kalınlaşır. (g/9000m)
+                                <span class="formula-text">Denye = (Ağırlık (g) / Uzunluk (km)) * 9</span>
+                            </li>
+                            <li>
+                                <strong>dTex (desitex):</strong> 10.000 metre ipliğin gram cinsinden ağırlığı. Daha hassas ölçümler için kullanılır. (g/10000m)
+                                <span class="formula-text">dTex = (Ağırlık (g) / Uzunluk (km)) * 10</span>
+                            </li>
+                        </ul>
 
-                        <div class="input-with-unit"> <label for="inputSystem">Giriş Sistemi:</label>
-                            <select id="inputSystem">
-                                <option value="tex">Tex (g/1000m)</option>
-                                <option value="denye">Denye (g/9000m)</option>
-                                <option value="ne">Ne (Pamuk Numarası - 840 yard/lb)</option>
-                                <option value="nm">Nm (Metrik Numara - m/g)</option>
-                                <option value="dtex">dTex (g/10000m)</option>
-                            </select>
-                        </div>
+                        <h4>Dolaylı İplik Numarası Sistemleri (Ağırlık Sabit, Uzunluk Değişken)</h4>
+                        <ul>
+                            <li>
+                                <strong>Ne (Pamuk Numarası - English Cotton Count):</strong> 1 pound ağırlığındaki ipliğin 840 yardlık çile sayısıyla ifade edilir. Ne numarası yükseldikçe iplik incelir. Genellikle pamuk ipliklerinde kullanılır. (çile/lb)
+                                <span class="formula-text">Ne = (Uzunluk (yard) / 840) / Ağırlık (lb)</span>
+                            </li>
+                            <li>
+                                <strong>Nm (Metrik Numara):</strong> 1 gram ağırlığındaki ipliğin metre cinsinden uzunluğu. Nm numarası yükseldikçe iplik incelir. Genellikle yün ve sentetik ipliklerde kullanılır. (m/g)
+                                <span class="formula-text">Nm = Uzunluk (m) / Ağırlık (g)</span>
+                            </li>
+                        </ul>
                         
-                        <button type="button" onclick="hesaplaIplikNumarasi()">Hesapla</button>
-                    </form>
-
-                    <div class="result-display" id="resultBox"> <h3>Sonuçlar:</h3>
-                        <p><strong>Tex:</strong> <span id="resultTex"></span></p>
-                        <p><strong>Denye:</strong> <span id="resultDenye"></span></p>
-                        <p><strong>Ne (Pamuk Numarası):</strong> <span id="resultNe"></span></p>
-                        <p><strong>Nm (Metrik Numara):</strong> <span id="resultNm"></span></p>
-                        <p><strong>dTex:</strong> <span id="resultDtex"></span></p>
-                    </div>
-                </div>
-
-                <div class="info-section">
-                    <h3>İplik Numarası Sistemleri Hakkında Bilgi</h3>
-                    <p>İplik numarası, tekstil liflerinin ve ipliklerinin inceliğini veya kalınlığını belirten bir ölçü sistemidir. İplik numarası, genellikle ipliğin belirli bir uzunluğunun ağırlığına (doğrudan sistemler) veya belirli bir ağırlığının uzunluğuna (dolaylı sistemler) göre ifade edilir.</p>
-                    
-                    <h4>Doğrudan İplik Numarası Sistemleri (Uzunluk Sabit, Ağırlık Değişken)</h4>
-                    <ul>
-                        <li>
-                            <strong>Tex:</strong> 1000 metre ipliğin gram cinsinden ağırlığı. (g/1000m)
-                            <span class="formula-text">Tex = (İpliğin Ağırlığı (g) / İpliğin Uzunluğu (km))</span>
-                        </li>
-                        <li>
-                            <strong>Denye:</strong> 9000 metre ipliğin gram cinsinden ağırlığı. Genellikle sentetik ipliklerde kullanılır. (g/9000m)
-                            <span class="formula-text">Denye = (İpliğin Ağırlığı (g) / İpliğin Uzunluğu (km)) * 9</span>
-                        </li>
-                        <li>
-                            <strong>dTex (desitex):</strong> 10.000 metre ipliğin gram cinsinden ağırlığı. (g/10000m)
-                            <span class="formula-text">dTex = (İpliğin Ağırlığı (g) / İpliğin Uzunluğu (km)) * 10</span>
-                        </li>
-                    </ul>
-
-                    <h4>Dolaylı İplik Numarası Sistemleri (Ağırlık Sabit, Uzunluk Değişken)</h4>
-                    <ul>
-                        <li>
-                            <strong>Ne (Pamuk Numarası - Cotton Count):</strong> 1 pound ağırlığındaki ipliğin 840 yardlık çile sayısıyla ifade edilir. Genellikle pamuk ipliklerinde kullanılır. (çile/lb)
-                            <span class="formula-text">Ne = (İpliğin Uzunluğu (yard) / 840) / İpliğin Ağırlığı (lb)</span>
-                        </li>
-                        <li>
-                            <strong>Nm (Metrik Numara):</strong> 1 gram ağırlığındaki ipliğin metre cinsinden uzunluğu. (m/g)
-                            <span class="formula-text">Nm = İpliğin Uzunluğu (m) / İpliğin Ağırlığı (g)</span>
-                        </li>
-                    </ul>
-                    
-                    <h4>Dönüşüm Tablosu (Örnek)</h4>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Sistem</th>
-                                <th>Tex</th>
-                                <th>Denye</th>
-                                <th>Ne</th>
-                                <th>Nm</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>**1 Tex**</td>
-                                <td>1</td>
-                                <td>9</td>
-                                <td>590.54 / Tex</td>
-                                <td>1000 / Tex</td>
-                            </tr>
-                            <tr>
-                                <td>**1 Denye**</td>
-                                <td>1 / 9</td>
-                                <td>1</td>
-                                <td>5314.96 / Denye</td>
-                                <td>9000 / Denye</td>
-                            </tr>
+                        <h4>Dönüşüm Tablosu (Örnek)</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Sistem</th>
+                                    <th>Tex</th>
+                                    <th>Denye</th>
+                                    <th>Ne</th>
+                                    <th>Nm</th>
+                                    <th>dTex</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>**1 Tex**</td>
+                                    <td>1</td>
+                                    <td>9</td>
+                                    <td>590.54 / Tex</td>
+                                    <td>1000 / Tex</td>
+                                    <td>10</td>
+                                </tr>
+                                <tr>
+                                    <td>**1 Denye**</td>
+                                    <td>1 / 9</td>
+                                    <td>1</td>
+                                    <td>5314.96 / Denye</td>
+                                    <td>9000 / Denye</td>
+                                    <td>10 / 9</td>
+                                </tr>
+                                <tr>
+                                    <td>**1 Ne**</td>
+                                    <td>590.54 / Ne</td>
+                                    <td>5314.96 / Ne</td>
+                                    <td>1</td>
+                                    <td>1693.6 / Ne</td>
+                                    <td>5905.4 / Ne</td>
+                                </tr>
+                                <tr>
+                                    <td>**1 Nm**</td>
+                                    <td>1000 / Nm</td>
+                                    <td>9000 / Nm</td>
+                                    <td>1693.6 / Nm</td>
+                                    <td>1</td>
+                                    <td>10000 / Nm</td>
+                                </tr>
+                                <tr>
+                                    <td>**1 dTex**</td>
+                                    <td>1 / 10</td>
+                                    <td>9 / 10</td>
+                                    <td>59.054 / dTex</td>
+                                    <td>100 / dTex</td>
+                                    <td>1</td>
+                                </tr>
                             </tbody>
-                    </table>
+                        </table>
 
-                    <p class="disclaimer-text">Bu hesaplayıcı ve bilgiler genel amaçlıdır. Endüstriyel uygulamalarda hassas ölçümler ve standartlar esastır.</p>
+                        <p class="disclaimer-text">
+                            Bu hesaplayıcı ve bilgiler genel amaçlıdır. Endüstriyel uygulamalarda hassas ölçümler ve standartlar esastır. Hesaplamalarınızda herhangi bir sorun veya hata ile karşılaşırsanız, lütfen bize <a href="../../iletisim.html">iletişim</a> sayfamızdan ulaşın.
+                        </p>
+                    </section>
                 </div>
             </div>
         </section>
@@ -149,12 +180,26 @@
     </footer>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const iplikNumarasiForm = document.getElementById('iplikNumarasiForm');
+            const resultBox = document.getElementById('resultBox');
+
+            if (iplikNumarasiForm) {
+                iplikNumarasiForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Formun varsayılan gönderimini engelle
+                    hesaplaIplikNumarasi(); // Fonksiyonu çağır
+                });
+            }
+        });
+
         function hesaplaIplikNumarasi() {
             const inputNumber = parseFloat(document.getElementById('inputNumber').value);
             const inputSystem = document.getElementById('inputSystem').value;
+            const resultBox = document.getElementById('resultBox'); // Result box'ı burada tekrar alıyoruz
 
-            if (isNaN(inputNumber) || inputNumber <= 0) { // Negatif ve sıfır kontrolü eklendi
-                alert("Lütfen geçerli (pozitif) bir iplik numarası değeri girin.");
+            if (isNaN(inputNumber) || inputNumber <= 0) {
+                resultBox.innerHTML = '<p class="error">Lütfen geçerli (pozitif) bir iplik numarası değeri girin.</p>';
+                resultBox.style.display = 'block';
                 return;
             }
 
@@ -173,7 +218,7 @@
                     tex = denye / 9;
                     ne = 5314.96 / denye;
                     nm = 9000 / denye;
-                    dtex = denye * 10 / 9;
+                    dtex = denye * 10 / 9; 
                     break;
                 case 'ne':
                     ne = inputNumber;
@@ -197,17 +242,21 @@
                     nm = 1000 / tex;
                     break;
                 default:
-                    alert("Geçersiz iplik numarası sistemi.");
+                    resultBox.innerHTML = '<p class="error">Geçersiz iplik numarası sistemi seçimi.</p>';
+                    resultBox.style.display = 'block';
                     return;
             }
 
             // Sonuçları göster
-            document.getElementById('resultTex').textContent = tex.toFixed(3);
-            document.getElementById('resultDenye').textContent = denye.toFixed(3);
-            document.getElementById('resultNe').textContent = ne.toFixed(3);
-            document.getElementById('resultNm').textContent = nm.toFixed(3);
-            document.getElementById('resultDtex').textContent = dtex.toFixed(3);
-            document.getElementById('resultBox').style.display = 'block'; // Sonuç kutusunu görünür yap
+            resultBox.innerHTML = `
+                <h3>Sonuçlar:</h3>
+                <p><strong>Tex:</strong> <span class="result-value">${tex.toFixed(3)}</span></p>
+                <p><strong>Denye:</strong> <span class="result-value">${denye.toFixed(3)}</span></p>
+                <p><strong>Ne (Pamuk Numarası):</strong> <span class="result-value">${ne.toFixed(3)}</span></p>
+                <p><strong>Nm (Metrik Numara):</strong> <span class="result-value">${nm.toFixed(3)}</span></p>
+                <p><strong>dTex:</strong> <span class="result-value">${dtex.toFixed(3)}</span></p>
+            `;
+            resultBox.style.display = 'block'; // Sonucu görünür yap
         }
     </script>
 </body>

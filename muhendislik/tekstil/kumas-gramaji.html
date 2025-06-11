@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kumaş Gramajı Hesaplama - Hesapkolik</title>
+    <meta name="description" content="Kumaşın metrekare (gr/m²) ve metretül (gr/mt) gramajını hesaplayın. Dokuma, örme ve nonwoven kumaşlar için pratik gramaj hesaplama aracı ve sistem bilgileri.">
+    <meta name="keywords" content="kumaş gramajı, metrekare gramaj, metretül gramaj, gr/m2, gr/mt, kumaş ağırlığı, kumaş yoğunluğu, tekstil mühendisliği hesaplamaları, hesapkolik tekstil">
+    <link rel="stylesheet" href="../../css/style.css"> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="health-calculators-section">
+            <div class="container">
+                <h1 class="main-title">Kumaş Gramajı Hesaplayıcı</h1>
+                <p class="section-description">Kumaşın birim alan ağırlığı (gramaj), tekstil endüstrisinde kumaşın maliyetini, tuşesini ve kullanım alanını belirleyen kritik bir faktördür. Bu hesaplayıcı ile kumaş numunesi ölçülerine göre metrekare (gr/m²) ve metretül (gr/mt) gramajını kolayca hesaplayabilirsiniz.</p>
+
+                <div class="calculator-group">
+                    <div class="calculator-card-wrapper">
+                        <div class="calculator-header">
+                            <i class="fas fa-weight-hanging icon-small"></i>
+                            <h2>Kumaş Gramajını Hesapla</h2>
+                        </div>
+                        <div class="calculator-form-container">
+                            <form id="fabricGramageForm">
+                                <div class="input-with-unit">
+                                    <label for="sampleWeight">Numune Ağırlığı (gram):</label>
+                                    <input type="number" id="sampleWeight" step="0.001" min="0" required placeholder="Örn: 5.25">
+                                </div>
+
+                                <div class="input-with-unit">
+                                    <label for="sampleLength">Numune Uzunluğu (cm):</label>
+                                    <input type="number" id="sampleLength" step="0.1" min="0" required placeholder="Örn: 20">
+                                </div>
+
+                                <div class="input-with-unit">
+                                    <label for="sampleWidth">Numune Genişliği (cm):</label>
+                                    <input type="number" id="sampleWidth" step="0.1" min="0" required placeholder="Örn: 20">
+                                </div>
+
+                                <div class="input-with-unit">
+                                    <label for="fabricWidth">Kumaş Eni (cm):</label>
+                                    <input type="number" id="fabricWidth" step="0.1" min="0" required placeholder="Örn: 150">
+                                </div>
+                                
+                                <button type="button" onclick="hesaplaKumasGramaji()">Hesapla</button>
+                            </form>
+                            <div id="resultBox" class="result-display">
+                                <h3>Sonuçlar:</h3>
+                                <p><strong>Metrekare Gramaj (gr/m²):</strong> <span id="resultGrm2" class="result-value"></span></p>
+                                <p><strong>Metretül Gramaj (gr/mt):</strong> <span id="resultGrmt" class="result-value"></span></p>
+                            </div>
+                            <p class="small-text">Numune boyutlarını ve kumaş enini doğru girdiğinizden emin olun. Hesaplamalar numunenin homojen olduğunu varsayar.</p>
+                        </div>
+                    </div>
+                    <section class="info-section">
+                        <h3>Kumaş Gramajı Nedir?</h3>
+                        <p>
+                            Kumaş gramajı, bir kumaşın birim alanındaki ağırlığını ifade eder ve genellikle gram/metrekare (gr/m² veya GSM - Grams per Square Meter) cinsinden belirtilir. Metretül (gr/mt) gramajı ise kumaşın standart eni üzerinden 1 metre uzunluğunun ağırlığını gösterir. Bu değer, kumaşın doku yoğunluğu, kullanılan ipliklerin cinsi ve numarası gibi faktörlere bağlı olarak değişir.
+                        </p>
+                        <p>
+                            Gramaj, tekstil ürünlerinin maliyet, performans ve kullanım alanlarını doğrudan etkileyen önemli bir kalite parametresidir. Örneğin, daha yüksek gramaja sahip kumaşlar genellikle daha kalın, daha dayanıklı ve daha tok bir yapıya sahipken, düşük gramajlı kumaşlar daha hafif ve incedir.
+                        </p>
+
+                        <h4>Kumaş Gramajı Nasıl Hesaplanır?</h4>
+                        <p>
+                            Temel olarak, kumaş gramajı bilinen bir alan veya uzunluktaki kumaş numunesinin ağırlığı ölçülerek hesaplanır.
+                        </p>
+                        <p class="formula-text">
+                            Metrekare Gramaj (gr/m²) = (Numune Ağırlığı (gr) / (Numune Uzunluğu (cm) * Numune Genişliği (cm))) * 10000
+                        </p>
+                        <p class="formula-text">
+                            Metretül Gramaj (gr/mt) = Metrekare Gramaj (gr/m²) * (Kumaş Eni (cm) / 100)
+                        </p>
+                        <p>
+                            Kumaş eni (genişliği) metretül gramajı hesaplamasında kritik öneme sahiptir çünkü metretül, kumaşın o standart endeki 1 metrelik uzunluğunun ağırlığını ifade eder.
+                        </p>
+
+                        <h4>Uygulama Alanları:</h4>
+                        <ul>
+                            <li>**Maliyet Hesaplaması:** Kumaşın metrekare veya metretül bazında maliyetinin belirlenmesi.</li>
+                            <li>**Üretim Planlaması:** Belirli bir ürün için ne kadar kumaş gerekeceğinin tahmin edilmesi.</li>
+                            <li>**Kalite Kontrol:** Üretilen kumaşın belirlenen standartlara uygun olup olmadığının denetlenmesi.</li>
+                            <li>**Ürün Tasarımı:** Giysi veya ev tekstili gibi ürünlerin ağırlık ve tuşe özelliklerinin ayarlanması.</li>
+                            <li>**İthalat/İhracat:** Ticari işlemlerde kumaşın standart ağırlık birimleriyle belirtilmesi.</li>
+                        </ul>
+                        <p class="disclaimer-text">
+                            Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Gerçek üretimde ve ticarette, numune alma yöntemleri, nem oranları ve test standartları gibi faktörler sonuçları etkileyebilir. Hassas ticari veya endüstriyel uygulamalar için sertifikalı laboratuvar testleri ve uluslararası standartlar esas alınmalıdır. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize <a href="../../iletisim.html">iletişim</a> sayfamızdan ulaşın.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fabricGramageForm = document.getElementById('fabricGramageForm');
+            if (fabricGramageForm) {
+                fabricGramageForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Formun varsayılan gönderimini engelle
+                    hesaplaKumasGramaji(); // Fonksiyonu çağır
+                });
+            }
+        });
+
+        function hesaplaKumasGramaji() {
+            const sampleWeight = parseFloat(document.getElementById('sampleWeight').value); // Numune Ağırlığı (gr)
+            const sampleLength = parseFloat(document.getElementById('sampleLength').value); // Numune Uzunluğu (cm)
+            const sampleWidth = parseFloat(document.getElementById('sampleWidth').value);   // Numune Genişliği (cm)
+            const fabricWidth = parseFloat(document.getElementById('fabricWidth').value);   // Kumaş Eni (cm)
+
+            const resultBox = document.getElementById('resultBox');
+
+            // Giriş değerlerinin geçerliliğini kontrol et
+            if (isNaN(sampleWeight) || isNaN(sampleLength) || isNaN(sampleWidth) || isNaN(fabricWidth) ||
+                sampleWeight <= 0 || sampleLength <= 0 || sampleWidth <= 0 || fabricWidth <= 0) {
+                resultBox.innerHTML = '<p class="error">Lütfen tüm alanlara geçerli (pozitif) sayılar girin.</p>';
+                resultBox.style.display = 'block';
+                return;
+            }
+
+            // 1. Metrekare Gramaj (gr/m²) hesaplama
+            // Numune alanı metrekare cinsinden: (uzunluk_cm * genişlik_cm) / 10000
+            const sampleAreaM2 = (sampleLength * sampleWidth) / 10000;
+            const gramPerSquareMeter = sampleWeight / sampleAreaM2;
+
+            // 2. Metretül Gramaj (gr/mt) hesaplama
+            // Metretül gramajı = Metrekare Gramaj * Kumaş Eni (metre)
+            const fabricWidthM = fabricWidth / 100; // Kumaş enini cm'den metreye çevir
+            const gramPerMeter = gramPerSquareMeter * fabricWidthM;
+
+            // Sonuçları göster
+            resultBox.innerHTML = `
+                <h3>Sonuçlar:</h3>
+                <p><strong>Metrekare Gramaj (gr/m²):</strong> <span class="result-value">${gramPerSquareMeter.toFixed(2)}</span></p>
+                <p><strong>Metretül Gramaj (gr/mt):</strong> <span class="result-value">${gramPerMeter.toFixed(2)}</span></p>
+            `;
+            resultBox.style.display = 'block'; // Sonuç kutusunu görünür yap
+        }
+    </script>
+</body>
+</html>
