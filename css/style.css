@@ -16,7 +16,7 @@ body {
     width: 90%;
     max-width: 1100px;
     margin: auto;
-    overflow: hidden; /* Clearfix için */
+    /* overflow: hidden; /* Clearfix için - Flexbox kullanırken genellikle gerek kalmaz */
 }
 
 a {
@@ -28,7 +28,7 @@ h1, h2, h3 {
     margin-bottom: 0.75rem;
 }
 
-/* Header */
+/* --- Header --- */
 header {
     background: #fff;
     color: #333;
@@ -37,23 +37,24 @@ header {
     position: sticky;
     top: 0;
     z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Header'a hafif bir gölge ekledim */
 }
 
 header .container {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: space-between; /* Logo sola, navigasyon sağa */
+    align-items: center; /* Dikeyde ortala */
 }
 
 /* Logo Stilleri */
 header .logo .site-logo {
-    height: 100px; /* Logonuzun ideal yüksekliğini burdan ayarlayın */
-    width: auto; /* Genişliği otomatik olarak yüksekliğe göre ayarlar */
-    display: block; /* Flexbox içinde daha iyi kontrol sağlar */
-    padding: 5px 0; /* Header padding'i ile uyumlu hale getirebilirsiniz */
+    height: 60px; /* Logonuzu burdan ayarlayabilirsiniz, 100px biraz büyük olabilir */
+    width: auto;
+    display: block;
+    padding: 5px 0;
 }
 
-/* Eğer HTML'de metin H1'i gizli tutmak isterseniz */
+/* Erişilebilirlik için gizli başlık */
 .visually-hidden {
     position: absolute;
     width: 1px;
@@ -65,35 +66,88 @@ header .logo .site-logo {
     border: 0;
 }
 
-/* Eski h1 logo stili (artık kullanılmıyorsa silebilirsiniz) */
-header .logo h1 a {
-    color: #333;
-    font-weight: 700;
-    display: none; /* Metin logosunu gizledik, görsel logoyu kullandığımız için */
-}
-
+/* Navigasyon Menüsü */
 header nav ul {
     list-style: none;
-    display: flex;
+    display: flex; /* Menü öğelerini yan yana hizala */
+    margin: 0;
+    padding: 0;
 }
 
 header nav ul li {
-    margin-left: 20px;
+    position: relative; /* Dropdown için bu çok önemli */
+    margin-left: 25px; /* Menü öğeleri arasına boşluk */
 }
 
 header nav ul li a {
     color: #555;
     font-weight: 600;
     transition: color 0.3s ease;
+    padding: 10px 0; /* Menü linklerinin dikey dolgusu */
+    display: block; /* Tüm link alanını tıklanabilir yapar */
+    white-space: nowrap; /* Menü başlıklarının tek satırda kalmasını sağlar */
 }
 
 header nav ul li a:hover {
     color: #3498db;
 }
 
-/* Hero Section */
+/* --- Dropdown Menü Stilleri --- */
+.dropdown {
+    /* Genel nav ul li stillerinden position:relative ve display:flex alıyor */
+    /* Özel bir display veya position tanımına ihtiyaç duymuyor çünkü üstten devralıyor */
+}
+
+.dropbtn {
+    /* Özel bir stile ihtiyaç duymuyor, nav ul li a stilini kullanıyor */
+    /* Eğer bir ok ikonu eklemek isterseniz buraya ::after pseudo-elementi ekleyebilirsiniz */
+}
+
+.dropdown-content {
+    display: none; /* Başlangıçta gizli */
+    position: absolute; /* Ana menü öğesine göre konumlandır */
+    background-color: #fff;
+    min-width: 200px; /* Menünün minimum genişliği */
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1000; /* Diğer içeriğin üzerinde görünmesini sağlar */
+    border-radius: 5px;
+    left: 0; /* Dropdown'ı ana menü öğesiyle aynı hizadan başlat */
+    top: 100%; /* Dropdown'ı ana menü öğesinin hemen altında başlat */
+    box-sizing: border-box;
+    overflow: hidden;
+    padding: 5px 0; /* İç üst/alt boşluk */
+}
+
+.dropdown-content a {
+    color: #333;
+    padding: 10px 15px;
+    text-decoration: none;
+    display: block; /* Her linkin ayrı satırda görünmesini sağlar */
+    text-align: left;
+    width: 100%; /* Linklerin dropdown kutusunu tamamen doldurmasını sağlar */
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-content a:hover {
+    background-color: #f0f0f0;
+    color: #3498db;
+}
+
+/* Dropdown Üzerine Gelince İçeriğin Görünmesi */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Dropdown Butonu Üzerine Gelince Arka Plan Rengi (Opsiyonel) */
+.dropdown:hover .dropbtn {
+    background-color: #f5f5f5; /* Hover rengini logo hover rengiyle uyumlu hale getirdim */
+    color: #3498db;
+}
+
+/* --- Hero Section --- */
 .hero {
-    background: #3498db;
+    background: #3498db; /* Tek renk arka planı */
+    /* background: linear-gradient(to right, #3498db, #2ecc71); /* İsterseniz gradyan kullanabilirsiniz */
     color: #fff;
     padding: 4rem 0;
     text-align: center;
@@ -127,7 +181,7 @@ header nav ul li a:hover {
     background: #c0392b;
 }
 
-/* Calculator List Section (Ana Sayfa Hesaplayıcıları ve Sağlık Hesaplamaları Açılış Sayfası) */
+/* --- Calculator List Section (Ana Sayfa Hesaplayıcıları ve Sağlık Hesaplamaları Açılış Sayfası) --- */
 #calculator-list, .health-calculator-landing-section {
     padding: 3rem 0;
 }
@@ -138,6 +192,7 @@ header nav ul li a:hover {
     margin-bottom: 2rem;
     color: #333;
 }
+
 .health-calculator-landing-section .section-description {
     text-align: center;
     font-size: 1.1em;
@@ -159,6 +214,10 @@ header nav ul li a:hover {
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     text-align: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex; /* İçeriği dikeyde düzenlemek için */
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .calculator-card:hover {
@@ -168,16 +227,16 @@ header nav ul li a:hover {
 
 /* İkonlar için stil (Font Awesome) */
 .calculator-card i.icon-big {
-    font-size: 4.5em; /* İkonların boyutu, isteğe göre ayarlayın */
-    color: #3498db; /* Ana renginizle uyumlu */
+    font-size: 4.5em;
+    color: #3498db;
     margin-bottom: 1rem;
-    display: block; /* Ortalamak için */
+    display: block;
     text-align: center;
 }
 
-/* Eski img ikon stilini geçersiz kılın veya kaldırın */
+/* Eski img ikon stilini gizle (Font Awesome kullanılıyorsa) */
 .calculator-card img {
-    display: none; /* İkon yerine img kullananları gizler */
+    display: none;
 }
 
 .calculator-card h3 {
@@ -190,6 +249,7 @@ header nav ul li a:hover {
     color: #666;
     margin-bottom: 1rem;
     min-height: 50px; /* Kart açıklamalarının aynı hizada kalmasına yardımcı olur */
+    flex-grow: 1; /* Açıklamanın boşluğu doldurmasını sağlar */
 }
 
 .card-button {
@@ -201,13 +261,14 @@ header nav ul li a:hover {
     font-size: 0.9rem;
     font-weight: 600;
     transition: background-color 0.3s ease;
+    width: 100%; /* Butonun kartın genişliğini kaplamasını sağlar */
 }
 
 .card-button:hover {
     background: #27ae60;
 }
 
-/* Footer */
+/* --- Footer --- */
 footer {
     background: #333;
     color: #fff;
@@ -228,7 +289,7 @@ footer a:hover {
     text-decoration: underline;
 }
 
-/* Hakkımızda Sayfası Stilleri */
+/* --- Hakkımızda Sayfası Stilleri --- */
 .main-content {
     padding: 40px 0;
 }
@@ -242,7 +303,7 @@ footer a:hover {
 }
 
 .main-content h3 {
-    color: #3498db; /* Ana renk şemanıza uygun */
+    color: #3498db;
     margin-top: 25px;
     margin-bottom: 15px;
     font-size: 1.8em;
@@ -264,21 +325,21 @@ footer a:hover {
 }
 
 .main-content ul li {
-    background: #fff; /* Kartlarla uyumlu beyaz arka plan */
+    background: #fff;
     margin-bottom: 10px;
     padding: 15px 20px;
-    border-left: 5px solid #3498db; /* Ana renk şemanıza uygun */
+    border-left: 5px solid #3498db;
     border-radius: 5px;
     font-size: 1.05em;
     color: #444;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Kartlarla uyumlu hafif gölge */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 .main-content ul li strong {
     color: #2c3e50;
 }
 
-/* İletişim Sayfası Stilleri */
+/* --- İletişim Sayfası Stilleri --- */
 .contact-section {
     padding: 40px 0;
 }
@@ -377,7 +438,7 @@ footer a:hover {
 .contact-form-wrapper form input[type="text"],
 .contact-form-wrapper form input[type="email"],
 .contact-form-wrapper form textarea {
-    width: calc(100% - 24px);
+    width: calc(100% - 24px); /* Bu kural artık input-with-unit tarafından yönetilenler için geçersiz kılınır */
     padding: 12px;
     margin-bottom: 20px;
     border: 1px solid #ddd;
@@ -456,13 +517,13 @@ footer a:hover {
     background-color: #2980b9;
 }
 
-/* Her bir hesaplayıcı kartı ve bilgi bölümü için genel grup */
+/* --- Her bir hesaplayıcı kartı ve bilgi bölümü için genel grup --- */
 .calculator-group {
     display: flex;
-    flex-wrap: wrap; /* Küçük ekranlarda alt alta düşer */
-    gap: 40px; /* Kartlar ve bilgi arasında boşluk */
+    flex-wrap: wrap;
+    gap: 40px;
     justify-content: center;
-    margin-bottom: 60px; /* Her hesaplayıcı grubunun altında boşluk */
+    margin-bottom: 60px;
 }
 
 /* Hesap Makinesi Kutusu ve Bilgi Bölümü Genişlikleri */
@@ -472,8 +533,8 @@ footer a:hover {
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     flex: 1; /* Esnek genişlik */
-    min-width: 320px; /* Minimum genişlik */
-    max-width: 800px; /* **BURAYI GENİŞLETTİK: Daha büyük bir değer** */
+    min-width: 320px;
+    max-width: 800px; /* Daha büyük bir değer */
     text-align: center;
 }
 
@@ -503,7 +564,6 @@ footer a:hover {
 }
 
 /* Form elemanları için genel stil */
-/* Bu kısım .calculator-form-container içindeki input ve select'leri etkiler */
 .calculator-form-container label {
     display: block;
     text-align: left;
@@ -515,7 +575,7 @@ footer a:hover {
 .calculator-form-container input[type="number"],
 .calculator-form-container input[type="date"],
 .calculator-form-container select {
-    width: calc(100% - 24px); /* Bu kural artık input-with-unit tarafından yönetilenler için geçersiz kılınır */
+    width: 100%; /* Tam genişlik, .input-with-unit daha sonra override eder */
     padding: 12px;
     margin-bottom: 20px;
     border: 1px solid #ddd;
@@ -554,14 +614,38 @@ footer a:hover {
     font-size: 1.3em;
     font-weight: 700;
     color: #333;
-    /* Yoğunluk hesaplayıcıdaki display: none; buradan kaldırıldı, JavaScript ile yönetilmeli */
+    background-color: #f8f9fa;
+    border: 1px solid #e2e6ea;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: none; /* Varsayılan olarak gizli, JS ile gösterilecek */
 }
 
-.category-display {
-    margin-top: 10px;
-    font-size: 1.1em;
+.result-display p {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    color: #343a40;
+}
+
+.result-display .result-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #28a745;
+}
+
+.result-display hr {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+    margin: 15px auto;
+    width: 80%;
+}
+
+.result-display .error {
+    color: #dc3545;
     font-weight: 600;
-    color: #666;
 }
 
 .small-text {
@@ -579,8 +663,8 @@ footer a:hover {
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     flex: 2; /* Karttan daha geniş olabilir */
-    min-width: 320px; /* Minimum genişlik */
-    max-width: 900px; /* **BURAYI GENİŞLETTİK: Daha büyük bir değer** */
+    min-width: 320px;
+    max-width: 900px;
     text-align: left;
 }
 
@@ -654,19 +738,154 @@ footer a:hover {
     padding-top: 15px;
 }
 
-/* Responsive Design */
+/* --- Yoğunluk Hesaplayıcıya Özel Stil Eklemeleri --- */
+
+/* Input ve birim seçicisini yan yana getirmek için flex container */
+.input-with-unit {
+    display: flex;
+    flex-wrap: wrap; /* Küçük ekranlarda alt alta gelmesini sağlar */
+    align-items: center;
+    gap: 10px; /* Elemanlar arası boşluk */
+    margin-bottom: 15px; /* Her bir input grubunun altındaki boşluk */
+    /* padding: 10px 0; /* İç boşluk - container'ın kendi padding'i var, burada ekstra gerekmeyebilir */
+}
+
+.input-with-unit label {
+    flex-basis: 120px; /* Etiket için sabit genişlik */
+    min-width: 80px; /* Daha küçük ekranlar için minimum genişlik */
+    font-weight: 600;
+    color: #333;
+    text-align: left;
+    margin-bottom: 0; /* Flexbox içinde margin-bottom'ı sıfırla */
+}
+
+.input-with-unit input[type="number"] {
+    flex-grow: 1; /* Input kutucuğunun kalan alanı doldurmasını sağlar */
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+    min-width: 120px;
+    text-align: left;
+    margin-bottom: 0; /* Flexbox içinde margin-bottom'ı sıfırla */
+    width: auto; /* Flex-grow ile beraber düzgün çalışması için */
+}
+
+.input-with-unit select {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #fff;
+    cursor: pointer;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+    width: auto;
+    margin-bottom: 0; /* Flexbox içinde margin-bottom'ı sıfırla */
+}
+
+/* Yatay çizgiler için stil */
+.form-divider {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+    margin: 20px 0;
+}
+
+/* Radio buton grubu için boşluk ve hizalama */
+.radio-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.radio-group label {
+    margin-left: 5px;
+    font-size: 1rem;
+    color: #555;
+    cursor: pointer;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 5px;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+/* Button için genel görünüm iyileştirmeleri */
+.calculator-form-container button { /* Genel button stili, submit için de geçerli olacak */
+    display: block;
+    width: 100%;
+    padding: 12px 25px;
+    margin-top: 25px;
+    background-color: #3498db; /* Hesapkolik ana rengi */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.calculator-form-container button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+/* --- Responsive Design --- */
 @media (max-width: 768px) {
     header .container {
-        flex-direction: column;
+        flex-direction: column; /* Küçük ekranlarda logo ve nav dikey sıralansın */
+        align-items: center;
     }
 
     header nav {
         margin-top: 1rem;
     }
-    
+
+    header nav ul {
+        flex-direction: column; /* Menü öğeleri dikey sıralansın */
+        align-items: center;
+        width: 100%; /* Mobil menü tam genişlikte olsun */
+    }
+
     header nav ul li {
-        margin-left: 10px;
-        margin-right: 10px;
+        margin: 10px 0; /* Dikey menüde boşluk */
+        width: 100%; /* Her menü öğesi tam genişlikte olsun */
+        text-align: center; /* Menü öğesi içeriğini ortala */
+    }
+
+    header nav ul li a {
+        padding: 10px 15px; /* Mobil menü linklerinin dolgusu */
+        border-bottom: 1px solid #eee; /* Mobil menü linkleri arasına çizgi */
+    }
+
+    header nav ul li:last-child a {
+        border-bottom: none; /* Son linkin altında çizgi olmasın */
+    }
+
+    /* Dropdown'ın mobil görünümde tam genişlik almasını sağlayın */
+    .dropdown-content {
+        position: static; /* Mobil'de akışta kalsın, absolute olmasın */
+        width: 100%; /* Tam genişlik */
+        box-shadow: none; /* Gölge olmasın */
+        border-radius: 0; /* Köşeler olmasın */
+        padding: 0; /* İç padding'i sıfırla */
+        background-color: #f9f9f9; /* Arka plan rengi */
+        border-top: 1px solid #eee; /* Üstte ayrım çizgisi */
+    }
+
+    .dropdown-content a {
+        padding: 10px 0; /* Mobil dropdown linklerinin dolgusu */
+        border-bottom: 1px solid #ddd; /* Mobil dropdown linkleri arasına çizgi */
+        font-size: 1em; /* Okunabilirliği artır */
+    }
+
+    .dropdown-content a:last-child {
+        border-bottom: none;
     }
 
     .hero h2 {
@@ -698,16 +917,16 @@ footer a:hover {
     }
 
     /* Sağlık hesaplamaları sayfası responsive */
-    .health-calculators-section .main-title { /* Tekil hesaplayıcı sayfaları için başlık */
+    .health-calculators-section .main-title {
         font-size: 2.2em;
     }
     .calculator-group {
-        flex-direction: column; /* Küçük ekranlarda kart ve bilgi alt alta gelir */
+        flex-direction: column;
     }
     .calculator-card-wrapper, .info-section {
-        max-width: 95%; /* **BURAYI GENİŞLETTİK: Küçük ekranlarda da daha geniş olacak** */
+        max-width: 95%;
         min-width: unset;
-        margin: 30px auto; /* Boşlukları ayarlar */
+        margin: 30px auto;
     }
     .calculator-card-wrapper h2 {
         font-size: 1.5em;
@@ -725,305 +944,39 @@ footer a:hover {
         font-size: 0.95em;
     }
 }
-/* Mevcut stil dosyanızın sonuna ekleyin */
 
-/* Yoğunluk Hesaplayıcıya Özel Stil Eklemeleri */
-
-/* Input ve birim seçicisini yan yana getirmek için yeni bir flex container */
-.input-with-unit {
-    display: flex;
-    flex-wrap: wrap; /* Küçük ekranlarda alt alta gelmesini sağlar */
-    align-items: center;
-    gap: 10px; /* Elemanlar arası boşluk */
-    margin-bottom: 15px; /* Her bir input grubunun altındaki boşluk */
-    padding: 10px 0; /* İç boşluk */
-}
-
-.input-with-unit label {
-    flex-basis: 120px; /* Etiket için sabit genişlik */
-    min-width: 80px; /* Daha küçük ekranlar için minimum genişlik */
-    font-weight: 600;
-    color: #333;
-    text-align: left; /* Etiketleri sola hizala */
-}
-
-.input-with-unit input[type="number"] {
-    flex-grow: 1; /* Input kutucuğunun kalan alanı doldurmasını sağlar */
-    padding: 10px 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 1rem;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
-    min-width: 120px; /* Input için minimum genişlik */
-    text-align: left; 
-    margin-bottom: 0; 
-    width: auto; 
-}
-
-.input-with-unit select {
-    padding: 10px 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 1rem;
-    background-color: #fff;
-    cursor: pointer;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
-    width: auto; 
-    margin-bottom: 0; 
-}
-
-/* Yatay çizgiler için stil */
-.form-divider {
-    border: 0;
-    height: 1px;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
-    margin: 20px 0; 
-}
-
-/* Radio buton grubu için boşluk ve hizalama */
-.radio-group {
-    margin-bottom: 20px;
-    text-align: left; 
-}
-
-.radio-group label {
-    margin-left: 5px;
-    font-size: 1rem;
-    color: #555;
-    cursor: pointer;
-    display: inline-block; 
-    margin-bottom: 5px; 
-}
-
-.radio-group input[type="radio"] {
-    margin-right: 5px;
-    cursor: pointer;
-    margin-bottom: 0;
-}
-
-/* Button için genel görünüm iyileştirmeleri (mevcut buton stillerini ezebilir) */
-.calculator-form-container button[type="submit"] { /* Bu selector'ı sadece button[type="submit"] değil, genel button'lar için kullanabiliriz */
-    display: block; 
-    width: 100%;
-    padding: 12px 25px;
-    margin-top: 25px; 
-    background-color: #007bff; 
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.calculator-form-container button[type="submit"]:hover {
-    background-color: #0056b3; 
-    transform: translateY(-2px);
-}
-
-/* Sonuç ekranı (result-display) için boşluk ve görsel iyileştirme */
-.result-display {
-    background-color: #f8f9fa;
-    border: 1px solid #e2e6ea;
-    border-radius: 8px;
-    padding: 20px;
-    margin-top: 30px; 
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    display: none; /* Varsayılan olarak gizli, JS ile gösterilecek */
-}
-
-.result-display p {
-    margin-bottom: 10px;
-    font-size: 1.1rem;
-    color: #343a40;
-}
-
-.result-display .result-value {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #28a745; 
-}
-
-.result-display hr {
-    border: 0;
-    height: 1px;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
-    margin: 15px auto;
-    width: 80%; 
-}
-
-.result-display .error {
-    color: #dc3545; 
-    font-weight: 600;
-}
-
-/* Küçük ekranlar için responsive düzenlemeler */
 @media (max-width: 600px) {
+    /* Yoğunluk hesaplayıcıdaki input-with-unit düzenlemesi */
     .input-with-unit {
-        flex-direction: column; 
-        align-items: flex-start;
-        gap: 5px; 
+        flex-direction: column;
+        align-items: flex-start; /* Elemanları sola hizala */
+        gap: 5px;
     }
     .input-with-unit label {
         flex-basis: auto;
-        width: 100%; 
+        width: 100%;
         margin-bottom: 5px;
     }
     .input-with-unit input[type="number"],
     .input-with-unit select {
-        width: 100%; 
+        width: 100%;
     }
 }
 
-/* Mevcut calculator-form-container içindeki genel input stillerini geçersiz kılmak için */
-/* Bu kural, .input-with-unit içindeki inputlar için geçerli olacak şekilde yazılmalı */
-.calculator-form-container input[type="number"],
-.calculator-form-container select {
-    margin-bottom: 0; 
-    width: auto; 
-}
+@media (max-width: 480px) {
+    .logo .site-logo {
+        height: 40px;
+    }
 
-/* Ancak .input-with-unit içindeki input'lar için bu değer 0'a çekilir. */
-.input-with-unit input[type="number"],
-.input-with-unit select {
-    margin-bottom: 0;
-}
-/* Dropdown Menü Stilleri */
+    .hero h2 {
+        font-size: 1.8em;
+    }
 
-/* Dropdown Konteyner */
-.dropdown {
-    position: relative; /* Dropdown içeriğinin doğru konumlanması için */
-    display: inline-block; /* Menü öğesinin yan yana durmasını sağlar */
-}
+    .hero p {
+        font-size: 1em;
+    }
 
-/* Dropdown Butonu (Hesaplama Çeşitleri) */
-.dropbtn {
-    padding: 14px 16px; /* Mevcut menü linklerinizle aynı dolguyu kullanın */
-    text-decoration: none;
-    color: #333; /* Menü linklerinizin rengini kullanın */
-    display: block;
-    /* Mevcut header nav linklerinizde bir transition varsa, onu buraya da ekleyebilirsiniz. */
-    /* transition: background-color 0.3s ease; */
+    .calculator-card {
+        padding: 20px;
+    }
 }
-
-/* Dropdown İçeriği (Gizli Menü) */
-.dropdown-content {
-    display: none; /* Başlangıçta gizli */
-    position: absolute; /* Header'ın altına açılmasını sağlar */
-    background-color: #f9f9f9; /* Açılır menü arka plan rengi */
-    min-width: 200px; /* Menünün minimum genişliği */
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); /* Gölge efekti */
-    z-index: 1; /* Diğer içeriklerin üzerinde görünmesini sağlar */
-    border-radius: 5px; /* Hafif yuvarlak köşeler */
-    overflow: hidden; /* İçerik taşmasını engeller (örneğin border-radius ile birlikte) */
-}
-
-/* Dropdown İçindeki Linkler */
-.dropdown-content a {
-    color: black; /* Linklerin rengi */
-    padding: 12px 16px; /* İç dolgu */
-    text-decoration: none; /* Alt çizgi olmasın */
-    display: block; /* Her linkin ayrı satırda görünmesini sağlar */
-    text-align: left; /* Metni sola hizala */
-}
-
-/* Dropdown Linklerinin Üzerine Gelince */
-.dropdown-content a:hover {
-    background-color: #ddd; /* Hover arka plan rengi */
-    color: #3498db; /* Hover metin rengi (Ana renklerinizle uyumlu olsun) */
-}
-
-/* Dropdown Öğesinin Üzerine Gelince İçeriğin Görünmesi */
-.dropdown:hover .dropdown-content {
-    display: block; /* Dropdown öğesinin üzerine gelindiğinde göster */
-}
-
-/* Dropdown Butonu Üzerine Gelince Arka Plan Rengi (Opsiyonel) */
-.dropdown:hover .dropbtn {
-    background-color: #f0f0f0; /* "Hesaplama Çeşitleri" yazısının üzerine gelince arka plan rengi */
-    color: #3498db; /* "Hesaplama Çeşitleri" yazısının üzerine gelince metin rengi */
-}
-
-/* --- Dropdown Menü İçin Ek Düzenlemeler --- */
-
-/* Genel navigasyon li öğeleri için varsayılan display ayarı */
-/* Eğer nav li öğeleriniz yanyana gelmiyorsa veya kayıyorsa bu ayar yardımcı olabilir */
-nav ul li {
-    position: relative; /* Dropdown için bu çok önemli */
-    display: inline-block; /* Menü öğelerinin yan yana durmasını sağlar */
-    /* Eğer nav ul li'lerinizde başka bir display değeri varsa, onu koruyun ve buraya ekleyin.
-       Örn: display: flex; veya float: left; */
-}
-
-/* Dropdown içeriğinin (açılır menü) konumlandırılması ve görünümü */
-.dropdown-content {
-    left: 0; /* Dropdown'ın ana menü öğesiyle aynı hizadan başlamasını sağlar */
-    top: 100%; /* Dropdown'ın ana menü öğesinin hemen altında başlamasını sağlar */
-    white-space: nowrap; /* Menüdeki yazıların tek satırda kalmasını sağlar */
-    min-width: 200px; /* Menünün minimum genişliği, içeriğin sığmasını garantiler */
-    box-sizing: border-box; /* Padding ve border'ın genişliğe dahil olmasını sağlar */
-}
-
-/* Dropdown linklerinin genişliği ve hizalaması */
-.dropdown-content a {
-    width: 100%; /* Linklerin dropdown kutusunu tamamen doldurmasını sağlar */
-    text-align: left; /* Link metinlerini sola hizala */
-    padding: 10px 15px; /* Okunurluk için iç boşluk */
-    box-sizing: border-box;
-}
-
-/* Eğer nav ul'nizde float kullanılıyorsa (eski tip menülerde sık görülür) */
-/* Navigasyon elemanlarının kapsayıcı div'inden taşmasını engellemek için */
-nav ul::after {
-    content: "";
-    display: table;
-    clear: both;
-}
-
-/* Navbar'daki li öğelerinin arasında boşluk bırakmak için (isteğe bağlı) */
-nav ul li:not(:last-child) {
-    margin-right: 15px; /* Menü öğeleri arasına boşluk ekler */
-}
-
-/* Dropdown linklerinin üzerine gelince arka plan rengi */
-.dropdown-content a:hover {
-    background-color: #e0e0e0; /* Hafif bir gri tonu */
-    color: #3498db; /* Hesapkolik ana rengi */
-}
-
-/* Dropdown butonu üzerine gelince stil */
-.dropdown:hover .dropbtn {
-    background-color: #f5f5f5; /* Hafif bir arka plan vurgusu */
-    color: #3498db;
-}
-
-/* Eğer header veya nav'ınızda flexbox kullanılıyorsa, menü öğelerinin hizalanması */
-header .container nav ul {
-    display: flex; /* Ana menü öğelerini flexbox ile hizala */
-    justify-content: flex-end; /* Menüyü sağa hizala (eğer logo soldaysa) */
-    align-items: center; /* Dikeyde ortala */
-    list-style: none; /* Liste işaretlerini kaldır */
-    padding: 0;
-    margin: 0;
-}
-
-/* Dropdown öğesini flexbox içinde ortalamak için */
-.dropdown {
-    display: flex;
-    align-items: center;
-}
-
-/* Dropdown ok ikonunu eklemek (isteğe bağlı, daha iyi UX için) */
-/* Eğer Font Awesome gibi bir ikon kütüphanesi kullanıyorsanız: */
-/*
-.dropbtn::after {
-    content: "\f0d7"; // Font Awesome için aşağı ok ikonu kodu
-    font-family: "Font Awesome 5 Free"; // Font Awesome font ailesi
-    font-weight: 900;
-    margin-left: 8px;
-    vertical-align: middle;
-}
-*/
