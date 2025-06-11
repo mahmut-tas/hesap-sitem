@@ -6,21 +6,306 @@
     <title>Molarite ve Çözelti Hazırlama Hesaplayıcı - Hesapkolik</title>
     <meta name="description" content="Çözeltilerin molar konsantrasyonunu hesaplayın ve belirli molaritede çözelti hazırlamak için gerekli madde miktarını bulun. Kimya dersleri, laboratuvar çalışmaları ve endüstriyel uygulamalar için kapsamlı araç.">
     <meta name="keywords" content="molarite, molar konsantrasyon, mol, çözelti, kimya hesaplama, kimya mühendisliği, mol kütlesi, hacim, çözelti hazırlama, asetik asit, seyreltme, stok çözelti, hesapkolik molarite">
-    <link rel="stylesheet" href="../../css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <style>
+        /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        header { background-color: #2c3e50; color: white; padding: 15px 0; }
+        header .logo h1 { margin: 0; font-size: 1.8em; }
+        header .logo h1 a { color: white; text-decoration: none; }
+        header .logo .site-logo { height: 40px; vertical-align: middle; } /* Logo için stil */
+        header nav ul { list-style: none; margin: 0; padding: 0; display: flex; justify-content: flex-end; }
+        header nav ul li { margin-left: 25px; }
+        header nav ul li a { color: white; text-decoration: none; font-weight: 600; transition: color 0.3s ease; }
+        header nav ul li a:hover { color: #ecf0f1; }
+        
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
 
-  gtag('config', 'G-3655KNY8CP');
-</script>
+        /* Yeni Hesaplayıcı Bölümü Stilleri */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .calc-type-button {
+            background-color: #3498db; /* Mavi ton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
+            max-width: 250px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .percent-calculator-wrapper { /* Adını calc-wrapper olarak değiştirdim, daha genel */
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .percent-calculator-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .percent-calculator-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .percent-calculator-wrapper input[type="number"] {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .percent-calculator-wrapper input[type="number"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .percent-calculator-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .explanation-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .explanation-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .explanation-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .explanation-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .explanation-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .explanation-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .percent-calculator-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .percent-calculator-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        .hidden-calc {
+            display: none;
+        }
+
+        /* Yeni eklenen form buton stili */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Result ve small-text için ek stil */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+
+    </style>
+</head>
 <body>
     <header>
         <div class="container">
@@ -43,108 +328,81 @@
     </header>
 
     <main>
-        <section class="calculator-page-section"> <div class="container">
-                <h1 class="main-title">Molarite Hesaplayıcı ve Çözelti Hazırlama</h1>
-                <p class="section-description">Çözeltilerinizin molar konsantrasyonunu hesaplayın veya belirli bir molaritede çözelti hazırlamak için gerekli madde miktarını öğrenin.</p>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Molarite ve Çözelti Hazırlama Hesaplayıcı</h1>
+                <p>Çözeltilerin molar konsantrasyonunu kolayca hesaplayın veya belirli molaritede çözelti hazırlamak için gerekli madde miktarını bulun.</p>
+            </div>
+        </section>
 
-                <div class="calculator-group">
-                    <div class="calculator-card-wrapper">
-                        <div class="calculator-header">
-                            <i class="fas fa-vial icon-small"></i>
-                            <h2>Molariteyi Hesapla</h2>
-                        </div>
-                        <div class="calculator-form-container">
-                            <form id="molarityForm">
-                                <label for="soluteMass">Çözünen Kütlesi (gram):</label>
-                                <input type="number" id="soluteMass" name="soluteMass" placeholder="Örn: 58.44 (NaCl için)" required min="0" step="0.01">
+        <section class="calculator-selection-section">
+            <div class="container">
+                <h2>Yapmak İstediğiniz Hesaplama Türünü Seçin</h2>
+                <div class="calc-buttons-container">
+                    <button class="calc-type-button active" data-calc-type="calculateMolarity">Molariteyi Hesapla</button>
+                    <button class="calc-type-button" data-calc-type="prepareSolution">Hedef Molaritede Çözelti Hazırla</button>
+                </div>
 
-                                <label for="molarMass">Çözünen Mol Kütlesi (g/mol):</label>
-                                <input type="number" id="molarMass" name="molarMass" placeholder="Örn: 58.44" required min="0.001" step="0.01">
-                                
-                                <label for="solutionVolume">Çözelti Hacmi (Litre):</label>
-                                <input type="number" id="solutionVolume" name="solutionVolume" placeholder="Örn: 1" required min="0.001" step="0.001">
-                                
-                                <button type="submit">Molariteyi Hesapla</button>
-                            </form>
-                            <div id="molarityResult" class="result-display"></div>
-                            <p class="small-text">Molarite, çözeltinin bir litre hacmindeki çözünen madde miktarını (mol) ifade eder. Mol sayısı = Çözünen Kütlesi / Mol Kütlesi; Molarite = Mol Sayısı / Çözelti Hacmi.</p>
-                        </div>
+                <div id="calculator-calculateMolarity" class="percent-calculator-wrapper active-calc">
+                    <h3><i class="fas fa-vial icon-small"></i> Molariteyi Hesapla</h3>
+                    <form id="molarityForm">
+                        <label for="soluteMass">Çözünen Kütlesi (gram):</label>
+                        <input type="number" id="soluteMass" name="soluteMass" placeholder="Örn: 58.44 (NaCl için)" required min="0" step="0.01">
+
+                        <label for="molarMass">Çözünen Mol Kütlesi (g/mol):</label>
+                        <input type="number" id="molarMass" name="molarMass" placeholder="Örn: 58.44" required min="0.001" step="0.01">
+                        
+                        <label for="solutionVolume">Çözelti Hacmi (Litre):</label>
+                        <input type="number" id="solutionVolume" name="solutionVolume" placeholder="Örn: 1" required min="0.001" step="0.001">
+                        
+                        <button type="submit">Molariteyi Hesapla</button>
+                    </form>
+                    <div id="molarityResult" class="result-display"></div>
+                    <div class="calc-explanation">
+                        <p>Bu hesaplayıcı, çözeltinin bir litre hacmindeki çözünen madde miktarını (mol) ifade eden **molariteyi** hesaplar. Kimyasal reaksiyonları ve çözelti hazırlama süreçlerini anlamak için temel bir kavramdır.</p>
+                        <p><strong>Formül:</strong></p>
+                        <p class="formula-text">
+                            Mol Sayısı (mol) = Çözünen Kütlesi (gram) / Çözünenin Mol Kütlesi (g/mol)<br>
+                            Molarite (M) = Mol Sayısı (mol) / Çözelti Hacmi (Litre)
+                        </p>
+                        <p>Örnek: 58.44 gram NaCl (Mol kütlesi 58.44 g/mol) 1 litre suda çözündüğünde molarite: Mol = 58.44 / 58.44 = 1 mol. Molarite = 1 mol / 1 L = 1 M.</p>
                     </div>
+                </div>
 
-                    <div class="calculator-card-wrapper">
-                        <div class="calculator-header">
-                            <i class="fas fa-flask-acid icon-small"></i>
-                            <h2>Hedef Molaritede Çözelti Hazırla</h2>
-                        </div>
-                        <div class="calculator-form-container">
-                            <form id="dilutionForm">
-                                <label for="targetMolarity_mM">Hedef Molarite (mM):</label>
-                                <input type="number" id="targetMolarity_mM" name="targetMolarity_mM" placeholder="Örn: 10" required min="0.001" step="0.001">
+                <div id="calculator-prepareSolution" class="percent-calculator-wrapper hidden-calc">
+                    <h3><i class="fas fa-flask-acid icon-small"></i> Hedef Molaritede Çözelti Hazırla</h3>
+                    <form id="dilutionForm">
+                        <label for="targetMolarity_mM">Hedef Molarite (mM):</label>
+                        <input type="number" id="targetMolarity_mM" name="targetMolarity_mM" placeholder="Örn: 10" required min="0.001" step="0.001">
 
-                                <label for="targetVolume_mL">Hedef Çözelti Hacmi (mL):</label>
-                                <input type="number" id="targetVolume_mL" name="targetVolume_mL" placeholder="Örn: 1000" required min="0.001" step="0.001">
+                        <label for="targetVolume_mL">Hedef Çözelti Hacmi (mL):</label>
+                        <input type="number" id="targetVolume_mL" name="targetVolume_mL" placeholder="Örn: 1000" required min="0.001" step="0.001">
 
-                                <label for="concPurity">Konsantre Asit Saflığı (% w/w):</label>
-                                <input type="number" id="concPurity" name="concPurity" placeholder="Örn: 90" required min="0.1" max="100" step="0.1">
+                        <label for="concPurity">Konsantre Asit Saflığı (% w/w):</label>
+                        <input type="number" id="concPurity" name="concPurity" placeholder="Örn: 90" required min="0.1" max="100" step="0.1">
 
-                                <label for="concDensity">Konsantre Asit Yoğunluğu (g/mL):</label>
-                                <input type="number" id="concDensity" name="concDensity" placeholder="Örn: 1.049 (90% Asetik Asit için)" required min="0.5" step="0.001">
+                        <label for="concDensity">Konsantre Asit Yoğunluğu (g/mL):</label>
+                        <input type="number" id="concDensity" name="concDensity" placeholder="Örn: 1.049 (90% Asetik Asit için)" required min="0.5" step="0.001">
 
-                                <button type="submit">Hesapla</button>
-                            </form>
-                            <div id="dilutionResult" class="result-display"></div>
-                            <p class="small-text">Bu hesaplayıcı, konsantre bir asit çözeltisinden belirli bir molaritede ve hacimde çözelti hazırlamak için ne kadar konsantre asit gerektiğini belirler. (Asetik Asit Mol Kütlesi: 60.052 g/mol)</p>
-                        </div>
-                    </div>
-
-                    <section class="info-section">
-                        <h3>Molarite Nedir?</h3>
-                        <p>
-                            <strong>Molarite (M)</strong>, bir çözeltinin konsantrasyonunu ifade etmenin en yaygın yollarından biridir. Bir litre çözelti başına düşen çözünen maddenin mol sayısını belirtir. Kimyasal reaksiyonları ve çözelti hazırlama süreçlerini anlamak için temel bir kavramdır.
-                        </p>
-                        <p>
-                            Formülü aşağıdaki gibidir:
-                        </p>
+                        <button type="submit">Hesapla</button>
+                    </form>
+                    <div id="dilutionResult" class="result-display"></div>
+                    <div class="calc-explanation">
+                        <p>Bu hesaplayıcı, konsantre bir asit çözeltisinden (örneğin %90'lık asetik asit) belirli bir molaritede ve hacimde yeni bir çözelti hazırlamak için ne kadar orijinal maddeye ihtiyacınız olduğunu bulmanıza yardımcı olur. Özellikle laboratuvarlarda ve endüstriyel uygulamalarda hassas çözelti hazırlama süreçleri için kritik öneme sahiptir.</p>
+                        <p><strong>Kullanılan Formüllerin Basitleştirilmiş Hali:</strong></p>
                         <p class="formula-text">
-                            Molarite (M) = Çözünenin Mol Sayısı (mol) / Çözelti Hacmi (Litre)
-                        </p>
-                        <p>
-                            Çözünenin mol sayısı ise şu şekilde bulunur:
-                        </p>
-                        <p class="formula-text">
-                            Mol Sayısı (mol) = Çözünen Kütlesi (gram) / Çözünenin Mol Kütlesi (g/mol)
-                        </p>
-
-                        <h4>Hedef Molaritede Çözelti Hazırlama Nedir?</h4>
-                        <p>
-                            Bu hesaplayıcı, elinizdeki daha yüksek konsantrasyonlu bir çözeltiden (örneğin %90'lık asetik asit) belirli bir molaritede ve hacimde yeni bir çözelti hazırlamak için ne kadar orijinal maddeye ihtiyacınız olduğunu bulmanıza yardımcı olur. Özellikle laboratuvarlarda ve endüstriyel uygulamalarda hassas çözelti hazırlama süreçleri için kritik öneme sahiptir.
-                        </p>
-                        <p>
-                            Temel prensip, çözeltinin molaritesini (mol/L) ve hedef hacmi (L) kullanarak gerekli mol sayısını bulmak, ardından bu mol sayısını ve orijinal maddenin mol kütlesini, saflığını ve yoğunluğunu dikkate alarak gerekli kütle veya hacmi belirlemektir.
-                        </p>
-                        <p>
-                            Kullanılan formüllerin basitleştirilmiş hali:
-                        </p>
-                        <p class="formula-text">
-                            Gerekli Mol = Hedef Molarite (M) × Hedef Hacim (L)
-                        </p>
-                        <p class="formula-text">
-                            Gerekli Saf Madde Kütlesi (g) = Gerekli Mol × Mol Kütlesi (g/mol)
-                        </p>
-                        <p class="formula-text">
-                            Gerekli Konsantre Çözelti Kütlesi (g) = Gerekli Saf Madde Kütlesi / (Saflık Yüzdesi / 100)
-                        </p>
-                        <p class="formula-text">
+                            Gerekli Mol = Hedef Molarite (M) × Hedef Hacim (L)<br>
+                            Gerekli Saf Madde Kütlesi (g) = Gerekli Mol × Mol Kütlesi (g/mol)<br>
+                            Gerekli Konsantre Çözelti Kütlesi (g) = Gerekli Saf Madde Kütlesi / (Saflık Yüzdesi / 100)<br>
                             Gerekli Konsantre Çözelti Hacmi (mL) = Gerekli Konsantre Çözelti Kütlesi (g) / Konsantre Çözelti Yoğunluğu (g/mL)
                         </p>
-                        <p>
-                            Unutmayın, hesaplanan konsantre çözelti hacmi, belirtilen hedef çözelti hacmine ulaşmak için yeterli solvent (genellikle su) eklenerek seyreltilmelidir. Örneğin, 10 mL konsantre asit ve 1000 mL hedef hacminiz varsa, konsantre asidi ekledikten sonra toplam hacmi 1000 mL'ye tamamlayacak kadar su eklemelisiniz.
-                        </p>
+                        <p class="small-text">Unutmayın, hesaplanan konsantre çözelti hacmi, belirtilen hedef çözelti hacmine ulaşmak için yeterli solvent (genellikle su) eklenerek seyreltilmelidir. Örneğin, 10 mL konsantre asit ve 1000 mL hedef hacminiz varsa, konsantre asidi ekledikten sonra toplam hacmi 1000 mL'ye tamamlayacak kadar su eklemelisiniz.</p>
                         <p class="disclaimer-text">
-                            Bu hesaplayıcı, temel molarite ve çözelti hazırlama prensiplerini uygulamak için tasarlanmıştır. Gerçek laboratuvar ve endüstriyel uygulamalarda sıcaklık, basınç, asidin suda çözünürlüğü ve diğer fiziksel özellikler konsantrasyonu etkileyebilir. Hassas uygulamalar için standart laboratuvar prosedürleri ve ekipmanları kullanılması tavsiye edilir. Mol kütlesi olarak Asetik Asit (CH₃COOH) için 60.052 g/mol kabul edilmiştir.
+                            Bu hesaplayıcı, temel molarite ve çözelti hazırlama prensiplerini uygulamak için tasarlanmıştır. Gerçek laboratuvar ve endüstriyel uygulamalarda sıcaklık, basınç, asidin suda çözünürlüğü ve diğer fiziksel özellikler konsantrasyonu etkileyebilir. Hassas uygulamalar için standart laboratuvar prosedürleri ve ekipmanları kullanılması tavsiye edilir. Mol kütlesi olarak **Asetik Asit (CH₃COOH) için 60.052 g/mol** kabul edilmiştir.
                         </p>
-                    </section>
+                    </div>
                 </div>
+
             </div>
         </section>
     </main>
@@ -157,47 +415,85 @@
     </footer>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // --- Mevcut Molarite Hesaplayıcı Kodu ---
+            const calcTypeButtons = document.querySelectorAll('.calc-type-button');
+            const calculatorWrappers = document.querySelectorAll('.percent-calculator-wrapper'); // UI'ı korumak için aynı sınıf adı kullanıldı
+
+            // Başlangıçta ilk hesaplayıcıyı göster
+            showCalculator('calculateMolarity');
+
+            calcTypeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const type = button.dataset.calcType;
+                    showCalculator(type);
+                    // Butonların 'active' sınıfını yönet
+                    calcTypeButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    // İlgili bölüme yumuşak kaydırma
+                    const targetCalc = document.getElementById(`calculator-${type}`);
+                    if (targetCalc) {
+                        targetCalc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+
+            function showCalculator(typeToShow) {
+                calculatorWrappers.forEach(wrapper => {
+                    if (wrapper.id === `calculator-${typeToShow}`) {
+                        wrapper.classList.remove('hidden-calc');
+                        wrapper.classList.add('active-calc');
+                    } else {
+                        wrapper.classList.add('hidden-calc');
+                        wrapper.classList.remove('active-calc');
+                    }
+                });
+            }
+
+            // --- Molarite Hesaplayıcı Kodu ---
             const molarityForm = document.getElementById('molarityForm');
             const soluteMassInput = document.getElementById('soluteMass');
             const molarMassInput = document.getElementById('molarMass');
             const solutionVolumeInput = document.getElementById('solutionVolume');
             const molarityResult = document.getElementById('molarityResult');
 
-            if (molarityForm) {
-                molarityForm.addEventListener('submit', function(event) {
-                    event.preventDefault(); // Formun varsayılan gönderimini engelle
+            function calculateMolarity() {
+                const soluteMass = parseFloat(soluteMassInput.value);
+                const molarMass = parseFloat(molarMassInput.value);
+                const solutionVolume = parseFloat(solutionVolumeInput.value);
 
-                    const soluteMass = parseFloat(soluteMassInput.value);
-                    const molarMass = parseFloat(molarMassInput.value);
-                    const solutionVolume = parseFloat(solutionVolumeInput.value);
+                molarityResult.innerHTML = ''; // Önceki sonuçları temizle
+                resetErrorStyles([soluteMassInput, molarMassInput, solutionVolumeInput]);
 
-                    // Girişlerin geçerli sayı olup olmadığını ve mol kütlesi/hacmin sıfırdan büyük olduğunu kontrol et
-                    if (isNaN(soluteMass) || isNaN(molarMass) || isNaN(solutionVolume) ||
-                        soluteMass < 0 || molarMass <= 0 || solutionVolume <= 0) {
-                        molarityResult.innerHTML = '<p class="error">Lütfen geçerli ve pozitif sayılar giriniz. Mol Kütlesi ve Çözelti Hacmi sıfırdan büyük olmalıdır.</p>';
-                        molarityResult.style.display = 'block'; // Hata mesajını görünür yap
-                        return; // Hesaplamayı durdur
-                    }
+                if (isNaN(soluteMass) || isNaN(molarMass) || isNaN(solutionVolume) ||
+                    soluteMass < 0 || molarMass <= 0 || solutionVolume <= 0) {
+                    molarityResult.innerHTML = '<p class="error">Lütfen geçerli ve pozitif sayılar giriniz. Mol Kütlesi ve Çözelti Hacmi sıfırdan büyük olmalıdır.</p>';
+                    applyErrorStyles([soluteMassInput, molarMassInput, solutionVolumeInput], [soluteMass, molarMass, solutionVolume]);
+                    return;
+                }
 
-                    // Mol sayısını hesapla: mol = kütle / mol kütlesi
-                    const moles = soluteMass / molarMass;
+                const moles = soluteMass / molarMass;
+                const molarity = moles / solutionVolume;
 
-                    // Molariteyi hesapla: M = mol / hacim
-                    const molarity = moles / solutionVolume;
-
-                    molarityResult.innerHTML = `
-                        <p><strong>Çözünen Kütlesi:</strong> ${soluteMass} gram</p>
-                        <p><strong>Çözünen Mol Kütlesi:</strong> ${molarMass} g/mol</p>
-                        <p><strong>Çözelti Hacmi:</strong> ${solutionVolume} Litre</p>
-                        <p><strong>Mol Sayısı:</strong> ${moles.toFixed(4)} mol</p>
-                        <p><strong>Molarite (M):</strong> <span class="result-value">${molarity.toFixed(4)}</span> M</p>
-                    `;
-                    molarityResult.style.display = 'block'; // Sonucu görünür yap
-                });
+                molarityResult.innerHTML = `
+                    <p><strong>Çözünen Kütlesi:</strong> ${soluteMass.toFixed(2)} gram</p>
+                    <p><strong>Çözünen Mol Kütlesi:</strong> ${molarMass.toFixed(2)} g/mol</p>
+                    <p><strong>Çözelti Hacmi:</strong> ${solutionVolume.toFixed(3)} Litre</p>
+                    <p><strong>Mol Sayısı:</strong> ${moles.toFixed(4)} mol</p>
+                    <p><strong>Molarite (M):</strong> <span class="result-value">${molarity.toFixed(4)}</span> M</p>
+                `;
             }
 
-            // --- Yeni Çözelti Hazırlama Hesaplayıcı Kodu ---
+            if (molarityForm) {
+                molarityForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    calculateMolarity();
+                });
+                soluteMassInput.addEventListener('input', calculateMolarity);
+                molarMassInput.addEventListener('input', calculateMolarity);
+                solutionVolumeInput.addEventListener('input', calculateMolarity);
+            }
+
+            // --- Çözelti Hazırlama Hesaplayıcı Kodu ---
             const dilutionForm = document.getElementById('dilutionForm');
             const targetMolarity_mM_Input = document.getElementById('targetMolarity_mM');
             const targetVolume_mL_Input = document.getElementById('targetVolume_mL');
@@ -205,52 +501,71 @@
             const concDensityInput = document.getElementById('concDensity');
             const dilutionResult = document.getElementById('dilutionResult');
 
-            // Asetik Asit'in mol kütlesi (CH3COOH)
             const ACETIC_ACID_MOLAR_MASS = 60.052; // g/mol
+
+            function calculateDilution() {
+                const targetMolarity_mM = parseFloat(targetMolarity_mM_Input.value);
+                const targetVolume_mL = parseFloat(targetVolume_mL_Input.value);
+                const concPurity = parseFloat(concPurityInput.value);
+                const concDensity = parseFloat(concDensityInput.value);
+
+                dilutionResult.innerHTML = ''; // Önceki sonuçları temizle
+                resetErrorStyles([targetMolarity_mM_Input, targetVolume_mL_Input, concPurityInput, concDensityInput]);
+
+                if (isNaN(targetMolarity_mM) || isNaN(targetVolume_mL) || isNaN(concPurity) || isNaN(concDensity) ||
+                    targetMolarity_mM <= 0 || targetVolume_mL <= 0 || concPurity <= 0 || concPurity > 100 || concDensity <= 0) {
+                    dilutionResult.innerHTML = '<p class="error">Lütfen tüm alanlara geçerli ve pozitif değerler giriniz. Saflık %0-100 arasında olmalıdır.</p>';
+                    applyErrorStyles([targetMolarity_mM_Input, targetVolume_mL_Input, concPurityInput, concDensityInput], [targetMolarity_mM, targetVolume_mL, concPurity, concDensity]);
+                    return;
+                }
+
+                const targetMolarity_M = targetMolarity_mM / 1000; // mM -> M
+                const targetVolume_L = targetVolume_mL / 1000;     // mL -> L
+                const molesNeeded = targetMolarity_M * targetVolume_L;
+
+                const pureAceticAcidMass = molesNeeded * ACETIC_ACID_MOLAR_MASS; // gram
+                const concSolutionMass = pureAceticAcidMass / (concPurity / 100); // gram
+                const concSolutionVolume_mL = concSolutionMass / concDensity; // mL
+
+                dilutionResult.innerHTML = `
+                    <p><strong>Hedef Molarite:</strong> ${targetMolarity_mM.toFixed(3)} mM</p>
+                    <p><strong>Hedef Çözelti Hacmi:</strong> ${targetVolume_mL.toFixed(3)} mL</p>
+                    <p><strong>Konsantre Asit Saflığı:</strong> ${concPurity.toFixed(1)} % (w/w)</p>
+                    <p><strong>Konsantre Asit Yoğunluğu:</strong> ${concDensity.toFixed(3)} g/mL</p>
+                    <hr>
+                    <p><strong>Gerekli Saf Asetik Asit Miktarı:</strong> ${pureAceticAcidMass.toFixed(4)} gram</p>
+                    <p><strong>Gerekli Konsantre (%${concPurity.toFixed(1)}) Asetik Asit Çözeltisi Kütlesi:</strong> ${concSolutionMass.toFixed(4)} gram</p>
+                    <p><strong>Gerekli Konsantre (%${concPurity.toFixed(1)}) Asetik Asit Çözeltisi Hacmi:</strong> <span class="result-value">${concSolutionVolume_mL.toFixed(3)}</span> mL</p>
+                    <p class="small-text">Bu kadar (${concSolutionVolume_mL.toFixed(3)} mL) konsantre asidi alıp, toplam hacmi ${targetVolume_mL.toFixed(3)} mL olacak şekilde solvent (örn: saf su) ile tamamlamalısınız.</p>
+                `;
+            }
 
             if (dilutionForm) {
                 dilutionForm.addEventListener('submit', function(event) {
-                    event.preventDefault(); // Formun varsayılan gönderimini engelle
+                    event.preventDefault();
+                    calculateDilution();
+                });
+                targetMolarity_mM_Input.addEventListener('input', calculateDilution);
+                targetVolume_mL_Input.addEventListener('input', calculateDilution);
+                concPurityInput.addEventListener('input', calculateDilution);
+                concDensityInput.addEventListener('input', calculateDilution);
+            }
 
-                    const targetMolarity_mM = parseFloat(targetMolarity_mM_Input.value);
-                    const targetVolume_mL = parseFloat(targetVolume_mL_Input.value);
-                    const concPurity = parseFloat(concPurityInput.value);
-                    const concDensity = parseFloat(concDensityInput.value);
-
-                    // Doğrulama
-                    if (isNaN(targetMolarity_mM) || isNaN(targetVolume_mL) || isNaN(concPurity) || isNaN(concDensity) ||
-                        targetMolarity_mM <= 0 || targetVolume_mL <= 0 || concPurity <= 0 || concPurity > 100 || concDensity <= 0) {
-                        dilutionResult.innerHTML = '<p class="error">Lütfen tüm alanlara geçerli ve pozitif değerler giriniz. Saflık %0-100 arasında olmalıdır.</p>';
-                        dilutionResult.style.display = 'block';
-                        return;
+            // Yardımcı fonksiyonlar: Hata stilini yönetmek için
+            function applyErrorStyles(inputs, values) {
+                inputs.forEach((input, index) => {
+                    if (isNaN(values[index]) || (input.min && parseFloat(input.value) < parseFloat(input.min))) {
+                         input.classList.add('error');
                     }
+                    if (input.max && parseFloat(input.value) > parseFloat(input.max)){
+                        input.classList.add('error');
+                    }
+                });
+            }
 
-                    // 1. Hedef mol sayısını hesapla (milimolü mole çevir, mL'yi Litreye çevir)
-                    const targetMolarity_M = targetMolarity_mM / 1000; // mM -> M
-                    const targetVolume_L = targetVolume_mL / 1000;     // mL -> L
-                    const molesNeeded = targetMolarity_M * targetVolume_L;
-
-                    // 2. Gerekli saf asetik asit kütlesini hesapla
-                    const pureAceticAcidMass = molesNeeded * ACETIC_ACID_MOLAR_MASS; // gram
-
-                    // 3. Konsantre asit çözeltisinin kütlesini saflığa göre hesapla
-                    const concSolutionMass = pureAceticAcidMass / (concPurity / 100); // gram
-
-                    // 4. Konsantre asit çözeltisinin hacmini yoğunluğa göre hesapla
-                    const concSolutionVolume_mL = concSolutionMass / concDensity; // mL
-
-                    dilutionResult.innerHTML = `
-                        <p><strong>Hedef Molarite:</strong> ${targetMolarity_mM} mM</p>
-                        <p><strong>Hedef Çözelti Hacmi:</strong> ${targetVolume_mL} mL</p>
-                        <p><strong>Konsantre Asit Saflığı:</strong> ${concPurity} % (w/w)</p>
-                        <p><strong>Konsantre Asit Yoğunluğu:</strong> ${concDensity} g/mL</p>
-                        <hr>
-                        <p><strong>Gerekli Saf Asetik Asit Miktarı:</strong> ${pureAceticAcidMass.toFixed(4)} gram</p>
-                        <p><strong>Gerekli Konsantre (%${concPurity}) Asetik Asit Çözeltisi Kütlesi:</strong> ${concSolutionMass.toFixed(4)} gram</p>
-                        <p><strong>Gerekli Konsantre (%${concPurity}) Asetik Asit Çözeltisi Hacmi:</strong> <span class="result-value">${concSolutionVolume_mL.toFixed(3)}</span> mL</p>
-                        <p class="small-text">Bu kadar (${concSolutionVolume_mL.toFixed(3)} mL) konsantre asidi alıp, toplam hacmi ${targetVolume_mL} mL olacak şekilde solvent (örn: saf su) ile tamamlamalısınız.</p>
-                    `;
-                    dilutionResult.style.display = 'block';
+            function resetErrorStyles(inputs) {
+                inputs.forEach(input => {
+                    input.classList.remove('error');
                 });
             }
         });
