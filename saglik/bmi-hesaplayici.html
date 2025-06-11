@@ -121,9 +121,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const bmiForm = document.getElementById('bmiForm');
-            if (bmiForm) { // bmiForm'un varlığını kontrol et
+            if (bmiForm) { 
                 bmiForm.addEventListener('submit', function(e) {
-                    e.preventDefault(); // Formun varsayılan gönderimini engelle
+                    e.preventDefault(); 
 
                     const heightCm = parseFloat(document.getElementById('bmi_height').value);
                     const weightKg = parseFloat(document.getElementById('bmi_weight').value);
@@ -131,55 +131,54 @@
                     const bmiResultDiv = document.getElementById('bmiResult');
                     const bmiCategoryDiv = document.getElementById('bmiCategory');
 
+                    // Her hesaplama başlangıcında sonuç div'lerini temizle ve gizle
+                    bmiResultDiv.innerHTML = '';
+                    bmiCategoryDiv.textContent = '';
+                    bmiResultDiv.style.display = 'none'; 
+                    bmiCategoryDiv.style.display = 'none'; 
+
                     // Giriş doğrulaması
                     if (isNaN(heightCm) || isNaN(weightKg) || heightCm <= 0 || weightKg <= 0 || heightCm < 50 || heightCm > 250 || weightKg < 10 || weightKg > 300) {
                         bmiResultDiv.innerHTML = '<span style="color: red;">Lütfen geçerli boy (50-250 cm) ve kilo (10-300 kg) değerleri girin.</span>';
-                        bmiCategoryDiv.textContent = ''; // Kategoriyi temizle
-                        // Hata durumunda da result div'ini görünür yapın
-                        bmiResultDiv.style.display = 'block'; 
-                        return; // Fonksiyondan çık
+                        bmiResultDiv.style.display = 'block'; // Hata mesajını göster
+                        return; 
                     }
 
-                    // Boyu metrekareye çevirme
                     const heightM = heightCm / 100;
-
-                    // BMI hesaplama formülü: Kilo (kg) / (Boy (m) * Boy (m))
                     const bmi = weightKg / (heightM * heightM);
-
+                    
                     // BMI sonucunu ekrana yazdırma
                     bmiResultDiv.innerHTML = `BMI Değeriniz: <strong>${bmi.toFixed(2)}</strong>`;
-                    // Sonucu göster
-                    bmiResultDiv.style.display = 'block'; 
+                    bmiResultDiv.style.display = 'block'; // BMI sonucunu göster
 
                     let category = '';
-                    let categoryColor = '#333'; // Varsayılan renk
+                    let categoryColor = '#333'; 
 
                     // BMI kategorilerini belirleme ve renk atama
                     if (bmi < 18.5) {
                         category = 'Zayıf';
-                        categoryColor = '#f1c40f'; // Sarı
+                        categoryColor = '#f1c40f'; 
                     } else if (bmi >= 18.5 && bmi < 24.9) {
                         category = 'Normal Kilolu';
-                        categoryColor = '#2ecc71'; // Yeşil
+                        categoryColor = '#2ecc71'; 
                     } else if (bmi >= 25 && bmi < 29.9) {
                         category = 'Fazla Kilolu';
-                        categoryColor = '#e74c3c'; // Kırmızımsı turuncu
+                        categoryColor = '#e74c3c'; 
                     } else if (bmi >= 30 && bmi < 34.9) {
                         category = 'Obez (Sınıf I)';
-                        categoryColor = '#c0392b'; // Kırmızı
+                        categoryColor = '#c0392b'; 
                     } else if (bmi >= 35 && bmi < 39.9) {
                         category = 'Obez (Sınıf II)';
-                        categoryColor = '#a52a2a'; // Koyu kırmızı
+                        categoryColor = '#a52a2a'; 
                     } else {
                         category = 'Aşırı Obez (Sınıf III)';
-                        categoryColor = '#8b0000'; // Çok koyu kırmızı
+                        categoryColor = '#8b0000'; 
                     }
 
                     // Kategori sonucunu ekrana yazdırma ve rengini ayarlama
                     bmiCategoryDiv.textContent = `Durumunuz: ${category}`;
                     bmiCategoryDiv.style.color = categoryColor;
-                    // Kategoriyi göster
-                    bmiCategoryDiv.style.display = 'block'; 
+                    bmiCategoryDiv.style.display = 'block'; // Kategoriyi göster
                 });
             }
         });
