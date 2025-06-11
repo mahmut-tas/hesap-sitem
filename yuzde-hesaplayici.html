@@ -261,6 +261,7 @@
                     <button class="calc-type-button" data-calc-type="whatPercent">A Sayısı B'nin Yüzde Kaçı?</button>
                     <button class="calc-type-button" data-calc-type="valueFromPercent">A'nın %B'si Kaçtır?</button>
                     <button class="calc-type-button" data-calc-type="originalValue">A, B'nin %C'si İse, B Kaçtır?</button>
+                    <button class="calc-type-button" data-calc-type="percentageChange">A'dan B'ye Yüzde Değişim?</button>
                 </div>
 
                 <div id="calculator-increase" class="percent-calculator-wrapper active-calc">
@@ -347,7 +348,22 @@
                         <p><strong>Formül:</strong> Bütün Sayı = Sayı A / (%C / 100)</p>
                     </div>
                 </div>
-
+                <div id="calculator-percentageChange" class="percent-calculator-wrapper hidden-calc">
+                    <h3>Yüzde Değişim Hesaplayıcı (Artış/Azalış)</h3>
+                    <form>
+                        <label for="percentageChange-valueA">Başlangıç Sayısı (A):</label>
+                        <input type="number" id="percentageChange-valueA" placeholder="Örn: 100 (Eski değer)" required step="any">
+        
+                        <label for="percentageChange-valueB">Bitiş Sayısı (B):</label>
+                        <input type="number" id="percentageChange-valueB" placeholder="Örn: 120 (Yeni değer)" required step="any">
+        
+                        <div class="calc-result" id="percentageChange-result"></div>
+                    </form>
+                    <div class="calc-explanation">
+                        <p>Bu hesaplayıcı, iki sayı arasındaki yüzde değişimi (artış veya azalış) bulur. Örneğin, bir ürünün fiyatındaki değişimi, hisse senedi performansını veya nüfus artış/azalış oranlarını hesaplamak için kullanışlıdır.</p>
+                        <p><strong>Formül:</strong> Yüzde Değişim = ((Bitiş Sayısı - Başlangıç Sayısı) / Başlangıç Sayısı) * 100</p>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -539,7 +555,65 @@
                         resultText = `${valueA} sayısı, %${valueB}'ye denk geliyorsa orijinal sayı: <strong>${result.toFixed(2)}</strong>`;
                         break;
                 }
+                // ... (mevcut JavaScript kodunuzun devamı)
+
+            function calculatePercentage(calculatorId, inputs, resultDiv) {
+                const valueAInput = inputs[0];
+                const valueBInput = inputs[1];
+
+                const valueA = parseFloat(valueAInput.value);
+                const valueB = parseFloat(valueBInput.value);
+
+                // Hata mesajlarını ve input stilini sıfırla
+                resultDiv.innerHTML = '';
+                valueAInput.classList.remove('error');
+                valueBInput.classList.remove('error');
+
+                if (isNaN(valueA) || isNaN(valueB)) {
+                    if (!isNaN(valueA) || !isNaN(valueB)) { 
+                        resultDiv.innerHTML = '<span style="color: #e74c3c; font-size: 0.8em;">Lütfen her iki alanı da doldurun.</span>';
+                    }
+                    if (isNaN(valueA) && valueAInput.value !== '') valueAInput.classList.add('error');
+                    if (isNaN(valueB) && valueBInput.value !== '') valueBInput.classList.add('error');
+                    return;
+                }
+
+                let result;
+                let resultText = '';
+
+                switch (calculatorId) {
+                    case 'calculator-increase':
+                        // ... (mevcut kod)
+                        break;
+                    case 'calculator-decrease':
+                        // ... (mevcut kod)
+                        break;
+                    case 'calculator-whatPercent':
+                        // ... (mevcut kod)
+                        break;
+                    case 'calculator-valueFromPercent':
+                        // ... (mevcut kod)
+                        break;
+                    case 'calculator-originalValue':
+                        // ... (mevcut kod)
+                        break;
+                    case 'calculator-percentageChange': // YENİ EKLENEN KISIM
+                        if (valueA === 0) {
+                            resultDiv.innerHTML = '<span style="color: #e74c3c; font-size: 0.8em;">Başlangıç değeri sıfır olamaz.</span>';
+                            valueAInput.classList.add('error');
+                            return;
+                        }
+                        result = ((valueB - valueA) / valueA) * 100;
+                        if (result >= 0) {
+                            resultText = `${valueA}'dan ${valueB}'ye <strong>%${result.toFixed(2)}</strong> oranında artış oldu.`;
+                        } else {
+                            resultText = `${valueA}'dan ${valueB}'ye <strong>%${Math.abs(result).toFixed(2)}</strong> oranında azalış oldu.`;
+                        }
+                        break;
+                }
                 resultDiv.innerHTML = resultText;
+            }
+// ... (mevcut JavaScript kodunuzun geri kalanı)
             }
         });
     </script>
