@@ -6,7 +6,7 @@
     <title>BMI Hesaplayıcı - Hesapkolik</title>
     <meta name="description" content="Boy ve kilonuzu girerek Vücut Kitle İndeksinizi (BMI) hesaplayın ve sağlık durumunuzu değerlendirin.">
     <meta name="keywords" content="bmi hesapla, vücut kitle indeksi, sağlıklı kilo, zayıf, normal kilolu, fazla kilolu, obez">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/style.css"> 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -117,12 +117,12 @@
             <p><a href="../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../kullanim-sartlari.html">Kullanım Şartları</a></p>
         </div>
     </footer>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // BMI hesaplayıcısı için özel çağrı
-            if (document.getElementById('bmiForm')) {
-                // BMI formu varsa ilgili kodu çalıştır
-                document.getElementById('bmiForm').addEventListener('submit', function(e) {
+            const bmiForm = document.getElementById('bmiForm');
+            if (bmiForm) { // bmiForm'un varlığını kontrol et
+                bmiForm.addEventListener('submit', function(e) {
                     e.preventDefault(); // Formun varsayılan gönderimini engelle
 
                     const heightCm = parseFloat(document.getElementById('bmi_height').value);
@@ -134,7 +134,7 @@
                     // Giriş doğrulaması
                     if (isNaN(heightCm) || isNaN(weightKg) || heightCm <= 0 || weightKg <= 0 || heightCm < 50 || heightCm > 250 || weightKg < 10 || weightKg > 300) {
                         bmiResultDiv.innerHTML = '<span style="color: red;">Lütfen geçerli boy (50-250 cm) ve kilo (10-300 kg) değerleri girin.</span>';
-                        bmiCategoryDiv.textContent = '';
+                        bmiCategoryDiv.textContent = ''; // Kategoriyi temizle
                         return; // Fonksiyondan çık
                     }
 
