@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Burulma Gerilmesi Hesaplayıcı - Hesapkolik</title>
-    <meta name="description" content="Millerde ve dairesel kesitli elemanlarda uygulanan burulma momenti (tork) nedeniyle oluşan burulma gerilmesi (kesme gerilmesi) hesaplamalarını kolayca yapın. Makine tasarımı ve mukavemet analizi için temel bir araç.">
-    <meta name="keywords" content="burulma gerilmesi, gerilme hesaplama, burulma momenti, tork, polar atalet momenti, yarıçap, mukavemet, mekanik, mühendislik hesaplamaları, hesapkolik burulma">
+    <title>Kritik Burkulma Yükü Hesaplayıcı (Kolonlar) - Hesapkolik</title>
+    <meta name="description" content="Basınç altındaki kolonların burkulacağı kritik yükü (Euler burkulma yükü) kolayca hesaplayın. Farklı mesnet koşulları (bağlantı tipleri) için destek. Yapısal ve makine mühendisliği tasarımı için temel bir araç.">
+    <meta name="keywords" content="burkulma yükü, kritik yük, Euler burkulma, kolon burkulması, mukavemet, mekanik, mühendislik hesaplamaları, elastisite modülü, atalet momenti, kolon uzunluğu, mesnet koşulları, hesapkolik burkulma">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="../../css/style.css">
     <style>
         /* Ana Sayfa ve Genel Stil */
         body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
@@ -336,98 +334,77 @@
 </head>
 <body>
     <header>
-    <div class="container">
-        <div class="logo">
-            <a href="index.html">
-                <img src="../../images/LOGOm.png" alt="Hesapkolik Logo" class="site-logo">
-            </a>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+                <h1><a href="../../index.html">Hesapkolik</a></h1> 
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
         </div>
-        <nav>
-            <ul>
-                <li><a href="index.html">Ana Sayfa</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropbtn">Hesaplama Çeşitleri</a>
-                    <div class="dropdown-content">
-                        <a href="saglik-hesaplamalari.html">Sağlık Hesaplamaları</a>
-                        <a href="muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a>
-                        <a href="yuzde-hesaplayici.html">Yüzde Hesaplamaları</a>
-                        <a href="faiz-hesaplayici.html">Faiz Hesaplamaları</a>
-                        <a href="kredi-hesaplayici.html">Kredi Hesaplamaları</a>
-                        <a href="yas-hesaplayici.html">Yaş Hesaplamaları</a>
-                        <a href="birim-cevirici.html">Birim Çevirici</a>
-                        </div>
-                </li>
-                <li><a href="hakkimizda.html">Hakkımızda</a></li>
-                <li><a href="iletisim.html">İletişim</a></li>
-            </ul>
-        </nav>
-    </div>
-</header>
+    </header>
 
     <main>
         <section class="hero-section">
             <div class="container">
-                <h1>Burulma Gerilmesi Hesaplayıcı</h1>
-                <p>Millerde ve dairesel kesitli elemanlarda uygulanan burulma momenti (tork) nedeniyle oluşan burulma gerilmesi (kesme gerilmesi) hesaplamalarını kolayca yapın.</p>
+                <h1>Normal Gerilme Hesaplayıcı</h1>
+                <p>Basit çekme veya basma yükleri altında bir malzemenin karşılaştığı normal gerilmeyi kolayca hesaplayın.</p>
             </div>
         </section>
 
         <section class="calculator-selection-section">
             <div class="container">
-                <h2>Burulma Gerilmesi Hesapla</h2>
+                <h2>Normal Gerilme Hesapla</h2>
                 <div class="calc-buttons-container">
-                    <button class="calc-type-button active" data-calc-type="torsionalStress">Burulma Gerilmesi Hesapla</button>
+                    <button class="calc-type-button active" data-calc-type="normalStress">Normal Gerilme Hesapla</button>
                 </div>
 
-                <div id="calculator-torsionalStress" class="calc-wrapper active-calc">
-                    <h3><i class="fas fa-wrench icon-small"></i> Burulma Gerilmesi Hesapla (τt = Tr/J)</h3>
+                <div id="calculator-normalStress" class="calc-wrapper active-calc">
+                    <h3><i class="fas fa-ruler-combined icon-small"></i> Normal Gerilme Hesapla (σ = F/A)</h3>
                     <div class="calculator-form-container">
-                        <form id="torsionalStressForm">
+                        <form id="normalStressForm">
                             <div class="input-with-unit">
-                                <label for="torque">Uygulanan Burulma Momenti (T):</label>
-                                <input type="number" id="torque" placeholder="Örn: 100" min="0.000001" step="any" required>
-                                <select id="torqueUnit">
-                                    <option value="Nm">Newton-metre (N·m)</option>
-                                    <option value="kNm">Kilonewton-metre (kN·m)</option>
-                                    <option value="lbf-ft">Pound-kuvvet-fit (lbf·ft)</option>
-                                    <option value="lbf-in">Pound-kuvvet-inç (lbf·in)</option>
+                                <label for="force">Uygulanan Kuvvet (F):</label>
+                                <input type="number" id="force" placeholder="Örn: 1000" min="0.000001" step="any" required>
+                                <select id="forceUnit">
+                                    <option value="N">Newton (N)</option>
+                                    <option value="kN">Kilonewton (kN)</option>
+                                    <option value="lbf">Pound-kuvvet (lbf)</option>
                                 </select>
                             </div>
                             <hr class="form-divider">
                             <div class="input-with-unit">
-                                <label for="radius">En Dış Yarıçap (r):</label>
-                                <input type="number" id="radius" placeholder="Örn: 0.025 (m)" min="0.000001" step="any" required>
-                                <select id="radiusUnit">
-                                    <option value="m">metre (m)</option>
-                                    <option value="mm">milimetre (mm)</option>
-                                    <option value="cm">santimetre (cm)</option>
-                                    <option value="in">inç (in)</option>
+                                <label for="area">Kesit Alanı (A):</label>
+                                <input type="number" id="area" placeholder="Örn: 0.001" min="0.000001" step="any" required>
+                                <select id="areaUnit">
+                                    <option value="m2">metrekare (m²)</option>
+                                    <option value="mm2">milimetrekare (mm²)</option>
+                                    <option value="cm2">santimetrekare (cm²)</option>
+                                    <option value="in2">inç kare (in²)</option>
                                 </select>
                             </div>
-                            <hr class="form-divider">
-                            <div class="input-with-unit">
-                                <label for="polarMomentOfInertia">Polar Atalet Momenti (J):</label>
-                                <input type="number" id="polarMomentOfInertia" placeholder="Örn: 1.0e-7 (m⁴)" min="0.000000001" step="any" required>
-                                <select id="polarMomentOfInertiaUnit">
-                                    <option value="m4">metrekare üzeri 4 (m⁴)</option>
-                                    <option value="mm4">milimetrekare üzeri 4 (mm⁴)</option>
-                                    <option value="cm4">santimetrekare üzeri 4 (cm⁴)</option>
-                                    <option value="in4">inç üzeri 4 (in⁴)</option>
-                                </select>
-                            </div>
-                            <button type="submit">Burulma Gerilmesini Hesapla</button>
+                            <button type="submit">Normal Gerilmeyi Hesapla</button>
                         </form>
-                        <div id="torsionalStressResult" class="result-display"></div>
+                        <div id="normalStressResult" class="result-display"></div>
                         <div class="calc-explanation">
-                            <p>Burulma gerilmesi (burulma kesme gerilmesi), dairesel kesitli bir elemana uygulanan burulma momenti (tork) nedeniyle oluşan kesme gerilmesidir. En büyük gerilme, elemanın en dış yüzeyinde meydana gelir.</p>
+                            <p>Normal gerilme, bir malzemenin kesit alanına dik olarak uygulanan kuvvetin o alana oranıdır. Malzemenin çekme veya basma yükleri altındaki iç dayanımını gösterir.</p>
                             <p class="formula-text">
-                                τt = (T ⋅ r) / J
+                                σ = F / A
                             </p>
                             <ul>
-                                <li>**τt:** Burulma gerilmesi (Pascal, MPa, psi vb.)</li>
-                                <li>**T:** Uygulanan burulma momenti (tork)</li>
-                                <li>**r:** Kesitin tarafsız ekseninden en dış yüzeyine olan radyal mesafe (yarıçap)</li>
-                                <li>**J:** Kesitin polar atalet momenti (dairesel kesitler için)</li>
+                                <li>**σ:** Normal gerilme (Pascal, MPa, psi vb.)</li>
+                                <li>**F:** Uygulanan kuvvet</li>
+                                <li>**A:** Kuvvetin uygulandığı kesit alanı</li>
                             </ul>
                             <p>Sonuç, metrik birimler için **Paskal (Pa)** veya **Megapaskal (MPa)**, emperyal birimler için ise **psi (pound per square inch)** olarak verilecektir.</p>
                         </div>
@@ -437,50 +414,50 @@
         </section>
 
         <section class="info-section container">
-            <h3>Burulma Gerilmesi Nedir?</h3>
+            <h3>Normal Gerilme Nedir?</h3>
             <p>
-                **Burulma gerilmesi (τt)**, bir elemana ekseni etrafında dönme eğilimi gösteren bir burulma momenti (tork) uygulandığında oluşan kesme gerilmesi türüdür. En yaygın olarak miller, akslar ve borular gibi dairesel kesitli elemanlarda görülür. Burulma gerilmesi, elemanın kesitinde meydana gelen kayma deformasyonları sonucunda oluşur ve kesitin merkezinden uzaklaştıkça artarak en dış yüzeyde maksimum değerine ulaşır.
+                **Normal gerilme (σ)**, bir cismin kesit alanına dik (normal) olarak uygulanan kuvvetin, o kesit alanına bölünmesiyle elde edilen iç kuvvettir. Malzemelerin dış yükler altında nasıl tepki verdiğini anlamak için mukavemet biliminde temel bir kavramdır. Normal gerilme, bir cismin uzamasına (çekme gerilmesi) veya kısalmasına (basma gerilmesi) neden olur.
             </p>
             <p>
                 Formülü aşağıdaki gibidir:
             </p>
             <p class="formula-text">
-                τt = (T ⋅ r) / J
+                σ = F / A
             </p>
             <ul>
-                <li>**T:** Uygulanan burulma momenti veya tork (N·m, lbf·ft vb.)</li>
-                <li>**r:** Kesitin merkezinden, gerilmenin hesaplandığı noktanın radyal mesafesi (genellikle maksimum gerilme için en dış yarıçap) (m, mm, inç vb.)</li>
-                <li>**J:** Kesitin polar atalet momenti (dairesel kesitler için) (m⁴, mm⁴, in⁴ vb.)</li>
-                <li>**τt:** Burulma gerilmesi (Pascal (Pa), Megapaskal (MPa), psi (pound per square inch) vb.)</li>
+                <li>**F:** Uygulanan kuvvet (Newton, lbf vb.)</li>
+                <li>**A:** Kuvvetin uygulandığı kesit alanı (m², mm², in² vb.)</li>
+                <li>**σ:** Normal gerilme (Pascal (Pa), Megapaskal (MPa), psi (pound per square inch) vb.)</li>
             </ul>
-
-            <h4>Polar Atalet Momenti (J)</h4>
-            <p>Dairesel kesitler için polar atalet momenti (J) aşağıdaki gibi hesaplanır:</p>
-            <ul>
-                <li>**Dolu Dairesel Mil İçin:** J = (π d^4) / 32 veya J = (π r^4) / 2</li>
-                <li>**İçi Boş Dairesel Mil İçin:** J = (π (Do^4 - Di^4)) / 32 veya J = (π (ro^4 - ri^4)) / 2</li>
-            </ul>
-            <p>(Burada d dış çap, r dış yarıçap, Do dış çap, Di iç çap, ro dış yarıçap, ri iç yarıçaptır.)</p>
 
             <h4>Birimi ve Dönüşümleri</h4>
-            <p>Gerilme için kullanılan yaygın birimler, normal ve kesme gerilmesindekiyle aynıdır:</p>
+            <p>Gerilme için kullanılan yaygın birimler ve dönüşümleri:</p>
             <ul>
                 <li>**Pascal (Pa):** 1 N/m²</li>
+                <li>**Kilopaskal (kPa):** 10^3 Pa</li>
                 <li>**Megapaskal (MPa):** 10^6 Pa veya 1 N/mm²</li>
+                <li>**Gigapaskal (GPa):** 10^9 Pa</li>
                 <li>**Pound per Square Inch (psi):** 1 lbf/in²</li>
+                <li>**Kilopound per Square Inch (ksi):** 1000 psi</li>
                 <li>**1 MPa ≈ 145.038 psi**</li>
             </ul>
-            <p>Moment, yarıçap ve polar atalet momenti için de tutarlı birim sistemleri kullanılmalıdır (örn: N·m, m, m⁴).</p>
 
-            <h4>Burulma Gerilmesinin Önemli Olduğu Durumlar:</h4>
+            <h4>Çekme Gerilmesi ve Basma Gerilmesi</h4>
             <ul>
-                <li>**Tahrik Milleri:** Motorlardan güç aktaran şaftlar.</li>
-                <li>**Tork Anahtarları:** Belirli bir torkla sıkma işlemlerinde.</li>
-                <li>**Burulmaya Maruz Kalan Elemanlar:** Torsiyon çubukları, krank milleri gibi dönme hareketini aktaran veya dönme kuvvetlerine maruz kalan makine parçaları.</li>
-                <li>**Matkap Uçları ve Tornavidalar:** Malzemeleri delerken veya vidaları sıkarken burulma gerilmesine maruz kalırlar.</li>
+                <li>**Çekme Gerilmesi:** Cisme uygulanan kuvvetin cismi uzatma eğiliminde olduğu durumdur (pozitif gerilme). Örnek: Bir ipi çekmek.</li>
+                <li>**Basma Gerilmesi:** Cisme uygulanan kuvvetin cismi sıkıştırma veya kısaltma eğiliminde olduğu durumdur (negatif gerilme olarak da düşünülebilir, ancak genellikle mutlak değeri alınır). Örnek: Bir kolonu dikey olarak itmek.</li>
+            </ul>
+
+            <h4>Uygulama Alanları:</h4>
+            <ul>
+                <li>**Yapısal Tasarım:** Köprüler, binalar, taşıyıcı kolonların ve kirişlerin dayanım hesaplamaları.</li>
+                <li>**Makine Parçası Tasarımı:** Miller, akslar, bağlantı elemanları gibi makine elemanlarının boyutlandırılması.</li>
+                <li>**Malzeme Bilimi:** Yeni malzemelerin mekanik özelliklerinin belirlenmesi (çekme testi vb.).</li>
+                <li>**Havacılık ve Uzay:** Uçak ve roket gövdelerinin yükler altındaki davranışı.</li>
+                <li>**Biyomekanik:** Kemik ve dokuların mekanik dayanımlarının analizi.</li>
             </ul>
             <p class="disclaimer-text">
-                Bu hesaplayıcı, homojen, lineer elastik ve dairesel kesitli elemanlar için temel burulma gerilmesi hesaplamaları yapar. Gerçek mühendislik uygulamalarında, dairesel olmayan kesitler (daha karmaşık analiz gerektirir), gerilme konsantrasyonları (kamalar, anahtarlıklar), yorulma, dinamik yükler ve malzeme doğrusal olmayan davranışı gibi faktörler burulma gerilmesi dağılımını ve malzeme davranışını etkileyebilir. Daha karmaşık senaryolar için ileri düzey mukavemet analizleri, sonlu elemanlar yöntemleri ve mühendislik uzmanlığı gereklidir.
+                Bu hesaplayıcı, homojen malzemeler ve düzgün kesit alanları için basit normal gerilme hesaplamaları yapar. Gerçek mühendislik uygulamalarında, gerilme konsantrasyonları (delikler, köşeler), dinamik yükler, yorulma, sıcaklık etkileri, elastik olmayan deformasyonlar ve karmaşık yükleme koşulları gibi faktörler gerilme dağılımını ve malzeme davranışını etkileyebilir. Daha karmaşık senaryolar için ileri düzey mukavemet analizleri ve mühendislik uzmanlığı gereklidir.
             </p>
         </section>
     </main>
@@ -497,7 +474,7 @@
             const calculatorWrappers = document.querySelectorAll('.calc-wrapper');
 
             // Başlangıçta ilk hesaplayıcıyı göster (zaten tek var)
-            showCalculator('torsionalStress');
+            showCalculator('normalStress');
 
             mainCalcButtons.forEach(button => {
                 button.addEventListener('click', () => {
@@ -550,118 +527,91 @@
                 inputs.forEach(input => input.classList.remove('error'));
             }
 
-            // Birim dönüşüm faktörleri (temel birimler: Newton-metre (N·m), metre (m), metrekare üzeri 4 (m⁴))
-            // NOT: Gerilme sonucu Pa (N/m²) cinsinden çıkacaktır.
-
-            const torqueConversion = {
-                'Nm': 1,
-                'kNm': 1000,
-                'lbf-ft': 1.35582, // 1 lbf·ft = 1.35582 N·m
-                'lbf-in': 0.112985 // 1 lbf·in = 0.112985 N·m
+            // Birim dönüşüm faktörleri (temel birimler: Newton (N) ve metrekare (m²))
+            const forceConversion = {
+                'N': 1,
+                'kN': 1000,
+                'lbf': 4.44822 // 1 lbf = 4.44822 N
             };
 
-            const radiusConversion = {
-                'm': 1,
-                'mm': 0.001, // 1 mm = 0.001 m
-                'cm': 0.01,  // 1 cm = 0.01 m
-                'in': 0.0254 // 1 in = 0.0254 m
+            const areaConversion = {
+                'm2': 1,
+                'mm2': 1e-6, // 1 mm² = 1e-6 m²
+                'cm2': 1e-4, // 1 cm² = 1e-4 m²
+                'in2': 0.00064516 // 1 in² = 0.00064516 m²
             };
 
-            const polarInertiaConversion = {
-                'm4': 1,
-                'mm4': 1e-12, // 1 mm⁴ = 1e-12 m⁴
-                'cm4': 1e-8,  // 1 cm⁴ = 1e-8 m⁴
-                'in4': 4.16231e-7 // 1 in⁴ = 4.16231e-7 m⁴
-            };
+            // --- NORMAL GERİLME HESAPLAYICI ---
+            const normalStressForm = document.getElementById('normalStressForm');
+            const forceInput = document.getElementById('force');
+            const forceUnitSelect = document.getElementById('forceUnit');
+            const areaInput = document.getElementById('area');
+            const areaUnitSelect = document.getElementById('areaUnit');
+            const normalStressResultDiv = document.getElementById('normalStressResult');
 
+            function calculateNormalStress() {
+                clearErrorStyles([forceInput, areaInput]);
+                normalStressResultDiv.innerHTML = '';
+                normalStressResultDiv.style.display = 'none';
 
-            // --- BURULMA GERİLMESİ HESAPLAYICI ---
-            const torsionalStressForm = document.getElementById('torsionalStressForm');
-            const torqueInput = document.getElementById('torque');
-            const torqueUnitSelect = document.getElementById('torqueUnit');
-            const radiusInput = document.getElementById('radius');
-            const radiusUnitSelect = document.getElementById('radiusUnit');
-            const polarMomentOfInertiaInput = document.getElementById('polarMomentOfInertia');
-            const polarMomentOfInertiaUnitSelect = document.getElementById('polarMomentOfInertiaUnit');
-            const torsionalStressResultDiv = document.getElementById('torsionalStressResult');
+                const F_val = parseFloat(forceInput.value);
+                const A_val = parseFloat(areaInput.value);
 
-            function calculateTorsionalStress() {
-                clearErrorStyles([torqueInput, radiusInput, polarMomentOfInertiaInput]);
-                torsionalStressResultDiv.innerHTML = '';
-                torsionalStressResultDiv.style.display = 'none';
+                const F_unit = forceUnitSelect.value;
+                const A_unit = areaUnitSelect.value;
 
-                const T_val = parseFloat(torqueInput.value);
-                const r_val = parseFloat(radiusInput.value);
-                const J_val = parseFloat(polarMomentOfInertiaInput.value);
+                if (isNaN(F_val) || F_val <= 0) { displayError(normalStressResultDiv, "Lütfen geçerli ve pozitif bir kuvvet değeri giriniz.", [forceInput]); return; }
+                if (isNaN(A_val) || A_val <= 0) { displayError(normalStressResultDiv, "Lütfen geçerli ve pozitif bir kesit alanı giriniz.", [areaInput]); return; }
 
-                const T_unit = torqueUnitSelect.value;
-                const r_unit = radiusUnitSelect.value;
-                const J_unit = polarMomentOfInertiaUnitSelect.value;
+                const F_newton = F_val * forceConversion[F_unit];
+                const A_meter2 = A_val * areaConversion[A_unit];
 
-                if (isNaN(T_val) || T_val <= 0) { displayError(torsionalStressResultDiv, "Lütfen geçerli ve pozitif bir burulma momenti (tork) giriniz.", [torqueInput]); return; }
-                if (isNaN(r_val) || r_val <= 0) { displayError(torsionalStressResultDiv, "Lütfen geçerli ve pozitif bir yarıçap değeri giriniz.", [radiusInput]); return; }
-                if (isNaN(J_val) || J_val <= 0) { displayError(torsionalStressResultDiv, "Lütfen geçerli ve pozitif bir polar atalet momenti giriniz.", [polarMomentOfInertiaInput]); return; }
-
-                const T_Nm = T_val * torqueConversion[T_unit];
-                const r_m = r_val * radiusConversion[r_unit];
-                const J_m4 = J_val * polarInertiaConversion[J_unit];
-
-                const tau_t_pascal = (T_Nm * r_m) / J_m4; // Sonuç Pascal (Pa) cinsinden
+                const sigma_pascal = F_newton / A_meter2; // Sonuç Pascal (Pa) cinsinden
 
                 let resultDisplay = '';
-                let resultValue = tau_t_pascal;
+                let resultValue = sigma_pascal;
                 let resultUnit = 'Pa';
 
-                // Sonuçları uygun metrik birimlerde göster (Pa, kPa, MPa)
-                if (Math.abs(tau_t_pascal) >= 1e9) { // GPa
-                    resultValue = tau_t_pascal / 1e9;
+                // Sonuçları uygun birimlerde göster
+                if (sigma_pascal >= 1e9) { // GPa'dan büyükse
+                    resultValue = sigma_pascal / 1e9;
                     resultUnit = 'GPa';
-                } else if (Math.abs(tau_t_pascal) >= 1e6) { // MPa
-                    resultValue = tau_t_pascal / 1e6;
+                } else if (sigma_pascal >= 1e6) { // MPa'dan büyükse
+                    resultValue = sigma_pascal / 1e6;
                     resultUnit = 'MPa';
-                } else if (Math.abs(tau_t_pascal) >= 1e3) { // kPa
-                    resultValue = tau_t_pascal / 1e3;
+                } else if (sigma_pascal >= 1e3) { // kPa'dan büyükse
+                    resultValue = sigma_pascal / 1e3;
                     resultUnit = 'kPa';
                 }
 
-                // Eğer giriş birimlerinden herhangi biri emperyal ise psi olarak da göster
-                if (T_unit.includes('lbf') || r_unit === 'in' || J_unit === 'in4') {
-                    // T (lbf-in) / J (in4) * r (in) -> psi
-                    // Tüm birimleri lbf, in cinsine çevirerek psi hesaplayabiliriz
-                    const T_lbf_in = T_val * (T_unit === 'lbf-ft' ? 12 : 1);
-                    const r_in = r_val / radiusConversion['in']; 
-                    const J_in4 = J_val / polarInertiaConversion['in4']; 
-                    
-                    const tau_t_psi = (T_lbf_in * r_in) / J_in4;
-
+                // Eğer giriş birimlerinden biri emperyal ise psi olarak da göster
+                if (F_unit === 'lbf' || A_unit === 'in2') {
+                    const sigma_psi = F_val / A_val; // lbf/in² doğrudan psi verir
                     resultDisplay = `
-                        <p><strong>Burulma Gerilmesi (τt):</strong> <span class="result-value">${resultValue.toFixed(4)}</span> ${resultUnit}</p>
-                        <p class="small-text">(Yaklaşık ${tau_t_psi.toFixed(4)} psi)</p>
+                        <p><strong>Normal Gerilme (σ):</strong> <span class="result-value">${resultValue.toFixed(4)}</span> ${resultUnit}</p>
+                        <p class="small-text">(Yaklaşık ${sigma_psi.toFixed(4)} psi)</p>
                     `;
                 } else {
                     resultDisplay = `
-                        <p><strong>Burulma Gerilmesi (τt):</strong> <span class="result-value">${resultValue.toFixed(4)}</span> ${resultUnit}</p>
+                        <p><strong>Normal Gerilme (σ):</strong> <span class="result-value">${resultValue.toFixed(4)}</span> ${resultUnit}</p>
                     `;
                 }
                 
-                torsionalStressResultDiv.innerHTML = `
-                    <p><strong>Uygulanan Burulma Momenti (T):</strong> ${torqueInput.value} ${T_unit}</p>
-                    <p><strong>En Dış Yarıçap (r):</strong> ${radiusInput.value} ${r_unit}</p>
-                    <p><strong>Polar Atalet Momenti (J):</strong> ${polarMomentOfInertiaInput.value} ${J_unit}</p>
+                normalStressResultDiv.innerHTML = `
+                    <p><strong>Uygulanan Kuvvet (F):</strong> ${forceInput.value} ${F_unit}</p>
+                    <p><strong>Kesit Alanı (A):</strong> ${areaInput.value} ${A_unit}</p>
                     <hr>
                     ${resultDisplay}
                 `;
-                torsionalStressResultDiv.style.display = 'block';
+                normalStressResultDiv.style.display = 'block';
             }
 
-            if (torsionalStressForm) {
-                torsionalStressForm.addEventListener('submit', function(event) { event.preventDefault(); calculateTorsionalStress(); });
-                torqueInput.addEventListener('input', calculateTorsionalStress);
-                torqueUnitSelect.addEventListener('change', calculateTorsionalStress);
-                radiusInput.addEventListener('input', calculateTorsionalStress);
-                radiusUnitSelect.addEventListener('change', calculateTorsionalStress);
-                polarMomentOfInertiaInput.addEventListener('input', calculateTorsionalStress);
-                polarMomentOfInertiaUnitSelect.addEventListener('change', calculateTorsionalStress);
+            if (normalStressForm) {
+                normalStressForm.addEventListener('submit', function(event) { event.preventDefault(); calculateNormalStress(); });
+                forceInput.addEventListener('input', calculateNormalStress);
+                forceUnitSelect.addEventListener('change', calculateNormalStress);
+                areaInput.addEventListener('input', calculateNormalStress);
+                areaUnitSelect.addEventListener('change', calculateNormalStress);
             }
         });
     </script>
