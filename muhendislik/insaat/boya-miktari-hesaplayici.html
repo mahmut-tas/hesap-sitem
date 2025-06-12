@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boya Miktarı Hesaplayıcısı - Hesapkolik</title>
+    <meta name="description" content="Belirli bir duvar veya yüzey alanını boyamak için gereken boya miktarını (litre veya kg) detaylı olarak hesaplayın. Kapı/pencere boşlukları, kat sayısı, boya türü ve fire oranı gibi faktörleri dikkate alır. İnşaat ve tadilat projeleriniz için kapsamlı bir araç.">
+    <meta name="keywords" content="boya hesaplama, boya miktarı, duvar boyama, yüzey alanı, litre boya, kg boya, kaplama alanı, kat sayısı, fire oranı, tadilat, inşaat, hesapkolik boya">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        header { background-color: #2c3e50; color: white; padding: 15px 0; }
+        header .logo h1 { margin: 0; font-size: 1.8em; }
+        header .logo h1 a { color: white; text-decoration: none; }
+        header .logo .site-logo { height: 40px; vertical-align: middle; }
+        header nav ul { list-style: none; margin: 0; padding: 0; display: flex; justify-content: flex-end; }
+        header nav ul li { margin-left: 25px; }
+        header nav ul li a { color: white; text-decoration: none; font-weight: 600; transition: color 0.3s ease; }
+        header nav ul li a:hover { color: #ecf0f1; }
+        
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Bölümü Stilleri */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        /* Hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 750px; /* Daha geniş bir alan için artırıldı */
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.1em; 
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: left; 
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.2em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin {
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+        }
+        .input-with-unit label {
+            flex-basis: 100%; /* Label her zaman üstte veya solda */
+            margin-bottom: 5px;
+            text-align: left;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input alanı boşluğu doldurur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .input-with-unit select {
+            flex-shrink: 0; /* Select kutusu sabit kalır */
+            width: auto; /* Select kutusu kendi genişliğinde olur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+
+        /* Gelişmiş seçenekler için gizle/göster */
+        .advanced-options {
+            border-top: 1px dashed #eee;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+        .advanced-options h4 {
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .toggle-button {
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+        .toggle-button:hover {
+            background-color: #e0e0e0;
+        }
+        .toggle-button.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        .hidden-section {
+            display: none;
+        }
+
+        /* Sonuç satırları için hizalama */
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+            padding-bottom: 5px;
+            border-bottom: 1px dotted #e0e0e0;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .result-item strong {
+            flex-shrink: 0;
+            margin-right: 10px;
+        }
+        .result-item .result-value {
+            flex-grow: 1;
+            text-align: right;
+        }
+
+        /* Alan girişleri için grid düzeni */
+        .area-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* İki eşit sütun */
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .area-input-group {
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #fcfcfc;
+        }
+        .area-input-group h5 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #555;
+            font-size: 1.1em;
+            text-align: center;
+        }
+        .area-input-group .input-with-unit {
+            margin-bottom: 10px; /* İç inputlar arası boşluk */
+        }
+        .area-input-group .input-with-unit:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Boşluklar için dinamik ekleme */
+        #openingsContainer {
+            border: 1px dashed #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            background-color: #f9f9f9;
+        }
+        .opening-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+            background-color: #fff;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #eee;
+        }
+        .opening-item input {
+            flex-grow: 1;
+            margin-bottom: 0;
+        }
+        .opening-item button {
+            width: auto;
+            padding: 8px 12px;
+            font-size: 0.9em;
+            margin-top: 0;
+            background-color: #dc3545; /* Kırmızı renk */
+        }
+        .opening-item button:hover {
+            background-color: #c82333;
+        }
+        #addOpeningButton {
+            background-color: #007bff; /* Mavi renk */
+            margin-top: 10px;
+        }
+        #addOpeningButton:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+                <h1><a href="../../index.html">Hesapkolik</a></h1> 
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Boya Miktarı Hesaplayıcısı</h1>
+                <p>Belirli bir yüzey alanını boyamak için gereken boya miktarını (litre veya kg) doğru bir şekilde tahmin edin.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <h2>Boya İhtiyacınızı Belirleyin</h2>
+                
+                <div id="calculator-paintAmount" class="calc-wrapper">
+                    <h3><i class="fas fa-paint-roller icon-small"></i> Boya Miktarı Hesaplayıcısı</h3>
+                    <div class="calculator-form-container">
+                        <form id="paintAmountForm">
+                            <h4>Boyanacak Yüzey Alanı</h4>
+                            <p class="small-text">Duvar veya yüzey alanını uzunluk ve yükseklik/genişlik değerlerini girerek hesaplayın.</p>
+                            
+                            <div class="area-inputs">
+                                <div class="area-input-group">
+                                    <h5>Duvar 1</h5>
+                                    <div class="input-with-unit">
+                                        <label for="wall1Length">Uzunluk:</label>
+                                        <input type="number" id="wall1Length" placeholder="Örn: 5" min="0.01" step="any">
+                                        <select id="wall1LengthUnit">
+                                            <option value="m">m</option>
+                                            <option value="cm">cm</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-with-unit">
+                                        <label for="wall1Height">Yükseklik:</label>
+                                        <input type="number" id="wall1Height" placeholder="Örn: 2.8" min="0.01" step="any">
+                                        <select id="wall1HeightUnit">
+                                            <option value="m">m</option>
+                                            <option value="cm">cm</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="area-input-group">
+                                    <h5>Duvar 2 (İsteğe Bağlı)</h5>
+                                    <div class="input-with-unit">
+                                        <label for="wall2Length">Uzunluk:</label>
+                                        <input type="number" id="wall2Length" placeholder="Örn: 4" min="0" step="any">
+                                        <select id="wall2LengthUnit">
+                                            <option value="m">m</option>
+                                            <option value="cm">cm</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-with-unit">
+                                        <label for="wall2Height">Yükseklik:</label>
+                                        <input type="number" id="wall2Height" placeholder="Örn: 2.8" min="0" step="any">
+                                        <select id="wall2HeightUnit">
+                                            <option value="m">m</option>
+                                            <option value="cm">cm</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                </div>
+                            
+                            <hr class="form-divider">
+                            <h4>Boşluklar (Kapı/Pencere)</h4>
+                            <p class="small-text">Boya yapılmayacak kapı ve pencere gibi alanların toplam alanını veya boyutlarını girerek düşülmesini sağlayın.</p>
+                            <div id="openingsContainer">
+                                <p class="small-text" style="text-align: center; margin-bottom: 10px;">Hiç boşluk eklenmedi.</p>
+                            </div>
+                            <button type="button" id="addOpeningButton"><i class="fas fa-plus"></i> Kapı/Pencere Boşluğu Ekle</button>
+
+                            <hr class="form-divider">
+                            <h4>Boya Detayları</h4>
+                            <div class="input-with-unit">
+                                <label for="paintCoverage">Boya Kaplama Oranı (1 litre boyanın boyadığı alan):</label>
+                                <input type="number" id="paintCoverage" placeholder="Örn: 14 (m²/litre)" value="14" min="1" step="0.1" required>
+                                <span class="unit">m²/litre</span>
+                            </div>
+                            <p class="small-text">Bu değer, boyanın ambalajında yazar. Genellikle 1 litre boyanın tek katta kaç metrekare alan boyadığıdır.</p>
+
+                            <div class="input-with-unit">
+                                <label for="numberOfCoats">Kaç Kat Boyanacak:</label>
+                                <input type="number" id="numberOfCoats" placeholder="Örn: 2" value="2" min="1" step="1" required>
+                                <span class="unit">kat</span>
+                            </div>
+                            <p class="small-text">Genellikle 2 kat boya önerilir, ancak yüzeyin durumuna veya renk değişimine göre artırılabilir.</p>
+
+                            <div class="advanced-options">
+                                <button type="button" class="toggle-button" id="toggleAdvancedOptions">
+                                    <i class="fas fa-cogs"></i> Gelişmiş Ayarlar (Boya Yoğunluğu ve Fire)
+                                </button>
+                                <div id="advancedOptionsContent" class="hidden-section">
+                                    <div class="input-with-unit">
+                                        <label for="paintDensity">Boya Yoğunluğu (kg/litre):</label>
+                                        <input type="number" id="paintDensity" placeholder="Örn: 1.4 (Su bazlı boyalar için)" value="1.4" min="0.1" step="0.01">
+                                        <span class="unit">kg/litre</span>
+                                    </div>
+                                    <p class="small-text">Boya miktarını litre yerine kilogram olarak da görmek isterseniz yoğunluğunu giriniz. Genellikle boya kutusunda yazar.</p>
+
+                                    <div class="input-with-unit">
+                                        <label for="paintWastageFactor">Boya Fire Oranı (%):</label>
+                                        <input type="number" id="paintWastageFactor" value="10" min="0" max="100" step="0.1">
+                                        <span class="unit">%</span>
+                                    </div>
+                                    <p class="small-text">Boya yaparken oluşabilecek dökülme, israf veya fırça/rulo kayıpları için eklenen yüzde.</p>
+                                </div>
+                            </div>
+
+                            <button type="submit">Boya Miktarını Hesapla</button>
+                        </form>
+                        <div id="paintAmountResult" class="result-display" style="display:none;">
+                            </div>
+                        <div class="calc-explanation">
+                            <p>Bu hesaplayıcı, bir alanı boyamak için gereken boya miktarını (litre veya kilogram cinsinden) tahmini olarak belirlemenize yardımcı olur. Duvar/yüzey boyutları, kapı ve pencere gibi boşluklar, boyanın kaplama oranı, uygulanacak kat sayısı ve olası fire oranları gibi faktörler hesaplamaya dahil edilir.</p>
+                            <p class="formula-text small-margin">
+                                Net Boyanacak Alan = (Toplam Duvar Alanları) - (Toplam Boşluk Alanları)
+                            </p>
+                            <p class="formula-text small-margin">
+                                Gerekli Boya (Litre) = (Net Boyanacak Alan × Kat Sayısı / Boya Kaplama Oranı) × (1 + Fire Oranı / 100)
+                            </p>
+                            <p class="formula-text small-margin">
+                                Gerekli Boya (Kg) = Gerekli Boya (Litre) × Boya Yoğunluğu
+                            </p>
+                            <ul>
+                                <li><strong>Net Boyanacak Alan:</strong> Kapı, pencere vb. düşüldükten sonra boyanacak gerçek alan (m²).</li>
+                                <li><strong>Boya Kaplama Oranı:</strong> 1 litre boyanın tek katta boyayabildiği alan (m²/litre). Boya ambalajında belirtilir.</li>
+                                <li><strong>Kat Sayısı:</strong> Boyanın kaç kat uygulanacağı.</li>
+                                <li><strong>Boya Yoğunluğu:</strong> Boyanın litre başına düşen ağırlığı (kg/litre).</li>
+                                <li><strong>Fire Oranı:</strong> Boyama sırasındaki olası dökülme, israf veya emilim farklılıkları için eklenen yüzde (%).</li>
+                            </ul>
+                            <p><strong>Önemli Not:</strong> Bu hesaplayıcıdaki değerler tahmini olup, yüzeyin emiciliği, boyanın kalitesi, uygulama yöntemi (fırça, rulo, sprey) ve işçilik gibi birçok faktör gerçek boya tüketimini etkileyebilir. Özellikle profesyonel projelerde veya büyük alanlarda, daima bir miktar fazlalık boya almak (fire oranını yüksek tutmak) veya bir uzmana danışmak faydalı olacaktır.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>Boya Miktarı Hesaplama Neden Önemlidir?</h3>
+            <p>
+                Bir mekanı boyamak hem maliyetli hem de zaman alıcı bir iştir. Gerekli boya miktarını doğru hesaplamak, projenin **verimliliği, bütçe kontrolü ve çevresel etki** açısından büyük önem taşır:
+            </p>
+            <ul>
+                <li><strong>Maliyet Tasarrufu:</strong> Yeterli boya sipariş etmek, işin kesintiye uğramasını ve ek nakliye maliyetlerini önler. Fazla boya alımı ise gereksiz harcama ve depolama sorunları yaratır.</li>
+                <li><strong>Zaman Yönetimi:</strong> Doğru miktarla başlamak, işin zamanında tamamlanmasına yardımcı olur. Malzeme eksikliği nedeniyle beklemek, proje takvimini aksatabilir.</li>
+                <li><strong>İsrafın Azaltılması:</strong> Gereğinden fazla boya almak, kullanılmayan ürünlerin atılmasına yol açabilir, bu da hem ekonomik hem de çevresel bir yüktür.</li>
+                <li><strong>Homojen Sonuç:</strong> Tek seferde yeterli boya ile başlamak, renk tonu farklılıkları gibi sorunları (özellikle büyük alanlarda) minimize eder.</li>
+            </ul>
+
+            <h4>Boya Kaplama Oranı ve Kat Sayısı:</h4>
+            <p>
+                Boya miktarını etkileyen en önemli faktörlerden ikisi **boya kaplama oranı** ve **uygulanacak kat sayısıdır**.
+            </p>
+            <ul>
+                <li><strong>Boya Kaplama Oranı (m²/litre):</strong> Bir litre boyanın tek bir kat halinde kaç metrekarelik bir alanı boyayabileceğini gösterir. Bu değer, boyanın türüne (su bazlı, yağ bazlı), kalitesine, pigmentasyonuna ve yüzeyin emiciliğine göre değişir. Genellikle boya kutusunun üzerinde belirtilir. Pürüzlü yüzeyler veya emiciliği yüksek yüzeyler daha fazla boya tüketir.</li>
+                <li><strong>Kat Sayısı:</strong> Genellikle iyi bir sonuç elde etmek için iki kat boya uygulanır. Ancak, koyu bir rengi açık bir renge çeviriyorsanız veya yüzey çok kusurluysa, üç veya daha fazla kat gerekebilir. Tek katta kapatıcı boyalar da mevcuttur ancak genellikle daha pahalıdır.</li>
+            </ul>
+
+            <h4>Boşlukların ve Fire Oranının Önemi:</h4>
+            <p>
+                Duvar alanını hesaplarken **kapı ve pencere gibi boşlukların** düşülmesi, gereksiz boya alımını engeller. Bu alanlar boyanmayacağı için toplam yüzey alanından çıkarılmalıdır.
+            </p>
+            <p>
+                **Fire oranı** ise, boyama işlemi sırasında kaçınılmaz olarak meydana gelebilecek kayıpları telafi etmek için eklenen fazlalıktır. Bu kayıplar şunları içerebilir:
+            </p>
+            <ul>
+                <li>Boya rulodan veya fırçadan damlayabilir.</li>
+                <li>Yüzeyin beklenenden daha fazla emiciliği olabilir.</li>
+                <li>Renk tutturma veya rötuşlar için fazladan boya gerekebilir.</li>
+                <li>Boya kutusunun dibinde kalan veya fırçaya/ruloya yapışan kullanılamayan miktar.</li>
+            </ul>
+            <p class="small-text">Tipik bir iç mekan boyaması için %5-10 arasında bir fire oranı güvenli kabul edilir. Profesyonel bir uygulama veya karmaşık yüzeyler için bu oran artırılabilir.</p>
+
+            <h4>Uygulama Alanları:</h4>
+            <ul>
+                <li><strong>Ev ve Ofis Tadilatları:</strong> Oda veya ofis boyama projeleri için kesin malzeme ihtiyacı.</li>
+                <li><strong>Ticari Alanlar:</strong> Mağazalar, restoranlar ve diğer ticari mekanların boyama maliyet ve malzeme planlaması.</li>
+                <li><strong>Dış Cephe Boyamaları:</strong> Binaların dış cephelerinin boyanması için büyük ölçekli hesaplamalar.</li>
+                <li><strong>Sanatsal ve Dekoratif Projeler:</strong> Özel yüzeylerin boyanması için tahmini malzeme ihtiyacı.</li>
+            </ul>
+            <p class="disclaimer-text">
+                Bu hesaplayıcı tarafından sağlanan bilgiler, genel planlama ve tahmin amaçlıdır. Yüzeyin durumu (pürüzlülük, emicilik), boyanın spesifik özellikleri (kalite, viskozite), uygulama aracı (fırça, rulo, sprey) ve işçilik kalitesi gibi değişkenler, gerçek boya tüketimini önemli ölçüde etkileyebilir. Hassas projeler veya büyük ölçekli uygulamalar için daima bir boya uzmanına veya tedarikçiye danışmanız tavsiye edilir. Hesapkolik, bu hesaplayıcının kullanımından kaynaklanabilecek herhangi bir yanlışlık veya hatadan sorumlu değildir.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ortak hata gösterici fonksiyon
+            function displayError(resultDiv, message, inputsToMark = []) {
+                resultDiv.innerHTML = `<p class="error"><i class="fas fa-exclamation-triangle"></i> Hata: ${message}</p>`;
+                resultDiv.style.display = 'block';
+                inputsToMark.forEach(input => {
+                    if (input) input.classList.add('error');
+                });
+            }
+
+            // Input hata stilini temizleyici fonksiyon
+            function clearErrorStyles(inputs) {
+                inputs.forEach(input => input.classList.remove('error'));
+            }
+
+            // Birim dönüşüm faktörleri (temel birim metre: m)
+            const lengthConversion = {
+                'm': 1,
+                'cm': 0.01,
+                'mm': 0.001
+            };
+
+            // --- BOYA MİKTARI HESAPLAYICI ELEMENTLERİ ---
+            const paintAmountForm = document.getElementById('paintAmountForm');
+            const wall1LengthInput = document.getElementById('wall1Length');
+            const wall1LengthUnitSelect = document.getElementById('wall1LengthUnit');
+            const wall1HeightInput = document.getElementById('wall1Height');
+            const wall1HeightUnitSelect = document.getElementById('wall1HeightUnit');
+
+            const wall2LengthInput = document.getElementById('wall2Length');
+            const wall2LengthUnitSelect = document.getElementById('wall2LengthUnit');
+            const wall2HeightInput = document.getElementById('wall2Height');
+            const wall2HeightUnitSelect = document.getElementById('wall2HeightUnit');
+
+            const openingsContainer = document.getElementById('openingsContainer');
+            const addOpeningButton = document.getElementById('addOpeningButton');
+            let openingCounter = 0; // Boşlukları takip etmek için sayaç
+
+            const paintCoverageInput = document.getElementById('paintCoverage');
+            const numberOfCoatsInput = document.getElementById('numberOfCoats');
+            const paintDensityInput = document.getElementById('paintDensity');
+            const paintWastageFactorInput = document.getElementById('paintWastageFactor');
+            const paintAmountResultDiv = document.getElementById('paintAmountResult');
+
+            const toggleAdvancedOptionsButton = document.getElementById('toggleAdvancedOptions');
+            const advancedOptionsContent = document.getElementById('advancedOptionsContent');
+
+            // Gelişmiş seçenekleri göster/gizle
+            if (toggleAdvancedOptionsButton && advancedOptionsContent) {
+                toggleAdvancedOptionsButton.addEventListener('click', () => {
+                    advancedOptionsContent.classList.toggle('hidden-section');
+                    toggleAdvancedOptionsButton.classList.toggle('active');
+                });
+            }
+
+            // Boşluk ekleme fonksiyonu
+            addOpeningButton.addEventListener('click', () => {
+                openingCounter++;
+                const openingDiv = document.createElement('div');
+                openingDiv.classList.add('opening-item');
+                openingDiv.dataset.id = openingCounter; // Kolayca silmek için ID
+
+                openingDiv.innerHTML = `
+                    <div class="input-with-unit" style="flex-grow: 1;">
+                        <label for="openingLength${openingCounter}">Kapı/Pencere Uzunluğu:</label>
+                        <input type="number" id="openingLength${openingCounter}" placeholder="Örn: 0.9" min="0.01" step="any" required>
+                        <select id="openingLengthUnit${openingCounter}">
+                            <option value="m">m</option>
+                            <option value="cm">cm</option>
+                        </select>
+                    </div>
+                    <div class="input-with-unit" style="flex-grow: 1;">
+                        <label for="openingHeight${openingCounter}">Kapı/Pencere Yüksekliği:</label>
+                        <input type="number" id="openingHeight${openingCounter}" placeholder="Örn: 2.1" min="0.01" step="any" required>
+                        <select id="openingHeightUnit${openingCounter}">
+                            <option value="m">m</option>
+                            <option value="cm">cm</option>
+                        </select>
+                    </div>
+                    <button type="button" class="remove-opening-button" data-id="${openingCounter}"><i class="fas fa-times"></i></button>
+                `;
+                
+                // Eğer "Hiç boşluk eklenmedi." mesajı varsa kaldır
+                const noOpeningMessage = openingsContainer.querySelector('p.small-text');
+                if (noOpeningMessage) {
+                    noOpeningMessage.remove();
+                }
+
+                openingsContainer.appendChild(openingDiv);
+
+                // Yeni eklenen inputlara event listener ekle
+                const newLengthInput = document.getElementById(`openingLength${openingCounter}`);
+                const newLengthUnitSelect = document.getElementById(`openingLengthUnit${openingCounter}`);
+                const newHeightInput = document.getElementById(`openingHeight${openingCounter}`);
+                const newHeightUnitSelect = document.getElementById(`openingHeightUnit${openingCounter}`);
+                
+                newLengthInput.addEventListener('input', calculatePaintAmount);
+                newLengthUnitSelect.addEventListener('change', calculatePaintAmount);
+                newHeightInput.addEventListener('input', calculatePaintAmount);
+                newHeightUnitSelect.addEventListener('change', calculatePaintAmount);
+
+                // Silme butonuna event listener ekle
+                openingDiv.querySelector('.remove-opening-button').addEventListener('click', (e) => {
+                    e.target.closest('.opening-item').remove();
+                    // Eğer hiç boşluk kalmadıysa mesajı tekrar göster
+                    if (openingsContainer.children.length === 0) {
+                        const msg = document.createElement('p');
+                        msg.classList.add('small-text');
+                        msg.style.textAlign = 'center';
+                        msg.style.marginBottom = '10px';
+                        msg.textContent = 'Hiç boşluk eklenmedi.';
+                        openingsContainer.appendChild(msg);
+                    }
+                    calculatePaintAmount(); // Boşluk silinince yeniden hesapla
+                });
+
+                calculatePaintAmount(); // Yeni boşluk eklenince yeniden hesapla
+            });
+
+
+            function calculatePaintAmount() {
+                clearErrorStyles([
+                    wall1LengthInput, wall1HeightInput,
+                    wall2LengthInput, wall2HeightInput,
+                    paintCoverageInput, numberOfCoatsInput,
+                    paintDensityInput, paintWastageFactorInput
+                ]);
+                paintAmountResultDiv.innerHTML = '';
+                paintAmountResultDiv.style.display = 'none';
+
+                // 1. Duvar Alanları
+                let totalWallArea = 0;
+
+                const wall1Len = parseFloat(wall1LengthInput.value);
+                const wall1Height = parseFloat(wall1HeightInput.value);
+                const wall1LenUnit = wall1LengthUnitSelect.value;
+                const wall1HeightUnit = wall1HeightUnitSelect.value;
+
+                if (!isNaN(wall1Len) && wall1Len > 0 && !isNaN(wall1Height) && wall1Height > 0) {
+                    totalWallArea += (wall1Len * lengthConversion[wall1LenUnit]) * (wall1Height * lengthConversion[wall1HeightUnit]);
+                } else if ((isNaN(wall1Len) || wall1Len <= 0) && (isNaN(wall1Height) || wall1Height <= 0)) {
+                    // Her ikisi de boş veya geçersizse hata verme, sadece atla
+                } else {
+                    displayError(paintAmountResultDiv, "Duvar 1 için hem uzunluk hem de yükseklik geçerli olmalıdır.", [wall1LengthInput, wall1HeightInput]); return;
+                }
+
+                const wall2Len = parseFloat(wall2LengthInput.value);
+                const wall2Height = parseFloat(wall2HeightInput.value);
+                const wall2LenUnit = wall2LengthUnitSelect.value;
+                const wall2HeightUnit = wall2HeightUnitSelect.value;
+                
+                if (!isNaN(wall2Len) && wall2Len > 0 && !isNaN(wall2Height) && wall2Height > 0) {
+                    totalWallArea += (wall2Len * lengthConversion[wall2LenUnit]) * (wall2Height * lengthConversion[wall2HeightUnit]);
+                } else if (!((isNaN(wall2Len) || wall2Len <= 0) && (isNaN(wall2Height) || wall2Height <= 0))) {
+                    displayError(paintAmountResultDiv, "Duvar 2 için hem uzunluk hem de yükseklik geçerli olmalıdır (isteğe bağlı olmasına rağmen).", [wall2LengthInput, wall2HeightInput]); return;
+                }
+
+                if (totalWallArea <= 0) {
+                    displayError(paintAmountResultDiv, "Lütfen en az bir duvarın geçerli uzunluk ve yüksekliğini giriniz.", [wall1LengthInput, wall1HeightInput]); return;
+                }
+
+                // 2. Boşluk Alanları
+                let totalOpeningArea = 0;
+                const openingItems = openingsContainer.querySelectorAll('.opening-item');
+                openingItems.forEach(item => {
+                    const id = item.dataset.id;
+                    const oLength = parseFloat(document.getElementById(`openingLength${id}`).value);
+                    const oHeight = parseFloat(document.getElementById(`openingHeight${id}`).value);
+                    const oLengthUnit = document.getElementById(`openingLengthUnit${id}`).value;
+                    const oHeightUnit = document.getElementById(`openingHeightUnit${id}`).value;
+
+                    if (isNaN(oLength) || oLength <= 0) { displayError(paintAmountResultDiv, `Boşluk ${id} için geçerli uzunluk giriniz.`, [document.getElementById(`openingLength${id}`)]); return; }
+                    if (isNaN(oHeight) || oHeight <= 0) { displayError(paintAmountResultDiv, `Boşluk ${id} için geçerli yükseklik giriniz.`, [document.getElementById(`openingHeight${id}`)]); return; }
+
+                    totalOpeningArea += (oLength * lengthConversion[oLengthUnit]) * (oHeight * lengthConversion[oHeightUnit]);
+                });
+
+                const netPaintableArea = Math.max(0, totalWallArea - totalOpeningArea); // Alan negatif olamaz
+
+                // 3. Boya Detayları
+                const paintCoverage = parseFloat(paintCoverageInput.value); // m²/litre
+                const numberOfCoats = parseFloat(numberOfCoatsInput.value);
+                const paintDensity = parseFloat(paintDensityInput.value) || 0; // kg/litre
+                const paintWastage = parseFloat(paintWastageFactorInput.value) || 0;
+
+                if (isNaN(paintCoverage) || paintCoverage <= 0) { displayError(paintAmountResultDiv, "Lütfen geçerli ve pozitif bir boya kaplama oranı giriniz.", [paintCoverageInput]); return; }
+                if (isNaN(numberOfCoats) || numberOfCoats < 1) { displayError(paintAmountResultDiv, "Lütfen geçerli bir kat sayısı giriniz (en az 1).", [numberOfCoatsInput]); return; }
+                if (isNaN(paintWastage) || paintWastage < 0 || paintWastage > 100) { displayError(paintAmountResultDiv, "Lütfen geçerli bir boya fire oranı giriniz (0-100 arası).", [paintWastageFactorInput]); return; }
+                if (paintDensity !== 0 && (isNaN(paintDensity) || paintDensity <= 0)) { displayError(paintAmountResultDiv, "Lütfen geçerli ve pozitif bir boya yoğunluğu giriniz.", [paintDensityInput]); return; }
+
+
+                // --- HESAPLAMALAR ---
+                const requiredPaintLitersNet = (netPaintableArea * numberOfCoats) / paintCoverage;
+                const totalRequiredPaintLiters = requiredPaintLitersNet * (1 + paintWastage / 100);
+
+                let resultDisplay = `
+                    <div class="result-item"><strong>Toplam Duvar Alanı:</strong> <span class="result-value">${totalWallArea.toFixed(2)} m²</span></div>
+                    <div class="result-item"><strong>Toplam Boşluk Alanı:</strong> <span class="result-value">${totalOpeningArea.toFixed(2)} m²</span></div>
+                    <div class="result-item"><strong>Net Boyanacak Alan:</strong> <span class="result-value">${netPaintableArea.toFixed(2)} m²</span></div>
+                    <hr style="border-top: 1px solid #dcdfe4; margin: 15px 0;">
+                    <div class="result-item"><strong>Toplam Gerekli Boya (Tahmini):</strong> <span class="result-value">${totalRequiredPaintLiters.toFixed(2)} Litre</span></div>
+                `;
+
+                if (paintDensity > 0) {
+                    const totalRequiredPaintKg = totalRequiredPaintLiters * paintDensity;
+                    resultDisplay += `<div class="result-item"><strong>Toplam Gerekli Boya (Tahmini):</strong> <span class="result-value">${totalRequiredPaintKg.toFixed(2)} kg</span></div>`;
+                }
+
+                resultDisplay += `
+                    <p class="small-text" style="text-align: center; margin-top: 20px;">
+                        Kullanılan Kaplama Oranı: ${paintCoverage} m²/litre, Kat Sayısı: ${numberOfCoats}, Fire Oranı: %${paintWastage}
+                    </p>
+                `;
+
+                paintAmountResultDiv.innerHTML = resultDisplay;
+                paintAmountResultDiv.style.display = 'block';
+            }
+
+            if (paintAmountForm) {
+                paintAmountForm.addEventListener('submit', function(event) { event.preventDefault(); calculatePaintAmount(); });
+                
+                // Input ve select değişikliklerinde otomatik hesaplama
+                wall1LengthInput.addEventListener('input', calculatePaintAmount);
+                wall1LengthUnitSelect.addEventListener('change', calculatePaintAmount);
+                wall1HeightInput.addEventListener('input', calculatePaintAmount);
+                wall1HeightUnitSelect.addEventListener('change', calculatePaintAmount);
+                wall2LengthInput.addEventListener('input', calculatePaintAmount);
+                wall2LengthUnitSelect.addEventListener('change', calculatePaintAmount);
+                wall2HeightInput.addEventListener('input', calculatePaintAmount);
+                wall2HeightUnitSelect.addEventListener('change', calculatePaintAmount);
+                
+                paintCoverageInput.addEventListener('input', calculatePaintAmount);
+                numberOfCoatsInput.addEventListener('input', calculatePaintAmount);
+                paintDensityInput.addEventListener('input', calculatePaintAmount);
+                paintWastageFactorInput.addEventListener('input', calculatePaintAmount);
+
+                // Form yüklendiğinde bir kez hesapla
+                calculatePaintAmount();
+            }
+        });
+    </script>
+</body>
+</html>
