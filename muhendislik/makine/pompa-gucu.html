@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Normal Gerilme Hesaplayıcı - Hesapkolik</title>
-    <meta name="description" content="Basit çekme veya basma yükleri altında bir malzemenin karşılaştığı normal gerilmeyi kolayca hesaplayın. Mühendislik ve mekanik tasarım için temel bir araç.">
-    <meta name="keywords" content="normal gerilme, gerilme hesaplama, çekme gerilmesi, basma gerilmesi, mukavemet, mekanik, mühendislik hesaplamaları, kuvvet, alan, hesapkolik gerilme">
+    <title>Pompa Gücü Hesaplayıcı - Hesapkolik</title>
+    <meta name="description" content="Belirli bir debi ve basma yüksekliği (veya basınç farkı) için gerekli pompa gücünü (hidrolik güç, şaft gücü, motor gücü) kolayca hesaplayın. Akışkanlar mekaniği, hidrolik sistemler ve mühendislik tasarımı için temel bir araç.">
+    <meta name="keywords" content="pompa gücü, pompa hesaplama, hidrolik güç, şaft gücü, motor gücü, debi, basma yüksekliği, basınç farkı, verimlilik, akışkanlar mekaniği, mühendislik hesaplamaları, hesapkolik pompa">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="../../css/style.css">
     <style>
         /* Ana Sayfa ve Genel Stil */
@@ -367,56 +366,61 @@
     <main>
         <section class="hero-section">
             <div class="container">
-                <h1>Normal Gerilme Hesaplayıcı</h1>
-                <p>Basit çekme veya basma yükleri altında bir malzemenin karşılaştığı normal gerilmeyi kolayca hesaplayın.</p>
+                <h1>Emniyet Faktörü Hesaplayıcı</h1>
+                <p>Bir mühendislik tasarımının veya bileşenin emniyet faktörünü (güvenlik faktörünü) kolayca hesaplayın. Tasarım dayanımı ve uygulanan yük değerlerini kullanarak güvenilirlik oranını belirleyin.</p>
             </div>
         </section>
 
         <section class="calculator-selection-section">
             <div class="container">
-                <h2>Normal Gerilme Hesapla</h2>
+                <h2>Emniyet Faktörünü Hesapla</h2>
                 <div class="calc-buttons-container">
-                    <button class="calc-type-button active" data-calc-type="normalStress">Normal Gerilme Hesapla</button>
+                    <button class="calc-type-button active" data-calc-type="factorOfSafety">Emniyet Faktörü Hesapla</button>
                 </div>
 
-                <div id="calculator-normalStress" class="calc-wrapper active-calc">
-                    <h3><i class="fas fa-ruler-combined icon-small"></i> Normal Gerilme Hesapla (σ = F/A)</h3>
+                <div id="calculator-factorOfSafety" class="calc-wrapper active-calc">
+                    <h3><i class="fas fa-shield-alt icon-small"></i> Emniyet Faktörü Hesapla (FS = Dayanım / Yük)</h3>
                     <div class="calculator-form-container">
-                        <form id="normalStressForm">
+                        <form id="factorOfSafetyForm">
                             <div class="input-with-unit">
-                                <label for="force">Uygulanan Kuvvet (F):</label>
-                                <input type="number" id="force" placeholder="Örn: 1000" min="0.000001" step="any" required>
-                                <select id="forceUnit">
-                                    <option value="N">Newton (N)</option>
-                                    <option value="kN">Kilonewton (kN)</option>
-                                    <option value="lbf">Pound-kuvvet (lbf)</option>
+                                <label for="designStrength">Tasarım Dayanımı (Akma veya Çekme Dayanımı):</label>
+                                <input type="number" id="designStrength" placeholder="Örn: 250" min="0.000001" step="any" required>
+                                <select id="designStrengthUnit">
+                                    <option value="MPa">Megapaskal (MPa)</option>
+                                    <option value="Pa">Pascal (Pa)</option>
+                                    <option value="kPa">Kilopaskal (kPa)</option>
+                                    <option value="GPa">Gigapaskal (GPa)</option>
+                                    <option value="psi">psi</option>
+                                    <option value="ksi">ksi</option>
                                 </select>
                             </div>
                             <hr class="form-divider">
                             <div class="input-with-unit">
-                                <label for="area">Kesit Alanı (A):</label>
-                                <input type="number" id="area" placeholder="Örn: 0.001" min="0.000001" step="any" required>
-                                <select id="areaUnit">
-                                    <option value="m2">metrekare (m²)</option>
-                                    <option value="mm2">milimetrekare (mm²)</option>
-                                    <option value="cm2">santimetrekare (cm²)</option>
-                                    <option value="in2">inç kare (in²)</option>
+                                <label for="appliedLoad">Uygulanan Gerilme veya Yük (Tasarım Yükü):</label>
+                                <input type="number" id="appliedLoad" placeholder="Örn: 100" min="0.000001" step="any" required>
+                                <select id="appliedLoadUnit">
+                                    <option value="MPa">Megapaskal (MPa)</option>
+                                    <option value="Pa">Pascal (Pa)</option>
+                                    <option value="kPa">Kilopaskal (kPa)</option>
+                                    <option value="GPa">Gigapaskal (GPa)</option>
+                                    <option value="psi">psi</option>
+                                    <option value="ksi">ksi</option>
                                 </select>
                             </div>
-                            <button type="submit">Normal Gerilmeyi Hesapla</button>
+                            <button type="submit">Emniyet Faktörünü Hesapla</button>
                         </form>
-                        <div id="normalStressResult" class="result-display"></div>
+                        <div id="factorOfSafetyResult" class="result-display"></div>
                         <div class="calc-explanation">
-                            <p>Normal gerilme, bir malzemenin kesit alanına dik olarak uygulanan kuvvetin o alana oranıdır. Malzemenin çekme veya basma yükleri altındaki iç dayanımını gösterir.</p>
+                            <p>Emniyet faktörü (Güvenlik faktörü), bir yapının veya makine parçasının beklenen yükler altında ne kadar güvenli olduğunu gösteren bir orandır. Genellikle malzemenin akma veya çekme dayanımının, uygulanan veya tasarım gerilmesine oranı olarak hesaplanır.</p>
                             <p class="formula-text">
-                                σ = F / A
+                                FS = Dayanım / Yük
                             </p>
                             <ul>
-                                <li>**σ:** Normal gerilme (Pascal, MPa, psi vb.)</li>
-                                <li>**F:** Uygulanan kuvvet</li>
-                                <li>**A:** Kuvvetin uygulandığı kesit alanı</li>
+                                <li>**FS:** Emniyet Faktörü (birimsiz oran)</li>
+                                <li>**Tasarım Dayanımı:** Malzemenin akma dayanımı (yield strength, σy) veya çekme dayanımı (ultimate tensile strength, σu).</li>
+                                <li>**Uygulanan Yük:** Tasarım gerilmesi (σtasarım) veya maksimum beklenen gerilme.</li>
                             </ul>
-                            <p>Sonuç, metrik birimler için **Paskal (Pa)** veya **Megapaskal (MPa)**, emperyal birimler için ise **psi (pound per square inch)** olarak verilecektir.</p>
+                            <p>Emniyet faktörü 1'den büyük olmalıdır. Genellikle 1.5 ile 5 arasında değerler kullanılır, bu uygulamanın kritiklik derecesine ve belirsizliklere bağlıdır.</p>
                         </div>
                     </div>
                 </div>
@@ -424,50 +428,46 @@
         </section>
 
         <section class="info-section container">
-            <h3>Normal Gerilme Nedir?</h3>
+            <h3>Emniyet Faktörü Nedir?</h3>
             <p>
-                **Normal gerilme (σ)**, bir cismin kesit alanına dik (normal) olarak uygulanan kuvvetin, o kesit alanına bölünmesiyle elde edilen iç kuvvettir. Malzemelerin dış yükler altında nasıl tepki verdiğini anlamak için mukavemet biliminde temel bir kavramdır. Normal gerilme, bir cismin uzamasına (çekme gerilmesi) veya kısalmasına (basma gerilmesi) neden olur.
+                **Emniyet Faktörü (FS)** veya **Güvenlik Faktörü**, mühendislik tasarımında bir yapının veya makine parçasının beklenen yükler altında ne kadar güvenli olduğunu değerlendirmek için kullanılan kritik bir orandır. Bir bileşenin nihai dayanımının (genellikle akma veya çekme dayanımı), üzerinde beklenen maksimum yüke (veya gerilmeye) oranı olarak tanımlanır.
             </p>
             <p>
                 Formülü aşağıdaki gibidir:
             </p>
             <p class="formula-text">
-                σ = F / A
+                FS = Malzeme Dayanımı / (Uygulanan Yük / Gerilme)
             </p>
             <ul>
-                <li>**F:** Uygulanan kuvvet (Newton, lbf vb.)</li>
-                <li>**A:** Kuvvetin uygulandığı kesit alanı (m², mm², in² vb.)</li>
-                <li>**σ:** Normal gerilme (Pascal (Pa), Megapaskal (MPa), psi (pound per square inch) vb.)</li>
+                <li>**Malzeme Dayanımı:** Genellikle malzemenin akma dayanımı (yield strength, σy) kullanılır, bu noktadan sonra kalıcı deformasyon başlar. Bazı durumlarda çekme dayanımı (ultimate tensile strength, σu) de kullanılabilir.</li>
+                <li>**Uygulanan Yük / Gerilme:** Tasarım yükü, beklenen maksimum işletme yükü veya bu yükün neden olduğu gerilme.</li>
             </ul>
 
-            <h4>Birimi ve Dönüşümleri</h4>
-            <p>Gerilme için kullanılan yaygın birimler ve dönüşümleri:</p>
+            <h4>Emniyet Faktörünün Önemi</h4>
             <ul>
-                <li>**Pascal (Pa):** 1 N/m²</li>
-                <li>**Kilopaskal (kPa):** 10^3 Pa</li>
-                <li>**Megapaskal (MPa):** 10^6 Pa veya 1 N/mm²</li>
-                <li>**Gigapaskal (GPa):** 10^9 Pa</li>
-                <li>**Pound per Square Inch (psi):** 1 lbf/in²</li>
-                <li>**Kilopound per Square Inch (ksi):** 1000 psi</li>
-                <li>**1 MPa ≈ 145.038 psi**</li>
+                <li>**Güvenlik:** Yapıların veya makinelerin beklenmedik yüklemeler, malzeme kusurları, üretim hataları veya çevresel koşullar altında arızalanmasını önler.</li>
+                <li>**Belirsizlikleri Giderme:** Malzeme özelliklerindeki, yük tahminlerindeki ve üretim toleranslarındaki belirsizlikleri hesaba katar.</li>
+                <li>**Yasal ve Standartlara Uygunluk:** Birçok endüstri standardı ve yasal düzenleme, belirli uygulamalar için minimum emniyet faktörleri gerektirir.</li>
             </ul>
 
-            <h4>Çekme Gerilmesi ve Basma Gerilmesi</h4>
+            <h4>Emniyet Faktörü Seçimi</h4>
+            <p>Emniyet faktörünün değeri, uygulamanın kritikliği, malzemenin özellikleri, yükleme koşullarının doğası ve arıza riskinin kabul edilebilirliği gibi birçok faktöre bağlıdır:</p>
             <ul>
-                <li>**Çekme Gerilmesi:** Cisme uygulanan kuvvetin cismi uzatma eğiliminde olduğu durumdur (pozitif gerilme). Örnek: Bir ipi çekmek.</li>
-                <li>**Basma Gerilmesi:** Cisme uygulanan kuvvetin cismi sıkıştırma veya kısaltma eğiliminde olduğu durumdur (negatif gerilme olarak da düşünülebilir, ancak genellikle mutlak değeri alınır). Örnek: Bir kolonu dikey olarak itmek.</li>
+                <li>**Kritik Olmayan Uygulamalar (örn: mobilya):** FS = 1.25 - 2</li>
+                <li>**Genel Makine Tasarımı:** FS = 2 - 3</li>
+                <li>**İnsan Güvenliğinin Önemli Olduğu Uygulamalar (örn: asansörler, uçaklar):** FS = 3 - 5 veya daha yüksek</li>
+                <li>**Yüksek Belirsizlik veya Ani Yüklemeler:** Daha yüksek FS değerleri tercih edilir.</li>
             </ul>
 
             <h4>Uygulama Alanları:</h4>
             <ul>
-                <li>**Yapısal Tasarım:** Köprüler, binalar, taşıyıcı kolonların ve kirişlerin dayanım hesaplamaları.</li>
-                <li>**Makine Parçası Tasarımı:** Miller, akslar, bağlantı elemanları gibi makine elemanlarının boyutlandırılması.</li>
-                <li>**Malzeme Bilimi:** Yeni malzemelerin mekanik özelliklerinin belirlenmesi (çekme testi vb.).</li>
-                <li>**Havacılık ve Uzay:** Uçak ve roket gövdelerinin yükler altındaki davranışı.</li>
-                <li>**Biyomekanik:** Kemik ve dokuların mekanik dayanımlarının analizi.</li>
+                <li>**Yapısal Mühendislik:** Binalar, köprüler, kuleler ve diğer altyapıların tasarımında.</li>
+                <li>**Makine Tasarımı:** Şaftlar, dişliler, bağlantı elemanları, basınçlı kaplar ve diğer makine bileşenlerinin boyutlandırılmasında.</li>
+                <li>**Havacılık ve Uzay:** Uçak gövdeleri ve uzay araçlarının güvenilirlik analizi.</li>
+                <li>**Otomotiv Endüstrisi:** Araç şasi, süspansiyon ve motor parçalarının dayanım hesaplamalarında.</li>
             </ul>
             <p class="disclaimer-text">
-                Bu hesaplayıcı, homojen malzemeler ve düzgün kesit alanları için basit normal gerilme hesaplamaları yapar. Gerçek mühendislik uygulamalarında, gerilme konsantrasyonları (delikler, köşeler), dinamik yükler, yorulma, sıcaklık etkileri, elastik olmayan deformasyonlar ve karmaşık yükleme koşulları gibi faktörler gerilme dağılımını ve malzeme davranışını etkileyebilir. Daha karmaşık senaryolar için ileri düzey mukavemet analizleri ve mühendislik uzmanlığı gereklidir.
+                Bu hesaplayıcı, emniyet faktörünün temel tanımına göre hesaplama yapar. Gerçek mühendislik tasarımında, emniyet faktörü seçimi ve uygulaması daha karmaşık olabilir ve dinamik yükler, yorulma, termal etkiler, korozyon, çatlak büyümesi gibi faktörlerin ayrıntılı analizini gerektirebilir. Mühendislik standartları, malzeme test verileri ve uzman yargısı her zaman göz önünde bulundurulmalıdır.
             </p>
         </section>
     </main>
@@ -484,7 +484,7 @@
             const calculatorWrappers = document.querySelectorAll('.calc-wrapper');
 
             // Başlangıçta ilk hesaplayıcıyı göster (zaten tek var)
-            showCalculator('normalStress');
+            showCalculator('factorOfSafety');
 
             mainCalcButtons.forEach(button => {
                 button.addEventListener('click', () => {
@@ -537,91 +537,60 @@
                 inputs.forEach(input => input.classList.remove('error'));
             }
 
-            // Birim dönüşüm faktörleri (temel birimler: Newton (N) ve metrekare (m²))
-            const forceConversion = {
-                'N': 1,
-                'kN': 1000,
-                'lbf': 4.44822 // 1 lbf = 4.44822 N
+            // Birim dönüşüm faktörleri (temel birim: MPa)
+            const stressConversion = {
+                'Pa': 1e-6,   // Pa -> MPa
+                'kPa': 1e-3,  // kPa -> MPa
+                'MPa': 1,     // MPa -> MPa
+                'GPa': 1e3,   // GPa -> MPa
+                'psi': 0.00689476, // psi -> MPa
+                'ksi': 6.89476   // ksi -> MPa
             };
 
-            const areaConversion = {
-                'm2': 1,
-                'mm2': 1e-6, // 1 mm² = 1e-6 m²
-                'cm2': 1e-4, // 1 cm² = 1e-4 m²
-                'in2': 0.00064516 // 1 in² = 0.00064516 m²
-            };
+            // --- EMNİYET FAKTÖRÜ HESAPLAYICI ---
+            const factorOfSafetyForm = document.getElementById('factorOfSafetyForm');
+            const designStrengthInput = document.getElementById('designStrength');
+            const designStrengthUnitSelect = document.getElementById('designStrengthUnit');
+            const appliedLoadInput = document.getElementById('appliedLoad');
+            const appliedLoadUnitSelect = document.getElementById('appliedLoadUnit');
+            const factorOfSafetyResultDiv = document.getElementById('factorOfSafetyResult');
 
-            // --- NORMAL GERİLME HESAPLAYICI ---
-            const normalStressForm = document.getElementById('normalStressForm');
-            const forceInput = document.getElementById('force');
-            const forceUnitSelect = document.getElementById('forceUnit');
-            const areaInput = document.getElementById('area');
-            const areaUnitSelect = document.getElementById('areaUnit');
-            const normalStressResultDiv = document.getElementById('normalStressResult');
+            function calculateFactorOfSafety() {
+                clearErrorStyles([designStrengthInput, appliedLoadInput]);
+                factorOfSafetyResultDiv.innerHTML = '';
+                factorOfSafetyResultDiv.style.display = 'none';
 
-            function calculateNormalStress() {
-                clearErrorStyles([forceInput, areaInput]);
-                normalStressResultDiv.innerHTML = '';
-                normalStressResultDiv.style.display = 'none';
+                const strength_val = parseFloat(designStrengthInput.value);
+                const load_val = parseFloat(appliedLoadInput.value);
 
-                const F_val = parseFloat(forceInput.value);
-                const A_val = parseFloat(areaInput.value);
+                const strength_unit = designStrengthUnitSelect.value;
+                const load_unit = appliedLoadUnitSelect.value;
 
-                const F_unit = forceUnitSelect.value;
-                const A_unit = areaUnitSelect.value;
+                if (isNaN(strength_val) || strength_val <= 0) { displayError(factorOfSafetyResultDiv, "Lütfen geçerli ve pozitif bir tasarım dayanımı giriniz.", [designStrengthInput]); return; }
+                if (isNaN(load_val) || load_val <= 0) { displayError(factorOfSafetyResultDiv, "Lütfen geçerli ve pozitif bir uygulanan yük değeri giriniz.", [appliedLoadInput]); return; }
 
-                if (isNaN(F_val) || F_val <= 0) { displayError(normalStressResultDiv, "Lütfen geçerli ve pozitif bir kuvvet değeri giriniz.", [forceInput]); return; }
-                if (isNaN(A_val) || A_val <= 0) { displayError(normalStressResultDiv, "Lütfen geçerli ve pozitif bir kesit alanı giriniz.", [areaInput]); return; }
+                // Her iki değeri de MPa'ya dönüştürerek oranlayalım
+                const strength_MPa = strength_val * stressConversion[strength_unit];
+                const load_MPa = load_val * stressConversion[load_unit];
 
-                const F_newton = F_val * forceConversion[F_unit];
-                const A_meter2 = A_val * areaConversion[A_unit];
+                const factorOfSafety = strength_MPa / load_MPa;
 
-                const sigma_pascal = F_newton / A_meter2; // Sonuç Pascal (Pa) cinsinden
-
-                let resultDisplay = '';
-                let resultValue = sigma_pascal;
-                let resultUnit = 'Pa';
-
-                // Sonuçları uygun birimlerde göster
-                if (sigma_pascal >= 1e9) { // GPa'dan büyükse
-                    resultValue = sigma_pascal / 1e9;
-                    resultUnit = 'GPa';
-                } else if (sigma_pascal >= 1e6) { // MPa'dan büyükse
-                    resultValue = sigma_pascal / 1e6;
-                    resultUnit = 'MPa';
-                } else if (sigma_pascal >= 1e3) { // kPa'dan büyükse
-                    resultValue = sigma_pascal / 1e3;
-                    resultUnit = 'kPa';
-                }
-
-                // Eğer giriş birimlerinden biri emperyal ise psi olarak da göster
-                if (F_unit === 'lbf' || A_unit === 'in2') {
-                    const sigma_psi = F_val / A_val; // lbf/in² doğrudan psi verir
-                    resultDisplay = `
-                        <p><strong>Normal Gerilme (σ):</strong> <span class="result-value">${resultValue.toFixed(4)}</span> ${resultUnit}</p>
-                        <p class="small-text">(Yaklaşık ${sigma_psi.toFixed(4)} psi)</p>
-                    `;
-                } else {
-                    resultDisplay = `
-                        <p><strong>Normal Gerilme (σ):</strong> <span class="result-value">${resultValue.toFixed(4)}</span> ${resultUnit}</p>
-                    `;
-                }
-                
-                normalStressResultDiv.innerHTML = `
-                    <p><strong>Uygulanan Kuvvet (F):</strong> ${forceInput.value} ${F_unit}</p>
-                    <p><strong>Kesit Alanı (A):</strong> ${areaInput.value} ${A_unit}</p>
+                factorOfSafetyResultDiv.innerHTML = `
+                    <p><strong>Tasarım Dayanımı:</strong> ${designStrengthInput.value} ${strength_unit}</p>
+                    <p><strong>Uygulanan Gerilme/Yük:</strong> ${appliedLoadInput.value} ${load_unit}</p>
                     <hr>
-                    ${resultDisplay}
+                    <p><strong>Emniyet Faktörü (FS):</strong> <span class="result-value">${factorOfSafety.toFixed(3)}</span></p>
+                    <p class="small-text">Değer 1'den büyük olmalıdır. Genellikle 1.5 ile 5 arasında değerler kullanılır.</p>
                 `;
-                normalStressResultDiv.style.display = 'block';
+                factorOfSafetyResultDiv.style.display = 'block';
             }
 
-            if (normalStressForm) {
-                normalStressForm.addEventListener('submit', function(event) { event.preventDefault(); calculateNormalStress(); });
-                forceInput.addEventListener('input', calculateNormalStress);
-                forceUnitSelect.addEventListener('change', calculateNormalStress);
-                areaInput.addEventListener('input', calculateNormalStress);
-                areaUnitSelect.addEventListener('change', calculateNormalStress);
+            if (factorOfSafetyForm) {
+                factorOfSafetyForm.addEventListener('submit', function(event) { event.preventDefault(); calculateFactorOfSafety(); });
+                designStrengthInput.addEventListener('input', calculateFactorOfSafety);
+                designStrengthUnitSelect.addEventListener('change', calculateFactorOfSafety);
+                appliedLoadInput.addEventListener('input', calculateFactorOfSafety);
+                appliedLoadUnitSelect.addEventListener('change', calculateFactorOfSafety);
             }
         });
     </script>
