@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beton Hacmi ve Malzeme Hesaplayıcısı - Hesapkolik</title>
+    <meta name="description" content="Belirli bir yapı elemanı için gerekli beton hacmini ve çimento, kum, çakıl, su miktarını detaylı olarak hesaplayın. Farklı beton sınıfları ve fire oranları için destek. İnşaat projeleriniz için kapsamlı bir araç.">
+    <meta name="keywords" content="beton hacmi, beton hesaplama, çimento, kum, çakıl, agrega, su, inşaat, malzeme hesaplama, metreküp beton, beton karışım oranları, yapı elemanı, hesapkolik beton, beton sınıfı, fire oranı, inşaat maliyeti">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        header { background-color: #2c3e50; color: white; padding: 15px 0; }
+        header .logo h1 { margin: 0; font-size: 1.8em; }
+        header .logo h1 a { color: white; text-decoration: none; }
+        header .logo .site-logo { height: 40px; vertical-align: middle; }
+        header nav ul { list-style: none; margin: 0; padding: 0; display: flex; justify-content: flex-end; }
+        header nav ul li { margin-left: 25px; }
+        header nav ul li a { color: white; text-decoration: none; font-weight: 600; transition: color 0.3s ease; }
+        header nav ul li a:hover { color: #ecf0f1; }
+        
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Bölümü Stilleri */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        /* Hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 750px; /* Daha geniş bir alan için artırıldı */
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.1em; /* Okunabilirliği artırmak için biraz küçültüldü */
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: left; /* Sonuçları daha düzenli göstermek için sola hizalandı */
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.2em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin {
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+        }
+        .input-with-unit label {
+            flex-basis: 100%; /* Label her zaman üstte veya solda */
+            margin-bottom: 5px;
+            text-align: left;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input alanı boşluğu doldurur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .input-with-unit select {
+            flex-shrink: 0; /* Select kutusu sabit kalır */
+            width: auto; /* Select kutusu kendi genişliğinde olur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+
+        /* Gelişmiş seçenekler için gizle/göster */
+        .advanced-options {
+            border-top: 1px dashed #eee;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+        .advanced-options h4 {
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .toggle-button {
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+        .toggle-button:hover {
+            background-color: #e0e0e0;
+        }
+        .toggle-button.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        .hidden-section {
+            display: none;
+        }
+
+        /* Sonuç satırları için hizalama */
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+            padding-bottom: 5px;
+            border-bottom: 1px dotted #e0e0e0;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .result-item strong {
+            flex-shrink: 0;
+            margin-right: 10px;
+        }
+        .result-item .result-value {
+            flex-grow: 1;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+                <h1><a href="../../index.html">Hesapkolik</a></h1> 
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Beton Hacmi ve Malzeme Hesaplayıcısı</h1>
+                <p>Belirli bir yapı elemanı için gerekli beton hacmini ve çimento, kum, çakıl, su miktarını doğru ve kapsamlı bir şekilde bulun.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <h2>Beton İhtiyaçlarınızı Hesaplayın</h2>
+                
+                <div id="calculator-concreteVolume" class="calc-wrapper">
+                    <h3><i class="fas fa-hard-hat icon-small"></i> Beton Hacmi ve Malzeme Hesaplayıcısı</h3>
+                    <div class="calculator-form-container">
+                        <form id="concreteVolumeForm">
+                            <h4>Yapı Elemanı Boyutları</h4>
+                            <p class="small-text">Hesaplanacak beton yapı elemanının (döşeme, kiriş, temel vb.) temel boyutlarını giriniz.</p>
+                            <div class="input-with-unit">
+                                <label for="length">Uzunluk:</label>
+                                <input type="number" id="length" placeholder="Örn: 5" min="0.01" step="any" required>
+                                <select id="lengthUnit">
+                                    <option value="m">metre (m)</option>
+                                    <option value="cm">santimetre (cm)</option>
+                                    <option value="mm">milimetre (mm)</option>
+                                    <option value="ft">fit (ft)</option>
+                                    <option value="in">inç (in)</option>
+                                </select>
+                            </div>
+                            <div class="input-with-unit">
+                                <label for="width">Genişlik:</label>
+                                <input type="number" id="width" placeholder="Örn: 2" min="0.01" step="any" required>
+                                <select id="widthUnit">
+                                    <option value="m">metre (m)</option>
+                                    <option value="cm">santimetre (cm)</option>
+                                    <option value="mm">milimetre (mm)</option>
+                                    <option value="ft">fit (ft)</option>
+                                    <option value="in">inç (in)</option>
+                                </select>
+                            </div>
+                            <div class="input-with-unit">
+                                <label for="height">Yükseklik / Kalınlık:</label>
+                                <input type="number" id="height" placeholder="Örn: 0.2" min="0.01" step="any" required>
+                                <select id="heightUnit">
+                                    <option value="m">metre (m)</option>
+                                    <option value="cm">santimetre (cm)</option>
+                                    <option value="mm">milimetre (mm)</option>
+                                    <option value="ft">fit (ft)</option>
+                                    <option value="in">inç (in)</option>
+                                </select>
+                            </div>
+
+                            <hr class="form-divider">
+                            <h4>Beton Karışım Oranları (Metreküp Başına)</h4>
+                            <p class="small-text">Beton sınıfına göre ortalama oranları seçebilir veya özel oranlarınızı manuel olarak girebilirsiniz. Bu oranlar, 1 metreküp beton için gereken malzeme miktarlarını belirtir.</p>
+                            <div class="input-with-unit">
+                                <label for="concreteRatioSelect">Beton Sınıfı / Oranı Seç:</label>
+                                <select id="concreteRatioSelect">
+                                    <option value="custom">Özel Oranlar Gir</option>
+                                    <option value="C16/20">C16/20 ($m^3$ başına yaklaşık oranlar)</option>
+                                    <option value="C20/25">C20/25 ($m^3$ başına yaklaşık oranlar)</option>
+                                    <option value="C25/30">C25/30 ($m^3$ başına yaklaşık oranlar)</option>
+                                    <option value="C30/37">C30/37 ($m^3$ başına yaklaşık oranlar)</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <div class="input-with-unit">
+                                    <label for="cementPerM3">Çimento ($kg/m^3$):</label>
+                                    <input type="number" id="cementPerM3" placeholder="Örn: 300" min="1" step="any">
+                                </div>
+                                <div class="input-with-unit">
+                                    <label for="sandPerM3">Kum ($m^3/m^3$):</label>
+                                    <input type="number" id="sandPerM3" placeholder="Örn: 0.5" min="0.01" step="any">
+                                </div>
+                                <div class="input-with-unit">
+                                    <label for="gravelPerM3">Çakıl ($m^3/m^3$):</label>
+                                    <input type="number" id="gravelPerM3" placeholder="Örn: 0.8" min="0.01" step="any">
+                                </div>
+                                <div class="input-with-unit">
+                                    <label for="waterPerM3">Su (litre/$m^3$):</label>
+                                    <input type="number" id="waterPerM3" placeholder="Örn: 180" min="1" step="any">
+                                </div>
+                            </div>
+                            
+                            <div class="advanced-options">
+                                <button type="button" class="toggle-button" id="toggleAdvancedOptions">
+                                    <i class="fas fa-cogs"></i> Gelişmiş Seçenekleri Göster
+                                </button>
+                                <div id="advancedOptionsContent" class="hidden-section">
+                                    <h4>Ek Ayarlar</h4>
+                                    <div class="input-with-unit">
+                                        <label for="wastageFactor">Fire Oranı (%):</label>
+                                        <input type="number" id="wastageFactor" value="5" min="0" max="100" step="0.1">
+                                        <span class="unit">%</span>
+                                    </div>
+                                    <p class="small-text">Beton dökümü, taşıma ve uygulama sırasında oluşabilecek kayıplar için eklenen yüzde. Genellikle %5-10 arasında kullanılır.</p>
+                                </div>
+                            </div>
+
+                            <button type="submit">Beton İhtiyacını Hesapla</button>
+                        </form>
+                        <div id="concreteVolumeResult" class="result-display" style="display:none;">
+                            </div>
+                        <div class="calc-explanation">
+                            <p>Bu hesaplayıcı, prizmatik bir yapı elemanının (örneğin döşeme, kiriş, temel) brüt beton hacmini ve bu hacim için gereken çimento, kum, çakıl ve su miktarlarını tahmin eder. Hesaplama, girilen boyutlar ve metreküp başına varsayılan veya özel malzeme oranları kullanılarak yapılır. Ek olarak, projede olabilecek fire ve kayıplar için bir fire oranı eklenebilir.</p>
+                            <p class="formula-text small-margin">
+                                Hacim = Uzunluk × Genişlik × Yükseklik
+                            </p>
+                            <p class="formula-text small-margin">
+                                Toplam Gerekli Hacim = Hacim × (1 + Fire Oranı / 100)
+                            </p>
+                            <p class="formula-text small-margin">
+                                Gerekli Malzeme = Toplam Gerekli Hacim × Metreküp Başına Oran
+                            </p>
+                            <ul>
+                                <li><strong>Hacim:</strong> Yapı elemanının net hacmi ($m^3$).</li>
+                                <li><strong>Çimento:</strong> Genellikle kilogram (kg) cinsinden ($kg/m^3$ olarak girilir).</li>
+                                <li><strong>Kum (İnce Agrega):</strong> Genellikle metreküp ($m^3$) cinsinden ($m^3/m^3$ olarak girilir).</li>
+                                <li><strong>Çakıl (İri Agrega):</strong> Genellikle metreküp ($m^3$) cinsinden ($m^3/m^3$ olarak girilir).</li>
+                                <li><strong>Su:</strong> Litre cinsinden (litre/$m^3$ olarak girilir).</li>
+                                <li><strong>Fire Oranı:</strong> % cinsinden, malzeme kayıplarını telafi etmek için eklenen fazlalık.</li>
+                            </ul>
+                            <p><strong>Önemli Not:</strong> Beton karışım oranları (çimento, kum, çakıl, su) betonun sınıfına, projenin gereksinimlerine ve yerel standartlara göre büyük ölçüde değişir. Bu hesaplayıcıdaki varsayılan oranlar (Örneğin C20/25 için) genel yaklaşımlardır ve ortalama değerleri temsil eder. Agregaların nem içeriği, özgül ağırlığı ve granülometrisi gibi faktörler gerçek ihtiyacı etkileyebilir. Gerçek projelerde kullanılacak kesin oranlar ve miktarlar için her zaman bir inşaat mühendisine, yapısal danışmana veya beton tedarikçisine danışılmalıdır. Bu hesaplayıcıdaki bilgiler, yalnızca ön bilgi ve planlama amaçlıdır.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>Beton Hacmi ve Malzeme Hesaplama Neden Önemlidir?</h3>
+            <p>
+                İnşaat projelerinde doğru beton hacmini ve bileşen malzemelerini hesaplamak, projenin başarısı için kritik öneme sahiptir. Yanlış hesaplamalar, malzeme israfına, maliyet aşımlarına, tedarik gecikmelerine veya daha da önemlisi, yapısal dayanıklılığı tehlikeye atacak malzeme yetersizliklerine yol açabilir. Bu hesaplayıcı, projelerinize başlamadan önce gereken miktarları doğru bir şekilde tahmin etmenize yardımcı olarak, kaynakları verimli kullanmanızı ve olası sorunların önüne geçmenizi sağlar.
+            </p>
+            <h4>Betonun Temel Bileşenleri ve Oranları:</h4>
+            <p>
+                Beton, modern inşaatın temel taşıdır ve genellikle dört ana bileşenin belirli oranlarda karıştırılmasıyla elde edilir:
+            </p>
+            <ul>
+                <li><strong>Çimento:</strong> Bağlayıcı malzeme olup, su ile reaksiyona girerek betona mukavemet ve sertlik kazandırır. Çimento miktarı, betonun dayanım sınıfını doğrudan etkiler.</li>
+                <li><strong>Kum (İnce Agrega):</strong> Agregalar arasındaki boşlukları doldurarak betonun daha yoğun ve işlenebilir olmasını sağlar. Aynı zamanda betonun büzülme ve çatlama direncini de etkiler.</li>
+                <li><strong>Çakıl (İri Agrega):</strong> Betonun ana dolgu malzemesidir ve yük taşıma kapasitesine büyük katkı sağlar. Granülometri (tane büyüklüğü dağılımı) betonun işlenebilirliğini ve dayanımını etkiler.</li>
+                <li><strong>Su:</strong> Çimentonun hidratasyonu için gereklidir ve karışımın işlenebilirliğini sağlar. Ancak, gereğinden fazla su, betonun dayanımını düşürür. Bu nedenle "su/çimento oranı" beton tasarımında kritik bir parametredir.</li>
+            </ul>
+            <p>Bu hesaplayıcıdaki beton sınıfı oranları (örn. C20/25), o sınıf betonu elde etmek için yaklaşık olarak ne kadar çimento, kum, çakıl ve suya ihtiyaç duyulduğunu gösterir. Ancak, bu oranlar agregaların tipine, nem içeriğine ve betonun istenen özelliklerine göre laboratuvar ortamında ayarlanmalıdır.</p>
+
+            <h4>Fire Oranı Neden Gerekli?</h4>
+            <p>
+                İnşaat sahasında, betonun karıştırılması, taşınması, dökülmesi ve yerleştirilmesi sırasında çeşitli nedenlerle malzeme kayıpları meydana gelebilir. Bu kayıplar "fire" olarak adlandırılır. Fire oranını hesaba katmak, projenin tamamlanması için yeterli miktarda malzeme olduğundan emin olmak açısından önemlidir. Yaygın fire nedenleri şunlardır:
+            </p>
+            <ul>
+                <li>Döküm sırasında zemin veya kalıp dışına taşma.</li>
+                <li>Agrega taşıma ve depolama sırasındaki saçılmalar.</li>
+                <li>Karışım ve pompa kayıpları.</li>
+                <li>Betonun kalıp içinde yayılmaması veya yetersiz sıkışması.</li>
+            </ul>
+            <p class="small-text">Tipik olarak, küçük projelerde %5, daha büyük ve karmaşık projelerde %10 veya daha yüksek fire oranları dikkate alınabilir. Bu, her zaman beklenen maksimum kayıpları karşılayacak şekilde belirlenmelidir.</p>
+
+            <h4>Uygulama Alanları:</h4>
+            <ul>
+                <li><strong>Temel ve Döşeme Hesaplamaları:</strong> Binaların temel kazık, hatıl ve döşeme betonlarının metrajı.</li>
+                <li><strong>Kiriş ve Kolon Hesaplamaları:</strong> Yapısal elemanların doğru boyutlarda beton ihtiyacının belirlenmesi.</li>
+                <li><strong>Yol ve Kaldırım Projeleri:</strong> Alan bazlı beton dökümlerinin malzeme planlaması.</li>
+                <li><strong>Peyzaj ve Bahçe Uygulamaları:</strong> İstinat duvarları, teraslar ve diğer betonarme bahçe elemanları için.</li>
+            </ul>
+            <p class="disclaimer-text">
+                Bu hesaplayıcı tarafından sağlanan bilgiler, genel planlama ve tahmin amaçlıdır. Kullanılan karışım oranları sektörel ortalamalara dayanmakta olup, agregaların özgül ağırlığı, nem içeriği, yerel tedarikçi farklılıkları ve spesifik proje gereksinimleri gibi faktörler gerçek malzeme ihtiyaçlarını etkileyebilir. Büyük veya kritik projeler için, malzeme tedarikçileri veya yetkili inşaat mühendisleri ile laboratuvar testlerine dayalı kesin oranların belirlenmesi hayati önem taşımaktadır. Hesapkolik, bu hesaplayıcının kullanımından kaynaklanabilecek herhangi bir yanlışlık veya hatadan sorumlu değildir.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ortak hata gösterici fonksiyon
+            function displayError(resultDiv, message, inputsToMark = []) {
+                resultDiv.innerHTML = `<p class="error"><i class="fas fa-exclamation-triangle"></i> Hata: ${message}</p>`;
+                resultDiv.style.display = 'block';
+                inputsToMark.forEach(input => {
+                    if (input) input.classList.add('error');
+                });
+            }
+
+            // Input hata stilini temizleyici fonksiyon
+            function clearErrorStyles(inputs) {
+                inputs.forEach(input => input.classList.remove('error'));
+            }
+
+            // Birim dönüşüm faktörleri (temel birim metre: m)
+            const lengthConversion = {
+                'm': 1,
+                'cm': 0.01,
+                'mm': 0.001,
+                'ft': 0.3048,
+                'in': 0.0254
+            };
+
+            // Beton Oranları (kg çimento / m3 beton, m3 kum / m3 beton, m3 çakıl / m3 beton, litre su / m3 beton)
+            // Bu oranlar ortalama değerlerdir ve agrega tipine, nem oranına göre değişebilir.
+            const concreteRatios = {
+                "C16/20": {
+                    cement: 280, // kg/m3
+                    sand: 0.55,  // m3/m3
+                    gravel: 0.85, // m3/m3
+                    water: 170   // litre/m3
+                },
+                "C20/25": {
+                    cement: 320, // kg/m3
+                    sand: 0.50,   // m3/m3
+                    gravel: 0.80,  // m3/m3
+                    water: 180   // litre/m3
+                },
+                "C25/30": {
+                    cement: 360, // kg/m3
+                    sand: 0.45,  // m3/m3
+                    gravel: 0.75, // m3/m3
+                    water: 185   // litre/m3
+                },
+                "C30/37": {
+                    cement: 400, // kg/m3
+                    sand: 0.40,   // m3/m3
+                    gravel: 0.70,  // m3/m3
+                    water: 190   // litre/m3
+                }
+            };
+
+            // --- BETON HACMİ VE MALZEME HESAPLAYICI ELEMENTLERİ ---
+            const concreteVolumeForm = document.getElementById('concreteVolumeForm');
+            const lengthInput = document.getElementById('length');
+            const lengthUnitSelect = document.getElementById('lengthUnit');
+            const widthInput = document.getElementById('width');
+            const widthUnitSelect = document.getElementById('widthUnit');
+            const heightInput = document.getElementById('height');
+            const heightUnitSelect = document.getElementById('heightUnit');
+            const concreteRatioSelect = document.getElementById('concreteRatioSelect');
+            const cementPerM3Input = document.getElementById('cementPerM3');
+            const sandPerM3Input = document.getElementById('sandPerM3');
+            const gravelPerM3Input = document.getElementById('gravelPerM3');
+            const waterPerM3Input = document.getElementById('waterPerM3');
+            const wastageFactorInput = document.getElementById('wastageFactor');
+            const concreteVolumeResultDiv = document.getElementById('concreteVolumeResult');
+
+            const toggleAdvancedOptionsButton = document.getElementById('toggleAdvancedOptions');
+            const advancedOptionsContent = document.getElementById('advancedOptionsContent');
+
+            // Gelişmiş seçenekleri göster/gizle fonksiyonu
+            if (toggleAdvancedOptionsButton && advancedOptionsContent) {
+                toggleAdvancedOptionsButton.addEventListener('click', () => {
+                    advancedOptionsContent.classList.toggle('hidden-section');
+                    toggleAdvancedOptionsButton.classList.toggle('active');
+                    const icon = toggleAdvancedOptionsButton.querySelector('i');
+                    if (advancedOptionsContent.classList.contains('hidden-section')) {
+                        icon.classList.remove('fa-cogs');
+                        icon.classList.add('fa-cogs'); // Simgeyi tekrar fa-cogs yap
+                    } else {
+                        icon.classList.remove('fa-cogs');
+                        icon.classList.add('fa-cogs'); // Simgeyi tekrar fa-cogs yap (burada farklı bir simge de kullanılabilirdi)
+                    }
+                });
+            }
+
+            function updateConcreteRatioInputs() {
+                const selectedRatio = concreteRatioSelect.value;
+                if (selectedRatio === "custom") {
+                    cementPerM3Input.disabled = false;
+                    sandPerM3Input.disabled = false;
+                    gravelPerM3Input.disabled = false;
+                    waterPerM3Input.disabled = false;
+                    
+                    cementPerM3Input.value = '';
+                    sandPerM3Input.value = '';
+                    gravelPerM3Input.value = '';
+                    waterPerM3Input.value = '';
+                } else {
+                    const ratios = concreteRatios[selectedRatio];
+                    cementPerM3Input.value = ratios.cement;
+                    sandPerM3Input.value = ratios.sand;
+                    gravelPerM3Input.value = ratios.gravel;
+                    waterPerM3Input.value = ratios.water;
+
+                    cementPerM3Input.disabled = true;
+                    sandPerM3Input.disabled = true;
+                    gravelPerM3Input.disabled = true;
+                    waterPerM3Input.disabled = true;
+                }
+                // Oranlar değiştiğinde hesaplamayı tetikle
+                calculateConcreteVolumeAndMaterials();
+            }
+
+            concreteRatioSelect.addEventListener('change', updateConcreteRatioInputs);
+            // Sayfa yüklendiğinde başlangıç durumunu ayarla
+            updateConcreteRatioInputs();
+
+            function calculateConcreteVolumeAndMaterials() {
+                clearErrorStyles([lengthInput, widthInput, heightInput, cementPerM3Input, sandPerM3Input, gravelPerM3Input, waterPerM3Input, wastageFactorInput]);
+                concreteVolumeResultDiv.innerHTML = '';
+                concreteVolumeResultDiv.style.display = 'none';
+
+                const len = parseFloat(lengthInput.value);
+                const width = parseFloat(widthInput.value);
+                const height = parseFloat(heightInput.value);
+                const wastage = parseFloat(wastageFactorInput.value) || 0;
+
+                const lenUnit = lengthUnitSelect.value;
+                const widthUnit = widthUnitSelect.value;
+                const heightUnit = heightUnitSelect.value;
+
+                if (isNaN(len) || len <= 0) { displayError(concreteVolumeResultDiv, "Lütfen geçerli ve pozitif bir uzunluk giriniz.", [lengthInput]); return; }
+                if (isNaN(width) || width <= 0) { displayError(concreteVolumeResultDiv, "Lütfen geçerli ve pozitif bir genişlik giriniz.", [widthInput]); return; }
+                if (isNaN(height) || height <= 0) { displayError(concreteVolumeResultDiv, "Lütfen geçerli ve pozitif bir yükseklik/kalınlık giriniz.", [heightInput]); return; }
+                if (isNaN(wastage) || wastage < 0 || wastage > 100) { displayError(concreteVolumeResultDiv, "Lütfen geçerli bir fire oranı giriniz (0-100 arası).", [wastageFactorInput]); return; }
+
+                const len_m = len * lengthConversion[lenUnit];
+                const width_m = width * lengthConversion[widthUnit];
+                const height_m = height * lengthConversion[heightUnit];
+
+                const volumeM3_net = len_m * width_m * height_m;
+                const volumeM3_total = volumeM3_net * (1 + wastage / 100);
+
+                let cementPerM3 = parseFloat(cementPerM3Input.value);
+                let sandPerM3 = parseFloat(sandPerM3Input.value);
+                let gravelPerM3 = parseFloat(gravelPerM3Input.value);
+                let waterPerM3 = parseFloat(waterPerM3Input.value);
+
+                const selectedRatio = concreteRatioSelect.value;
+                if (selectedRatio === "custom") {
+                    if (isNaN(cementPerM3) || cementPerM3 <= 0) { displayError(concreteVolumeResultDiv, "Lütfen geçerli ve pozitif çimento miktarı giriniz.", [cementPerM3Input]); return; }
+                    if (isNaN(sandPerM3) || sandPerM3 <= 0) { displayError(concreteVolumeResultDiv, "Lütfen geçerli ve pozitif kum miktarı giriniz.", [sandPerM3Input]); return; }
+                    if (isNaN(gravelPerM3) || gravelPerM3 <= 0) { displayError(concreteVolumeResultDiv, "Lütfen geçerli ve pozitif çakıl miktarı giriniz.", [gravelPerM3Input]); return; }
+                    if (isNaN(waterPerM3) || waterPerM3 <= 0) { displayError(concreteVolumeResultDiv, "Lütfen geçerli ve pozitif su miktarı giriniz.", [waterPerM3Input]); return; }
+                } 
+                // else: values are already set by updateConcreteRatioInputs()
+
+                const totalCementKg = volumeM3_total * cementPerM3;
+                const totalSandM3 = volumeM3_total * sandPerM3;
+                const totalGravelM3 = volumeM3_total * gravelPerM3;
+                const totalWaterLiters = volumeM3_total * waterPerM3;
+
+                // Sonuçları daha düzenli göstermek için formatlama
+                concreteVolumeResultDiv.innerHTML = `
+                    <div class="result-item"><strong>Net Beton Hacmi:</strong> <span class="result-value">${volumeM3_net.toFixed(3)} $m^3$</span></div>
+                    <div class="result-item"><strong>Fire Dahil Toplam Beton Hacmi:</strong> <span class="result-value">${volumeM3_total.toFixed(3)} $m^3$</span></div>
+                    <hr style="border-top: 1px solid #dcdfe4; margin: 15px 0;">
+                    <div class="result-item"><strong>Gerekli Çimento:</strong> <span class="result-value">${totalCementKg.toFixed(2)} kg</span></div>
+                    <div class="result-item"><strong>Gerekli Kum:</strong> <span class="result-value">${totalSandM3.toFixed(3)} $m^3$</span></div>
+                    <div class="result-item"><strong>Gerekli Çakıl:</strong> <span class="result-value">${totalGravelM3.toFixed(3)} $m^3$</span></div>
+                    <div class="result-item"><strong>Gerekli Su:</strong> <span class="result-value">${totalWaterLiters.toFixed(2)} Litre</span></div>
+                    <p class="small-text" style="text-align: center; margin-top: 20px;">
+                        Kullanılan Oranlar ($m^3$ beton başına): Çimento: ${cementPerM3} kg, Kum: ${sandPerM3} $m^3$, Çakıl: ${gravelPerM3} $m^3$, Su: ${waterPerM3} Litre
+                    </p>
+                `;
+                concreteVolumeResultDiv.style.display = 'block';
+            }
+
+            if (concreteVolumeForm) {
+                concreteVolumeForm.addEventListener('submit', function(event) { event.preventDefault(); calculateConcreteVolumeAndMaterials(); });
+                
+                // Input ve select değişikliklerinde otomatik hesaplama
+                lengthInput.addEventListener('input', calculateConcreteVolumeAndMaterials);
+                lengthUnitSelect.addEventListener('change', calculateConcreteVolumeAndMaterials);
+                widthInput.addEventListener('input', calculateConcreteVolumeAndMaterials);
+                widthUnitSelect.addEventListener('change', calculateConcreteVolumeAndMaterials);
+                heightInput.addEventListener('input', calculateConcreteVolumeAndMaterials);
+                heightUnitSelect.addEventListener('change', calculateConcreteVolumeAndMaterials);
+                cementPerM3Input.addEventListener('input', calculateConcreteVolumeAndMaterials);
+                sandPerM3Input.addEventListener('input', calculateConcreteVolumeAndMaterials);
+                gravelPerM3Input.addEventListener('input', calculateConcreteVolumeAndMaterials);
+                waterPerM3Input.addEventListener('input', calculateConcreteVolumeAndMaterials);
+                wastageFactorInput.addEventListener('input', calculateConcreteVolumeAndMaterials);
+            }
+        });
+    </script>
+</body>
+</html>

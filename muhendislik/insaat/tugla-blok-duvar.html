@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuğla/Blok Duvar Malzemesi Hesaplayıcısı - Hesapkolik</title>
+    <meta name="description" content="Duvar alanı için gerekli tuğla/blok sayısını, harç (çimento, kum, su) miktarını ve diğer ilgili malzemeleri hesaplayın. İnşaat projeleriniz için detaylı ve kapsamlı bir araç.">
+    <meta name="keywords" content="tuğla, blok, duvar, malzeme, hesaplama, harç, çimento, kum, su, inşaat, metrekare duvar, tuğla sayısı, harç hesaplama, yapı malzemesi, hesapkolik tuğla">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        header { background-color: #2c3e50; color: white; padding: 15px 0; }
+        header .logo h1 { margin: 0; font-size: 1.8em; }
+        header .logo h1 a { color: white; text-decoration: none; }
+        header .logo .site-logo { height: 40px; vertical-align: middle; }
+        header nav ul { list-style: none; margin: 0; padding: 0; display: flex; justify-content: flex-end; }
+        header nav ul li { margin-left: 25px; }
+        header nav ul li a { color: white; text-decoration: none; font-weight: 600; transition: color 0.3s ease; }
+        header nav ul li a:hover { color: #ecf0f1; }
+        
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Bölümü Stilleri */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        /* Hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 750px; /* Daha geniş bir alan için artırıldı */
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.1em; 
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: left; 
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.2em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin {
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+        }
+        .input-with-unit label {
+            flex-basis: 100%; /* Label her zaman üstte veya solda */
+            margin-bottom: 5px;
+            text-align: left;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input alanı boşluğu doldurur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .input-with-unit select {
+            flex-shrink: 0; /* Select kutusu sabit kalır */
+            width: auto; /* Select kutusu kendi genişliğinde olur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+
+        /* Gelişmiş seçenekler için gizle/göster */
+        .advanced-options {
+            border-top: 1px dashed #eee;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+        .advanced-options h4 {
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .toggle-button {
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+        .toggle-button:hover {
+            background-color: #e0e0e0;
+        }
+        .toggle-button.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        .hidden-section {
+            display: none;
+        }
+
+        /* Sonuç satırları için hizalama */
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+            padding-bottom: 5px;
+            border-bottom: 1px dotted #e0e0e0;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .result-item strong {
+            flex-shrink: 0;
+            margin-right: 10px;
+        }
+        .result-item .result-value {
+            flex-grow: 1;
+            text-align: right;
+        }
+
+        /* Yeni eklenen harç oranı input grupları için stil */
+        .harc-oran-input-group {
+            display: flex;
+            gap: 15px; /* Aralarında boşluk bırak */
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş */
+            margin-bottom: 20px;
+        }
+        .harc-oran-input-group .input-with-unit {
+            flex: 1 1 calc(33% - 15px); /* 3 sütunlu düzen */
+            min-width: 150px; /* Her input'un minimum genişliği */
+            margin-bottom: 0; /* Üstteki .input-with-unit'ten miras alınan margin'i sıfırla */
+        }
+        .harc-oran-input-group .input-with-unit input {
+            margin-bottom: 0; /* İç input'un kendi margin-bottom'unu sıfırla */
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html"> 
+                    <img src="../../images/Hesapkolik_transparent-.png" alt="Hesapkolik Logo" class="site-logo">
+                </a>
+                <h1><a href="../../index.html">Hesapkolik</a></h1> 
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li><a href="../../index.html#calculator-list">Hesaplayıcılar</a></li>
+                    <li><a href="../../saglik-hesaplamalari.html">Sağlık Hesaplamaları</a></li>
+                    <li><a href="../../muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a></li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Tuğla/Blok Duvar Malzemesi Hesaplayıcısı</h1>
+                <p>Duvar alanı için gerekli tuğla/blok sayısını ve harç malzemelerini (çimento, kum, su) detaylı olarak hesaplayın.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <h2>Duvar Yapım İhtiyaçlarınızı Belirleyin</h2>
+                
+                <div id="calculator-brickBlockWall" class="calc-wrapper">
+                    <h3><i class="fas fa-hammer icon-small"></i> Tuğla/Blok Duvar Malzemesi Hesaplayıcısı</h3>
+                    <div class="calculator-form-container">
+                        <form id="brickBlockWallForm">
+                            <h4>Duvar Boyutları</h4>
+                            <p class="small-text">Yapılacak duvarın toplam alanını hesaplamak için uzunluk ve yüksekliğini giriniz.</p>
+                            <div class="input-with-unit">
+                                <label for="wallLength">Duvar Uzunluğu:</label>
+                                <input type="number" id="wallLength" placeholder="Örn: 10" min="0.01" step="any" required>
+                                <select id="wallLengthUnit">
+                                    <option value="m">metre (m)</option>
+                                    <option value="cm">santimetre (cm)</option>
+                                    <option value="mm">milimetre (mm)</option>
+                                </select>
+                            </div>
+                            <div class="input-with-unit">
+                                <label for="wallHeight">Duvar Yüksekliği:</label>
+                                <input type="number" id="wallHeight" placeholder="Örn: 3" min="0.01" step="any" required>
+                                <select id="wallHeightUnit">
+                                    <option value="m">metre (m)</option>
+                                    <option value="cm">santimetre (cm)</option>
+                                    <option value="mm">milimetre (mm)</option>
+                                </select>
+                            </div>
+                            
+                            <hr class="form-divider">
+                            <h4>Tuğla/Blok Bilgileri</h4>
+                            <p class="small-text">Kullanılacak tuğla veya blokun boyutlarını giriniz. Standart tuğla ve bims blok boyutları seçilebilir.</p>
+                            <div class="input-with-unit">
+                                <label for="brickTypeSelect">Tuğla/Blok Tipi Seç:</label>
+                                <select id="brickTypeSelect">
+                                    <option value="custom">Özel Boyutlar Gir</option>
+                                    <option value="standart_tugla">Standart Tuğla (19x9x13.5 cm)</option>
+                                    <option value="delikli_tugla">Delikli Tuğla (19x19x13.5 cm)</option>
+                                    <option value="bims_blok_20">Bims Blok (19x39x20 cm)</option>
+                                    <option value="gazbeton_blok_10">Gazbeton Blok (10x25x60 cm)</option>
+                                </select>
+                            </div>
+                            <div class="input-with-unit">
+                                <label for="brickLength">Tuğla/Blok Uzunluğu:</label>
+                                <input type="number" id="brickLength" placeholder="Örn: 0.19" min="0.01" step="any" required>
+                                <select id="brickLengthUnit">
+                                    <option value="m">metre (m)</option>
+                                    <option value="cm">santimetre (cm)</option>
+                                    <option value="mm">milimetre (mm)</option>
+                                </select>
+                            </div>
+                            <div class="input-with-unit">
+                                <label for="brickWidth">Tuğla/Blok Genişliği (Duvar Kalınlığı):</label>
+                                <input type="number" id="brickWidth" placeholder="Örn: 0.09" min="0.01" step="any" required>
+                                <select id="brickWidthUnit">
+                                    <option value="m">metre (m)</option>
+                                    <option value="cm">santimetre (cm)</option>
+                                    <option value="mm">milimetre (mm)</option>
+                                </select>
+                            </div>
+                            <div class="input-with-unit">
+                                <label for="brickHeight">Tuğla/Blok Yüksekliği:</label>
+                                <input type="number" id="brickHeight" placeholder="Örn: 0.135" min="0.01" step="any" required>
+                                <select id="brickHeightUnit">
+                                    <option value="m">metre (m)</option>
+                                    <option value="cm">santimetre (cm)</option>
+                                    <option value="mm">milimetre (mm)</option>
+                                </select>
+                            </div>
+
+                            <hr class="form-divider">
+                            <h4>Harç Derz Kalınlıkları</h4>
+                            <p class="small-text">Yatay (yatak) ve düşey (düşey) derz kalınlıklarını milimetre cinsinden giriniz.</p>
+                            <div class="input-with-unit">
+                                <label for="mortarJointHorizontal">Yatay Derz Kalınlığı (Yatak):</label>
+                                <input type="number" id="mortarJointHorizontal" placeholder="Örn: 1.5" value="1.5" min="0.1" step="0.1" required>
+                                <span class="unit">cm</span>
+                            </div>
+                            <div class="input-with-unit">
+                                <label for="mortarJointVertical">Düşey Derz Kalınlığı (Düşey):</label>
+                                <input type="number" id="mortarJointVertical" placeholder="Örn: 1.5" value="1.5" min="0.1" step="0.1" required>
+                                <span class="unit">cm</span>
+                            </div>
+
+                            <div class="advanced-options">
+                                <button type="button" class="toggle-button" id="toggleAdvancedOptions">
+                                    <i class="fas fa-cogs"></i> Gelişmiş Ayarlar (Harç Oranları ve Fire)
+                                </button>
+                                <div id="advancedOptionsContent" class="hidden-section">
+                                    <h4>Harç Karışım Oranları (1 $m^3$ Harç için)</h4>
+                                    <p class="small-text">Harç türüne göre varsayılan oranları seçebilir veya özel oranlarınızı manuel girebilirsiniz.</p>
+                                    <div class="input-with-unit">
+                                        <label for="mortarRatioSelect">Harç Oranı Seç:</label>
+                                        <select id="mortarRatioSelect">
+                                            <option value="custom_mortar">Özel Oranlar Gir</option>
+                                            <option value="1_3">1:3 Çimento:Kum Harcı</option>
+                                            <option value="1_4">1:4 Çimento:Kum Harcı</option>
+                                            <option value="1_5">1:5 Çimento:Kum Harcı</option>
+                                        </select>
+                                    </div>
+                                    <div class="harc-oran-input-group">
+                                        <div class="input-with-unit">
+                                            <label for="cementPerM3Mortar">Çimento ($kg/m^3$ Harç):</label>
+                                            <input type="number" id="cementPerM3Mortar" placeholder="Örn: 400" min="1" step="any">
+                                        </div>
+                                        <div class="input-with-unit">
+                                            <label for="sandPerM3Mortar">Kum ($m^3/m^3$ Harç):</label>
+                                            <input type="number" id="sandPerM3Mortar" placeholder="Örn: 1.0" min="0.01" step="any">
+                                        </div>
+                                        <div class="input-with-unit">
+                                            <label for="waterPerM3Mortar">Su (litre/$m^3$ Harç):</label>
+                                            <input type="number" id="waterPerM3Mortar" placeholder="Örn: 200" min="1" step="any">
+                                        </div>
+                                    </div>
+                                    
+                                    <h4>Fire Oranları</h4>
+                                    <div class="input-with-unit">
+                                        <label for="brickWastageFactor">Tuğla/Blok Fire Oranı (%):</label>
+                                        <input type="number" id="brickWastageFactor" value="5" min="0" max="100" step="0.1">
+                                        <span class="unit">%</span>
+                                    </div>
+                                    <p class="small-text">Tuğla/blok kırılması veya atıklar için eklenen yüzde.</p>
+                                    <div class="input-with-unit">
+                                        <label for="mortarWastageFactor">Harç Fire Oranı (%):</label>
+                                        <input type="number" id="mortarWastageFactor" value="10" min="0" max="100" step="0.1">
+                                        <span class="unit">%</span>
+                                    </div>
+                                    <p class="small-text">Harç dökülmesi veya artıkları için eklenen yüzde.</p>
+                                </div>
+                            </div>
+
+                            <button type="submit">Malzemeleri Hesapla</button>
+                        </form>
+                        <div id="brickBlockWallResult" class="result-display" style="display:none;">
+                            </div>
+                        <div class="calc-explanation">
+                            <p>Bu hesaplayıcı, belirli bir duvar alanı için gerekli tuğla veya blok sayısını, harç hacmini ve harç için gerekli çimento, kum ve su miktarlarını hesaplar. Duvar ve tuğla/blok boyutları, derz kalınlıkları ve fire oranları gibi faktörler dikkate alınır. Harç oranları için standart seçenekler veya özel girişler mevcuttur.</p>
+                            <p class="formula-text small-margin">
+                                Duvar Alanı = Duvar Uzunluğu × Duvar Yüksekliği
+                            </p>
+                            <p class="formula-text small-margin">
+                                1 Tuğla + Derz Alanı = (Tuğla Uzunluğu + Yatay Derz) × (Tuğla Yüksekliği + Düşey Derz)
+                            </p>
+                            <p class="formula-text small-margin">
+                                Gerekli Tuğla Sayısı = (Duvar Alanı / 1 Tuğla + Derz Alanı) × (1 + Tuğla Fire Oranı / 100)
+                            </p>
+                            <p class="formula-text small-margin">
+                                Harç Hacmi = Tuğla Sayısı × Harç Hacmi Başına Tuğla Hacmi (detaylı hesaplamalar için JavaScript'e bakınız)
+                            </p>
+                            <ul>
+                                <li><strong>Duvar Alanı:</strong> Yapılacak duvarın toplam yüzey alanı ($m^2$).</li>
+                                <li><strong>Tuğla/Blok Sayısı:</strong> Duvar için gereken toplam tuğla veya blok adedi.</li>
+                                <li><strong>Harç Hacmi:</strong> Duvar örme için gerekli toplam harç hacmi ($m^3$).</li>
+                                <li><strong>Harç Malzemeleri:</strong> Harç için gerekli çimento (kg), kum ($m^3$) ve su (litre) miktarları.</li>
+                                <li><strong>Fire Oranı:</strong> Malzeme kayıplarını telafi etmek için eklenen yüzdelik fazlalık.</li>
+                            </ul>
+                            <p><strong>Önemli Not:</strong> Tuğla/blok boyutları, derz kalınlıkları ve harç karışım oranları, projenin özelliklerine, yerel standartlara ve kullanılacak malzeme türüne göre değişiklik gösterebilir. Bu hesaplayıcıdaki varsayılan değerler genel kabullerdir. Gerçek projelerde kullanılacak kesin miktarlar için her zaman bir inşaat mühendisine, ustaya veya malzeme tedarikçisine danışılmalıdır. Malzemelerin yoğunlukları ve nem içerikleri de nihai miktarları etkileyebilir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>Tuğla/Blok Duvar Malzemesi Hesaplama Neden Önemlidir?</h3>
+            <p>
+                Bir duvar inşa etmeden önce gerekli malzeme miktarını doğru bir şekilde hesaplamak, projenin **başarısı, maliyet kontrolü ve zaman yönetimi** açısından hayati öneme sahiptir. Yetersiz malzeme siparişi işin durmasına, gecikmelere ve ek maliyetlere yol açarken, aşırı sipariş gereksiz israfa ve depolama sorunlarına neden olur. Bu hesaplayıcı, size tam olarak neye ihtiyacınız olduğunu belirlemede yardımcı olarak, bütçenizi korumanıza ve projenizin sorunsuz ilerlemesini sağlamanıza olanak tanır.
+            </p>
+            <h4>Harç Oranları ve Malzeme İhtiyaçları:</h4>
+            <p>
+                Harç, tuğla veya blokları birbirine bağlayan temel malzemedir ve genellikle **çimento, kum ve su** karışımından oluşur. Bazen kireç de eklenebilir. Harcın dayanımı ve işlenebilirliği, bu bileşenlerin oranlarına bağlıdır. Bu hesaplayıcıda, yaygın harç oranları için varsayılan değerler sunulmuştur:
+            </p>
+            <ul>
+                <li><strong>Çimento:</strong> Harcın bağlayıcı ve dayanım kazandırıcı bileşenidir. Genellikle kilogram (kg) cinsinden hesaplanır.</li>
+                <li><strong>Kum:</strong> Harcın dolgu maddesidir ve işlenebilirliğini, dayanımını ve hacim stabilitesini etkiler. Genellikle metreküp ($m^3$) cinsinden hesaplanır.</li>
+                <li><strong>Su:</strong> Çimentonun hidratasyonunu ve harcın kıvamını sağlar. Genellikle litre cinsinden hesaplanır.</li>
+            </ul>
+            <p>Farklı duvar türleri ve taşıma kapasiteleri için farklı harç oranları kullanılır. Örneğin, 1:3 harç (1 birim çimento, 3 birim kum) daha dayanıklı iken, 1:5 harç daha az dayanıklı ancak daha ekonomiktir. Hesaplayıcımız, seçtiğiniz harç oranına göre tahmini malzeme miktarlarını verir.</p>
+
+            <h4>Fire Oranının Önemi:</h4>
+            <p>
+                İnşaat sahasında tuğla/blok ve harç kullanımı sırasında kaçınılmaz olarak bir miktar kayıp yaşanır. Buna **fire** denir. Fire oranı, bu kayıpları karşılamak için hesaplanan miktara eklenen yüzdesel bir fazlalıktır. Fire nedenleri şunları içerebilir:
+            </p>
+            <ul>
+                <li>**Tuğla/Blok Fire:** Taşıma, kesme, düşürme veya montaj sırasında kırılmalar.</li>
+                <li>**Harç Fire:** Karıştırma, taşıma veya uygulama sırasında dökülmeler, fazla harcın atılması.</li>
+            </ul>
+            <p class="small-text">Genellikle tuğla/blok için %3-5, harç için %5-10 arası fire oranları kullanılır. Ancak bu oranlar, işçilik kalitesine, malzemenin cinsine ve saha koşullarına göre değişebilir.</p>
+
+            <h4>Uygulama Alanları:</h4>
+            <ul>
+                <li><strong>İç ve Dış Duvar Yapımı:</strong> Her türlü bina duvarının (taşıyıcı veya bölme) malzeme ihtiyacının belirlenmesi.</li>
+                <li><strong>Bahçe Duvarları ve Çitler:</strong> Peyzaj projelerindeki duvar elemanları için malzeme planlaması.</li>
+                <li><strong>Tamirat ve Tadilat İşleri:</strong> Mevcut duvarların onarımı veya eklenmesi için küçük ölçekli hesaplamalar.</li>
+                <li><strong>Maliyet Tahmini:</strong> İnşaat bütçesi oluştururken malzeme kalemlerinin doğru bir şekilde öngörülmesi.</li>
+            </ul>
+            <p class="disclaimer-text">
+                Bu hesaplayıcı, genel tahminler sunar ve basitleştirilmiş varsayımlar içerir. Tuğla/blokların şekli (delikli/dolu), gözenekliliği, agregaların nem içeriği ve özgül ağırlığı, harcın kıvamı ve işçilik kalitesi gibi faktörler, gerçek malzeme ihtiyaçlarını önemli ölçüde etkileyebilir. Büyük veya kritik projeler için, malzeme tedarikçileri veya yetkili inşaat mühendisleri ile görüşülerek kesin oranların ve miktarların belirlenmesi hayati önem taşımaktadır. Hesapkolik, bu hesaplayıcının kullanımından kaynaklanabilecek herhangi bir yanlışlık veya hatadan sorumlu değildir.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ortak hata gösterici fonksiyon
+            function displayError(resultDiv, message, inputsToMark = []) {
+                resultDiv.innerHTML = `<p class="error"><i class="fas fa-exclamation-triangle"></i> Hata: ${message}</p>`;
+                resultDiv.style.display = 'block';
+                inputsToMark.forEach(input => {
+                    if (input) input.classList.add('error');
+                });
+            }
+
+            // Input hata stilini temizleyici fonksiyon
+            function clearErrorStyles(inputs) {
+                inputs.forEach(input => input.classList.remove('error'));
+            }
+
+            // Birim dönüşüm faktörleri (temel birim metre: m)
+            const lengthConversion = {
+                'm': 1,
+                'cm': 0.01,
+                'mm': 0.001
+            };
+
+            // Tuğla/Blok Standart Boyutları (metre cinsinden)
+            const brickBlockDimensions = {
+                "standart_tugla": { length: 0.19, width: 0.09, height: 0.135 }, // 19x9x13.5 cm
+                "delikli_tugla": { length: 0.19, width: 0.19, height: 0.135 }, // 19x19x13.5 cm
+                "bims_blok_20": { length: 0.39, width: 0.20, height: 0.19 },   // 39x20x19 cm (Türkiye'deki yaygın bims blok ölçüsü)
+                "gazbeton_blok_10": { length: 0.60, width: 0.10, height: 0.25 } // 60x10x25 cm (Türkiye'deki yaygın gazbeton blok ölçüsü)
+            };
+
+            // Harç Oranları (1 m³ Harç için)
+            // Oranlar: Çimento (kg), Kum (m³), Su (litre)
+            // Bu oranlar ortalama değerlerdir, agrega tipine, nem oranına göre değişebilir.
+            const mortarRatios = {
+                "1_3": { cement: 450, sand: 1.10, water: 220 }, // 1 birim çimento, 3 birim kum
+                "1_4": { cement: 350, sand: 1.15, water: 200 }, // 1 birim çimento, 4 birim kum
+                "1_5": { cement: 300, sand: 1.20, water: 180 }  // 1 birim çimento, 5 birim kum
+            };
+
+            // --- TUĞLA/BLOK DUVAR MALZEMESİ HESAPLAYICI ELEMENTLERİ ---
+            const brickBlockWallForm = document.getElementById('brickBlockWallForm');
+            const wallLengthInput = document.getElementById('wallLength');
+            const wallLengthUnitSelect = document.getElementById('wallLengthUnit');
+            const wallHeightInput = document.getElementById('wallHeight');
+            const wallHeightUnitSelect = document.getElementById('wallHeightUnit');
+
+            const brickTypeSelect = document.getElementById('brickTypeSelect');
+            const brickLengthInput = document.getElementById('brickLength');
+            const brickLengthUnitSelect = document.getElementById('brickLengthUnit');
+            const brickWidthInput = document.getElementById('brickWidth');
+            const brickWidthUnitSelect = document.getElementById('brickWidthUnit');
+            const brickHeightInput = document.getElementById('brickHeight');
+            const brickHeightUnitSelect = document.getElementById('brickHeightUnit');
+
+            const mortarJointHorizontalInput = document.getElementById('mortarJointHorizontal');
+            const mortarJointVerticalInput = document.getElementById('mortarJointVertical');
+
+            const mortarRatioSelect = document.getElementById('mortarRatioSelect');
+            const cementPerM3MortarInput = document.getElementById('cementPerM3Mortar');
+            const sandPerM3MortarInput = document.getElementById('sandPerM3Mortar');
+            const waterPerM3MortarInput = document.getElementById('waterPerM3Mortar');
+
+            const brickWastageFactorInput = document.getElementById('brickWastageFactor');
+            const mortarWastageFactorInput = document.getElementById('mortarWastageFactor');
+            const brickBlockWallResultDiv = document.getElementById('brickBlockWallResult');
+
+            const toggleAdvancedOptionsButton = document.getElementById('toggleAdvancedOptions');
+            const advancedOptionsContent = document.getElementById('advancedOptionsContent');
+
+            // Gelişmiş seçenekleri göster/gizle
+            if (toggleAdvancedOptionsButton && advancedOptionsContent) {
+                toggleAdvancedOptionsButton.addEventListener('click', () => {
+                    advancedOptionsContent.classList.toggle('hidden-section');
+                    toggleAdvancedOptionsButton.classList.toggle('active');
+                });
+            }
+
+            function updateBrickDimensions() {
+                const selectedBrickType = brickTypeSelect.value;
+                if (selectedBrickType === "custom") {
+                    brickLengthInput.disabled = false;
+                    brickWidthInput.disabled = false;
+                    brickHeightInput.disabled = false;
+                    brickLengthInput.value = '';
+                    brickWidthInput.value = '';
+                    brickHeightInput.value = '';
+                    brickLengthUnitSelect.value = 'm'; // Varsayılan birim
+                    brickWidthUnitSelect.value = 'm';
+                    brickHeightUnitSelect.value = 'm';
+                } else {
+                    const dims = brickBlockDimensions[selectedBrickType];
+                    // Varsayılan olarak cm'ye çevirip gösterelim, kullanıcı isterse değiştirebilir
+                    brickLengthInput.value = (dims.length * 100).toFixed(2); 
+                    brickWidthInput.value = (dims.width * 100).toFixed(2);
+                    brickHeightInput.value = (dims.height * 100).toFixed(2);
+                    brickLengthInput.disabled = false; // Kullanıcının değiştirebilmesi için aktif bırak
+                    brickWidthInput.disabled = false;
+                    brickHeightInput.disabled = false;
+                    brickLengthUnitSelect.value = 'cm'; // Varsayılan birim cm olarak gösterilir
+                    brickWidthUnitSelect.value = 'cm';
+                    brickHeightUnitSelect.value = 'cm';
+                }
+                calculateBrickBlockWallMaterials(); // Boyutlar değişince yeniden hesapla
+            }
+
+            function updateMortarRatios() {
+                const selectedMortarRatio = mortarRatioSelect.value;
+                if (selectedMortarRatio === "custom_mortar") {
+                    cementPerM3MortarInput.disabled = false;
+                    sandPerM3MortarInput.disabled = false;
+                    waterPerM3MortarInput.disabled = false;
+                    cementPerM3MortarInput.value = '';
+                    sandPerM3MortarInput.value = '';
+                    waterPerM3MortarInput.value = '';
+                } else {
+                    const ratios = mortarRatios[selectedMortarRatio];
+                    cementPerM3MortarInput.value = ratios.cement;
+                    sandPerM3MortarInput.value = ratios.sand;
+                    waterPerM3MortarInput.value = ratios.water;
+                    cementPerM3MortarInput.disabled = true;
+                    sandPerM3MortarInput.disabled = true;
+                    waterPerM3MortarInput.disabled = true;
+                }
+                calculateBrickBlockWallMaterials(); // Oranlar değişince yeniden hesapla
+            }
+
+            brickTypeSelect.addEventListener('change', updateBrickDimensions);
+            mortarRatioSelect.addEventListener('change', updateMortarRatios);
+
+            // Sayfa yüklendiğinde başlangıç durumlarını ayarla
+            updateBrickDimensions();
+            updateMortarRatios();
+
+            function calculateBrickBlockWallMaterials() {
+                clearErrorStyles([
+                    wallLengthInput, wallHeightInput,
+                    brickLengthInput, brickWidthInput, brickHeightInput,
+                    mortarJointHorizontalInput, mortarJointVerticalInput,
+                    cementPerM3MortarInput, sandPerM3MortarInput, waterPerM3MortarInput,
+                    brickWastageFactorInput, mortarWastageFactorInput
+                ]);
+                brickBlockWallResultDiv.innerHTML = '';
+                brickBlockWallResultDiv.style.display = 'none';
+
+                // 1. Duvar Boyutları
+                const wallLen = parseFloat(wallLengthInput.value);
+                const wallHeight = parseFloat(wallHeightInput.value);
+                const wallLenUnit = wallLengthUnitSelect.value;
+                const wallHeightUnit = wallHeightUnitSelect.value;
+
+                if (isNaN(wallLen) || wallLen <= 0) { displayError(brickBlockWallResultDiv, "Lütfen geçerli ve pozitif bir duvar uzunluğu giriniz.", [wallLengthInput]); return; }
+                if (isNaN(wallHeight) || wallHeight <= 0) { displayError(brickBlockWallResultDiv, "Lütfen geçerli ve pozitif bir duvar yüksekliği giriniz.", [wallHeightInput]); return; }
+
+                const wallArea = (wallLen * lengthConversion[wallLenUnit]) * (wallHeight * lengthConversion[wallHeightUnit]); // m²
+
+                // 2. Tuğla/Blok Boyutları
+                const brickLen = parseFloat(brickLengthInput.value);
+                const brickWidth = parseFloat(brickWidthInput.value);
+                const brickHeight = parseFloat(brickHeightInput.value);
+                const brickLenUnit = brickLengthUnitSelect.value;
+                const brickWidthUnit = brickWidthUnitSelect.value;
+                const brickHeightUnit = brickHeightUnitSelect.value;
+
+                if (isNaN(brickLen) || brickLen <= 0) { displayError(brickBlockWallResultDiv, "Lütfen geçerli ve pozitif bir tuğla/blok uzunluğu giriniz.", [brickLengthInput]); return; }
+                if (isNaN(brickWidth) || brickWidth <= 0) { displayError(brickBlockWallResultDiv, "Lütfen geçerli ve pozitif bir tuğla/blok genişliği (duvar kalınlığı) giriniz.", [brickWidthInput]); return; }
+                if (isNaN(brickHeight) || brickHeight <= 0) { displayError(brickBlockWallResultDiv, "Lütfen geçerli ve pozitif bir tuğla/blok yüksekliği giriniz.", [brickHeightInput]); return; }
+
+                const brickLen_m = brickLen * lengthConversion[brickLenUnit];
+                const brickWidth_m = brickWidth * lengthConversion[brickWidthUnit];
+                const brickHeight_m = brickHeight * lengthConversion[brickHeightUnit];
+
+                // 3. Harç Derz Kalınlıkları (cm'den metreye çevrildi)
+                const mortarJointH = parseFloat(mortarJointHorizontalInput.value) / 100; // cm -> m
+                const mortarJointV = parseFloat(mortarJointVerticalInput.value) / 100;   // cm -> m
+
+                if (isNaN(mortarJointH) || mortarJointH < 0.001) { displayError(brickBlockWallResultDiv, "Lütfen geçerli ve pozitif bir yatay derz kalınlığı giriniz (min 0.1 cm).", [mortarJointHorizontalInput]); return; }
+                if (isNaN(mortarJointV) || mortarJointV < 0.001) { displayError(brickBlockWallResultDiv, "Lütfen geçerli ve pozitif bir düşey derz kalınlığı giriniz (min 0.1 cm).", [mortarJointVerticalInput]); return; }
+
+                // 4. Fire Oranları
+                const brickWastage = parseFloat(brickWastageFactorInput.value) || 0;
+                const mortarWastage = parseFloat(mortarWastageFactorInput.value) || 0;
+
+                if (isNaN(brickWastage) || brickWastage < 0 || brickWastage > 100) { displayError(brickBlockWallResultDiv, "Lütfen geçerli bir tuğla/blok fire oranı giriniz (0-100 arası).", [brickWastageFactorInput]); return; }
+                if (isNaN(mortarWastage) || mortarWastage < 0 || mortarWastage > 100) { displayError(brickBlockWallResultDiv, "Lütfen geçerli bir harç fire oranı giriniz (0-100 arası).", [mortarWastageFactorInput]); return; }
+
+                // --- HESAPLAMALAR ---
+
+                // 1. Bir tuğlanın derz dahil kapladığı alan (m²)
+                const brickAreaWithJoint = (brickLen_m + mortarJointV) * (brickHeight_m + mortarJointH);
+
+                // 2. Gerekli tuğla/blok sayısı (netsiz)
+                const bricksNeededNet = wallArea / brickAreaWithJoint;
+                
+                // 3. Fire dahil gerekli tuğla/blok sayısı
+                const totalBricks = Math.ceil(bricksNeededNet * (1 + brickWastage / 100)); // Yuvarlama yukarı doğru
+
+                // 4. Harç Hacmi Hesaplama
+                // Bir tuğla hacmi
+                const brickVolume = brickLen_m * brickWidth_m * brickHeight_m; // m³
+
+                // Bir tuğla + derzlerin toplam hacmi (duvar kalınlığı sabit)
+                const brickVolumeWithJoints = (brickLen_m + mortarJointV) * brickWidth_m * (brickHeight_m + mortarJointH); // m³
+
+                // Bir tuğla için gerekli harç hacmi (m³)
+                const mortarVolumePerBrick = brickVolumeWithJoints - brickVolume;
+
+                // Toplam harç hacmi (duvar hacmi üzerinden de kontrol edilebilir, en doğru yol bu)
+                const totalMortarVolumeNet = bricksNeededNet * mortarVolumePerBrick; // m³
+
+                // Fire dahil toplam harç hacmi
+                const totalMortarVolume = totalMortarVolumeNet * (1 + mortarWastage / 100); // m³
+
+                // 5. Harç Malzemeleri Hesaplama
+                let cementPerM3Mortar = parseFloat(cementPerM3MortarInput.value);
+                let sandPerM3Mortar = parseFloat(sandPerM3MortarInput.value);
+                let waterPerM3Mortar = parseFloat(waterPerM3MortarInput.value);
+
+                const selectedMortarRatio = mortarRatioSelect.value;
+                if (selectedMortarRatio === "custom_mortar") {
+                    if (isNaN(cementPerM3Mortar) || cementPerM3Mortar <= 0) { displayError(brickBlockWallResultDiv, "Lütfen geçerli ve pozitif harç çimento miktarı giriniz.", [cementPerM3MortarInput]); return; }
+                    if (isNaN(sandPerM3Mortar) || sandPerM3Mortar <= 0) { displayError(brickBlockWallResultDiv, "Lütfen geçerli ve pozitif harç kum miktarı giriniz.", [sandPerM3MortarInput]); return; }
+                    if (isNaN(waterPerM3Mortar) || waterPerM3Mortar <= 0) { displayError(brickBlockWallResultDiv, "Lütfen geçerli ve pozitif harç su miktarı giriniz.", [waterPerM3MortarInput]); return; }
+                } 
+                // else: values are already set by updateMortarRatios()
+
+                const totalCementKg = totalMortarVolume * cementPerM3Mortar;
+                const totalSandM3 = totalMortarVolume * sandPerM3Mortar;
+                const totalWaterLiters = totalMortarVolume * waterPerM3Mortar;
+
+                // --- SONUÇLARI GÖSTERME ---
+                brickBlockWallResultDiv.innerHTML = `
+                    <div class="result-item"><strong>Duvar Alanı:</strong> <span class="result-value">${wallArea.toFixed(2)} $m^2$</span></div>
+                    <hr style="border-top: 1px solid #dcdfe4; margin: 15px 0;">
+                    <div class="result-item"><strong>Gerekli Tuğla/Blok Sayısı (Fire Dahil):</strong> <span class="result-value">${totalBricks} adet</span></div>
+                    <div class="result-item"><strong>Toplam Harç Hacmi (Fire Dahil):</strong> <span class="result-value">${totalMortarVolume.toFixed(3)} $m^3$</span></div>
+                    <hr style="border-top: 1px solid #dcdfe4; margin: 15px 0;">
+                    <h4>Harç Malzemeleri:</h4>
+                    <div class="result-item"><strong>Gerekli Çimento:</strong> <span class="result-value">${totalCementKg.toFixed(2)} kg</span></div>
+                    <div class="result-item"><strong>Gerekli Kum:</strong> <span class="result-value">${totalSandM3.toFixed(3)} $m^3$</span></div>
+                    <div class="result-item"><strong>Gerekli Su:</strong> <span class="result-value">${totalWaterLiters.toFixed(2)} Litre</span></div>
+                    <p class="small-text" style="text-align: center; margin-top: 20px;">
+                        Kullanılan Harç Oranları ($m^3$ harç başına): Çimento: ${cementPerM3Mortar} kg, Kum: ${sandPerM3Mortar} $m^3$, Su: ${waterPerM3Mortar} Litre
+                    </p>
+                `;
+                brickBlockWallResultDiv.style.display = 'block';
+            }
+
+            if (brickBlockWallForm) {
+                brickBlockWallForm.addEventListener('submit', function(event) { event.preventDefault(); calculateBrickBlockWallMaterials(); });
+                
+                // Input ve select değişikliklerinde otomatik hesaplama
+                wallLengthInput.addEventListener('input', calculateBrickBlockWallMaterials);
+                wallLengthUnitSelect.addEventListener('change', calculateBrickBlockWallMaterials);
+                wallHeightInput.addEventListener('input', calculateBrickBlockWallMaterials);
+                wallHeightUnitSelect.addEventListener('change', calculateBrickBlockWallMaterials);
+                brickLengthInput.addEventListener('input', calculateBrickBlockWallMaterials);
+                brickLengthUnitSelect.addEventListener('change', calculateBrickBlockWallMaterials);
+                brickWidthInput.addEventListener('input', calculateBrickBlockWallMaterials);
+                brickWidthUnitSelect.addEventListener('change', calculateBrickBlockWallMaterials);
+                brickHeightInput.addEventListener('input', calculateBrickBlockWallMaterials);
+                brickHeightUnitSelect.addEventListener('change', calculateBrickBlockWallMaterials);
+                mortarJointHorizontalInput.addEventListener('input', calculateBrickBlockWallMaterials);
+                mortarJointVerticalInput.addEventListener('input', calculateBrickBlockWallMaterials);
+                cementPerM3MortarInput.addEventListener('input', calculateBrickBlockWallMaterials);
+                sandPerM3MortarInput.addEventListener('input', calculateBrickBlockWallMaterials);
+                waterPerM3MortarInput.addEventListener('input', calculateBrickBlockWallMaterials);
+                brickWastageFactorInput.addEventListener('input', calculateBrickBlockWallMaterials);
+                mortarWastageFactorInput.addEventListener('input', calculateBrickBlockWallMaterials);
+            }
+        });
+    </script>
+</body>
+</html>
