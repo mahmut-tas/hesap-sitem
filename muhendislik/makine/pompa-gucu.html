@@ -357,61 +357,94 @@
     <main>
         <section class="hero-section">
             <div class="container">
-                <h1>Emniyet Faktörü Hesaplayıcı</h1>
-                <p>Bir mühendislik tasarımının veya bileşenin emniyet faktörünü (güvenlik faktörünü) kolayca hesaplayın. Tasarım dayanımı ve uygulanan yük değerlerini kullanarak güvenilirlik oranını belirleyin.</p>
+                <h1>Pompa Gücü Hesaplayıcı</h1>
+                <p>Belirli bir debi ve basma yüksekliği (veya basınç farkı) için gerekli pompa gücünü hesaplayın.</p>
             </div>
         </section>
 
         <section class="calculator-selection-section">
             <div class="container">
-                <h2>Emniyet Faktörünü Hesapla</h2>
+                <h2>Pompa Gücünü Hesapla</h2>
                 <div class="calc-buttons-container">
-                    <button class="calc-type-button active" data-calc-type="factorOfSafety">Emniyet Faktörü Hesapla</button>
+                    <button class="calc-type-button active" data-calc-type="pumpPower">Pompa Gücünü Hesapla</button>
                 </div>
 
-                <div id="calculator-factorOfSafety" class="calc-wrapper active-calc">
-                    <h3><i class="fas fa-shield-alt icon-small"></i> Emniyet Faktörü Hesapla (FS = Dayanım / Yük)</h3>
+                <div id="calculator-pumpPower" class="calc-wrapper active-calc">
+                    <h3><i class="fas fa-water icon-small"></i> Pompa Gücünü Hesapla (P = (ρ ⋅ g ⋅ Q ⋅ H) / η)</h3>
                     <div class="calculator-form-container">
-                        <form id="factorOfSafetyForm">
+                        <form id="pumpPowerForm">
                             <div class="input-with-unit">
-                                <label for="designStrength">Tasarım Dayanımı (Akma veya Çekme Dayanımı):</label>
-                                <input type="number" id="designStrength" placeholder="Örn: 250" min="0.000001" step="any" required>
-                                <select id="designStrengthUnit">
-                                    <option value="MPa">Megapaskal (MPa)</option>
-                                    <option value="Pa">Pascal (Pa)</option>
-                                    <option value="kPa">Kilopaskal (kPa)</option>
-                                    <option value="GPa">Gigapaskal (GPa)</option>
-                                    <option value="psi">psi</option>
-                                    <option value="ksi">ksi</option>
+                                <label for="fluidDensity_pp">Akışkan Yoğunluğu (ρ):</label>
+                                <input type="number" id="fluidDensity_pp" placeholder="Örn: 1000 (Su için)" min="0.000001" step="any" required>
+                                <select id="fluidDensityUnit_pp">
+                                    <option value="kg/m3">kg/m³</option>
+                                    <option value="g/cm3">g/cm³</option>
+                                    <option value="lb/ft3">lb/ft³</option>
                                 </select>
                             </div>
                             <hr class="form-divider">
                             <div class="input-with-unit">
-                                <label for="appliedLoad">Uygulanan Gerilme veya Yük (Tasarım Yükü):</label>
-                                <input type="number" id="appliedLoad" placeholder="Örn: 100" min="0.000001" step="any" required>
-                                <select id="appliedLoadUnit">
-                                    <option value="MPa">Megapaskal (MPa)</option>
-                                    <option value="Pa">Pascal (Pa)</option>
-                                    <option value="kPa">Kilopaskal (kPa)</option>
-                                    <option value="GPa">Gigapaskal (GPa)</option>
-                                    <option value="psi">psi</option>
-                                    <option value="ksi">ksi</option>
+                                <label for="flowRate_pp">Hacimsel Debi (Q):</label>
+                                <input type="number" id="flowRate_pp" placeholder="Örn: 0.01 (m³/s)" min="0.000001" step="any" required>
+                                <select id="flowRateUnit_pp">
+                                    <option value="m3/s">m³/s</option>
+                                    <option value="L/s">L/s</option>
+                                    <option value="m3/h">m³/saat</option>
+                                    <option value="gpm">galon/dakika (gpm)</option>
+                                    <option value="ft3/s">ft³/s</option>
                                 </select>
                             </div>
-                            <button type="submit">Emniyet Faktörünü Hesapla</button>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="totalHead_pp">Toplam Basma Yüksekliği (H) veya Basınç Farkı (ΔP):</label>
+                                <input type="number" id="totalHead_pp" placeholder="Örn: 10 (m)" min="0" step="any" required>
+                                <select id="totalHeadUnit_pp">
+                                    <option value="m">metre (m)</option>
+                                    <option value="ft">fit (ft)</option>
+                                    <option value="psi">psi</option>
+                                    <option value="kPa">kPa</option>
+                                    <option value="bar">bar</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider">
+                            <div class="input-with-unit">
+                                <label for="pumpEfficiency_pp">Pompa Verimliliği (η) (%):</label>
+                                <input type="number" id="pumpEfficiency_pp" placeholder="Örn: 75" min="1" max="100" step="0.1" required>
+                            </div>
+                            <button type="submit">Pompa Gücünü Hesapla</button>
                         </form>
-                        <div id="factorOfSafetyResult" class="result-display"></div>
+                        <div id="pumpPowerResult" class="result-display"></div>
                         <div class="calc-explanation">
-                            <p>Emniyet faktörü (Güvenlik faktörü), bir yapının veya makine parçasının beklenen yükler altında ne kadar güvenli olduğunu gösteren bir orandır. Genellikle malzemenin akma veya çekme dayanımının, uygulanan veya tasarım gerilmesine oranı olarak hesaplanır.</p>
+                            <p>Pompa gücü, bir akışkanın belirli bir debide ve basma yüksekliğinde (veya basınç farkında) hareket ettirilmesi için gereken enerjiyi temsil eder. Hesaplama, hidrolik güç, şaft gücü ve motor gücü olarak farklı seviyelerde yapılabilir.</p>
+                            <h4>Hidrolik Güç (Akışkana Aktarılan Güç):</h4>
                             <p class="formula-text">
-                                FS = Dayanım / Yük
+                                P_hidrolik = ρ ⋅ g ⋅ Q ⋅ H
+                            </p>
+                            <p class="formula-text small-margin">
+                                P_hidrolik = Q ⋅ ΔP
                             </p>
                             <ul>
-                                <li>**FS:** Emniyet Faktörü (birimsiz oran)</li>
-                                <li>**Tasarım Dayanımı:** Malzemenin akma dayanımı (yield strength, σy) veya çekme dayanımı (ultimate tensile strength, σu).</li>
-                                <li>**Uygulanan Yük:** Tasarım gerilmesi (σtasarım) veya maksimum beklenen gerilme.</li>
+                                <li>**ρ:** Akışkan yoğunluğu (kg/m³)</li>
+                                <li>**g:** Yerçekimi ivmesi (9.81 m/s²)</li>
+                                <li>**Q:** Hacimsel debi (m³/s)</li>
+                                <li>**H:** Toplam basma yüksekliği (m)</li>
+                                <li>**ΔP:** Basınç farkı (Pa)</li>
                             </ul>
-                            <p>Emniyet faktörü 1'den büyük olmalıdır. Genellikle 1.5 ile 5 arasında değerler kullanılır, bu uygulamanın kritiklik derecesine ve belirsizliklere bağlıdır.</p>
+                            <h4>Şaft Gücü (Pompanın Giriş Gücü):</h4>
+                            <p class="formula-text small-margin">
+                                P_şaft = P_hidrolik / η_pompa
+                            </p>
+                            <ul>
+                                <li>**η_pompa:** Pompa verimliliği (ondalık olarak, örneğin %75 için 0.75)</li>
+                            </ul>
+                            <h4>Motor Gücü (Pompa ve Motor Verimliliği Dahil):</h4>
+                            <p class="formula-text small-margin">
+                                P_motor = P_şaft / η_motor
+                            </p>
+                            <ul>
+                                <li>**η_motor:** Motor verimliliği (genellikle %85-95 arası)</li>
+                            </ul>
+                            <p>Bu hesaplayıcı, hidrolik gücü ve pompanın şaft gücünü temel olarak Watt cinsinden verir. Gerekirse motor gücü için ek bir verimlilik hesabı yapabilirsiniz.</p>
                         </div>
                     </div>
                 </div>
@@ -419,46 +452,59 @@
         </section>
 
         <section class="info-section container">
-            <h3>Emniyet Faktörü Nedir?</h3>
+            <h3>Pompa Gücü Hesaplamaları Nedir?</h3>
             <p>
-                **Emniyet Faktörü (FS)** veya **Güvenlik Faktörü**, mühendislik tasarımında bir yapının veya makine parçasının beklenen yükler altında ne kadar güvenli olduğunu değerlendirmek için kullanılan kritik bir orandır. Bir bileşenin nihai dayanımının (genellikle akma veya çekme dayanımı), üzerinde beklenen maksimum yüke (veya gerilmeye) oranı olarak tanımlanır.
+                **Pompa gücü hesaplamaları**, bir pompanın belirli bir akışkanı istenen debi ve basma yüksekliği (veya basınç farkı) ile hareket ettirebilmek için ne kadar enerjiye (güce) ihtiyaç duyduğunu belirlemek için yapılır. Bu hesaplamalar, pompa seçimi, sistem tasarımı ve enerji tüketimi analizlerinde kritik öneme sahiptir.
             </p>
-            <p>
-                Formülü aşağıdaki gibidir:
-            </p>
-            <p class="formula-text">
-                FS = Malzeme Dayanımı / (Uygulanan Yük / Gerilme)
-            </p>
-            <ul>
-                <li>**Malzeme Dayanımı:** Genellikle malzemenin akma dayanımı (yield strength, σy) kullanılır, bu noktadan sonra kalıcı deformasyon başlar. Bazı durumlarda çekme dayanımı (ultimate tensile strength, σu) de kullanılabilir.</li>
-                <li>**Uygulanan Yük / Gerilme:** Tasarım yükü, beklenen maksimum işletme yükü veya bu yükün neden olduğu gerilme.</li>
-            </ul>
 
-            <h4>Emniyet Faktörünün Önemi</h4>
+            <h4>Temel Güç Türleri:</h4>
             <ul>
-                <li>**Güvenlik:** Yapıların veya makinelerin beklenmedik yüklemeler, malzeme kusurları, üretim hataları veya çevresel koşullar altında arızalanmasını önler.</li>
-                <li>**Belirsizlikleri Giderme:** Malzeme özelliklerindeki, yük tahminlerindeki ve üretim toleranslarındaki belirsizlikleri hesaba katar.</li>
-                <li>**Yasal ve Standartlara Uygunluk:** Birçok endüstri standardı ve yasal düzenleme, belirli uygulamalar için minimum emniyet faktörleri gerektirir.</li>
-            </ul>
-
-            <h4>Emniyet Faktörü Seçimi</h4>
-            <p>Emniyet faktörünün değeri, uygulamanın kritikliği, malzemenin özellikleri, yükleme koşullarının doğası ve arıza riskinin kabul edilebilirliği gibi birçok faktöre bağlıdır:</p>
-            <ul>
-                <li>**Kritik Olmayan Uygulamalar (örn: mobilya):** FS = 1.25 - 2</li>
-                <li>**Genel Makine Tasarımı:** FS = 2 - 3</li>
-                <li>**İnsan Güvenliğinin Önemli Olduğu Uygulamalar (örn: asansörler, uçaklar):** FS = 3 - 5 veya daha yüksek</li>
-                <li>**Yüksek Belirsizlik veya Ani Yüklemeler:** Daha yüksek FS değerleri tercih edilir.</li>
+                <li>
+                    **Hidrolik Güç (Akışkan Gücü, Su Beygir Gücü):** Pompanın akışkana aktardığı net güçtür. Sürtünme kayıpları ve diğer verimsizlikler hariç, akışkanı hareket ettirmek için teorik olarak gereken minimum güçtür.
+                    <p class="formula-text small-margin">
+                        P_hidrolik = ρ ⋅ g ⋅ Q ⋅ H (Basma Yüksekliği Cinsinden)
+                    </p>
+                    <p class="formula-text small-margin">
+                        P_hidrolik = Q ⋅ ΔP (Basınç Farkı Cinsinden)
+                    </p>
+                    <ul>
+                        <li>**ρ:** Akışkan yoğunluğu</li>
+                        <li>**g:** Yerçekimi ivmesi (yaklaşık 9.81 m/s²)</li>
+                        <li>**Q:** Hacimsel debi</li>
+                        <li>**H:** Toplam basma yüksekliği (pompanın sağladığı toplam basınç enerjisinin eşdeğer yüksekliği)</li>
+                        <li>**ΔP:** Pompanın giriş ve çıkışı arasındaki basınç farkı</li>
+                    </ul>
+                </li>
+                <li>
+                    **Şaft Gücü (Giriş Gücü):** Pompa çarkını döndürmek için şafta uygulanan güçtür. Hidrolik güçten daha fazladır çünkü pompanın kendi iç sürtünmeleri ve mekanik kayıpları vardır. Pompa verimliliği bu kayıpları hesaba katar.
+                    <p class="formula-text small-margin">
+                        P_şaft = P_hidrolik / η_pompa
+                    </p>
+                    <ul>
+                        <li>**η_pompa:** Pompanın verimliliği (genellikle 0.5 ile 0.9 arasında bir ondalık değer).</li>
+                    </ul>
+                </li>
+                <li>
+                    **Motor Gücü (Elektriksel Giriş Gücü):** Pompaya güç veren motorun çektiği elektriksel güçtür. Şaft gücünden daha fazladır çünkü motorun da kendi elektriksel ve mekanik verimsizlikleri vardır.
+                    <p class="formula-text small-margin">
+                        P_motor = P_şaft / η_motor
+                    </p>
+                    <ul>
+                        <li>**η_motor:** Motorun verimliliği (genellikle 0.85 ile 0.95 arasında bir ondalık değer).</li>
+                    </ul>
+                </li>
             </ul>
 
             <h4>Uygulama Alanları:</h4>
             <ul>
-                <li>**Yapısal Mühendislik:** Binalar, köprüler, kuleler ve diğer altyapıların tasarımında.</li>
-                <li>**Makine Tasarımı:** Şaftlar, dişliler, bağlantı elemanları, basınçlı kaplar ve diğer makine bileşenlerinin boyutlandırılmasında.</li>
-                <li>**Havacılık ve Uzay:** Uçak gövdeleri ve uzay araçlarının güvenilirlik analizi.</li>
-                <li>**Otomotiv Endüstrisi:** Araç şasi, süspansiyon ve motor parçalarının dayanım hesaplamalarında.</li>
+                <li><strong>Sıvı Transfer Sistemleri:</strong> Su temini, atık su arıtma, kimyasal prosesler ve petrol/gaz boru hatları.</li>
+                <li><strong>HVAC Sistemleri:</strong> Soğutma ve ısıtma sistemlerindeki su sirkülasyon pompaları.</li>
+                <li><strong>İnşaat Sektörü:</strong> Şantiye drenajı, beton pompaları.</li>
+                <li><strong>Tarım:</strong> Sulama sistemleri.</li>
+                <li><strong>Denizcilik:</strong> Gemi motoru soğutma sistemleri, balast pompaları.</li>
             </ul>
             <p class="disclaimer-text">
-                Bu hesaplayıcı, emniyet faktörünün temel tanımına göre hesaplama yapar. Gerçek mühendislik tasarımında, emniyet faktörü seçimi ve uygulaması daha karmaşık olabilir ve dinamik yükler, yorulma, termal etkiler, korozyon, çatlak büyümesi gibi faktörlerin ayrıntılı analizini gerektirebilir. Mühendislik standartları, malzeme test verileri ve uzman yargısı her zaman göz önünde bulundurulmalıdır.
+                Bu hesaplayıcı, pompa gücünün temel hidrolik prensiplerine dayanır ve verimlilik kavramını içerir. Gerçek dünya uygulamalarında, boru hattı sürtünme kayıpları, statik basma yüksekliği, hız basma yüksekliği, kavitasyon riski (NPSH), akışkanın viskozitesi ve sıcaklığı gibi ek faktörler sistemin toplam basma yüksekliğini ve pompa performansını etkileyebilir. Hassas pompa seçimi ve sistem tasarımı için detaylı mühendislik analizleri, pompa karakteristik eğrileri ve uzman bilgisi gereklidir.
             </p>
         </section>
     </main>
@@ -474,8 +520,8 @@
             const mainCalcButtons = document.querySelectorAll('.calc-type-button');
             const calculatorWrappers = document.querySelectorAll('.calc-wrapper');
 
-            // Başlangıçta ilk hesaplayıcıyı göster (zaten tek var)
-            showCalculator('factorOfSafety');
+            // Başlangıçta ilk hesaplayıcıyı göster
+            showCalculator('pumpPower');
 
             mainCalcButtons.forEach(button => {
                 button.addEventListener('click', () => {
@@ -528,60 +574,110 @@
                 inputs.forEach(input => input.classList.remove('error'));
             }
 
-            // Birim dönüşüm faktörleri (temel birim: MPa)
-            const stressConversion = {
-                'Pa': 1e-6,   // Pa -> MPa
-                'kPa': 1e-3,  // kPa -> MPa
-                'MPa': 1,     // MPa -> MPa
-                'GPa': 1e3,   // GPa -> MPa
-                'psi': 0.00689476, // psi -> MPa
-                'ksi': 6.89476   // ksi -> MPa
+            // Birim dönüşüm faktörleri (temel birimler: kg/m³, m³/s, m, Pa)
+            // Yerçekimi ivmesi (g)
+            const g = 9.81; // m/s²
+
+            // Yoğunluk: kg/m³
+            const densityConversion = {
+                'kg/m3': 1,
+                'g/cm3': 1000,
+                'lb/ft3': 16.0185
             };
 
-            // --- EMNİYET FAKTÖRÜ HESAPLAYICI ---
-            const factorOfSafetyForm = document.getElementById('factorOfSafetyForm');
-            const designStrengthInput = document.getElementById('designStrength');
-            const designStrengthUnitSelect = document.getElementById('designStrengthUnit');
-            const appliedLoadInput = document.getElementById('appliedLoad');
-            const appliedLoadUnitSelect = document.getElementById('appliedLoadUnit');
-            const factorOfSafetyResultDiv = document.getElementById('factorOfSafetyResult');
+            // Debi: m³/s
+            const flowRateConversion = {
+                'm3/s': 1,
+                'L/s': 0.001,
+                'm3/h': 1 / 3600, // m³/saat -> m³/s
+                'gpm': 0.0000630902, // US gal/min -> m³/s
+                'ft3/s': 0.0283168 // ft³/s -> m³/s
+            };
 
-            function calculateFactorOfSafety() {
-                clearErrorStyles([designStrengthInput, appliedLoadInput]);
-                factorOfSafetyResultDiv.innerHTML = '';
-                factorOfSafetyResultDiv.style.display = 'none';
+            // Yükseklik/Basınç: metre (m) veya Pascal (Pa)
+            // Basınç birimlerini Pascal'a (Pa) çeviren dönüşüm faktörleri
+            const pressureConversionToPascal = {
+                'psi': 6894.76,  // psi -> Pa
+                'kPa': 1000,     // kPa -> Pa
+                'bar': 100000,   // bar -> Pa
+                'Pa': 1          // Pa -> Pa
+            };
 
-                const strength_val = parseFloat(designStrengthInput.value);
-                const load_val = parseFloat(appliedLoadInput.value);
+            // --- POMPA GÜCÜ HESAPLAYICI ---
+            const pumpPowerForm = document.getElementById('pumpPowerForm');
+            const fluidDensity_ppInput = document.getElementById('fluidDensity_pp');
+            const fluidDensityUnit_ppSelect = document.getElementById('fluidDensityUnit_pp');
+            const flowRate_ppInput = document.getElementById('flowRate_pp');
+            const flowRateUnit_ppSelect = document.getElementById('flowRateUnit_pp');
+            const totalHead_ppInput = document.getElementById('totalHead_pp');
+            const totalHeadUnit_ppSelect = document.getElementById('totalHeadUnit_pp');
+            const pumpEfficiency_ppInput = document.getElementById('pumpEfficiency_pp');
+            const pumpPowerResultDiv = document.getElementById('pumpPowerResult');
 
-                const strength_unit = designStrengthUnitSelect.value;
-                const load_unit = appliedLoadUnitSelect.value;
+            function calculatePumpPower() {
+                clearErrorStyles([fluidDensity_ppInput, flowRate_ppInput, totalHead_ppInput, pumpEfficiency_ppInput]);
+                pumpPowerResultDiv.innerHTML = '';
+                pumpPowerResultDiv.style.display = 'none';
 
-                if (isNaN(strength_val) || strength_val <= 0) { displayError(factorOfSafetyResultDiv, "Lütfen geçerli ve pozitif bir tasarım dayanımı giriniz.", [designStrengthInput]); return; }
-                if (isNaN(load_val) || load_val <= 0) { displayError(factorOfSafetyResultDiv, "Lütfen geçerli ve pozitif bir uygulanan yük değeri giriniz.", [appliedLoadInput]); return; }
+                const rho_val = parseFloat(fluidDensity_ppInput.value);
+                const Q_val = parseFloat(flowRate_ppInput.value);
+                let H_or_dP_val = parseFloat(totalHead_ppInput.value); // Bu hem H hem de dP olabilir
+                const eta_val = parseFloat(pumpEfficiency_ppInput.value); // % olarak
 
-                // Her iki değeri de MPa'ya dönüştürerek oranlayalım
-                const strength_MPa = strength_val * stressConversion[strength_unit];
-                const load_MPa = load_val * stressConversion[load_unit];
+                const rho_unit = fluidDensityUnit_ppSelect.value;
+                const Q_unit = flowRateUnit_ppSelect.value;
+                const H_or_dP_unit = totalHeadUnit_ppSelect.value;
 
-                const factorOfSafety = strength_MPa / load_MPa;
+                if (isNaN(rho_val) || rho_val <= 0) { displayError(pumpPowerResultDiv, "Lütfen geçerli ve pozitif bir akışkan yoğunluğu giriniz.", [fluidDensity_ppInput]); return; }
+                if (isNaN(Q_val) || Q_val <= 0) { displayError(pumpPowerResultDiv, "Lütfen geçerli ve pozitif bir hacimsel debi giriniz.", [flowRate_ppInput]); return; }
+                if (isNaN(H_or_dP_val) || H_or_dP_val < 0) { displayError(pumpPowerResultDiv, "Lütfen geçerli ve sıfır veya pozitif bir basma yüksekliği/basınç farkı giriniz.", [totalHead_ppInput]); return; }
+                if (isNaN(eta_val) || eta_val <= 0 || eta_val > 100) { displayError(pumpPowerResultDiv, "Lütfen %1 ile %100 arasında geçerli bir pompa verimliliği giriniz.", [pumpEfficiency_ppInput]); return; }
 
-                factorOfSafetyResultDiv.innerHTML = `
-                    <p><strong>Tasarım Dayanımı:</strong> ${designStrengthInput.value} ${strength_unit}</p>
-                    <p><strong>Uygulanan Gerilme/Yük:</strong> ${appliedLoadInput.value} ${load_unit}</p>
+                const rho_base = rho_val * densityConversion[rho_unit]; // kg/m³
+                const Q_base = Q_val * flowRateConversion[Q_unit];     // m³/s
+                const eta_decimal = eta_val / 100; // % -> ondalık
+
+                let P_hydraulic_watt; // Watt cinsinden
+
+                // Basma yüksekliği mi yoksa basınç farkı mı girildiğini kontrol et
+                if (H_or_dP_unit === 'm' || H_or_dP_unit === 'ft') {
+                    // Yükseklik cinsinden girildi, metreye çevir
+                    let H_base;
+                    if (H_or_dP_unit === 'm') H_base = H_or_dP_val;
+                    else if (H_or_dP_unit === 'ft') H_base = H_or_dP_val * 0.3048; // ft -> m
+
+                    P_hydraulic_watt = rho_base * g * Q_base * H_base;
+                } else {
+                    // Basınç cinsinden girildi, Pascal'a çevir
+                    const dP_base = H_or_dP_val * pressureConversionToPascal[H_or_dP_unit]; // Pa
+
+                    P_hydraulic_watt = Q_base * dP_base;
+                }
+
+                const P_shaft_watt = P_hydraulic_watt / eta_decimal; // Pompanın şaft gücü
+
+                pumpPowerResultDiv.innerHTML = `
+                    <p><strong>Akışkan Yoğunluğu (ρ):</strong> ${fluidDensity_ppInput.value} ${rho_unit}</p>
+                    <p><strong>Hacimsel Debi (Q):</strong> ${flowRate_pp_Input.value} ${Q_unit}</p>
+                    <p><strong>Basma Yüksekliği/Basınç Farkı:</strong> ${totalHead_ppInput.value} ${H_or_dP_unit}</p>
+                    <p><strong>Pompa Verimliliği (η):</strong> ${pumpEfficiency_ppInput.value} %</p>
                     <hr>
-                    <p><strong>Emniyet Faktörü (FS):</strong> <span class="result-value">${factorOfSafety.toFixed(3)}</span></p>
-                    <p class="small-text">Değer 1'den büyük olmalıdır. Genellikle 1.5 ile 5 arasında değerler kullanılır.</p>
+                    <p><strong>Hidrolik Güç (Akışkana Aktarılan):</strong> <span class="result-value">${P_hydraulic_watt.toFixed(2)}</span> Watt</p>
+                    <p><strong>Pompa Şaft Gücü (Pompaya Giren):</strong> <span class="result-value">${P_shaft_watt.toFixed(2)}</span> Watt</p>
+                    <p class="small-text">(Yaklaşık ${ (P_shaft_watt / 745.7).toFixed(3)} HP veya ${ (P_shaft_watt / 1000).toFixed(3)} kW)</p>
                 `;
-                factorOfSafetyResultDiv.style.display = 'block';
+                pumpPowerResultDiv.style.display = 'block';
             }
 
-            if (factorOfSafetyForm) {
-                factorOfSafetyForm.addEventListener('submit', function(event) { event.preventDefault(); calculateFactorOfSafety(); });
-                designStrengthInput.addEventListener('input', calculateFactorOfSafety);
-                designStrengthUnitSelect.addEventListener('change', calculateFactorOfSafety);
-                appliedLoadInput.addEventListener('input', calculateFactorOfSafety);
-                appliedLoadUnitSelect.addEventListener('change', calculateFactorOfSafety);
+            if (pumpPowerForm) {
+                pumpPowerForm.addEventListener('submit', function(event) { event.preventDefault(); calculatePumpPower(); });
+                fluidDensity_ppInput.addEventListener('input', calculatePumpPower);
+                fluidDensityUnit_ppSelect.addEventListener('change', calculatePumpPower);
+                flowRate_ppInput.addEventListener('input', calculatePumpPower);
+                flowRateUnit_ppSelect.addEventListener('change', calculatePumpPower);
+                totalHead_ppInput.addEventListener('input', calculatePumpPower);
+                totalHeadUnit_ppSelect.addEventListener('change', calculatePumpPower);
+                pumpEfficiency_ppInput.addEventListener('input', calculatePumpPower);
             }
         });
     </script>
