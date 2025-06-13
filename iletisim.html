@@ -3,18 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İletişim - Hesapkolik</title>
-    <meta name="description" content="Hesapkolik ile iletişime geçin. Sorularınız, önerileriniz ve geri bildirimleriniz için bize ulaşın. En kısa sürede size geri dönüş yapacağız.">
-    <meta name="keywords" content="iletişim, hesapkolik, bize ulaşın, destek, soru, öneri, geri bildirim">
-    <link rel="stylesheet" href="css/style.css">
+    <title>İletişim - Hesapkolik.net</title>
+    <meta name="description" content="Hesapkolik.net ile iletişime geçin. Sorularınız, önerileriniz ve geri bildirimleriniz için bize ulaşın.">
+    <meta name="keywords" content="iletişim, hesapkolik, bize ulaşın, destek, soru, öneri, geri bildirim, e-posta">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* Genel Stil */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 0;
+        }
+        header .logo {
+            text-align: left; /* Logo sola hizalı */
+        }
+        header .logo h1 {
+            margin: 0;
+            font-size: 1.8em;
+            display: inline-block; /* Logo resmi ile yanyana durması için */
+            vertical-align: middle;
+        }
+        header .logo h1 a {
+            color: white;
+            text-decoration: none;
+        }
+        header .logo .site-logo {
+            height: 40px; /* Logo resminizin boyutu */
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        header nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: flex-end;
+        }
+        header nav ul li {
+            margin-left: 25px;
+        }
+        header nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        header nav ul li a:hover {
+            color: #ecf0f1;
+        }
+
+        /* Dropdown menü stilleri */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #2c3e50;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 5px;
+            top: 100%; /* Dropdown'ı ana menü öğesinin altına hizala */
+            left: 0;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #34495e;
+            border-radius: 5px;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
         /* İletişim sayfası için özel stiller */
         .contact-section {
             padding: 40px 0;
+            text-align: center; /* İçeriği merkezlemek için */
         }
         .contact-section h2 {
             text-align: center;
@@ -24,20 +116,14 @@
             font-weight: 600;
         }
         .contact-content {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 40px;
-            justify-content: center;
-        }
-        .contact-info, .contact-form-wrapper {
-            flex: 1;
-            min-width: 320px; /* Küçük ekranlarda alt alta düşmesini sağlar */
+            max-width: 600px; /* Bilgi kısmını ortalamak ve daha dar yapmak için */
+            margin: 0 auto;
             background: #fff;
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         }
-        .contact-info h3, .contact-form-wrapper h3 {
+        .contact-content h3 {
             color: #3498db; /* Ana renk */
             margin-bottom: 25px;
             font-size: 1.8em;
@@ -46,6 +132,7 @@
         .info-item {
             display: flex;
             align-items: center;
+            justify-content: center; /* İçeriği ortalamak için */
             margin-bottom: 20px;
             font-size: 1.1em;
             color: #555;
@@ -56,6 +143,11 @@
             font-size: 24px;
             width: 30px; /* İkonların hizasını korumak için */
             text-align: center;
+            flex-shrink: 0;
+        }
+        .info-item p {
+            margin: 0;
+            text-align: left; /* Metni sola hizala */
         }
         .info-item a {
             color: #3498db;
@@ -66,88 +158,35 @@
             color: #2980b9;
             text-decoration: underline;
         }
-        .social-links {
-            margin-top: 30px;
-            text-align: center;
-            border-top: 1px solid #eee;
-            padding-top: 25px;
-        }
-        .social-links h3 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-        .social-links a {
-            display: inline-block;
-            margin: 0 12px;
-            color: #3498db;
-            font-size: 32px;
-            transition: transform 0.3s ease, color 0.3s ease;
-        }
-        .social-links a:hover {
-            color: #2980b9;
-            transform: translateY(-3px);
-        }
 
-        /* Form Stilleri */
-        .contact-form-wrapper form label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #444;
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px;
+            color: #666;
+            font-size: 0.9em;
+            border-top: 1px solid #eee;
         }
-        .contact-form-wrapper form input[type="text"],
-        .contact-form-wrapper form input[type="email"],
-        .contact-form-wrapper form textarea {
-            width: calc(100% - 24px); /* Padding'i hesaba kat */
-            padding: 12px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1em;
-            transition: border-color 0.3s ease;
-        }
-        .contact-form-wrapper form input[type="text"]:focus,
-        .contact-form-wrapper form input[type="email"]:focus,
-        .contact-form-wrapper form textarea:focus {
-            border-color: #3498db;
-            outline: none;
-        }
-        .contact-form-wrapper form textarea {
-            resize: vertical;
-            min-height: 140px;
-        }
-        .contact-form-wrapper form button {
-            background-color: #3498db;
-            color: white;
-            padding: 14px 30px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: 600;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            display: block; /* Tam genişlik kaplaması için */
-            width: 100%;
-        }
-        .contact-form-wrapper form button:hover {
-            background-color: #2980b9;
-            transform: translateY(-2px);
+        footer p {
+            margin: 5px 0;
         }
 
         /* Responsive ayarlar */
         @media (max-width: 768px) {
-            .contact-content {
-                flex-direction: column;
-                align-items: center;
+            header nav {
+                display: none; /* Menü küçük ekranlarda gizlensin veya mobil menüye dönüştürülsün */
             }
-            .contact-info, .contact-form-wrapper {
-                width: 90%;
+            header .logo {
+                text-align: center; /* Logo ortaya hizalı */
+            }
+            .contact-content {
+                width: 100%;
+                padding: 20px; /* Padding'i azalt */
             }
         }
     </style>
 </head>
-<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -158,92 +197,57 @@
 </script>
 <body>
     <header>
-    <div class="container">
-        <div class="logo">
-            <a href="index.html">
-                <img src="../../images/LOGOm.png" alt="Hesapkolik Logo" class="site-logo">
-            </a>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="index.html">Ana Sayfa</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropbtn">Hesaplama Çeşitleri</a>
-                    <div class="dropdown-content">
-                        <a href="saglik-hesaplamalari.html">Sağlık Hesaplamaları</a>
-                        <a href="muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a>
-                        <a href="yuzde-hesaplayici.html">Yüzde Hesaplamaları</a>
-                        <a href="faiz-hesaplayici.html">Faiz Hesaplamaları</a>
-                        <a href="kredi-hesaplayici.html">Kredi Hesaplamaları</a>
-                        <a href="yas-hesaplayici.html">Yaş Hesaplamaları</a>
-                        <a href="birim-cevirici.html">Birim Çevirici</a>
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="../../images/LOGOm.png" alt="Hesapkolik Logo" class="site-logo">
+                    <h1>Hesapkolik</h1> 
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Ana Sayfa</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropbtn">Hesaplama Çeşitleri</a>
+                        <div class="dropdown-content">
+                            <a href="saglik-hesaplamalari.html">Sağlık Hesaplamaları</a>
+                            <a href="muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a>
+                            <a href="yuzde-hesaplayici.html">Yüzde Hesaplamaları</a>
+                            <a href="faiz-hesaplayici.html">Faiz Hesaplamaları</a>
+                            <a href="kredi-hesaplayici.html">Kredi Hesaplamaları</a>
+                            <a href="yas-hesaplayici.html">Yaş Hesaplamaları</a>
+                            <a href="birim-cevirici.html">Birim Çevirici</a>
                         </div>
-                </li>
-                <li><a href="hakkimizda.html">Hakkımızda</a></li>
-                <li><a href="iletisim.html">İletişim</a></li>
-            </ul>
-        </nav>
-    </div>
-</header>
+                    </li>
+                    <li><a href="hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
     <main class="contact-section">
         <div class="container">
             <h2>Bizimle İletişime Geçin</h2>
             <div class="contact-content">
-                <div class="contact-info">
-                    <h3>İletişim Bilgileri</h3>
-                    <p>Sorularınız, önerileriniz veya geri bildirimleriniz için bize aşağıdaki yollarla ulaşabilirsiniz. Mesajınızı en kısa sürede yanıtlayacağız.</p>
+                <h3>Bize Ulaşın</h3>
+                <p>Hesapkolik.net ile ilgili sorularınız, önerileriniz, işbirliği teklifleriniz veya geri bildirimleriniz için bize aşağıdaki e-posta adresi üzerinden ulaşabilirsiniz.</p>
+                <p>Mesajınızı en kısa sürede yanıtlamaya özen göstereceğiz.</p>
 
-                    <div class="info-item">
-                        <i class="fas fa-envelope"></i>
-                        <p>E-posta: <a href="mailto:info@hesapkolik.com">info@hesapkolik.com</a></p>
-                    </div>
-                    <div class="info-item">
-                        <i class="fas fa-phone-alt"></i>
-                        <p>Telefon: <a href="tel:+905XX1234567">+90 5XX 123 45 67</a> (Hafta içi 09:00 - 18:00)</p>
-                    </div>
-                    <div class="info-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <p>Adres: Örnek Cad. No: 123, Örnek Mah., Örnek Şehir, Türkiye</p>
-                    </div>
-
-                    <div class="social-links">
-                        <h3>Bizi Sosyal Medyada Takip Edin</h3>
-                        <a href="https://twitter.com/hesaplapratik" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                        <a href="https://facebook.com/hesaplapratik" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://instagram.com/hesaplapratik" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="https://linkedin.com/company/hesaplapratik" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
+                <div class="info-item">
+                    <i class="fas fa-envelope"></i>
+                    <p>E-posta: <a href="mailto:info@hesapkolik.net">info@hesapkolik.net</a></p>
                 </div>
-
-                <div class="contact-form-wrapper">
-                    <h3>Mesaj Gönderin</h3>
-                    <form action="submit_form.php" method="POST"> <label for="name">Adınız Soyadınız:</label>
-                        <input type="text" id="name" name="name" required placeholder="Adınız Soyadınız">
-
-                        <label for="email">E-posta Adresiniz:</label>
-                        <input type="email" id="email" name="email" required placeholder="ornek@hesaplapratik.com">
-
-                        <label for="subject">Konu:</label>
-                        <input type="text" id="subject" name="subject" required placeholder="Mesajınızın konusu">
-
-                        <label for="message">Mesajınız:</label>
-                        <textarea id="message" name="message" required placeholder="Mesajınızı buraya yazın..."></textarea>
-
-                        <button type="submit">Mesajı Gönder</button>
-                    </form>
                 </div>
-            </div>
         </div>
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p>&copy; 2024-2025 Hesapkolik.net. Tüm hakları saklıdır.</p>
             <p><a href="gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="kullanim-sartlari.html">Kullanım Şartları</a></p>
         </div>
     </footer>
 
-    <script src="js/script.js"></script>
-</body>
+    </body>
 </html>
