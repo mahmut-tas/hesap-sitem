@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çevre Mühendisliği Hesaplamaları - Hesapkolik</title>
+    <meta name="description" content="Çevre mühendisliği alanına özel hesaplama araçları: Atık su arıtma, hava kirliliği, su kalitesi, yenilenebilir enerji, çevresel etki değerlendirmesi ve daha fazlası.">
+    <meta name="keywords" content="çevre mühendisliği hesaplamaları, atık su arıtma, hava kirliliği, su kalitesi, debi, biyolojik oksijen ihtiyacı, KOİ, TSS, kirlilik yükü, enerji verimliliği, karbon ayak izi, yenilenebilir enerji, Hesapkolik çevre">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"
+     crossorigin="anonymous"></script>
+    <style>
+        /* Genel Stil, Mevcut sayfanızdaki ile aynı */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        header { background-color: #2c3e50; color: white; padding: 15px 0; }
+        header .logo { display: flex; align-items: center; }
+        header .logo a { display: flex; align-items: center; text-decoration: none; color: white; }
+        header .logo .site-logo { height: 40px; vertical-align: middle; margin-right: 10px; }
+        header .logo h1 { margin: 0; font-size: 1.8em; }
+        header .logo h1 a { color: white; text-decoration: none; }
+        header nav ul { list-style: none; margin: 0; padding: 0; display: flex; justify-content: flex-end; }
+        header nav ul li { margin-left: 25px; }
+        header nav ul li a { color: white; text-decoration: none; font-weight: 600; transition: color 0.3s ease; }
+        header nav ul li a:hover { color: #ecf0f1; }
+        
+        /* Dropdown menü için stil eklemeleri */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #3a506b; /* Header rengine yakın bir ton */
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 5px;
+            top: 100%; /* Dropdown'ı linkin altına hizalar */
+            left: 0;
+        }
+
+        .dropdown-content a {
+            color: white !important; /* Önemli: Header nav link stilini ezecek */
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+            transition: background-color 0.3s ease;
+            font-weight: 400 !important; /* Daha hafif font */
+        }
+
+        .dropdown-content a:hover {
+            background-color: #5c7f9f; /* Hover rengi */
+            border-radius: 5px;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .health-calculator-landing-section {
+            padding: 50px 0;
+            text-align: center;
+        }
+        .health-calculator-landing-section .main-title {
+            font-size: 2.8em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .health-calculator-landing-section .section-description {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .category-section {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .category-section h3 {
+            font-size: 2em;
+            color: #28a745; /* Çevre mühendisliği için yeşil tonu */
+            margin-bottom: 25px;
+            text-align: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            justify-content: center;
+            align-items: stretch;
+        }
+
+        .calculator-card {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-height: 220px; /* Kartların minimum yüksekliği artırıldı */
+        }
+
+        .calculator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .calculator-card .icon-big {
+            font-size: 3em;
+            color: #28a745; /* İkon rengi */
+            margin-bottom: 15px;
+        }
+
+        .calculator-card h3 {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            flex-grow: 1;
+            font-weight: 600;
+        }
+
+        .calculator-card p {
+            font-size: 0.9em;
+            color: #777;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .calculator-card .card-button {
+            display: inline-block;
+            background-color: #28a745; /* Buton rengi */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 80%;
+            max-width: 180px;
+        }
+
+        .calculator-card .card-button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Footer Stilleri */
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 50px;
+        }
+        footer p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        footer a {
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        footer a:hover {
+            color: #28a745; /* Footer link hover rengi */
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .health-calculator-landing-section .main-title {
+                font-size: 2.2em;
+            }
+            .category-section h3 {
+                font-size: 1.8em;
+            }
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+            .calculator-card {
+                min-height: auto;
+                padding: 20px;
+            }
+            .calculator-card h3 {
+                font-size: 1.3em;
+            }
+            .calculator-card .icon-big {
+                font-size: 2.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../../index.html">
+                    <img src="../../images/LOGOm.png" alt="Hesapkolik Logo" class="site-logo">
+                    </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../../index.html">Ana Sayfa</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropbtn">Hesaplama Çeşitleri</a>
+                        <div class="dropdown-content">
+                            <a href="../saglik/saglik-hesaplamalari.html">Sağlık Hesaplamaları</a>
+                            <a href="../muhendislik/muhendislik-hesaplamalari.html">Mühendislik Hesaplamaları</a>
+                            <a href="../finans/yuzde-hesaplayici.html">Yüzde Hesaplamaları</a>
+                            <a href="../finans/faiz-hesaplayici.html">Faiz Hesaplamaları</a>
+                            <a href="../finans/kredi-hesaplayici.html">Kredi Hesaplamaları</a>
+                            <a href="../genel/yas-hesaplayici.html">Yaş Hesaplamaları</a>
+                            <a href="../genel/birim-cevirici.html">Birim Çevirici</a>
+                        </div>
+                    </li>
+                    <li><a href="../../hakkimizda.html">Hakkımızda</a></li>
+                    <li><a href="../../iletisim.html">İletişim</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="health-calculator-landing-section">
+            <div class="container">
+                <h1 class="main-title">Çevre Mühendisliği Hesaplamaları</h1>
+                <p class="section-description">Çevre mühendisliği projelerinizde, araştırmalarınızda ve öğreniminizde ihtiyaç duyacağınız temel ve ileri seviye hesaplama araçları:</p>
+
+                <div class="category-section">
+                    <h3><i class="fas fa-tint"></i> Su ve Atık Su Arıtma Hesaplamaları</h3>
+                    <div class="calculator-grid">
+                        <div class="calculator-card">
+                            <i class="fas fa-water icon-big"></i>
+                            <h3>BOİ/KOİ Oranı Hesaplama</h3>
+                            <p>Biyolojik ve Kimyasal Oksijen İhtiyacı oranını belirleyerek atık suyun arıtılabilirliğini değerlendirir.</p>
+                            <a href="boi-koi-orani.html" class="card-button">Hesapla</a>
+                        </div>
+
+                        <div class="calculator-card">
+                            <i class="fas fa-filter icon-big"></i>
+                            <h3>Askıda Katı Madde (AKM) Yükü Hesaplama</h3>
+                            <p>Arıtma tesislerindeki katı madde miktarını ve uzaklaştırma verimini belirler.</p>
+                            <a href="akm-yuku.html" class="card-button">Hesapla</a>
+                        </div>
+
+                        <div class="calculator-card">
+                            <i class="fas fa-hand-holding-water icon-big"></i>
+                            <h3>Deşarj Standardı Uygunluk Kontrolü</h3>
+                            <p>Arıtılmış suyun yasal deşarj standartlarına uygunluğunu kontrol eder.</p>
+                            <a href="desarj-standarti-kontrolu.html" class="card-button">Hesapla</a>
+                        </div>
+
+                        <div class="calculator-card">
+                            <i class="fas fa-vial icon-big"></i>
+                            <h3>pH Dengeleme Hesaplaması</h3>
+                            <p>Suyun pH değerini ayarlamak için gerekli kimyasal miktarını belirler.</p>
+                            <a href="ph-dengeleme.html" class="card-button">Hesapla</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="category-section">
+                    <h3><i class="fas fa-cloud"></i> Hava Kirliliği Kontrol Hesaplamaları</h3>
+                    <div class="calculator-grid">
+                        <div class="calculator-card">
+                            <i class="fas fa-smog icon-big"></i>
+                            <h3>Baca Gazı Emisyonu Hesaplama</h3>
+                            <p>Sanayi bacalarından çıkan gazların kirlilik miktarını tahmin eder.</p>
+                            <a href="baca-gazi-emisyonu.html" class="card-button">Hesapla</a>
+                        </div>
+
+                        <div class="calculator-card">
+                            <i class="fas fa-wind icon-big"></i>
+                            <h3>Hava Kalitesi İndeksi (HKİ) Hesaplama</h3>
+                            <p>Belirli kirleticilerin hava kalitesi üzerindeki etkisini sayısal olarak ifade eder.</p>
+                            <a href="hava-kalitesi-indeksi.html" class="card-button">Hesapla</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="category-section">
+                    <h3><i class="fas fa-leaf"></i> Atık Yönetimi Hesaplamaları</h3>
+                    <div class="calculator-grid">
+                        <div class="calculator-card">
+                            <i class="fas fa-trash-alt icon-big"></i>
+                            <h3>Katı Atık Üretim Hızı Hesaplama</h3>
+                            <p>Bir bölge veya kurumdaki günlük/yıllık katı atık miktarını tahmin eder.</p>
+                            <a href="kati-atik-uretim-hizi.html" class="card-button">Hesapla</a>
+                        </div>
+
+                        <div class="calculator-card">
+                            <i class="fas fa-recycle icon-big"></i>
+                            <h3>Geri Dönüşüm Verimliliği Hesaplama</h3>
+                            <p>Geri dönüştürülebilir malzeme miktarının toplam atık içindeki oranını belirler.</p>
+                            <a href="geri-donusum-verimliligi.html" class="card-button">Hesapla</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="category-section">
+                    <h3><i class="fas fa-sun"></i> Yenilenebilir Enerji ve Sürdürülebilirlik</h3>
+                    <div class="calculator-grid">
+                        <div class="calculator-card">
+                            <i class="fas fa-solar-panel icon-big"></i>
+                            <h3>Güneş Paneli Verim Hesaplama</h3>
+                            <p>Güneş panellerinin beklenen enerji üretimini ve verimliliğini değerlendirir.</p>
+                            <a href="gunes-paneli-verim.html" class="card-button">Hesapla</a>
+                        </div>
+
+                        <div class="calculator-card">
+                            <i class="fas fa-tree icon-big"></i>
+                            <h3>Karbon Ayak İzi Hesaplama</h3>
+                            <p>Bireysel veya kurumsal karbon salınım miktarını tahmin eder.</p>
+                            <a href="karbon-ayak-izi.html" class="card-button">Hesapla</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024-2025 Hesapkolik. Tüm hakları saklıdır.</p>
+            <p><a href="../../gizlilik-politikasi.html">Gizlilik Politikası</a> | <a href="../../kullanim-sartlari.html">Kullanım Şartları</a></p>
+        </div>
+    </footer>
+</body>
+</html>
