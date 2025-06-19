@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Shear Stress Calculator - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="Easily calculate the shear stress produced by a force applied parallel to a cross-sectional area. An essential tool for engineering, mechanical design, and strength analysis." name="description"/>
+  <meta content="shear stress, stress calculation, strength, mechanics, engineering calculations, force, area, shear force, shear area, calculative stress" name="keywords"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <link href="css/style.css" rel="stylesheet"/>
+  <link href="../../css/style.css" rel="stylesheet"/>
+  <style>
+   /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        
+        
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Seçim Bölümü Stilleri */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .calc-type-button {
+            background-color: #3498db; /* Mavi ton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
+            max-width: 250px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        .hidden-calc {
+            display: none;
+        }
+
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin {
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+        }
+        .input-with-unit label {
+            flex-basis: 100%; /* Label her zaman üstte veya solda */
+            margin-bottom: 5px;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input alanı boşluğu doldurur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .input-with-unit select {
+            flex-shrink: 0; /* Select kutusu sabit kalır */
+            width: auto; /* Select kutusu kendi genişliğinde olur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+  </style>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <link href="https://hesapkolik.net/muhendislik/makine/kesme-gerilme.html" hreflang="tr" rel="alternate"/>
+  <link href="https://hesapkolik.net/en/muhendislik/makine/kesme-gerilme.html" hreflang="en" rel="alternate"/>
+  <link href="https://hesapkolik.net/muhendislik/makine/kesme-gerilme.html" hreflang="x-default" rel="alternate"/>
+ </head>
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="hero-section">
+    <div class="container">
+     <h1>
+      Shear Stress Calculator
+     </h1>
+     <p>
+      Easily calculate the shear stress produced by a force applied parallel to a cross-sectional area.
+     </p>
+    </div>
+   </section>
+   <section class="calculator-selection-section">
+    <div class="container">
+     <h2>
+      Calculate Shear Stress
+     </h2>
+     <div class="calc-buttons-container">
+      <button class="calc-type-button active" data-calc-type="shearStress">
+       Calculate Shear Stress
+      </button>
+     </div>
+     <div class="calc-wrapper active-calc" id="calculator-shearStress">
+      <h3>
+       <i class="fas fa-cut icon-small">
+       </i>
+       Calculate Shear Stress (τ = F/A)
+      </h3>
+      <div class="calculator-form-container">
+       <form id="shearStressForm">
+        <div class="input-with-unit">
+         <label for="force_shear">
+          Applied Cutting Force (F):
+         </label>
+         <input id="force_shear" min="0.000001" placeholder="Örn: 500" required="" step="any" type="number"/>
+         <select id="forceUnit_shear">
+          <option value="N">
+           Newtons (N)
+          </option>
+          <option value="kN">
+           Kilonewton (kN)
+          </option>
+          <option value="lbf">
+           Pound-force (lbf)
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="area_shear">
+          Cutting Area (A):
+         </label>
+         <input id="area_shear" min="0.000001" placeholder="Örn: 0.0005" required="" step="any" type="number"/>
+         <select id="areaUnit_shear">
+          <option value="m2">
+           square meter (m²)
+          </option>
+          <option value="mm2">
+           square millimeter (mm²)
+          </option>
+          <option value="cm2">
+           square centimeter (cm²)
+          </option>
+          <option value="in2">
+           square inch (in²)
+          </option>
+         </select>
+        </div>
+        <button type="submit">
+         Calculate Shear Stress
+        </button>
+       </form>
+       <div class="result-display" id="shearStressResult">
+       </div>
+       <div class="calc-explanation">
+        <p>
+         Shear stress is the ratio of the force applied parallel to the cross-sectional area of a material to that area. It is of critical importance in structures such as fasteners (bolts, rivets) and welded joints.
+        </p>
+        <p class="formula-text">
+         τ = F / A
+        </p>
+        <ul>
+         <li>
+          **τ:** Shear stress (Pascal, MPa, psi etc.)
+         </li>
+         <li>
+          **F:** Applied cutting force
+         </li>
+         <li>
+          **A:** The cutting area where the force is applied
+         </li>
+        </ul>
+        <p>
+         The result will be given in **Pascals (Pa)** or **Megapascals (MPa)** for metric units and **psi (pound per square inch)** for imperial units.
+        </p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="info-section container">
+    <h3>
+     What is Shear Stress?
+    </h3>
+    <p>
+     **Shear stress (τ)** is the internal force obtained by dividing the force acting **parallel** to the cross-sectional area of a material by that cross-sectional area. Unlike normal stress, it tends to shear or slide the object. Shear stress analysis is vital in applications such as bolts, rivets, welded joints and transverse loads in beams.
+    </p>
+    <p>
+     The formula is as follows:
+    </p>
+    <p class="formula-text">
+     τ = F / A
+    </p>
+    <ul>
+     <li>
+      **F:** Applied cutting force (Newton, lbf etc.)
+     </li>
+     <li>
+      **A:** Cutting area where the cutting force is applied (m², mm², in² etc.)
+     </li>
+     <li>
+      **τ:** Shear stress (Pascal (Pa), Megapascal (MPa), psi (pound per square inch), etc.)
+     </li>
+    </ul>
+    <h4>
+     Unit and Conversions
+    </h4>
+    <p>
+     Common units used for stress are the same as for normal stress:
+    </p>
+    <ul>
+     <li>
+      **Pascal (Pa):** 1 N/m²
+     </li>
+     <li>
+      **Kilopascal (kPa):** 10^3 Pa
+     </li>
+     <li>
+      **Megapascal (MPa):** 10^6 Pa or 1 N/mm²
+     </li>
+     <li>
+      **Gigapascal (GPa):** 10^9 Pa
+     </li>
+     <li>
+      **Pound per Square Inch (psi):** 1 lbf/in²
+     </li>
+     <li>
+      **Kilopound per Square Inch (ksi):** 1000 psi
+     </li>
+     <li>
+      **1 MPa ≈ 145.038 psi**
+     </li>
+    </ul>
+    <h4>
+     Situations Where Shear Stress Is Important:
+    </h4>
+    <ul>
+     <li>
+      **Bolts and Rivets:** Bolts and rivets that hold the joined parts together are subjected to shear forces.
+     </li>
+     <li>
+      **Welded and Glued Joints:** Shear stresses occur in the joint areas.
+     </li>
+     <li>
+      **Beams:** In beams under transverse loads, shear stresses occur throughout the section.
+     </li>
+     <li>
+      **Shearing Tools:** The principle of shear stress is used in tools such as scissors or staples used to cut materials.
+     </li>
+     <li>
+      **Shafts and Shafts:** Shear stresses occur under torsional moment (also known as torsional stress).
+     </li>
+    </ul>
+    <p class="disclaimer-text">
+     This calculator performs simple shear stress calculations for homogeneous materials and uniform shear areas. In real engineering applications, factors such as stress concentrations, dynamic loads, fatigue, temperature effects, and complex loading conditions can affect the shear stress distribution and material behavior. More complex scenarios require advanced strength analysis and engineering expertise.
+    </p>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

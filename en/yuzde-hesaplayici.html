@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Percentage Calculator | Comprehensive Discount, VAT, Increase, Rate Calculation Tool - Calculate Practical
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="Easily calculate discounts, VAT, surcharges, increases, decreases and part/whole relations with the comprehensive percentage calculator. Get instant results." name="description"/>
+  <meta content="calculate percentage, percentage increase, percentage decrease, what percentage, calculate discount, calculate VAT, calculate raise, percentage calculator, find percentage, rate calculation, net price, gross price, percentage increase, percentage decrease, change rate" name="keywords"/>
+  <link href="css/style.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <style>
+   /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+       
+        
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Yeni Hesaplayıcı Bölümü Stilleri */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .calc-type-button {
+            background-color: #3498db; /* Mavi ton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
+            max-width: 250px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .percent-calculator-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .percent-calculator-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .percent-calculator-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .percent-calculator-wrapper input[type="number"] {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .percent-calculator-wrapper input[type="number"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .percent-calculator-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri (önceki koddan) */
+        .explanation-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .explanation-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .explanation-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .explanation-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .explanation-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .explanation-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .percent-calculator-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .percent-calculator-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        .hidden-calc {
+            display: none;
+        }
+  </style>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+  <link href="https://hesapkolik.net/yuzde-hesaplayici.html" hreflang="tr" rel="alternate"/>
+  <link href="https://hesapkolik.net/en/yuzde-hesaplayici.html" hreflang="en" rel="alternate"/>
+  <link href="https://hesapkolik.net/yuzde-hesaplayici.html" hreflang="x-default" rel="alternate"/>
+ </head>
+ <!-- Google tag (gtag.js) -->
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="hero-section">
+    <div class="container">
+     <h1>
+      Comprehensive Percentage Calculator
+     </h1>
+     <p>
+      Perform all the percentage calculations you need quickly and easily: Discount, VAT, Markup, Rate and Original Value Finding.
+     </p>
+    </div>
+   </section>
+   <section class="calculator-selection-section">
+    <div class="container">
+     <h2>
+      Select the Type of Calculation You Want to Perform
+     </h2>
+     <div class="calc-buttons-container">
+      <button class="calc-type-button active" data-calc-type="increase">
+       Increase A Number by %B (Including Increase/VAT)
+      </button>
+      <button class="calc-type-button" data-calc-type="decrease">
+       Reduce A Number by %B (Discount/VAT Excluded)
+      </button>
+      <button class="calc-type-button" data-calc-type="whatPercent">
+       What Percentage of Number A is B?
+      </button>
+      <button class="calc-type-button" data-calc-type="valueFromPercent">
+       What is B% of A?
+      </button>
+      <button class="calc-type-button" data-calc-type="originalValue">
+       If A is %C of B, What is B?
+      </button>
+      <button class="calc-type-button" data-calc-type="percentChange">
+       Percentage Increase/Decrease (Rate of Change)
+      </button>
+     </div>
+     <div class="percent-calculator-wrapper active-calc" id="calculator-increase">
+      <h3>
+       Percentage Increase Calculator (Calculation Including Increase and VAT)
+      </h3>
+      <form>
+       <label for="increase-valueA">
+        Starting Number (A):
+       </label>
+       <input id="increase-valueA" placeholder="Örn: 100 (Ürünün fiyatı)" required="" step="any" type="number"/>
+       <label for="increase-valueB">
+        Percentage Rate (%B):
+       </label>
+       <input id="increase-valueB" placeholder="Örn: 20 (Zam veya KDV oranı)" required="" step="any" type="number"/>
+       <div class="calc-result" id="increase-result">
+       </div>
+      </form>
+      <div class="calc-explanation">
+       <p>
+        This calculator calculates the new value by increasing a given number by a certain percentage. This is useful, for example, when the price of an item has increased or you are wondering what the VAT will be after it is added.
+       </p>
+       <p>
+        <strong>
+         Formula:
+        </strong>
+        New Value = Number A + (Number A * %B / 100)
+       </p>
+      </div>
+     </div>
+     <div class="percent-calculator-wrapper hidden-calc" id="calculator-decrease">
+      <h3>
+       Percentage Reduction Calculator (Calculation Excluding Discount and VAT)
+      </h3>
+      <form>
+       <label for="decrease-valueA">
+        Starting Number (A):
+       </label>
+       <input id="decrease-valueA" placeholder="Örn: 150 (Ürünün fiyatı)" required="" step="any" type="number"/>
+       <label for="decrease-valueB">
+        Percentage Rate (%B):
+       </label>
+       <input id="decrease-valueB" placeholder="Örn: 10 (İndirim veya KDV oranı)" required="" step="any" type="number"/>
+       <div class="calc-result" id="decrease-result">
+       </div>
+      </form>
+      <div class="calc-explanation">
+       <p>
+        This calculator calculates the remaining value by reducing a number you initially provide by a certain percentage. Useful for calculating discounted prices or subtracting VAT from a price.
+       </p>
+       <p>
+        <strong>
+         Formula:
+        </strong>
+        New Value = Number A - (Number A * %B / 100)
+       </p>
+      </div>
+     </div>
+     <div class="percent-calculator-wrapper hidden-calc" id="calculator-whatPercent">
+      <h3>
+       What Percentage Calculator (Finding Ratio)
+      </h3>
+      <form>
+       <label for="whatPercent-valueA">
+        Small Number (A):
+       </label>
+       <input id="whatPercent-valueA" placeholder="Örn: 20 (Parça değeri)" required="" step="any" type="number"/>
+       <label for="whatPercent-valueB">
+        Big Number (B):
+       </label>
+       <input id="whatPercent-valueB" placeholder="Örn: 80 (Toplam değer)" required="" step="any" type="number"/>
+       <div class="calc-result" id="whatPercent-result">
+       </div>
+      </form>
+      <div class="calc-explanation">
+       <p>
+        This calculator finds what percentage one number (A) is of another number (B). Great for expressing GPA, success rate, or any proportional relationship as a percentage.
+       </p>
+       <p>
+        <strong>
+         Formula:
+        </strong>
+        Percentage = (Number A / Number B) * 100
+       </p>
+      </div>
+     </div>
+     <div class="percent-calculator-wrapper hidden-calc" id="calculator-valueFromPercent">
+      <h3>
+       Finding Percentage of a Number (Specific Percentage Value)
+      </h3>
+      <form>
+       <label for="valueFromPercent-valueA">
+        Main Number (A):
+       </label>
+       <input id="valueFromPercent-valueA" placeholder="Örn: 200 (Genel miktar)" required="" step="any" type="number"/>
+       <label for="valueFromPercent-valueB">
+        Percentage Rate (%B):
+       </label>
+       <input id="valueFromPercent-valueB" placeholder="Örn: 15 (Bulunmak istenen yüzde)" required="" step="any" type="number"/>
+       <div class="calc-result" id="valueFromPercent-result">
+       </div>
+      </form>
+      <div class="calc-explanation">
+       <p>
+        This calculator finds the value that corresponds to a certain percentile of a given number. Useful for finding the discount amount of a product, the commission to be paid, or a certain fraction of a whole.
+       </p>
+       <p>
+        <strong>
+         Formula:
+        </strong>
+        Part Value = Number A * (%B / 100)
+       </p>
+      </div>
+     </div>
+     <div class="percent-calculator-wrapper hidden-calc" id="calculator-originalValue">
+      <h3>
+       Original Value Calculator (Price Excluding VAT/Before Discount)
+      </h3>
+      <form>
+       <label for="originalValue-valueA">
+        Piece Value (A):
+       </label>
+       <input id="originalValue-valueA" placeholder="Örn: 30 (Parçayı temsil eden sayı)" required="" step="any" type="number"/>
+       <label for="originalValue-valueB">
+        Percentage Rate (%C):
+       </label>
+       <input id="originalValue-valueB" placeholder="Örn: 20 (Parçanın temsil ettiği yüzde)" required="" step="any" type="number"/>
+       <div class="calc-result" id="originalValue-result">
+       </div>
+      </form>
+      <div class="calc-explanation">
+       <p>
+        This calculator finds the value of the original whole (B) when a part (A) and the percentage it represents (C) are known. For example, it is used to find the price excluding VAT from a price including VAT, or the original price from a price after discount.
+       </p>
+       <p>
+        <strong>
+         Formula:
+        </strong>
+        Whole Number = Number A / (%C / 100)
+       </p>
+      </div>
+     </div>
+     <div class="percent-calculator-wrapper hidden-calc" id="calculator-percentChange">
+      <h3>
+       Percentage Increase/Decrease Calculator (Rate of Change)
+      </h3>
+      <form>
+       <label for="percentChange-valueStart">
+        Starting Value:
+       </label>
+       <input id="percentChange-valueStart" placeholder="Örn: 100 (Eski değer)" required="" step="any" type="number"/>
+       <label for="percentChange-valueEnd">
+        End Value:
+       </label>
+       <input id="percentChange-valueEnd" placeholder="Örn: 120 (Yeni değer)" required="" step="any" type="number"/>
+       <div class="calc-result" id="percentChange-result">
+       </div>
+      </form>
+      <div class="calc-explanation">
+       <p>
+        This calculator finds the percentage change (increase or decrease) between two numbers. For example, it&amp;#39;s useful for calculating how much the price of a stock has increased or how much the price of a product has decreased.
+       </p>
+       <p>
+        <strong>
+         Formula:
+        </strong>
+        Percentage Change = ((Ending Value - Starting Value) / Starting Value) * 100
+       </p>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="explanation-section container">
+    <h3>
+     What is the Use of a Percentage Calculator?
+    </h3>
+    <p>
+     Our **Percentage Calculator** allows you to perform various percentage-based calculations that are frequently encountered in daily life and business quickly and accurately. Whether you want to find the **discounted price** of a product, find a certain percentage of a number or calculate **prices including/excluding VAT**, this tool saves you time and simplifies complex calculations. It is especially ideal for your needs such as **calculating discounts online** or **finding markup rates**.
+    </p>
+    <p>
+     Main areas of use:
+    </p>
+    <ul>
+     <li>
+      <strong>
+       Financial Calculations:
+      </strong>
+      Financial analysis such as interest rates, investment returns, stock changes and **compound interest calculation**.
+     </li>
+     <li>
+      <strong>
+       Shopping and Discounts:
+      </strong>
+      Instant discounted prices, **VAT rates**, price increases and **net price calculations**.
+     </li>
+     <li>
+      <strong>
+       Education:
+      </strong>
+      Understanding percentiles of exam grades, interpreting statistical data and learning **data analysis**.
+     </li>
+     <li>
+      <strong>
+       Business:
+      </strong>
+      Profit margins, growth rates, commission calculations, **budget planning** and cost analysis.
+     </li>
+     <li>
+      <strong>
+       Daily Life:
+      </strong>
+      Adjusting ingredient ratios in recipes, calculating tips, and solving general **mathematical problems**.
+     </li>
+    </ul>
+   </section>
+   <section class="explanation-section container">
+    <h3>
+     How to Calculate? Percentage Calculation Formulas and Examples
+    </h3>
+    <p>
+     Percentage calculations are based on basic mathematical formulas. The logic behind each option in our calculator is explained below. With these formulas, you can easily understand the answer to the question **how to find percentage**:
+    </p>
+    <ul>
+     <li>
+      <strong>
+       Increase number A by %B (Increase, Price Including VAT):
+      </strong>
+      Bu hesaplama, verilen bir sayının belirli bir yüzde kadar artırılması durumunda yeni değerin ne olacağını bulur. Genellikle ürün zamlarında veya KDV dahil fiyat hesaplamalarında kullanılır.
+                    $$ \text{Yeni Değer} = \text{A} + (\text{A} \times \frac{\text{B}}{100}) \quad \text{veya} \quad \text{A} \times (1 + \frac{\text{B}}{100}) $$
+      <p>
+       Örnek: 100 TL'ye %20 zam gelirse yeni fiyat: $100 + (100 \times \frac{20}{100}) = 100 + 20 = 120$ TL.
+      </p>
+     </li>
+     <li>
+      <strong>
+       Reduce number A by %B (Discount, Price Excl. VAT):
+      </strong>
+      Bu seçenek, bir sayının belirli bir yüzde kadar azaltılması durumunda kalan değeri hesaplar. İndirimli fiyatları bulmak veya bir fiyattan KDV'yi çıkarmak için idealdir.
+                    $$ \text{Yeni Değer} = \text{A} - (\text{A} \times \frac{\text{B}}{100}) \quad \text{veya} \quad \text{A} \times (1 - \frac{\text{B}}{100}) $$
+      <p>
+       Örnek: 150 TL'lik bir ürüne %10 indirim gelirse ödenecek tutar: $150 - (150 \times \frac{10}{100}) = 150 - 15 = 135$ TL.
+      </p>
+     </li>
+     <li>
+      <strong>
+       What percentage of number A is number B?:
+      </strong>
+      Bu hesaplama, bir sayının (A) başka bir sayıya (B) oranının yüzde olarak ifadesini verir. Oran bulma veya performans değerlendirmelerinde sıkça kullanılır.
+                    $$ \text{Yüzde} = (\frac{\text{A}}{\text{B}}) \times 100 $$
+      <p>
+       Örnek: 20 sayısı 80 sayısının yüzde kaçıdır?: $(\frac{20}{80}) \times 100 = 0.25 \times 100 = 25\%$
+      </p>
+     </li>
+     <li>
+      <strong>
+       What is %B of A?:
+      </strong>
+      Bu, verilen bir sayının belirli bir yüzdelik dilimine karşılık gelen değeri bulur. Komisyon, vergi veya belirli bir payın hesaplanmasında kullanılır.
+                    $$ \text{Parça Değer} = \text{A} \times (\frac{\text{B}}{100}) $$
+      <p>
+       Örnek: 200'ün %15'i kaçtır?: $200 \times (\frac{15}{100}) = 200 \times 0.15 = 30$
+      </p>
+     </li>
+     <li>
+      <strong>
+       If number A is %C of number B, what is number B? (Find Original Value):
+      </strong>
+      Bu hesaplama, bir parçanın (A) ve bu parçanın temsil ettiği yüzdelik oranın (C) bilindiği durumlarda orijinal bütünün (B) değerini bulur. Özellikle KDV hariç fiyatı veya bir indirimin orijinal fiyatını bulmak için kullanışlıdır.
+                    $$ \text{Bütün Sayı} = \frac{\text{A}}{(\frac{\text{C}}{100})} $$
+      <p>
+       Örnek: 30 sayısı %20'ye denk geliyorsa orijinal sayı kaçtır?: $\frac{30}{(\frac{20}{100})} = \frac{30}{0.20} = 150$
+      </p>
+     </li>
+     <li>
+      <strong>
+       Percentage Increase/Decrease (Rate of Change):
+      </strong>
+      İki sayı arasındaki yüzde değişimini (artış veya azalış) hesaplar. Negatif sonuç azalışı, pozitif sonuç artışı gösterir.
+                    $$ \text{Yüzde Değişim} = \left( \frac{\text{Bitiş Değeri} - \text{Başlangıç Değeri}}{\text{Başlangıç Değeri}} \right) \times 100 $$
+      <p>
+       Örnek 1: 100 TL'den 120 TL'ye artış: $(\frac{120 - 100}{100}) \times 100 = 20\%$ artış.
+      </p>
+      <p>
+       Örnek 2: 100 TL'den 80 TL'ye azalış: $(\frac{80 - 100}{100}) \times 100 = -20\%$ azalış.
+      </p>
+     </li>
+    </ul>
+    <p>
+     These formulas form the basic logic behind our calculator and provide you with accurate results. For more information and other calculators, please visit our site.
+    </p>
+   </section>
+  </main>
+  <script type="application/ld+json">
+   {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Yüzde Hesaplayıcı",
+      "operatingSystem": "Web",
+      "applicationCategory": "Calculator",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "ratingCount": "210"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "TRY"
+      },
+      "description": "Kapsamlı yüzde hesaplayıcı ile indirim, KDV, zam, artırma, azaltma ve parça/bütün ilişkisi hesaplamalarını kolayca yapın. Anında sonuç alın.",
+      "url": "https://www.hesaplapratik.com/yuzde-hesaplama"
+    }
+  </script>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

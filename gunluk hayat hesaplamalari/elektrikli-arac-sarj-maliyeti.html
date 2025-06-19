@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Elektrikli Araç Şarj Maliyeti Hesaplayıcı - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <meta content="Elektrikli aracınızı evde veya şarj istasyonlarında şarj etmenin maliyetini kolayca hesaplayın. Farklı şarj senaryoları ve detaylı açıklamalar ile bütçenizi yönetin." name="description"/>
+  <meta content="elektrikli araç şarj, şarj maliyeti, kWh fiyatı, elektrikli araba, evde şarj, istasyon şarj, elektrik tüketimi, hesapkolik elektrikli araç" name="keywords"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <link href="../css/style.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <style>
+   /* Bu sayfaya özel stil eklemeleri - Genel style.css dosyasından gelmiyorsa buraya ekleyin */
+        /* Eğer bu stiller zaten '../../css/style.css' içinde varsa, bu <style> bloğunu silebilirsiniz. */
+        .calculator-form-container .input-group {
+            margin-bottom: 20px;
+        }
+        .calculator-form-container .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calculator-form-container .input-group input[type="number"] {
+            width: 100%;
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calculator-form-container .input-group input[type="number"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .calculator-form-container .input-group select {
+            width: auto;
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
+        /* Result display specific styles */
+        .result-display strong {
+            color: #e74c3c;
+        }
+        .result-display p {
+            margin: 5px 0;
+        }
+        .result-display p:last-child {
+            margin-bottom: 0;
+        }
+        .result-display .error {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        /* Calculator explanation styles */
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+        .calc-explanation h4 {
+            color: #34495e;
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .calc-explanation ul {
+            list-style-type: disc;
+            margin: 10px 0 15px 20px;
+            padding: 0;
+        }
+        .calc-explanation ul li {
+            margin-bottom: 5px;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+
+        /* Gizli ve Aktif Hesaplayıcı Stilleri */
+        .hidden-calc {
+            display: none;
+        }
+        .calc-type-button.active {
+            background-color: #e74c3c;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+        /* Hero Section için header ile aynı arka plan */
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        /* Calculator Selection Section */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        .calc-type-button {
+            background-color: #3498db;
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 auto;
+            max-width: 320px;
+            text-align: center;
+        }
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .calculator-form-container button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+        }
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+            }
+        }
+  </style>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+ </head>
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="hero-section">
+    <div class="container">
+     <h1>
+      Elektrikli Araç Şarj Maliyeti Hesaplayıcı
+     </h1>
+     <p>
+      Elektrikli aracınızı şarj etmenin maliyetini farklı senaryolara göre kolayca öğrenin ve bütçenizi yönetin.
+     </p>
+    </div>
+   </section>
+   <section class="calculator-selection-section">
+    <div class="container">
+     <h2>
+      Şarj Maliyeti Nasıl Hesaplanır? Hesaplama Yöntemi Seçin:
+     </h2>
+     <div class="calc-buttons-container">
+      <button class="calc-type-button active" data-calc-type="type1">
+       Batarya Kapasitesi ile Hesapla
+      </button>
+      <button class="calc-type-button" data-calc-type="type2">
+       Doldurulan kWh Miktarı ile Hesapla
+      </button>
+      <button class="calc-type-button" data-calc-type="type3">
+       Gidilen Yola Göre Tahmini Hesapla
+      </button>
+     </div>
+     <div class="calc-wrapper" id="calculator-type1">
+      <h3>
+       <i class="fas fa-car-battery icon-small">
+       </i>
+       Batarya Kapasitesi ve Birim Fiyatı ile Hesaplama
+      </h3>
+      <div class="calculator-form-container">
+       <form id="formType1">
+        <div class="input-group">
+         <label for="batteryCapacity">
+          Aracın Batarya Kapasitesi (kWh):
+         </label>
+         <input id="batteryCapacity" min="1" placeholder="Örn: 60" required="" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="electricityPrice1">
+          Elektrik Birim Fiyatı (TL/kWh):
+         </label>
+         <input id="electricityPrice1" min="0.01" placeholder="Örn: 2.50" required="" step="any" type="number"/>
+        </div>
+        <button type="submit">
+         Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="resultType1" style="display: none;">
+       </div>
+       <div class="calc-explanation">
+        <h4>
+         Nasıl Hesaplanır?
+        </h4>
+        <p>
+         Bu yöntem, elektrikli aracınızın batarya kapasitesini ve elektrik birim fiyatını (evde veya istasyonda) bilerek tam şarj maliyetinizi hesaplar.
+        </p>
+        <p class="formula-text">
+         Tam Şarj Maliyeti (TL) = Batarya Kapasitesi (kWh) * Elektrik Birim Fiyatı (TL/kWh)
+        </p>
+        <ul>
+         <li>
+          <strong>
+           Örnek:
+          </strong>
+          Aracınızın batarya kapasitesi 60 kWh, elektrik birim fiyatı 2.50 TL/kWh.
+          <ul>
+           <li>
+            Tam Şarj Maliyeti = 60 kWh * 2.50 TL/kWh = 150 TL
+           </li>
+          </ul>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-type2">
+      <h3>
+       <i class="fas fa-plug icon-small">
+       </i>
+       Doldurulan kWh Miktarı ve Birim Fiyatı ile Hesaplama
+      </h3>
+      <div class="calculator-form-container">
+       <form id="formType2">
+        <div class="input-group">
+         <label for="chargedKwh">
+          Doldurulan Elektrik Miktarı (kWh):
+         </label>
+         <input id="chargedKwh" min="0.1" placeholder="Örn: 45" required="" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="electricityPrice2">
+          Elektrik Birim Fiyatı (TL/kWh):
+         </label>
+         <input id="electricityPrice2" min="0.01" placeholder="Örn: 2.50" required="" step="any" type="number"/>
+        </div>
+        <button type="submit">
+         Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="resultType2" style="display: none;">
+       </div>
+       <div class="calc-explanation">
+        <h4>
+         Nasıl Hesaplanır?
+        </h4>
+        <p>
+         Özellikle şarj istasyonlarında veya akıllı ev şarj cihazlarında ne kadar kWh elektrik çektiğinizi gördüğünüzde kullanışlıdır. Doğrudan doldurduğunuz miktar üzerinden maliyetinizi belirler.
+        </p>
+        <p class="formula-text">
+         Şarj Maliyeti (TL) = Doldurulan Elektrik Miktarı (kWh) * Elektrik Birim Fiyatı (TL/kWh)
+        </p>
+        <ul>
+         <li>
+          <strong>
+           Örnek:
+          </strong>
+          45 kWh elektrik doldurdunuz, elektrik birim fiyatı 2.50 TL/kWh.
+          <ul>
+           <li>
+            Şarj Maliyeti = 45 kWh * 2.50 TL/kWh = 112.50 TL
+           </li>
+          </ul>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-type3">
+      <h3>
+       <i class="fas fa-map-marked-alt icon-small">
+       </i>
+       Gidilen Yola Göre Tahmini Maliyet Hesaplama
+      </h3>
+      <div class="calculator-form-container">
+       <form id="formType3">
+        <div class="input-group">
+         <label for="distanceTravelledEv">
+          Gidilecek Mesafe (KM):
+         </label>
+         <input id="distanceTravelledEv" min="1" placeholder="Örn: 400" required="" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="consumptionPer100kmEv">
+          Aracın 100 KM'deki Elektrik Tüketimi (kWh):
+         </label>
+         <input id="consumptionPer100kmEv" min="0.1" placeholder="Örn: 15" required="" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="electricityPrice3">
+          Elektrik Birim Fiyatı (TL/kWh):
+         </label>
+         <input id="electricityPrice3" min="0.01" placeholder="Örn: 2.50" required="" step="any" type="number"/>
+        </div>
+        <button type="submit">
+         Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="resultType3" style="display: none;">
+       </div>
+       <div class="calc-explanation">
+        <h4>
+         Nasıl Hesaplanır?
+        </h4>
+        <p>
+         Uzun bir yolculuk öncesinde veya aylık tahmini bir şarj maliyeti hesaplamak için idealdir. Aracınızın 100 km'deki ortalama elektrik tüketimi ve gideceğiniz mesafeyi kullanarak tahmini maliyeti bulur.
+        </p>
+        <p class="formula-text">
+         Tahmini Gerekli Enerji (kWh) = (Gidilecek Mesafe / 100) * 100 KM'deki Tüketim
+         <br/>
+         Tahmini Maliyet (TL) = Tahmini Gerekli Enerji (kWh) * Elektrik Birim Fiyatı (TL/kWh)
+        </p>
+        <ul>
+         <li>
+          <strong>
+           Örnek:
+          </strong>
+          400 km yol gideceksiniz. Aracınız 100 km'de 15 kWh tüketiyor. Elektrik birim fiyatı 2.50 TL/kWh.
+          <ul>
+           <li>
+            Tahmini Gerekli Enerji = (400 / 100) * 15 = 4 * 15 = 60 kWh
+           </li>
+           <li>
+            Tahmini Maliyet = 60 kWh * 2.50 TL/kWh = 150 TL
+           </li>
+          </ul>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="info-section container">
+    <h3>
+     Elektrikli Araç Şarj Maliyetini Bilmek Neden Önemli?
+    </h3>
+    <p>
+     Elektrikli araç sahibi olmanın en büyük avantajlarından biri, yakıt maliyetlerinin benzinli/dizel araçlara göre genellikle daha düşük olmasıdır. Ancak bu maliyetleri doğru bir şekilde anlamak ve yönetmek, uzun vadede bütçenizi optimize etmenizi sağlar.
+    </p>
+    <p>
+     Şarj maliyetlerinizi takip etmek, hem evde kullandığınız elektriğin faturanıza etkisini görmenizi hem de farklı şarj istasyonları (hızlı şarj, yavaş şarj, özel istasyonlar) arasındaki fiyat farklarını karşılaştırmanızı mümkün kılar. Bu sayede en ekonomik şarj seçeneklerini tercih edebilir, beklenmedik giderlerden kaçınabilir ve elektrikli aracınızın toplam işletme maliyeti hakkında net bir fikre sahip olabilirsiniz. Ayrıca, karbon ayak izinizi anlamanıza ve çevreye olan katkınızı ölçmenize de yardımcı olur.
+    </p>
+    <h4>
+     Şarj Maliyetini Etkileyen Faktörler:
+    </h4>
+    <ul>
+     <li>
+      **Elektrik Birim Fiyatı:** Evde kullandığınız tarife (gündüz/gece) veya şarj istasyonunun belirlediği kWh başına ücret.
+     </li>
+     <li>
+      **Batarya Boyutu:** Aracın batarya kapasitesi ne kadar büyükse, tam şarj için o kadar çok kWh gerekir.
+     </li>
+     <li>
+      **Şarj Seviyesi:** Bataryayı ne kadar boşken doldurduğunuz.
+     </li>
+     <li>
+      **Şarj Kaybı:** Şarj sırasında %10-20 arasında değişebilen enerji kaybı (dönüşüm verimliliği).
+     </li>
+     <li>
+      **Hava Koşulları:** Çok soğuk veya çok sıcak havalar şarj verimliliğini düşürebilir ve batarya ısınması/soğutması için ek enerji tüketebilir.
+     </li>
+     <li>
+      **Sürüş Tarzı ve Koşulları:** Aracın genel tüketimi, şarj sıklığını ve dolayısıyla maliyeti etkiler.
+     </li>
+    </ul>
+    <p class="disclaimer-text">
+     Bu hesaplayıcılar, girilen verilere dayanarak tahmini sonuçlar sunar. Gerçek şarj maliyetleri, elektrik tarifelerindeki anlık değişimler, şarj cihazının verimliliği, batarya durumu, çevresel faktörler ve şarj istasyonlarının kendi komisyonları gibi pek çok değişkene bağlı olarak farklılık gösterebilir.
+    </p>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

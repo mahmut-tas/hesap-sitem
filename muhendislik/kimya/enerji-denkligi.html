@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Enerji Denkliği ve Faz Değişimi Hesaplayıcı - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="Kimyasal proseslerde enerji giriş ve çıkış denkliklerini hesaplayın. Akışkanların ısıtılması/soğutulması veya faz değişimi (erime, buharlaşma) için gerekli enerji miktarını belirleyin." name="description"/>
+  <meta content="enerji denkliği, ısı transferi, termodinamik, kimya mühendisliği, özgül ısı, sıcaklık değişimi, enerji hesaplama, faz değişimi, gizli ısı, erime ısısı, buharlaşma ısısı, hesapkolik enerji" name="keywords"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <script async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <link href="../../css/style.css" rel="stylesheet"/>
+  <style>
+   /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Seçim Bölümü Stilleri */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .calc-type-button {
+            background-color: #3498db; /* Mavi ton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
+            max-width: 250px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        .hidden-calc {
+            display: none;
+        }
+
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin {
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+        }
+        .input-with-unit label {
+            flex-basis: 100%; /* Label her zaman üstte veya solda */
+            margin-bottom: 5px;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input alanı boşluğu doldurur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .input-with-unit select {
+            flex-shrink: 0; /* Select kutusu sabit kalır */
+            width: auto; /* Select kutusu kendi genişliğinde olur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+  </style>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+ </head>
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="hero-section">
+    <div class="container">
+     <h1>
+      Enerji Denkliği ve Faz Değişimi Hesaplayıcı
+     </h1>
+     <p>
+      Akışkanların ısıtılması/soğutulması veya faz değişimi (erime, buharlaşma) için transfer edilen enerji miktarını hızlıca hesaplayın.
+     </p>
+    </div>
+   </section>
+   <section class="calculator-selection-section">
+    <div class="container">
+     <h2>
+      Yapmak İstediğiniz Hesaplama Türünü Seçin
+     </h2>
+     <div class="calc-buttons-container">
+      <button class="calc-type-button active" data-calc-type="heatTransfer">
+       Isı Transferi Hesapla (Q=mCpΔT)
+      </button>
+      <button class="calc-type-button" data-calc-type="calcTempChange">
+       Sıcaklık Değişimini Hesapla (ΔT)
+      </button>
+      <button class="calc-type-button" data-calc-type="calcMassNeeded">
+       Gerekli Kütleyi Hesapla (m)
+      </button>
+      <button class="calc-type-button" data-calc-type="phaseChange">
+       Faz Değişimi Enerjisi Hesapla (Q=mL)
+      </button>
+     </div>
+     <div class="calc-wrapper active-calc" id="calculator-heatTransfer">
+      <h3>
+       <i class="fas fa-fire-alt icon-small">
+       </i>
+       Isı Transferi Hesapla ($Q = m \cdot c_p \cdot \Delta T$)
+      </h3>
+      <div class="calculator-form-container">
+       <form id="heatTransferForm">
+        <div class="input-with-unit">
+         <label for="mass_ht">
+          Akışkanın Kütlesi:
+         </label>
+         <input id="mass_ht" min="0.001" placeholder="Örn: 100" required="" step="any" type="number"/>
+         <select id="massUnit_ht">
+          <option value="kg">
+           kilogram (kg)
+          </option>
+          <option value="g">
+           gram (g)
+          </option>
+          <option value="lb">
+           pound (lb)
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="specificHeat_ht">
+          Özgül Isı Kapasitesi ($c_p$):
+         </label>
+         <input id="specificHeat_ht" min="0.001" placeholder="Örn: 4.18 (Su için)" required="" step="any" type="number"/>
+         <select id="specificHeatUnit_ht">
+          <option value="kJ/kgC">
+           kJ/(kg·°C)
+          </option>
+          <option value="J/gC">
+           J/(g·°C)
+          </option>
+          <option value="kcal/kgC">
+           kcal/(kg·°C)
+          </option>
+          <option value="Btu/lbF">
+           Btu/(lb·°F)
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="tempChange_ht">
+          Sıcaklık Değişimi ($\Delta T$):
+         </label>
+         <input id="tempChange_ht" placeholder="Örn: 50 (Son sıcaklık - İlk sıcaklık)" required="" step="any" type="number"/>
+         <select id="tempChangeUnit_ht">
+          <option value="C">
+           Santigrat (°C)
+          </option>
+          <option value="K">
+           Kelvin (K)
+          </option>
+          <option value="F">
+           Fahrenhayt (°F)
+          </option>
+         </select>
+        </div>
+        <button type="submit">
+         Isı Transferini Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="heatTransferResult">
+       </div>
+       <div class="calc-explanation">
+        <p>
+         Bir akışkanın sıcaklık değişimi için transfer edilen ısı miktarını hesaplar. Pozitif sonuç ısı alımını, negatif sonuç ısı kaybını gösterir.
+        </p>
+        <p class="formula-text">
+         $ Q = m \cdot c_p \cdot \Delta T $
+        </p>
+        <ul>
+         <li>
+          $ \mathbf{Q} $: Transfer edilen ısı (kJ, J, kcal, Btu)
+         </li>
+         <li>
+          $ \mathbf{m} $: Akışkanın kütlesi
+         </li>
+         <li>
+          $ \mathbf{c_p} $: Özgül ısı kapasitesi
+         </li>
+         <li>
+          $ \mathbf{\Delta T} $: Sıcaklık değişimi ($ T_{son} - T_{ilk} $)
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-calcTempChange">
+      <h3>
+       <i class="fas fa-thermometer-half icon-small">
+       </i>
+       Sıcaklık Değişimini Hesapla ($\Delta T$)
+      </h3>
+      <div class="calculator-form-container">
+       <form id="calcTempChangeForm">
+        <div class="input-with-unit">
+         <label for="heatTransfer_dt">
+          Transfer Edilen Isı (Q):
+         </label>
+         <input id="heatTransfer_dt" placeholder="Örn: 20000" required="" step="any" type="number"/>
+         <select id="heatTransferUnit_dt">
+          <option value="kJ">
+           kilojoule (kJ)
+          </option>
+          <option value="J">
+           Joule (J)
+          </option>
+          <option value="kcal">
+           kilokalori (kcal)
+          </option>
+          <option value="Btu">
+           Btu
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="mass_dt">
+          Akışkanın Kütlesi:
+         </label>
+         <input id="mass_dt" min="0.001" placeholder="Örn: 100" required="" step="any" type="number"/>
+         <select id="massUnit_dt">
+          <option value="kg">
+           kilogram (kg)
+          </option>
+          <option value="g">
+           gram (g)
+          </option>
+          <option value="lb">
+           pound (lb)
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="specificHeat_dt">
+          Özgül Isı Kapasitesi ($c_p$):
+         </label>
+         <input id="specificHeat_dt" min="0.001" placeholder="Örn: 4.18" required="" step="any" type="number"/>
+         <select id="specificHeatUnit_dt">
+          <option value="kJ/kgC">
+           kJ/(kg·°C)
+          </option>
+          <option value="J/gC">
+           J/(g·°C)
+          </option>
+          <option value="kcal/kgC">
+           kcal/(kg·°C)
+          </option>
+          <option value="Btu/lbF">
+           Btu/(lb·°F)
+          </option>
+         </select>
+        </div>
+        <button type="submit">
+         Sıcaklık Değişimini Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="calcTempChangeResult">
+       </div>
+       <div class="calc-explanation">
+        <p>
+         Belirli bir ısı transferi ile kütlenin sıcaklığının ne kadar değişeceğini hesaplar.
+        </p>
+        <p class="formula-text">
+         $ \Delta T = \frac{Q}{m \cdot c_p} $
+        </p>
+        <p>
+         Pozitif $\Delta T$ ısınmayı, negatif $\Delta T$ soğumayı gösterir.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-calcMassNeeded">
+      <h3>
+       <i class="fas fa-weight-hanging icon-small">
+       </i>
+       Gerekli Kütleyi Hesapla ($m$)
+      </h3>
+      <div class="calculator-form-container">
+       <form id="calcMassNeededForm">
+        <div class="input-with-unit">
+         <label for="heatTransfer_m">
+          Transfer Edilen Isı (Q):
+         </label>
+         <input id="heatTransfer_m" placeholder="Örn: 20000" required="" step="any" type="number"/>
+         <select id="heatTransferUnit_m">
+          <option value="kJ">
+           kilojoule (kJ)
+          </option>
+          <option value="J">
+           Joule (J)
+          </option>
+          <option value="kcal">
+           kilokalori (kcal)
+          </option>
+          <option value="Btu">
+           Btu
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="specificHeat_m">
+          Özgül Isı Kapasitesi ($c_p$):
+         </label>
+         <input id="specificHeat_m" min="0.001" placeholder="Örn: 4.18" required="" step="any" type="number"/>
+         <select id="specificHeatUnit_m">
+          <option value="kJ/kgC">
+           kJ/(kg·°C)
+          </option>
+          <option value="J/gC">
+           J/(g·°C)
+          </option>
+          <option value="kcal/kgC">
+           kcal/(kg·°C)
+          </option>
+          <option value="Btu/lbF">
+           Btu/(lb·°F)
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="tempChange_m">
+          Sıcaklık Değişimi ($\Delta T$):
+         </label>
+         <input id="tempChange_m" min="0.000001" placeholder="Örn: 50" required="" step="any" type="number"/>
+         <select id="tempChangeUnit_m">
+          <option value="C">
+           Santigrat (°C)
+          </option>
+          <option value="K">
+           Kelvin (K)
+          </option>
+          <option value="F">
+           Fahrenhayt (°F)
+          </option>
+         </select>
+        </div>
+        <button type="submit">
+         Gerekli Kütleyi Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="calcMassNeededResult">
+       </div>
+       <div class="calc-explanation">
+        <p>
+         Belirli bir ısı transferi ve sıcaklık değişimi için ne kadar maddeye ihtiyacınız olduğunu hesaplar.
+        </p>
+        <p class="formula-text">
+         $ m = \frac{Q}{c_p \cdot \Delta T} $
+        </p>
+        <p>
+         Bu hesaplama genellikle ısı değiştiricilerde akışkan debisini belirlerken kullanılır.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-phaseChange">
+      <h3>
+       <i class="fas fa-snowflake icon-small">
+       </i>
+       Faz Değişimi Enerjisi Hesapla ($Q = m \cdot L$)
+      </h3>
+      <div class="calculator-form-container">
+       <form id="phaseChangeForm">
+        <div class="input-with-unit">
+         <label for="mass_pc">
+          Akışkanın Kütlesi:
+         </label>
+         <input id="mass_pc" min="0.001" placeholder="Örn: 100" required="" step="any" type="number"/>
+         <select id="massUnit_pc">
+          <option value="kg">
+           kilogram (kg)
+          </option>
+          <option value="g">
+           gram (g)
+          </option>
+          <option value="lb">
+           pound (lb)
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="latentHeat">
+          Gizli Isı (L):
+         </label>
+         <input id="latentHeat" min="0.001" placeholder="Örn: 333.5 (Suyun erime ısısı)" required="" step="any" type="number"/>
+         <select id="latentHeatUnit">
+          <option value="kJ/kg">
+           kJ/kg
+          </option>
+          <option value="J/g">
+           J/g
+          </option>
+          <option value="kcal/kg">
+           kcal/kg
+          </option>
+          <option value="Btu/lb">
+           Btu/lb
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="phaseChangeType">
+          Faz Değişimi Tipi:
+         </label>
+         <select id="phaseChangeType">
+          <option value="fusion">
+           Erime/Donma (Füzyon)
+          </option>
+          <option value="vaporization">
+           Buharlaşma/Yoğuşma (Buharlaşma)
+          </option>
+         </select>
+        </div>
+        <button type="submit">
+         Enerjiyi Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="phaseChangeResult">
+       </div>
+       <div class="calc-explanation">
+        <p>
+         Bir maddenin sıcaklığı değişmeden sadece faz değiştirmesi (erime, buharlaşma vb.) için gereken enerji miktarını hesaplar.
+        </p>
+        <p class="formula-text">
+         $ Q = m \cdot L $
+        </p>
+        <ul>
+         <li>
+          $ \mathbf{Q} $: Transfer edilen ısı (kJ, J, kcal, Btu)
+         </li>
+         <li>
+          $ \mathbf{m} $: Maddenin kütlesi
+         </li>
+         <li>
+          $ \mathbf{L} $: Gizli ısı (Erime veya Buharlaşma ısısı)
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="info-section container">
+    <h3>
+     Enerji Denkliği Nedir?
+    </h3>
+    <p>
+     **Enerji denkliği**, termodinamiğin birinci yasasına dayanır ve bir sistemdeki toplam enerjinin korunduğunu ifade eder. Yani, bir sisteme giren toplam enerji, sistemden çıkan toplam enerjiye ve sistemde depolanan enerji değişimine eşit olmalıdır. Kimya mühendisliğinde proseslerin ısınma, soğuma, reaksiyon veya faz değişimi gibi enerji transferlerini anlamak ve tasarlamak için temel bir araçtır.
+    </p>
+    <p>
+     Basit enerji denkliği denklemi:
+    </p>
+    <p class="formula-text">
+     Giren Enerji - Çıkan Enerji + Üretilen Enerji = Biriken Enerji
+    </p>
+    <p>
+     Durgun (steady-state) sistemlerde (zamanla değişmeyen sistemler) birikme ve üretim terimleri genellikle sıfır kabul edilir. Bu durumda denklem şöyle basitleşir:
+    </p>
+    <p class="formula-text">
+     Giren Enerji = Çıkan Enerji
+    </p>
+    <h4>
+     Isı Transferi ve Faz Değişimi Hesaplamaları
+    </h4>
+    <p>
+     Bu hesaplayıcı, bir akışkanın sıcaklık değişimi veya faz değişimi sonucunda transfer edilen ısı miktarını bulmak için kullanılan yaygın formülleri uygular:
+    </p>
+    <ul>
+     <li>
+      <strong>
+       Duyulur Isı Transferi ($Q = m \cdot c_p \cdot \Delta T$):
+      </strong>
+      Maddenin fazı değişmeden sadece sıcaklığının değişmesiyle ilişkili ısıdır.
+      <ul>
+       <li>
+        $ \mathbf{m} $: Akışkanın kütlesi (kg, g, lb)
+       </li>
+       <li>
+        $ \mathbf{c_p} $: Özgül ısı kapasitesi (kJ/(kg·°C), J/(g·°C) vb.)
+       </li>
+       <li>
+        $ \mathbf{\Delta T} $: Sıcaklık değişimi ($ T_{son} - T_{ilk} $), pozitif (ısınma) veya negatif (soğuma) olabilir.
+       </li>
+      </ul>
+     </li>
+     <li>
+      <strong>
+       Gizli Isı Transferi ($Q = m \cdot L$):
+      </strong>
+      Maddenin sıcaklığı değişmeden sadece faz değiştirmesi (erime, buharlaşma, yoğuşma, donma) için gereken ısıdır.
+      <ul>
+       <li>
+        $ \mathbf{m} $: Maddenin kütlesi (kg, g, lb)
+       </li>
+       <li>
+        $ \mathbf{L} $: Gizli ısı (erime ısısı, buharlaşma ısısı). Örneğin su için erime ısısı yaklaşık 333.5 kJ/kg, buharlaşma ısısı yaklaşık 2260 kJ/kg'dır.
+       </li>
+      </ul>
+     </li>
+    </ul>
+    <h4>
+     Önemli Birim Dönüşümleri ve Bilgiler
+    </h4>
+    <ul>
+     <li>
+      **Isı (Q):** Joule (J), kilojoule (kJ), kalori (cal), kilokalori (kcal), British Thermal Unit (Btu).
+     </li>
+     <li>
+      **1 kcal = 4.184 kJ**
+     </li>
+     <li>
+      **1 Btu = 1.055 kJ**
+     </li>
+     <li>
+      **Sıcaklık Değişimi:** Kelvin (K) ve Santigrat (°C) cinsinden sıcaklık farkları sayısal olarak aynıdır. Fahrenhayt (°F) için farklıdır (1 °F = 5/9 °C/K).
+     </li>
+    </ul>
+    <h4>
+     Uygulama Alanları:
+    </h4>
+    <ul>
+     <li>
+      Proses akışkanlarının ısıtılması veya soğutulması için gerekli enerji.
+     </li>
+     <li>
+      Isı geri kazanım sistemlerinin verimlilik analizi.
+     </li>
+     <li>
+      Buhar kazanları, kondenserler ve ısı eşanjörlerinin tasarımı.
+     </li>
+     <li>
+      Gıda işleme endüstrisinde dondurma, kurutma, pişirme gibi süreçlerde enerji gereksinimleri.
+     </li>
+     <li>
+      Kimyasal reaktörlerdeki termal yönetim ve sıcaklık kontrolü.
+     </li>
+    </ul>
+    <p class="disclaimer-text">
+     Bu hesaplayıcı, termodinamik ve ısı transferinin temel prensiplerini uygulamak için tasarlanmıştır. Gerçek mühendislik uygulamaları, faz değişimleri sırasında sıcaklık değişimleri, kimyasal reaksiyonlar, basınç değişimleri, iş transferi, ısı kayıpları ve farklı ısı transferi modları (iletim, taşınım, ışıma) gibi daha karmaşık faktörleri içerebilir. Detaylı analiz ve tasarım için kapsamlı termodinamik ve ısı transferi yazılımları ile mühendislik uzmanlığı gereklidir.
+    </p>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

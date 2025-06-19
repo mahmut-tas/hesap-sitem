@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Pompa Gücü Hesaplayıcı - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="Belirli bir debi ve basma yüksekliği (veya basınç farkı) için gerekli pompa gücünü (hidrolik güç, şaft gücü, motor gücü) kolayca hesaplayın. Akışkanlar mekaniği, hidrolik sistemler ve mühendislik tasarımı için temel bir araç." name="description"/>
+  <meta content="pompa gücü, pompa hesaplama, hidrolik güç, şaft gücü, motor gücü, debi, basma yüksekliği, basınç farkı, verimlilik, akışkanlar mekaniği, mühendislik hesaplamaları, hesapkolik pompa" name="keywords"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <style>
+   /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+       
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Seçim Bölümü Stilleri */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .calc-type-button {
+            background-color: #3498db; /* Mavi ton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
+            max-width: 250px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        .hidden-calc {
+            display: none;
+        }
+
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin {
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+        }
+        .input-with-unit label {
+            flex-basis: 100%; /* Label her zaman üstte veya solda */
+            margin-bottom: 5px;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input alanı boşluğu doldurur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .input-with-unit select {
+            flex-shrink: 0; /* Select kutusu sabit kalır */
+            width: auto; /* Select kutusu kendi genişliğinde olur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+  </style>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+ </head>
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="hero-section">
+    <div class="container">
+     <h1>
+      Pompa Gücü Hesaplayıcı
+     </h1>
+     <p>
+      Belirli bir debi ve basma yüksekliği (veya basınç farkı) için gerekli pompa gücünü hesaplayın.
+     </p>
+    </div>
+   </section>
+   <section class="calculator-selection-section">
+    <div class="container">
+     <h2>
+      Pompa Gücünü Hesapla
+     </h2>
+     <div class="calc-buttons-container">
+      <button class="calc-type-button active" data-calc-type="pumpPower">
+       Pompa Gücünü Hesapla
+      </button>
+     </div>
+     <div class="calc-wrapper active-calc" id="calculator-pumpPower">
+      <h3>
+       <i class="fas fa-water icon-small">
+       </i>
+       Pompa Gücünü Hesapla (P = (ρ ⋅ g ⋅ Q ⋅ H) / η)
+      </h3>
+      <div class="calculator-form-container">
+       <form id="pumpPowerForm">
+        <div class="input-with-unit">
+         <label for="fluidDensity_pp">
+          Akışkan Yoğunluğu (ρ):
+         </label>
+         <input id="fluidDensity_pp" min="0.000001" placeholder="Örn: 1000 (Su için)" required="" step="any" type="number"/>
+         <select id="fluidDensityUnit_pp">
+          <option value="kg/m3">
+           kg/m³
+          </option>
+          <option value="g/cm3">
+           g/cm³
+          </option>
+          <option value="lb/ft3">
+           lb/ft³
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="flowRate_pp">
+          Hacimsel Debi (Q):
+         </label>
+         <input id="flowRate_pp" min="0.000001" placeholder="Örn: 0.01 (m³/s)" required="" step="any" type="number"/>
+         <select id="flowRateUnit_pp">
+          <option value="m3/s">
+           m³/s
+          </option>
+          <option value="L/s">
+           L/s
+          </option>
+          <option value="m3/h">
+           m³/saat
+          </option>
+          <option value="gpm">
+           galon/dakika (gpm)
+          </option>
+          <option value="ft3/s">
+           ft³/s
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="totalHead_pp">
+          Toplam Basma Yüksekliği (H) veya Basınç Farkı (ΔP):
+         </label>
+         <input id="totalHead_pp" min="0" placeholder="Örn: 10 (m)" required="" step="any" type="number"/>
+         <select id="totalHeadUnit_pp">
+          <option value="m">
+           metre (m)
+          </option>
+          <option value="ft">
+           fit (ft)
+          </option>
+          <option value="psi">
+           psi
+          </option>
+          <option value="kPa">
+           kPa
+          </option>
+          <option value="bar">
+           bar
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="pumpEfficiency_pp">
+          Pompa Verimliliği (η) (%):
+         </label>
+         <input id="pumpEfficiency_pp" max="100" min="1" placeholder="Örn: 75" required="" step="0.1" type="number"/>
+        </div>
+        <button type="submit">
+         Pompa Gücünü Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="pumpPowerResult">
+       </div>
+       <div class="calc-explanation">
+        <p>
+         Pompa gücü, bir akışkanın belirli bir debide ve basma yüksekliğinde (veya basınç farkında) hareket ettirilmesi için gereken enerjiyi temsil eder. Hesaplama, hidrolik güç, şaft gücü ve motor gücü olarak farklı seviyelerde yapılabilir.
+        </p>
+        <h4>
+         Hidrolik Güç (Akışkana Aktarılan Güç):
+        </h4>
+        <p class="formula-text">
+         P_hidrolik = ρ ⋅ g ⋅ Q ⋅ H
+        </p>
+        <p class="formula-text small-margin">
+         P_hidrolik = Q ⋅ ΔP
+        </p>
+        <ul>
+         <li>
+          **ρ:** Akışkan yoğunluğu (kg/m³)
+         </li>
+         <li>
+          **g:** Yerçekimi ivmesi (9.81 m/s²)
+         </li>
+         <li>
+          **Q:** Hacimsel debi (m³/s)
+         </li>
+         <li>
+          **H:** Toplam basma yüksekliği (m)
+         </li>
+         <li>
+          **ΔP:** Basınç farkı (Pa)
+         </li>
+        </ul>
+        <h4>
+         Şaft Gücü (Pompanın Giriş Gücü):
+        </h4>
+        <p class="formula-text small-margin">
+         P_şaft = P_hidrolik / η_pompa
+        </p>
+        <ul>
+         <li>
+          **η_pompa:** Pompa verimliliği (ondalık olarak, örneğin %75 için 0.75)
+         </li>
+        </ul>
+        <h4>
+         Motor Gücü (Pompa ve Motor Verimliliği Dahil):
+        </h4>
+        <p class="formula-text small-margin">
+         P_motor = P_şaft / η_motor
+        </p>
+        <ul>
+         <li>
+          **η_motor:** Motor verimliliği (genellikle %85-95 arası)
+         </li>
+        </ul>
+        <p>
+         Bu hesaplayıcı, hidrolik gücü ve pompanın şaft gücünü temel olarak Watt cinsinden verir. Gerekirse motor gücü için ek bir verimlilik hesabı yapabilirsiniz.
+        </p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="info-section container">
+    <h3>
+     Pompa Gücü Hesaplamaları Nedir?
+    </h3>
+    <p>
+     **Pompa gücü hesaplamaları**, bir pompanın belirli bir akışkanı istenen debi ve basma yüksekliği (veya basınç farkı) ile hareket ettirebilmek için ne kadar enerjiye (güce) ihtiyaç duyduğunu belirlemek için yapılır. Bu hesaplamalar, pompa seçimi, sistem tasarımı ve enerji tüketimi analizlerinde kritik öneme sahiptir.
+    </p>
+    <h4>
+     Temel Güç Türleri:
+    </h4>
+    <ul>
+     <li>
+      **Hidrolik Güç (Akışkan Gücü, Su Beygir Gücü):** Pompanın akışkana aktardığı net güçtür. Sürtünme kayıpları ve diğer verimsizlikler hariç, akışkanı hareket ettirmek için teorik olarak gereken minimum güçtür.
+      <p class="formula-text small-margin">
+       P_hidrolik = ρ ⋅ g ⋅ Q ⋅ H (Basma Yüksekliği Cinsinden)
+      </p>
+      <p class="formula-text small-margin">
+       P_hidrolik = Q ⋅ ΔP (Basınç Farkı Cinsinden)
+      </p>
+      <ul>
+       <li>
+        **ρ:** Akışkan yoğunluğu
+       </li>
+       <li>
+        **g:** Yerçekimi ivmesi (yaklaşık 9.81 m/s²)
+       </li>
+       <li>
+        **Q:** Hacimsel debi
+       </li>
+       <li>
+        **H:** Toplam basma yüksekliği (pompanın sağladığı toplam basınç enerjisinin eşdeğer yüksekliği)
+       </li>
+       <li>
+        **ΔP:** Pompanın giriş ve çıkışı arasındaki basınç farkı
+       </li>
+      </ul>
+     </li>
+     <li>
+      **Şaft Gücü (Giriş Gücü):** Pompa çarkını döndürmek için şafta uygulanan güçtür. Hidrolik güçten daha fazladır çünkü pompanın kendi iç sürtünmeleri ve mekanik kayıpları vardır. Pompa verimliliği bu kayıpları hesaba katar.
+      <p class="formula-text small-margin">
+       P_şaft = P_hidrolik / η_pompa
+      </p>
+      <ul>
+       <li>
+        **η_pompa:** Pompanın verimliliği (genellikle 0.5 ile 0.9 arasında bir ondalık değer).
+       </li>
+      </ul>
+     </li>
+     <li>
+      **Motor Gücü (Elektriksel Giriş Gücü):** Pompaya güç veren motorun çektiği elektriksel güçtür. Şaft gücünden daha fazladır çünkü motorun da kendi elektriksel ve mekanik verimsizlikleri vardır.
+      <p class="formula-text small-margin">
+       P_motor = P_şaft / η_motor
+      </p>
+      <ul>
+       <li>
+        **η_motor:** Motorun verimliliği (genellikle 0.85 ile 0.95 arasında bir ondalık değer).
+       </li>
+      </ul>
+     </li>
+    </ul>
+    <h4>
+     Uygulama Alanları:
+    </h4>
+    <ul>
+     <li>
+      <strong>
+       Sıvı Transfer Sistemleri:
+      </strong>
+      Su temini, atık su arıtma, kimyasal prosesler ve petrol/gaz boru hatları.
+     </li>
+     <li>
+      <strong>
+       HVAC Sistemleri:
+      </strong>
+      Soğutma ve ısıtma sistemlerindeki su sirkülasyon pompaları.
+     </li>
+     <li>
+      <strong>
+       İnşaat Sektörü:
+      </strong>
+      Şantiye drenajı, beton pompaları.
+     </li>
+     <li>
+      <strong>
+       Tarım:
+      </strong>
+      Sulama sistemleri.
+     </li>
+     <li>
+      <strong>
+       Denizcilik:
+      </strong>
+      Gemi motoru soğutma sistemleri, balast pompaları.
+     </li>
+    </ul>
+    <p class="disclaimer-text">
+     Bu hesaplayıcı, pompa gücünün temel hidrolik prensiplerine dayanır ve verimlilik kavramını içerir. Gerçek dünya uygulamalarında, boru hattı sürtünme kayıpları, statik basma yüksekliği, hız basma yüksekliği, kavitasyon riski (NPSH), akışkanın viskozitesi ve sıcaklığı gibi ek faktörler sistemin toplam basma yüksekliğini ve pompa performansını etkileyebilir. Hassas pompa seçimi ve sistem tasarımı için detaylı mühendislik analizleri, pompa karakteristik eğrileri ve uzman bilgisi gereklidir.
+    </p>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

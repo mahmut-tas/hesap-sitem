@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Unit Converter - Calculate Practical
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="Convert length, weight, temperature, area, volume, time, speed, energy, power, pressure, data and currencies quickly and easily. A one-stop shop for all your unit conversion needs." name="description"/>
+  <meta content="unit converter, unit converter, length converter, weight converter, temperature converter, area calculation, volume calculation, time converter, speed converter, energy units, power units, pressure units, data units, currency conversion" name="keywords"/>
+  <link href="css/style.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <style>
+   /* Bu CSS sadece bu sayfa için özeldir. İstersen style.css dosyana taşıyabilirsin. */
+        .unit-converter-section {
+            padding: 60px 0;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        .unit-converter-section h2 {
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 2.5em;
+        }
+
+        .category-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .category-button {
+            background-color: #1abc9c; /* Temel yeşil */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar hesaba katılır */
+            max-width: 200px;
+            text-align: center;
+        }
+        @media (max-width: 768px) {
+            .category-button {
+                flex: 1 1 calc(50% - 30px); /* Tabletlerde 2 sütun */
+            }
+        }
+        @media (max-width: 480px) {
+            .category-button {
+                flex: 1 1 calc(100% - 30px); /* Mobil cihazlarda 1 sütun */
+            }
+        }
+
+        .category-button:hover {
+            background-color: #16a085;
+            transform: translateY(-3px);
+        }
+
+        .category-button.active {
+            background-color: #2980b9; /* Aktif buton rengi */
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .converter-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .converter-section {
+            display: none; /* Varsayılan olarak tüm dönüştürücü bölümleri gizli */
+        }
+        .converter-section.active {
+            display: block; /* Aktif olan bölüm gösterilir */
+        }
+
+        .converter-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .converter-section input[type="number"],
+        .converter-section select {
+            width: calc(100% - 20px);
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .converter-section select {
+            width: 100%;
+        }
+
+        .converter-section .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .converter-section .form-row .input-group {
+            flex: 1;
+        }
+        .converter-section .form-row select {
+            margin-bottom: 0;
+        }
+
+        #conversionResult {
+            margin-top: 30px;
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+        }
+
+        /* New styles for the explanation sections */
+        .explanation-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+
+        .explanation-section h3 {
+            color: #1abc9c; /* Temel yeşil */
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .explanation-section h4 {
+            color: #2980b9; /* Aktif buton rengi */
+            font-size: 1.3em;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+
+        .explanation-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+
+        .explanation-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+
+        .explanation-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .explanation-section strong {
+            color: #333;
+        }
+
+        /* Inline code for formulas */
+        .explanation-section code {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #eef;
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: #c0392b; /* Kırmızımsı ton */
+        }
+  </style>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+  <link href="https://hesapkolik.net/birim-cevirici.html" hreflang="tr" rel="alternate"/>
+  <link href="https://hesapkolik.net/en/birim-cevirici.html" hreflang="en" rel="alternate"/>
+  <link href="https://hesapkolik.net/birim-cevirici.html" hreflang="x-default" rel="alternate"/>
+ </head>
+ <!-- Google tag (gtag.js) -->
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="unit-converter-section">
+    <div class="container">
+     <h2>
+      Unit Converter
+     </h2>
+     <p>
+      Select the unit category you want to convert:
+     </p>
+     <div class="category-buttons">
+      <button class="category-button" data-category="length">
+       Length
+      </button>
+      <button class="category-button" data-category="weight">
+       Weight/Mass
+      </button>
+      <button class="category-button" data-category="temperature">
+       Heat
+      </button>
+      <button class="category-button" data-category="area">
+       Area
+      </button>
+      <button class="category-button" data-category="volume">
+       Volume
+      </button>
+      <button class="category-button" data-category="time">
+       Time
+      </button>
+      <button class="category-button" data-category="speed">
+       Speed
+      </button>
+      <button class="category-button" data-category="energy">
+       Energy
+      </button>
+      <button class="category-button" data-category="power">
+       Strength
+      </button>
+      <button class="category-button" data-category="pressure">
+       Pressure
+      </button>
+      <button class="category-button" data-category="data">
+       Data
+      </button>
+      <button class="category-button" data-category="currency">
+       Currency
+      </button>
+     </div>
+     <div class="converter-container">
+      <div class="converter-section" id="length-converter">
+       <h3>
+        Length Converter
+       </h3>
+       <div class="form-row">
+        <div class="input-group">
+         <label for="lengthValue">
+          Value:
+         </label>
+         <input id="lengthValue" placeholder="Değer girin" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="lengthFromUnit">
+          Unit to be converted:
+         </label>
+         <select id="lengthFromUnit">
+          <option value="km">
+           Kilometers (km)
+          </option>
+          <option value="m">
+           Metre (m)
+          </option>
+          <option value="cm">
+           Centimeter (cm)
+          </option>
+          <option value="mm">
+           Millimeter (mm)
+          </option>
+          <option value="um">
+           Micrometer (µm)
+          </option>
+          <option value="nm">
+           Nanometer (nm)
+          </option>
+          <option value="inch">
+           Inch (in)
+          </option>
+          <option value="ft">
+           Feet (ft)
+          </option>
+          <option value="yd">
+           Yard (yd)
+          </option>
+          <option value="mi">
+           Mile (mi)
+          </option>
+         </select>
+        </div>
+        <div class="input-group">
+         <label for="lengthToUnit">
+          Target Unit:
+         </label>
+         <select id="lengthToUnit">
+          <option value="km">
+           Kilometers (km)
+          </option>
+          <option value="m">
+           Metre (m)
+          </option>
+          <option value="cm">
+           Centimeter (cm)
+          </option>
+          <option value="mm">
+           Millimeter (mm)
+          </option>
+          <option value="um">
+           Micrometer (µm)
+          </option>
+          <option value="nm">
+           Nanometer (nm)
+          </option>
+          <option value="inch">
+           Inch (in)
+          </option>
+          <option value="ft">
+           Feet (ft)
+          </option>
+          <option value="yd">
+           Yard (yd)
+          </option>
+          <option value="mi">
+           Mile (mi)
+          </option>
+         </select>
+        </div>
+       </div>
+       <div class="conversion-result" id="lengthResult">
+       </div>
+      </div>
+      <div class="converter-section" id="weight-converter">
+       <h3>
+        Weight/Mass Converter
+       </h3>
+       <div class="form-row">
+        <div class="input-group">
+         <label for="weightValue">
+          Value:
+         </label>
+         <input id="weightValue" placeholder="Değer girin" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="weightFromUnit">
+          Unit to be converted:
+         </label>
+         <select id="weightFromUnit">
+          <option value="kg">
+           Kilogram (kg)
+          </option>
+          <option value="g">
+           Grams (g)
+          </option>
+          <option value="mg">
+           Milligram (mg)
+          </option>
+          <option value="ug">
+           Microgram (µg)
+          </option>
+          <option value="ng">
+           Nanogram (ng)
+          </option>
+          <option value="t">
+           Tons (t)
+          </option>
+          <option value="lb">
+           Pounds (lb)
+          </option>
+          <option value="oz">
+           Ounce (oz)
+          </option>
+         </select>
+        </div>
+        <div class="input-group">
+         <label for="weightToUnit">
+          Target Unit:
+         </label>
+         <select id="weightToUnit">
+          <option value="kg">
+           Kilogram (kg)
+          </option>
+          <option value="g">
+           Grams (g)
+          </option>
+          <option value="mg">
+           Milligram (mg)
+          </option>
+          <option value="ug">
+           Microgram (µg)
+          </option>
+          <option value="ng">
+           Nanogram (ng)
+          </option>
+          <option value="t">
+           Tons (t)
+          </option>
+          <option value="lb">
+           Pounds (lb)
+          </option>
+          <option value="oz">
+           Ounce (oz)
+          </option>
+         </select>
+        </div>
+       </div>
+       <div class="conversion-result" id="weightResult">
+       </div>
+      </div>
+      <div class="converter-section" id="temperature-converter">
+       <h3>
+        Temperature Converter
+       </h3>
+       <div class="form-row">
+        <div class="input-group">
+         <label for="tempValue">
+          Value:
+         </label>
+         <input id="tempValue" placeholder="Değer girin" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="tempFromUnit">
+          Unit to be converted:
+         </label>
+         <select id="tempFromUnit">
+          <option value="celsius">
+           Centigrade (°C)
+          </option>
+          <option value="fahrenheit">
+           Fahrenheit (°F)
+          </option>
+          <option value="kelvin">
+           Kelvin (K)
+          </option>
+         </select>
+        </div>
+        <div class="input-group">
+         <label for="tempToUnit">
+          Target Unit:
+         </label>
+         <select id="tempToUnit">
+          <option value="celsius">
+           Centigrade (°C)
+          </option>
+          <option value="fahrenheit">
+           Fahrenheit (°F)
+          </option>
+          <option value="kelvin">
+           Kelvin (K)
+          </option>
+         </select>
+        </div>
+       </div>
+       <div class="conversion-result" id="temperatureResult">
+       </div>
+      </div>
+      <div class="converter-section" id="area-converter">
+       <h3>
+        Field Converter
+       </h3>
+       <div class="form-row">
+        <div class="input-group">
+         <label for="areaValue">
+          Value:
+         </label>
+         <input id="areaValue" placeholder="Değer girin" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="areaFromUnit">
+          Unit to be converted:
+         </label>
+         <select id="areaFromUnit">
+          <option value="sqm">
+           Square meter (m²)
+          </option>
+          <option value="sqcm">
+           Square centimeter (cm²)
+          </option>
+          <option value="sqmm">
+           Square millimeter (mm²)
+          </option>
+          <option value="sqkm">
+           Square Kilometer (km²)
+          </option>
+          <option value="hectare">
+           Hectare (ha)
+          </option>
+          <option value="acre">
+           Acre
+          </option>
+          <option value="sqft">
+           Square feet (ft²)
+          </option>
+          <option value="sqyd">
+           Square yard (yd²)
+          </option>
+          <option value="sqmi">
+           Square mile (mi²)
+          </option>
+         </select>
+        </div>
+        <div class="input-group">
+         <label for="areaToUnit">
+          Target Unit:
+         </label>
+         <select id="areaToUnit">
+          <option value="sqm">
+           Square meter (m²)
+          </option>
+          <option value="sqcm">
+           Square centimeter (cm²)
+          </option>
+          <option value="sqmm">
+           Square millimeter (mm²)
+          </option>
+          <option value="sqkm">
+           Square Kilometer (km²)
+          </option>
+          <option value="hectare">
+           Hectare (ha)
+          </option>
+          <option value="acre">
+           Acre
+          </option>
+          <option value="sqft">
+           Square feet (ft²)
+          </option>
+          <option value="sqyd">
+           Square yard (yd²)
+          </option>
+          <option value="sqmi">
+           Square mile (mi²)
+          </option>
+         </select>
+        </div>
+       </div>
+       <div class="conversion-result" id="areaResult">
+       </div>
+      </div>
+      <div class="converter-section" id="volume-converter">
+       <h3>
+        Volume Converter
+       </h3>
+       <div class="form-row">
+        <div class="input-group">
+         <label for="volumeValue">
+          Value:
+         </label>
+         <input id="volumeValue" placeholder="Değer girin" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="volumeFromUnit">
+          Unit to be converted:
+         </label>
+         <select id="volumeFromUnit">
+          <option value="liter">
+           Liter (L)
+          </option>
+          <option value="ml">
+           Milliliter (mL)
+          </option>
+          <option value="ul">
+           Microliter (µL)
+          </option>
+          <option value="cubicm">
+           Cubic meter (m³)
+          </option>
+          <option value="cubiccm">
+           Cubic centimeter (cm³)
+          </option>
+          <option value="cubicmm">
+           Cubic millimeter (mm³)
+          </option>
+          <option value="gallon">
+           Gallon (gal)
+          </option>
+          <option value="quart">
+           Quart (qt)
+          </option>
+          <option value="pint">
+           Pint (pt)
+          </option>
+          <option value="cup">
+           Cup (cup)
+          </option>
+          <option value="fluid_oz">
+           Fluid Ounce (fl oz)
+          </option>
+         </select>
+        </div>
+        <div class="input-group">
+         <label for="volumeToUnit">
+          Target Unit:
+         </label>
+         <select id="volumeToUnit">
+          <option value="liter">
+           Liter (L)
+          </option>
+          <option value="ml">
+           Milliliter (mL)
+          </option>
+          <option value="ul">
+           Microliter (µL)
+          </option>
+          <option value="cubicm">
+           Cubic meter (m³)
+          </option>
+          <option value="cubiccm">
+           Cubic centimeter (cm³)
+          </option>
+          <option value="cubicmm">
+           Cubic millimeter (mm³)
+          </option>
+          <option value="gallon">
+           Gallon (gal)
+          </option>
+          <option value="quart">
+           Quart (qt)
+          </option>
+          <option value="pint">
+           Pint (pt)
+          </option>
+          <option value="cup">
+           Cup (cup)
+          </option>
+          <option value="fluid_oz">
+           Fluid Ounce (fl oz)
+          </option>
+         </select>
+        </div>
+       </div>
+       <div class="conversion-result" id="volumeResult">
+       </div>
+      </div>
+      <div class="converter-section" id="time-converter">
+       <h3>
+        Time Converter
+       </h3>
+       <div class="form-row">
+        <div class="input-group">
+         <label for="timeValue">
+          Value:
+         </label>
+         <input id="timeValue" placeholder="Değer girin" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="timeFromUnit">
+          Unit to be converted:
+         </label>
+         <select id="timeFromUnit">
+          <option value="nanosecond">
+           Nanosecond (ns)
+          </option>
+          <option value="microsecond">
+           Microsecond (µs)
+          </option>
+          <option value="millisecond">
+           Milliseconds (ms)
+          </option>
+          <option value="second">
+           Seconds (s)
+          </option>
+          <option value="minute">
+           Minute (min)
+          </option>
+          <option value="hour">
+           Time (hr)
+          </option>
+          <option value="day">
+           Day
+          </option>
+          <option value="week">
+           Week
+          </option>
+          <option value="month">
+           Month
+          </option>
+          <option value="year">
+           Year
+          </option>
+         </select>
+        </div>
+        <div class="input-group">
+         <label for="timeToUnit">
+          Target Unit:
+         </label>
+         <select id="timeToUnit">
+          <option value="nanosecond">
+           Nanosecond (ns)
+          </option>
+          <option value="microsecond">
+           Microsecond (µs)
+          </option>
+          <option value="millisecond">
+           Milliseconds (ms)
+          </option>
+          <option value="second">
+           Seconds (s)
+          </option>
+          <option value="minute">
+           Minute (min)
+          </option>
+          <option value="hour">
+           Time (hr)
+          </option>
+          <option value="day">
+           Day
+          </option>
+          <option value="week">
+           Week
+          </option>
+          <option value="month">
+           Month
+          </option>
+          <option value="year">
+           Year
+          </option>
+         </select>
+        </div>
+       </div>
+       <div class="conversion-result" id="timeResult">
+       </div>
+      </div>
+      <div class="converter-section" id="speed-converter">
+       <h3>
+        Speed Converter
+       </h3>
+       <div class="form-row">
+        <div class="input-group">
+         <label for="speedValue">
+          Value:
+         </label>
+         <input id="speedValue" placeholder="Değer girin" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="speedFromUnit">
+          Unit to be converted:
+         </label>
+         <select id="speedFromUnit">
+          <option value="mps">
+           Metre/second (m/s)
+          </option>
+          <option value="kmph">
+           Kilometer/hour (km/h)
+          </option>
+          <option value="mph">
+           Miles per hour (mph)
+          </option>
+          <option value="knot">
+           Knot
+          </option>
+          <option value="fps">
+           Feet per second (ft/s)
+          </option>
+         </select>
+        </div>
+        <div class="input-group">
+         <label for="speedToUnit">
+          Target Unit:
+         </label>
+         <select id="speedToUnit">
+          <option value="mps">
+           Metre/second (m/s)
+          </option>
+          <option value="kmph">
+           Kilometer/hour (km/h)
+          </option>
+          <option value="mph">
+           Miles per hour (mph)
+          </option>
+          <option value="knot">
+           Knot
+          </option>
+          <option value="fps">
+           Feet per second (ft/s)
+          </option>
+         </select>
+        </div>
+       </div>
+       <div class="conversion-result" id="speedResult">
+       </div>
+      </div>
+      <div class="converter-section" id="energy-converter">
+       <h3>
+        Energy Converter
+       </h3>
+       <div class="form-row">
+        <div class="input-group">
+         <label for="energyValue">
+          Value:
+         </label>
+         <input id="energyValue" placeholder="Değer girin" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="energyFromUnit">
+          Unit to be converted:
+         </label>
+         <select id="energyFromUnit">
+          <option value="joule">
+           Joule (J)
+          </option>
+          <option value="kilojoule">
+           Kilojoule (kJ)
+          </option>
+          <option value="cal">
+           Calories (cal)
+          </option>
+          <option value="kcal">
+           Kilocalorie (kcal)
+          </option>
+          <option value="kwh">
+           Kilowatt-hour (kWh)
+          </option>
+          <option value="btu">
+           BTU
+          </option>
+         </select>
+        </div>
+        <div class="input-group">
+         <label for="energyToUnit">
+          Target Unit:
+         </label>
+         <select id="energyToUnit">
+          <option value="joule">
+           Joule (J)
+          </option>
+          <option value="kilojoule">
+           Kilojoule (kJ)
+          </option>
+          <option value="cal">
+           Calories (cal)
+          </option>
+          <option value="kcal">
+           Kilocalorie (kcal)
+          </option>
+          <option value="kwh">
+           Kilowatt-hour (kWh)
+          </option>
+          <option value="btu">
+           BTU
+          </option>
+         </select>
+        </div>
+       </div>
+       <div class="conversion-result" id="energyResult">
+       </div>
+      </div>
+      <div class="converter-section" id="power-converter">
+       <h3>
+        Power Converter
+       </h3>
+       <div class="form-row">
+        <div class="input-group">
+         <label for="powerValue">
+          Value:
+         </label>
+         <input id="powerValue" placeholder="Değer girin" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="powerFromUnit">
+          Unit to be converted:
+         </label>
+         <select id="powerFromUnit">
+          <option value="watt">
+           Watts (W)
+          </option>
+          <option value="kilowatt">
+           Kilowatt (kW)
+          </option>
+          <option value="hp">
+           Horsepower (hp)
+          </option>
+          <option value="ps">
+           Metric Horsepower (PS)
+          </option>
+          <option value="btu_per_hour">
+           BTU/hour
+          </option>
+         </select>
+        </div>
+        <div class="input-group">
+         <label for="powerToUnit">
+          Target Unit:
+         </label>
+         <select id="powerToUnit">
+          <option value="watt">
+           Watts (W)
+          </option>
+          <option value="kilowatt">
+           Kilowatt (kW)
+          </option>
+          <option value="hp">
+           Horsepower (hp)
+          </option>
+          <option value="ps">
+           Metric Horsepower (PS)
+          </option>
+          <option value="btu_per_hour">
+           BTU/hour
+          </option>
+         </select>
+        </div>
+       </div>
+       <div class="conversion-result" id="powerResult">
+       </div>
+      </div>
+      <div class="converter-section" id="pressure-converter">
+       <h3>
+        Pressure Transducer
+       </h3>
+       <div class="form-row">
+        <div class="input-group">
+         <label for="pressureValue">
+          Value:
+         </label>
+         <input id="pressureValue" placeholder="Değer girin" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="pressureFromUnit">
+          Unit to be converted:
+         </label>
+         <select id="pressureFromUnit">
+          <option value="pascal">
+           Pascal (Pa)
+          </option>
+          <option value="kilopascal">
+           Kilopascal (kPa)
+          </option>
+          <option value="bar">
+           Bar
+          </option>
+          <option value="atm">
+           Atmosphere (atm)
+          </option>
+          <option value="psi">
+           PSI
+          </option>
+          <option value="torr">
+           Torr
+          </option>
+         </select>
+        </div>
+        <div class="input-group">
+         <label for="pressureToUnit">
+          Target Unit:
+         </label>
+         <select id="pressureToUnit">
+          <option value="pascal">
+           Pascal (Pa)
+          </option>
+          <option value="kilopascal">
+           Kilopascal (kPa)
+          </option>
+          <option value="bar">
+           Bar
+          </option>
+          <option value="atm">
+           Atmosphere (atm)
+          </option>
+          <option value="psi">
+           PSI
+          </option>
+          <option value="torr">
+           Torr
+          </option>
+         </select>
+        </div>
+       </div>
+       <div class="conversion-result" id="pressureResult">
+       </div>
+      </div>
+      <div class="converter-section" id="data-converter">
+       <h3>
+        Data Converter
+       </h3>
+       <div class="form-row">
+        <div class="input-group">
+         <label for="dataValue">
+          Value:
+         </label>
+         <input id="dataValue" placeholder="Değer girin" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="dataFromUnit">
+          Unit to be converted:
+         </label>
+         <select id="dataFromUnit">
+          <option value="bit">
+           Bit (b)
+          </option>
+          <option value="byte">
+           Byte (B)
+          </option>
+          <option value="kilobit">
+           Kilobit (Kb)
+          </option>
+          <option value="kilobyte">
+           Kilobyte (KB)
+          </option>
+          <option value="megabit">
+           Megabits (Mb)
+          </option>
+          <option value="megabyte">
+           Megabyte (MB)
+          </option>
+          <option value="gigabit">
+           Gigabit (Gb)
+          </option>
+          <option value="gigabyte">
+           Gigabyte (GB)
+          </option>
+          <option value="terabit">
+           Terabit (Tb)
+          </option>
+          <option value="terabyte">
+           Terabyte (TB)
+          </option>
+         </select>
+        </div>
+        <div class="input-group">
+         <label for="dataToUnit">
+          Target Unit:
+         </label>
+         <select id="dataToUnit">
+          <option value="bit">
+           Bit (b)
+          </option>
+          <option value="byte">
+           Byte (B)
+          </option>
+          <option value="kilobit">
+           Kilobit (Kb)
+          </option>
+          <option value="kilobyte">
+           Kilobyte (KB)
+          </option>
+          <option value="megabit">
+           Megabits (Mb)
+          </option>
+          <option value="megabyte">
+           Megabyte (MB)
+          </option>
+          <option value="gigabit">
+           Gigabit (Gb)
+          </option>
+          <option value="gigabyte">
+           Gigabyte (GB)
+          </option>
+          <option value="terabit">
+           Terabit (Tb)
+          </option>
+          <option value="terabyte">
+           Terabyte (TB)
+          </option>
+         </select>
+        </div>
+       </div>
+       <div class="conversion-result" id="dataResult">
+       </div>
+      </div>
+      <div class="converter-section" id="currency-converter">
+       <h3>
+        Currency Converter (API Required)
+       </h3>
+       <p>
+        For currency conversions, up-to-date exchange rate data is needed. This is usually provided by an external API (e.g. ExchangeRate-API, Open Exchange Rates) and runs in a live server environment.
+       </p>
+       <div class="form-row">
+        <div class="input-group">
+         <label for="currencyValue">
+          Value:
+         </label>
+         <input id="currencyValue" placeholder="Miktar girin" step="0.01" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="currencyFromUnit">
+          Unit to be converted:
+         </label>
+         <select id="currencyFromUnit">
+          <option value="TRY">
+           Turkish Lira (₺)
+          </option>
+          <option value="USD">
+           US Dollar ($)
+          </option>
+          <option value="EUR">
+           Euro (€)
+          </option>
+          <option value="GBP">
+           British Pound (£)
+          </option>
+          <option value="JPY">
+           Japanese Yen (¥)
+          </option>
+          <option value="CNY">
+           Chinese Yuan (¥)
+          </option>
+          <option value="CAD">
+           Canadian Dollar (C$)
+          </option>
+          <option value="AUD">
+           Australian Dollar (A$)
+          </option>
+         </select>
+        </div>
+        <div class="input-group">
+         <label for="currencyToUnit">
+          Target Unit:
+         </label>
+         <select id="currencyToUnit">
+          <option value="TRY">
+           Turkish Lira (₺)
+          </option>
+          <option value="USD">
+           US Dollar ($)
+          </option>
+          <option value="EUR">
+           Euro (€)
+          </option>
+          <option value="GBP">
+           British Pound (£)
+          </option>
+          <option value="JPY">
+           Japanese Yen (¥)
+          </option>
+          <option value="CNY">
+           Chinese Yuan (¥)
+          </option>
+          <option value="CAD">
+           Canadian Dollar (C$)
+          </option>
+          <option value="AUD">
+           Australian Dollar (A$)
+          </option>
+         </select>
+        </div>
+       </div>
+       <p id="lastUpdateTime" style="font-size: 0.9em; color: #777;">
+       </p>
+       <div class="conversion-result" id="currencyResult">
+       </div>
+      </div>
+      <div class="converter-section active" id="default-message">
+       <p>
+        Start unit conversion by selecting one of the categories above.
+       </p>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="explanation-section container">
+    <h3>
+     What is a Unit Converter Used For?
+    </h3>
+    <p>
+     A unit converter is a handy tool that allows you to quickly and accurately convert values between different measurement systems. Unit conversion is a frequently needed operation since working with different units is common in daily life, education, engineering, science and international trade. This tool saves time and accuracy by eliminating the need to remember complex formulas or perform manual calculations.
+    </p>
+    <p>
+     Main areas of use:
+    </p>
+    <ul>
+     <li>
+      <strong>
+       Travel and Tourism:
+      </strong>
+      Understanding different countries&amp;#39; units of distance, weight or temperature.
+     </li>
+     <li>
+      <strong>
+       Recipes:
+      </strong>
+      Converting quantities of ingredients to different units of measurement (e.g., ounces to grams).
+     </li>
+     <li>
+      <strong>
+       Construction and Engineering:
+      </strong>
+      Ensuring consistency when working with different units of measurement across projects.
+     </li>
+     <li>
+      <strong>
+       Scientific Studies:
+      </strong>
+      Converting experimental data into standard units.
+     </li>
+     <li>
+      <strong>
+       Education:
+      </strong>
+      To help students learn and apply different unit systems.
+     </li>
+     <li>
+      <strong>
+       International Trade:
+      </strong>
+      To specify the properties of products such as weight and volume according to the standards of different countries.
+     </li>
+    </ul>
+   </section>
+   <section class="explanation-section container">
+    <h3>
+     How to Calculate?
+    </h3>
+    <p>
+     Each category in a unit converter is based on the logic of converting the units within it to a common base unit. This base unit is usually the standard unit determined by the International System of Units (SI) (e.g. metre for length, kilogram for weight).
+    </p>
+    <h4>
+     General Transformation Principle
+    </h4>
+    <p>
+     Most unit conversions are done using the following basic formula:
+    </p>
+    $$ \text{Hedef Değer} = \text{Girilen Değer} \times \frac{\text{Çevrilecek Birimin Temel Birimdeki Değeri}}{\text{Hedef Birimin Temel Birimdeki Değeri}} $$
+    <p>
+     Örneğin, 10 feet'i metreye çevirmek istediğimizde:
+                1 foot = 0.3048 metre.
+                Hedef Değer = $10 \text{ ft} \times \frac{0.3048 \text{ m/ft}}{1 \text{ m/m}} = 3.048 \text{ m}$
+    </p>
+    <p>
+     This approach is implemented by storing coefficients of all units in terms of a &amp;quot;base unit&amp;quot; (usually an SI unit). Conversion is accomplished by first converting the input value to the base unit, and then converting the value in that base unit to the target unit.
+    </p>
+    <h4>
+     Temperature Conversions
+    </h4>
+    <p>
+     Temperature units (Celsius, Fahrenheit, Kelvin) are not converted to each other with a linear relationship, but with special formulas. Therefore, temperature conversions require different logic than other units. Here are the main temperature conversion formulas:
+    </p>
+    <ul>
+     <li>
+      <strong>
+       Celsius to Fahrenheit:
+      </strong>
+      $$ F = C \times 1.8 + 32 $$
+     </li>
+     <li>
+      <strong>
+       Fahrenheit to Celsius:
+      </strong>
+      $$ C = (F - 32) / 1.8 $$
+     </li>
+     <li>
+      <strong>
+       Celsius to Kelvin:
+      </strong>
+      $$ K = C + 273.15 $$
+     </li>
+     <li>
+      <strong>
+       Kelvin to Celsius:
+      </strong>
+      $$ C = K - 273.15 $$
+     </li>
+     <li>
+      <strong>
+       Fahrenheit to Kelvin (Convert to Celsius first):
+      </strong>
+      $$ K = (F - 32) / 1.8 + 273.15 $$
+     </li>
+     <li>
+      <strong>
+       Kelvin to Fahrenheit (Convert to Celsius first):
+      </strong>
+      $$ F = (K - 273.15) \times 1.8 + 32 $$
+     </li>
+    </ul>
+    <h4>
+     Currency Conversions
+    </h4>
+    <p>
+     Currency conversions, unlike other unit conversions, are based on constantly changing exchange rates. These rates are updated instantly based on market conditions. Therefore, currency converters need to access live exchange rates via an **external API (Application Programming Interface)** to provide accurate results.** Calculate Practical Unit Converter requires an API integration to support this feature. The last update time is also displayed for user experience.
+    </p>
+    <p>
+     The basic formula for currency conversion is:
+    </p>
+    $$ \text{Hedef Para Miktarı} = \text{Kaynak Para Miktarı} \times \text{Döviz Kuru} $$
+    <p>
+     Here, &amp;quot;Exchange Rate&amp;quot; refers to the current exchange rate from the unit to be converted to the target unit. For example, how many TL is 1 USD.
+    </p>
+    <p>
+     Using these basic principles, our calculator precisely converts the values you enter between your chosen units.
+    </p>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

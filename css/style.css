@@ -1,0 +1,1186 @@
+/* Temel Sıfırlama ve Ayarlar */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f4f4f4;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+    /* overflow: hidden; /* Clearfix için - Flexbox kullanırken genellikle gerek kalmaz */
+}
+
+a {
+    text-decoration: none;
+    color: #3498db;
+}
+
+h1, h2, h3 {
+    margin-bottom: 0.75rem;
+}
+
+/* Eğer mobil görünüm için hamburger menü kullanıyorsanız,
+   bu dropdown stillerinin mobil menüyü bozmadığından emin olun.
+   Genellikle mobil menülerde alt menüler açılıp kapanır (display block/none ile),
+   hover bazlı bu CSS mobil cihazlarda dokunmatik problem yaratabilir.
+   Mobil uyumluluk için JavaScript ile click olaylarını kullanmak daha iyidir. */
+
+/* Eğer mobil görünüm için hamburger menü kullanıyorsanız,
+   bu dropdown stillerinin mobil menüyü bozmadığından emin olun.
+   Gerekirse mobil için farklı bir görünüm sağlayacak @media kuralları ekleyebilirsiniz. */
+/* --- Hero Section --- */
+.hero {
+    background: #3498db; /* Tek renk arka planı */
+    /* background: linear-gradient(to right, #3498db, #2ecc71); /* İsterseniz gradyan kullanabilirsiniz */
+    color: #fff;
+    padding: 4rem 0;
+    text-align: center;
+}
+
+.hero h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-button {
+    display: inline-block;
+    background: #e74c3c;
+    color: #fff;
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+    background: #c0392b;
+}
+
+/* --- Calculator List Section (Ana Sayfa Hesaplayıcıları ve Sağlık Hesaplamaları Açılış Sayfası) --- */
+#calculator-list, .health-calculator-landing-section {
+    padding: 3rem 0;
+}
+
+#calculator-list h2, .health-calculator-landing-section .main-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #333;
+}
+
+.health-calculator-landing-section .section-description {
+    text-align: center;
+    font-size: 1.1em;
+    color: #666;
+    max-width: 800px;
+    margin: 0 auto 50px auto;
+}
+
+.calculator-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.calculator-card {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex; /* İçeriği dikeyde düzenlemek için */
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.calculator-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+/* İkonlar için stil (Font Awesome) */
+.calculator-card i.icon-big {
+    font-size: 4.5em;
+    color: #3498db;
+    margin-bottom: 1rem;
+    display: block;
+    text-align: center;
+}
+
+/* Eski img ikon stilini gizle (Font Awesome kullanılıyorsa) */
+.calculator-card img {
+    display: none;
+}
+
+.calculator-card h3 {
+    font-size: 1.3rem;
+    color: #333;
+}
+
+.calculator-card p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 1rem;
+    min-height: 50px; /* Kart açıklamalarının aynı hizada kalmasına yardımcı olur */
+    flex-grow: 1; /* Açıklamanın boşluğu doldurmasını sağlar */
+}
+
+.card-button {
+    display: inline-block;
+    background: #2ecc71;
+    color: #fff;
+    padding: 0.6rem 1.2rem;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    width: 100%; /* Butonun kartın genişliğini kaplamasını sağlar */
+}
+
+.card-button:hover {
+    background: #27ae60;
+}
+
+/* --- Hakkımızda Sayfası Stilleri --- */
+.main-content {
+    padding: 40px 0;
+}
+
+.main-content h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 2.2em;
+    font-weight: 600;
+}
+
+.main-content h3 {
+    color: #3498db;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-size: 1.8em;
+    font-weight: 600;
+}
+
+.main-content p {
+    margin-bottom: 20px;
+    font-size: 1.1em;
+    line-height: 1.8;
+    color: #555;
+    text-align: justify;
+}
+
+.main-content ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 20px;
+}
+
+.main-content ul li {
+    background: #fff;
+    margin-bottom: 10px;
+    padding: 15px 20px;
+    border-left: 5px solid #3498db;
+    border-radius: 5px;
+    font-size: 1.05em;
+    color: #444;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.main-content ul li strong {
+    color: #2c3e50;
+}
+
+/* --- İletişim Sayfası Stilleri --- */
+.contact-section {
+    padding: 40px 0;
+}
+
+.contact-section h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 2.2em;
+    font-weight: 600;
+}
+
+.contact-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: center;
+}
+
+.contact-info, .contact-form-wrapper {
+    flex: 1;
+    min-width: 320px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.contact-info h3, .contact-form-wrapper h3 {
+    color: #3498db;
+    margin-bottom: 25px;
+    font-size: 1.8em;
+    font-weight: 600;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+    color: #555;
+}
+
+.info-item i {
+    color: #3498db;
+    margin-right: 15px;
+    font-size: 24px;
+    width: 30px;
+    text-align: center;
+}
+
+.info-item a {
+    color: #3498db;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.info-item a:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+.social-links {
+    margin-top: 30px;
+    text-align: center;
+    border-top: 1px solid #eee;
+    padding-top: 25px;
+}
+
+.social-links h3 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.social-links a {
+    display: inline-block;
+    margin: 0 12px;
+    color: #3498db;
+    font-size: 32px;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.social-links a:hover {
+    color: #2980b9;
+    transform: translateY(-3px);
+}
+
+/* Form Stilleri */
+.contact-form-wrapper form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #444;
+}
+
+.contact-form-wrapper form input[type="text"],
+.contact-form-wrapper form input[type="email"],
+.contact-form-wrapper form textarea {
+    width: calc(100% - 24px); /* Bu kural artık input-with-unit tarafından yönetilenler için geçersiz kılınır */
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+}
+
+.contact-form-wrapper form input[type="text"]:focus,
+.contact-form-wrapper form input[type="email"]:focus,
+.contact-form-wrapper form textarea:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+.contact-form-wrapper form textarea {
+    resize: vertical;
+    min-height: 140px;
+}
+
+.contact-form-wrapper form button {
+    background-color: #3498db;
+    color: white;
+    padding: 14px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: block;
+    width: 100%;
+}
+
+.contact-form-wrapper form button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+/* Teşekkürler Sayfası Stilleri */
+.thank-you-section {
+    padding: 80px 0;
+    text-align: center;
+    background-color: #f8f9fa;
+    min-height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.thank-you-section h2 {
+    color: #28a745;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.thank-you-section p {
+    font-size: 1.2em;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+.thank-you-section .back-home-button {
+    display: inline-block;
+    background-color: #3498db;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.thank-you-section .back-home-button:hover {
+    background-color: #2980b9;
+}
+
+/* --- Her bir hesaplayıcı kartı ve bilgi bölümü için genel grup --- */
+.calculator-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: center;
+    margin-bottom: 60px;
+}
+
+/* Hesap Makinesi Kutusu ve Bilgi Bölümü Genişlikleri */
+.calculator-card-wrapper {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    flex: 1; /* Esnek genişlik */
+    min-width: 320px;
+    max-width: 800px; /* Daha büyük bir değer */
+    text-align: center;
+}
+
+.calculator-card-wrapper .calculator-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.calculator-card-wrapper .calculator-header i.icon-small {
+    font-size: 2.5em;
+    color: #3498db;
+    margin-right: 15px;
+}
+
+.calculator-card-wrapper h2 {
+    color: #333;
+    font-size: 2em;
+    margin-bottom: 0;
+}
+
+.calculator-card-wrapper p {
+    font-size: 1em;
+    color: #666;
+    margin-bottom: 25px;
+}
+
+/* Form elemanları için genel stil */
+.calculator-form-container label {
+    display: block;
+    text-align: left;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+}
+
+.calculator-form-container input[type="number"],
+.calculator-form-container input[type="date"],
+.calculator-form-container select {
+    width: 100%; /* Tam genişlik, .input-with-unit daha sonra override eder */
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+}
+
+.calculator-form-container input[type="number"]:focus,
+.calculator-form-container input[type="date"]:focus,
+.calculator-form-container select:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+.calculator-form-container button {
+    background-color: #3498db;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.calculator-form-container button:hover {
+    background-color: #2980b9;
+}
+
+/* Sonuç ekranları */
+.result-display {
+    margin-top: 30px;
+    font-size: 1.3em;
+    font-weight: 700;
+    color: #333;
+    background-color: #f8f9fa;
+    border: 1px solid #e2e6ea;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: none; /* Varsayılan olarak gizli, JS ile gösterilecek */
+}
+
+.result-display p {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    color: #343a40;
+}
+
+.result-display .result-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #28a745;
+}
+
+.result-display hr {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+    margin: 15px auto;
+    width: 80%;
+}
+
+.result-display .error {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.small-text {
+    font-size: 0.85em;
+    color: #888;
+    margin-top: -10px;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+/* Bilgi Bölümü için genel stil */
+.info-section {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    flex: 2; /* Karttan daha geniş olabilir */
+    min-width: 320px;
+    max-width: 900px;
+    text-align: left;
+}
+
+.info-section h3 {
+    color: #333;
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.info-section h4 {
+    color: #555;
+    font-size: 1.5em;
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+.info-section p {
+    line-height: 1.7;
+    margin-bottom: 15px;
+    color: #666;
+}
+
+.info-section .formula-text {
+    text-align: center;
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #3498db;
+    padding: 10px 0;
+    background-color: #eaf6ff;
+    border-radius: 5px;
+    margin: 20px 0;
+}
+
+.info-section ul {
+    list-style-type: disc;
+    padding-left: 25px;
+    margin-bottom: 15px;
+    color: #666;
+}
+
+.info-section ul li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.info-section table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.info-section table, .info-section th, .info-section td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+.info-section th {
+    background-color: #f2f2f2;
+    font-weight: 600;
+    color: #333;
+}
+
+.disclaimer-text {
+    font-size: 0.85em;
+    color: #888;
+    margin-top: 20px;
+    border-top: 1px dashed #eee;
+    padding-top: 15px;
+}
+
+/* --- Yoğunluk Hesaplayıcıya Özel Stil Eklemeleri --- */
+
+/* Input ve birim seçicisini yan yana getirmek için flex container */
+.input-with-unit {
+    display: flex;
+    flex-wrap: wrap; /* Küçük ekranlarda alt alta gelmesini sağlar */
+    align-items: center;
+    gap: 10px; /* Elemanlar arası boşluk */
+    margin-bottom: 15px; /* Her bir input grubunun altındaki boşluk */
+    /* padding: 10px 0; /* İç boşluk - container'ın kendi padding'i var, burada ekstra gerekmeyebilir */
+}
+
+.input-with-unit label {
+    flex-basis: 120px; /* Etiket için sabit genişlik */
+    min-width: 80px; /* Daha küçük ekranlar için minimum genişlik */
+    font-weight: 600;
+    color: #333;
+    text-align: left;
+    margin-bottom: 0; /* Flexbox içinde margin-bottom'ı sıfırla */
+}
+
+.input-with-unit input[type="number"] {
+    flex-grow: 1; /* Input kutucuğunun kalan alanı doldurmasını sağlar */
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+    min-width: 120px;
+    text-align: left;
+    margin-bottom: 0; /* Flexbox içinde margin-bottom'ı sıfırla */
+    width: auto; /* Flex-grow ile beraber düzgün çalışması için */
+}
+
+.input-with-unit select {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #fff;
+    cursor: pointer;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+    width: auto;
+    margin-bottom: 0; /* Flexbox içinde margin-bottom'ı sıfırla */
+}
+
+/* Yatay çizgiler için stil */
+.form-divider {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+    margin: 20px 0;
+}
+
+/* Radio buton grubu için boşluk ve hizalama */
+.radio-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.radio-group label {
+    margin-left: 5px;
+    font-size: 1rem;
+    color: #555;
+    cursor: pointer;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 5px;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+/* Button için genel görünüm iyileştirmeleri */
+.calculator-form-container button { /* Genel button stili, submit için de geçerli olacak */
+    display: block;
+    width: 100%;
+    padding: 12px 25px;
+    margin-top: 25px;
+    background-color: #3498db; /* Hesapkolik ana rengi */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.calculator-form-container button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+    header .container {
+        flex-direction: column; /* Küçük ekranlarda logo ve nav dikey sıralansın */
+        align-items: center;
+    }
+
+    header nav {
+        margin-top: 1rem;
+    }
+
+    header nav ul {
+        flex-direction: column; /* Menü öğeleri dikey sıralansın */
+        align-items: center;
+        width: 100%; /* Mobil menü tam genişlikte olsun */
+    }
+
+    header nav ul li {
+        margin: 10px 0; /* Dikey menüde boşluk */
+        width: 100%; /* Her menü öğesi tam genişlikte olsun */
+        text-align: center; /* Menü öğesi içeriğini ortala */
+    }
+
+    header nav ul li a {
+        padding: 10px 15px; /* Mobil menü linklerinin dolgusu */
+        border-bottom: 1px solid #eee; /* Mobil menü linkleri arasına çizgi */
+    }
+
+    header nav ul li:last-child a {
+        border-bottom: none; /* Son linkin altında çizgi olmasın */
+    }
+
+    /* Dropdown'ın mobil görünümde tam genişlik almasını sağlayın */
+    .dropdown-content {
+        position: static; /* Mobil'de akışta kalsın, absolute olmasın */
+        width: 100%; /* Tam genişlik */
+        box-shadow: none; /* Gölge olmasın */
+        border-radius: 0; /* Köşeler olmasın */
+        padding: 0; /* İç padding'i sıfırla */
+        background-color: #f9f9f9; /* Arka plan rengi */
+        border-top: 1px solid #eee; /* Üstte ayrım çizgisi */
+    }
+
+    .dropdown-content a {
+        padding: 10px 0; /* Mobil dropdown linklerinin dolgusu */
+        border-bottom: 1px solid #ddd; /* Mobil dropdown linkleri arasına çizgi */
+        font-size: 1em; /* Okunabilirliği artır */
+    }
+
+    .dropdown-content a:last-child {
+        border-bottom: none;
+    }
+
+    .hero h2 {
+        font-size: 2rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    .calculator-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* İletişim ve Hakkımızda sayfaları için responsive */
+    .contact-content {
+        flex-direction: column;
+        align-items: center;
+    }
+    .contact-info, .contact-form-wrapper {
+        width: 90%;
+        min-width: unset;
+    }
+    .main-content h2, .contact-section h2, .health-calculator-landing-section .main-title {
+        font-size: 1.8em;
+    }
+    .main-content p, .main-content ul li, .info-item, .contact-form-wrapper form label, .health-calculator-landing-section .section-description {
+        font-size: 1em;
+    }
+
+    /* Sağlık hesaplamaları sayfası responsive */
+    .health-calculators-section .main-title {
+        font-size: 2.2em;
+    }
+    .calculator-group {
+        flex-direction: column;
+    }
+    .calculator-card-wrapper, .info-section {
+        max-width: 95%;
+        min-width: unset;
+        margin: 30px auto;
+    }
+    .calculator-card-wrapper h2 {
+        font-size: 1.5em;
+    }
+    .calculator-card-wrapper .calculator-header i.icon-small {
+        font-size: 2em;
+    }
+    .info-section h3 {
+        font-size: 1.8em;
+    }
+    .info-section h4 {
+        font-size: 1.3em;
+    }
+    .info-section p, .info-section ul li, .info-section table th, .info-section table td {
+        font-size: 0.95em;
+    }
+}
+
+@media (max-width: 600px) {
+    /* Yoğunluk hesaplayıcıdaki input-with-unit düzenlemesi */
+    .input-with-unit {
+        flex-direction: column;
+        align-items: flex-start; /* Elemanları sola hizala */
+        gap: 5px;
+    }
+    .input-with-unit label {
+        flex-basis: auto;
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    .input-with-unit input[type="number"],
+    .input-with-unit select {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo .site-logo {
+        height: 40px;
+    }
+
+    .hero h2 {
+        font-size: 1.8em;
+    }
+
+    .hero p {
+        font-size: 1em;
+    }
+
+    .calculator-card {
+        padding: 20px;
+    }
+}
+---
+/* --- YENİ FOOTER STİLLERİ (Tüm revizyonlar dahil - 6 Eşit Sütun) --- */
+footer {
+    /* Footer'ın arka planı ekranı tamamen kaplar */
+    background-color: #f8f8f8; /* Tailwind'deki bg-white'a benzer açık gri */
+    color: #333; /* Genel metin rengi, Tailwind'deki gray-900 */
+    padding: 64px 0; /* py-16 (padding-top ve bottom 64px) */
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+}
+
+.footer-custom-container {
+    /* Footer içeriği için maksimum genişlik ve ortalama */
+    max-width: 1280px; /* max-w-screen-xl (ortalama geniş ekran için) */
+    margin-left: auto; /* İçeriği yatayda ortalar */
+    margin-right: auto; /* İçeriği yatayda ortalar */
+    padding-left: 16px; /* px-4 */
+    padding-right: 16px; /* px-4 */
+    box-sizing: border-box; /* padding'in genişliğe dahil olmasını sağlar */
+}
+
+/* Responsive Padding - Tailwind'in sm:px-6 ve lg:px-8 karşılıkları */
+@media (min-width: 640px) { /* sm breakpoint */
+    .footer-custom-container {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+}
+
+@media (min-width: 1024px) { /* lg breakpoint */
+    .footer-custom-container {
+        padding-left: 32px;
+        padding-right: 32px;
+    }
+}
+
+.footer-main-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Mobil'de tek sütun */
+    gap: 32px; /* gap-8 */
+}
+
+/* Geniş ekranlarda (lg breakpoint) YENİ 6 eşit sütunlu düzenleme */
+@media (min-width: 1024px) { /* lg breakpoint */
+    .footer-main-grid {
+        /* 6 sütunun hepsini eşit genişlikte yapar */
+        grid-template-columns: repeat(6, 1fr);
+        align-items: start; /* Grid öğelerini yukarıdan hizalar */
+        gap: 32px; /* lg:gap-8 */
+    }
+}
+
+/* Logo ve Hakkında Bölümü */
+.footer-logo-about-section {
+    grid-column: span 1; /* Varsayılan olarak 1 sütun */
+}
+
+@media (min-width: 1024px) { /* lg breakpoint */
+    .footer-logo-about-section {
+        grid-column: span 1; /* Geniş ekranda da 1 sütun */
+    }
+}
+
+.footer-logo-image {
+    /* Logo büyüklüğü iki katına çıkarıldı */
+    height: 120px; /* Eski 60px idi, şimdi iki katı 120px */
+    width: auto;
+    display: block;
+    margin-bottom: 16px; /* Tailwind'in varsayılan aralığı */
+    color: #008080; /* text-teal-600 benzeri */
+}
+
+/* Logo altındaki kısa bilgi kaldırıldığı için bu p stili artık gerekli değil. */
+/* Eğer gelecekte başka bir paragraf eklerseniz, bu kısmı yeniden değerlendirmeniz gerekebilir. */
+/* .footer-logo-about-section p {
+    margin-top: 16px;
+    color: #6b7280;
+    font-size: 0.95em;
+} */
+
+
+/*
+* ÖNEMLİ: Bülten Abonelik ve Haberler Bölümü (footer-newsletter-section)
+* HTML'den tamamen kaldırıldığı için, bu bölüme ait TÜM CSS kurallarını
+* style.css dosyanızdan TAMAMEN KALDIRMALISINIZ.
+* Bu CSS bloğunda artık bu bölüme ait kodlar YOKTUR.
+*/
+
+
+/* sr-only sınıfı (Ekran okuyucular için gizleme) */
+/* Bu sınıf, newsletter formundan kaldırıldı ancak başka yerlerde kullanılabileceği için tutuldu. */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* footer-input-group, footer-email-input, footer-subscribe-button
+   Bülten Abonelik alanı kaldırıldığı için bu stiller artık gerekli değildir.
+   style.css dosyanızdan bunları da kaldırmalısınız. */
+
+
+/* Bağlantı Sütunları (Hızlı Erişim, Sağlık, Mühendislik, Eğitim & Kurumsal, Bize Ulaşın) */
+.footer-links-column {
+    grid-column: span 1; /* Varsayılan olarak 1 sütun */
+}
+
+@media (min-width: 640px) { /* sm breakpoint */
+    .footer-links-column {
+        grid-column: span 1; /* sm:col-span-1 */
+    }
+}
+
+.footer-column-heading {
+    font-weight: 500; /* font-medium */
+    color: #1a202c; /* text-gray-900 */
+    margin-bottom: 24px; /* mt-6 */
+}
+
+.footer-list-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-top: 24px; /* mt-6 */
+    font-size: 0.875em; /* text-sm */
+}
+
+.footer-list-items li {
+    margin-bottom: 16px; /* space-y-4 */
+}
+
+.footer-list-items li:last-child {
+    margin-bottom: 0;
+}
+
+.footer-list-items a {
+    color: #4b5563; /* text-gray-700 */
+    transition: opacity 0.3s ease; /* transition hover:opacity-75 */
+}
+
+.footer-list-items a:hover {
+    opacity: 0.75;
+}
+
+.footer-sub-list-items {
+    list-style: none;
+    padding-left: 15px; /* Daha fazla girinti */
+    margin-top: 5px;
+}
+
+/* Telif Hakkı Bölümü */
+.footer-copyright-section {
+    margin-top: 32px; /* mt-8 */
+    border-top: 1px solid #e5e7eb; /* border-t border-gray-100 */
+    padding-top: 32px; /* pt-8 */
+}
+
+.footer-copyright-content {
+    display: flex;
+    flex-direction: column; /* sm:flex */
+    justify-content: flex-start; /* sm:justify-between */
+    gap: 16px; /* Ortalamak için bir boşluk */
+}
+
+@media (min-width: 640px) { /* sm breakpoint */
+    .footer-copyright-content {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+
+.footer-copyright-text {
+    font-size: 0.75em; /* text-xs */
+    color: #6b7280; /* text-gray-500 */
+}
+
+.footer-copyright-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* lg:justify-end */
+    gap: 16px; /* gap-4 */
+    font-size: 0.75em; /* text-xs */
+}
+
+@media (min-width: 640px) { /* sm breakpoint */
+    .footer-copyright-links {
+        margin-top: 0; /* sm:mt-0 */
+    }
+}
+
+@media (min-width: 1024px) { /* lg breakpoint */
+    .footer-copyright-links {
+        justify-content: flex-end;
+    }
+}
+
+.footer-copyright-link {
+    color: #6b7280; /* text-gray-700 */
+    transition: opacity 0.3s ease; /* transition hover:opacity-75 */
+}
+
+.footer-copyright-link:hover {
+    opacity: 0.75;
+}
+
+/* Yeni eklenen öne çıkan haber bandı stilleri */
+.featured-news-band {
+    background-color: #e8f5fb; /* Açık mavi tonu */
+    padding: 40px 20px;
+    margin-top: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+    text-align: center;
+}
+
+.featured-news-band h3 {
+    font-size: 2em;
+    color: #2c3e50;
+    margin-bottom: 25px;
+}
+
+.featured-news-band h3 i {
+    margin-right: 10px;
+    color: #3498db;
+}
+
+.featured-items {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-bottom: 30px;
+    flex-wrap: wrap; /* Küçük ekranlarda alt alta düşmesi için */
+}
+
+.featured-item {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    flex: 1;
+    min-width: 280px;
+    max-width: 48%; /* İkişerli görünüm için */
+    text-align: left;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.featured-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.featured-item h4 {
+    font-size: 1.3em;
+    margin-bottom: 10px;
+}
+
+.featured-item h4 a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.featured-item h4 a:hover {
+    text-decoration: underline;
+}
+
+.featured-item p {
+    font-size: 0.95em;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+/* Öne çıkan haber bandındaki kart butonları için, genel card-button stilini kullanabilirsiniz */
+/* .featured-item .card-button {
+    // Eğer farklı bir stil istenirse buraya eklenebilir
+} */
+
+.view-all-button {
+    display: inline-flex;
+    align-items: center;
+    background-color: #2ecc71;
+    color: white;
+    padding: 12px 28px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-size: 1.05em;
+}
+
+.view-all-button:hover {
+    background-color: #27ae60;
+    transform: translateY(-2px);
+}
+
+.view-all-button i {
+    margin-left: 10px;
+}
+
+/* Responsive Ayarlamalar - zaten style.css'te var, ama bunlar özel olarak öne çıkan bandı için ayarlamalar */
+@media (max-width: 768px) {
+    .featured-items {
+        flex-direction: column;
+        align-items: center;
+    }
+    .featured-item {
+        max-width: 90%;
+    }
+}
+
+@media (max-width: 480px) {
+    .featured-news-band h3 {
+        font-size: 1.6em;
+    }
+    .featured-item h4 {
+        font-size: 1.1em;
+    }
+    .view-all-button {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
+}

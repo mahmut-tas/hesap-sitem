@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Boya Reçetesi Hesaplama - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="İstenilen renk tonu için kumaşın ağırlığına ve boya/kimyasal yüzdelerine göre gerekli madde miktarını hesaplayın. Boyahane süreçleri için pratik reçete aracı." name="description"/>
+  <meta content="boya reçetesi, boya hesaplama, kimyasal miktar, tekstil boyama, boyahane, renk tonu, tekstil mühendisliği hesaplamaları, hesapkolik tekstil" name="keywords"/>
+  <link href="../../css/style.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts2.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <link href="css/style.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+ </head>
+ <!-- Google tag (gtag.js) -->
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="health-calculators-section">
+    <div class="container">
+     <h1 class="main-title">
+      Boya Reçetesi Hesaplayıcı
+     </h1>
+     <p class="section-description">
+      Tekstil boyama işlemlerinde, istenilen renk tonunu ve kalitesini elde etmek için doğru boya ve yardımcı kimyasal madde miktarlarını belirlemek çok önemlidir. Bu araç, kumaş ağırlığına ve yüzdesel değerlere göre ihtiyaç duyduğunuz madde miktarlarını hesaplamanıza yardımcı olur.
+     </p>
+     <div class="calculator-group">
+      <div class="calculator-card-wrapper">
+       <div class="calculator-header">
+        <i class="fas fa-tint icon-small">
+        </i>
+        <h2>
+         Boya ve Kimyasal Miktarı Hesapla
+        </h2>
+       </div>
+       <div class="calculator-form-container">
+        <form id="dyeRecipeForm">
+         <p class="small-text">
+          Lütfen boyanacak kumaşın kuru ağırlığını ve her bir boya/kimyasal için yüzde (%) değerini girin. Yüzde değeri kumaş ağırlığına oranla (%) hesaplanır (OWF - On Weight of Fabric).
+         </p>
+         <div class="input-with-unit">
+          <label for="fabricWeight">
+           Kumaş Ağırlığı (kg):
+          </label>
+          <input id="fabricWeight" min="0.01" placeholder="Örn: 100" required="" step="0.01" type="number"/>
+         </div>
+         <div class="form-divider">
+         </div>
+         <h4>
+          Boya ve Kimyasal Bilgileri
+         </h4>
+         <div id="materialInputs">
+          <div class="input-with-unit material-input-row">
+           <label for="material1Name">
+            Madde Adı 1:
+           </label>
+           <input class="material-name" id="material1Name" placeholder="Örn: Kırmızı Boya" type="text"/>
+           <label for="material1Percentage">
+            Yüzde (%) (OWF):
+           </label>
+           <input class="material-percentage" id="material1Percentage" min="0" placeholder="Örn: 1.5" required="" step="0.01" type="number"/>
+          </div>
+          <div class="input-with-unit material-input-row">
+           <label for="material2Name">
+            Madde Adı 2:
+           </label>
+           <input class="material-name" id="material2Name" placeholder="Örn: Tuz" type="text"/>
+           <label for="material2Percentage">
+            Yüzde (%) (OWF):
+           </label>
+           <input class="material-percentage" id="material2Percentage" min="0" placeholder="Örn: 60" required="" step="0.01" type="number"/>
+          </div>
+         </div>
+         <button class="add-fiber-button" onclick="addMaterialInput()" type="button">
+          Yeni Madde Ekle
+         </button>
+         <button onclick="calculateDyeRecipe()" type="button">
+          Hesapla
+         </button>
+        </form>
+        <div class="result-display" id="resultBox">
+         <h3>
+          Sonuçlar (Gerekli Miktarlar):
+         </h3>
+        </div>
+        <p class="small-text">
+         Hesaplanan miktarlar kumaşın kuru ağırlığına göre gram veya kilogram cinsindendir. Laboratuvar uygulamalarında boya/kimyasalın konsantrasyonu ve stok çözelti oranları dikkate alınmalıdır.
+        </p>
+       </div>
+      </div>
+      <section class="info-section">
+       <h3>
+        Boya Reçetesi Nedir?
+       </h3>
+       <p>
+        **Boya reçetesi**, tekstil materyalini (iplik, kumaş, elyaf) istenilen renk ve tuşeye ulaştırmak için gerekli olan boya maddelerinin ve yardımcı kimyasalların miktarını, oranlarını, uygulama koşullarını (sıcaklık, süre, pH vb.) ve sırasını belirten detaylı bir talimat setidir. Her renk tonu ve her elyaf türü için özel bir reçete oluşturulur.
+       </p>
+       <p>
+        Reçeteler genellikle "Kumaş Ağırlığına Göre Yüzde" (OWF - On Weight of Fabric/Fiber) prensibine göre hazırlanır. Bu, kullanılacak boya veya kimyasalın, boyanacak materyalin kuru ağırlığına oranla yüzde kaçının kullanılacağını belirtir.
+       </p>
+       <h4>
+        Boya Reçetesi Neden Önemlidir?
+       </h4>
+       <ul>
+        <li>
+         **Renk Tutarlılığı:** Aynı rengin farklı üretim partilerinde veya farklı makinelerde aynı tonu vermesini sağlamak.
+        </li>
+        <li>
+         **Maliyet Kontrolü:** Boya ve kimyasal israfını önleyerek üretim maliyetlerini düşürmek.
+        </li>
+        <li>
+         **Kalite Güvencesi:** Boyama hatalarını (lekelenme, ton farkı vb.) minimize etmek.
+        </li>
+        <li>
+         **Çevresel Etki:** Kimyasal kullanımını optimize ederek atık miktarını azaltmak.
+        </li>
+        <li>
+         **Verimlilik:** Boyama proseslerinin hızlı ve etkin bir şekilde yürütülmesini sağlamak.
+        </li>
+       </ul>
+       <h4>
+        Boya ve Kimyasal Miktarı Nasıl Hesaplanır?
+       </h4>
+       <p>
+        Gerekli boya veya kimyasal miktarı, kumaşın kuru ağırlığı ve reçetedeki yüzde değeri kullanılarak basit bir orantıyla hesaplanır:
+       </p>
+       <p class="formula-text">
+        Madde Miktarı (kg) = (Kumaş Ağırlığı (kg) * Madde Yüzdesi (%)) / 100
+       </p>
+       <p>
+        Bu formül, kumaş ağırlığı kilogram cinsinden ise sonuç miktarı da kilogram cinsinden verecektir. Gram cinsinden bir hesaplama için kumaş ağırlığını gram cinsinden girmeniz yeterlidir.
+       </p>
+       <h4>
+        Uygulama Alanları:
+       </h4>
+       <ul>
+        <li>
+         Tekstil boyahaneleri ve baskı işletmeleri.
+        </li>
+        <li>
+         Kimyasal tedarikçiler ve formülasyon geliştirme.
+        </li>
+        <li>
+         Kalite kontrol laboratuvarları.
+        </li>
+        <li>
+         Ar-Ge departmanları (yeni renkler ve prosesler geliştirme).
+        </li>
+        <li>
+         Hazır giyim ve ev tekstili üretim tesisleri.
+        </li>
+       </ul>
+       <p class="disclaimer-text">
+        Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Gerçek boyahane operasyonlarında, laboratuvar ölçekli denemeler, boya verimi, suyun sertliği, yardımcı kimyasalların pH'ı etkileme gücü, makine tipi ve boya banyosu oranı gibi birçok ek faktör dikkate alınmalıdır. Hassas ve ticari boyama uygulamaları için deneyimli boyama mühendislerine ve detaylı laboratuvar analizlerine başvurulmalıdır. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize
+        <a href="../../iletisim.html">
+         iletişim
+        </a>
+        sayfamızdan ulaşın.
+       </p>
+      </section>
+     </div>
+    </div>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

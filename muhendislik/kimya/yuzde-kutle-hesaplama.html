@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Yüzde Konsantrasyon ve Seyreltme Hesaplayıcı - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="Kütle/kütle (%w/w), kütle/hacim (%w/v) yüzde konsantrasyonlarını hesaplayın ve çözelti hazırlama ile seyreltme (C1V1=C2V2) işlemlerini kolayca yapın. Kimyasal çözeltiler ve karışımlar için pratik bir araç." name="description"/>
+  <meta content="yüzde konsantrasyon, kütlece yüzde, hacimce yüzde, yüzde w/w, yüzde w/v, çözelti hazırlama, kimya hesaplamaları, konsantrasyon, hesapkolik konsantrasyon, seyreltme hesaplama, C1V1=C2V2, dilüsyon hesaplayıcı" name="keywords"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <link href="css/style.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <style>
+   /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Seçim Bölümü Stilleri */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .calc-type-button {
+            background-color: #3498db; /* Mavi ton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
+            max-width: 250px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        .hidden-calc {
+            display: none;
+        }
+
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin {
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+        }
+        .input-with-unit label {
+            flex-basis: 100%; /* Label her zaman üstte veya solda */
+            margin-bottom: 5px;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input alanı boşluğu doldurur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .input-with-unit select {
+            flex-shrink: 0; /* Select kutusu sabit kalır */
+            width: auto; /* Select kutusu kendi genişliğinde olur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+  </style>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+ </head>
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="hero-section">
+    <div class="container">
+     <h1>
+      Yüzde Konsantrasyon ve Seyreltme Hesaplayıcı
+     </h1>
+     <p>
+      Çözeltilerinizin yüzde kütle/kütle (%w/w) veya yüzde kütle/hacim (%w/v) konsantrasyonunu hesaplayın. İstenen konsantrasyona ulaşmak için gerekli madde miktarını bulun veya seyreltme hesaplamaları yapın (C1V1=C2V2).
+     </p>
+    </div>
+   </section>
+   <section class="calculator-selection-section">
+    <div class="container">
+     <h2>
+      Yapmak İstediğiniz Hesaplama Türünü Seçin
+     </h2>
+     <div class="calc-buttons-container">
+      <button class="calc-type-button active" data-calc-type="calcPercent">
+       Yüzde Konsantrasyonu Hesapla
+      </button>
+      <button class="calc-type-button" data-calc-type="calcSolute">
+       Gerekli Çözünen Madde Miktarını Hesapla
+      </button>
+      <button class="calc-type-button" data-calc-type="calcSolution">
+       Gerekli Toplam Çözelti Miktarını Hesapla
+      </button>
+      <button class="calc-type-button" data-calc-type="dilution">
+       Seyreltme Hesaplayıcı (C1V1=C2V2)
+      </button>
+     </div>
+     <div class="calc-wrapper active-calc" id="calculator-calcPercent">
+      <h3>
+       <i class="fas fa-percent icon-small">
+       </i>
+       Yüzde Konsantrasyonu Hesapla
+      </h3>
+      <div class="calculator-form-container">
+       <form id="concentrationForm_calcPercent">
+        <div class="input-with-unit">
+         <label for="concentrationType_percent">
+          Konsantrasyon Tipi:
+         </label>
+         <select id="concentrationType_percent">
+          <option value="ww">
+           Kütle/Kütle (%w/w)
+          </option>
+          <option value="wv">
+           Kütle/Hacim (%w/v)
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="soluteMass_percent">
+          Çözünen Madde Kütlesi:
+         </label>
+         <input id="soluteMass_percent" min="0.000001" placeholder="Örn: 10" step="any" type="number"/>
+         <select id="soluteMassUnit_percent">
+          <option value="g">
+           gram (g)
+          </option>
+          <option value="mg">
+           miligram (mg)
+          </option>
+          <option value="kg">
+           kilogram (kg)
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="solutionAmount_percent">
+          Toplam Çözelti Miktarı:
+         </label>
+         <input id="solutionAmount_percent" min="0.000001" placeholder="Örn: 100" step="any" type="number"/>
+         <select id="solutionUnit_percent">
+          <option value="g">
+           gram (g) - %w/w için
+          </option>
+          <option value="ml">
+           mililitre (mL) - %w/v için
+          </option>
+          <option value="kg">
+           kilogram (kg) - %w/w için
+          </option>
+          <option value="L">
+           litre (L) - %w/v için
+          </option>
+         </select>
+        </div>
+        <button type="submit">
+         Yüzde Konsantrasyonu Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="concentrationResult_calcPercent">
+       </div>
+       <p class="small-text">
+        Çözünen madde kütlesi ve toplam çözelti miktarını girerek yüzde konsantrasyonu hesaplayın. Konsantrasyon tipine göre (w/w veya w/v) doğru birimleri seçtiğinizden emin olun.
+       </p>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-calcSolute">
+      <h3>
+       <i class="fas fa-balance-scale-left icon-small">
+       </i>
+       Gerekli Çözünen Madde Miktarını Hesapla
+      </h3>
+      <div class="calculator-form-container">
+       <form id="concentrationForm_calcSolute">
+        <div class="input-with-unit">
+         <label for="concentrationType_solute">
+          Konsantrasyon Tipi:
+         </label>
+         <select id="concentrationType_solute">
+          <option value="ww">
+           Kütle/Kütle (%w/w)
+          </option>
+          <option value="wv">
+           Kütle/Hacim (%w/v)
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="solutionAmount_solute">
+          Toplam Çözelti Miktarı:
+         </label>
+         <input id="solutionAmount_solute" min="0.000001" placeholder="Örn: 100" step="any" type="number"/>
+         <select id="solutionUnit_solute">
+          <option value="g">
+           gram (g) - %w/w için
+          </option>
+          <option value="ml">
+           mililitre (mL) - %w/v için
+          </option>
+          <option value="kg">
+           kilogram (kg) - %w/w için
+          </option>
+          <option value="L">
+           litre (L) - %w/v için
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="desiredConcentration_solute">
+          İstenen Yüzde Konsantrasyon (%):
+         </label>
+         <input id="desiredConcentration_solute" max="100" min="0.000001" placeholder="Örn: 5" step="any" type="number"/>
+        </div>
+        <button type="submit">
+         Çözüneni Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="concentrationResult_calcSolute">
+       </div>
+       <p class="small-text">
+        İstenen konsantrasyon ve toplam çözelti miktarını girerek, ne kadar çözünen maddeye ihtiyacınız olduğunu hesaplayın.
+       </p>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-calcSolution">
+      <h3>
+       <i class="fas fa-cube icon-small">
+       </i>
+       Gerekli Toplam Çözelti Miktarını Hesapla
+      </h3>
+      <div class="calculator-form-container">
+       <form id="concentrationForm_calcSolution">
+        <div class="input-with-unit">
+         <label for="concentrationType_solution">
+          Konsantrasyon Tipi:
+         </label>
+         <select id="concentrationType_solution">
+          <option value="ww">
+           Kütle/Kütle (%w/w)
+          </option>
+          <option value="wv">
+           Kütle/Hacim (%w/v)
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="soluteMass_solution">
+          Çözünen Madde Kütlesi:
+         </label>
+         <input id="soluteMass_solution" min="0.000001" placeholder="Örn: 10" step="any" type="number"/>
+         <select id="soluteMassUnit_solution">
+          <option value="g">
+           gram (g)
+          </option>
+          <option value="mg">
+           miligram (mg)
+          </option>
+          <option value="kg">
+           kilogram (kg)
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="desiredConcentration_solution">
+          İstenen Yüzde Konsantrasyon (%):
+         </label>
+         <input id="desiredConcentration_solution" max="100" min="0.000001" placeholder="Örn: 5" step="any" type="number"/>
+        </div>
+        <button type="submit">
+         Çözeltiyi Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="concentrationResult_calcSolution">
+       </div>
+       <p class="small-text">
+        Çözünen madde kütlesini ve istenen konsantrasyonu girerek, ulaşmanız gereken toplam çözelti miktarını hesaplayın.
+       </p>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-dilution">
+      <h3>
+       <i class="fas fa-flask icon-small">
+       </i>
+       Seyreltme Hesaplayıcı (C1V1=C2V2)
+      </h3>
+      <div class="calculator-form-container">
+       <form id="dilutionForm">
+        <p>
+         Bilinen üç değeri girip hesaplamak istediğiniz alanı boş bırakın.
+        </p>
+        <div class="input-with-unit">
+         <label for="c1">
+          Başlangıç Konsantrasyonu (C1):
+         </label>
+         <input id="c1" min="0" placeholder="Örn: 50" step="any" type="number"/>
+         <select id="c1Unit">
+          <option value="percent">
+           %
+          </option>
+          <option value="molar">
+           Molar (M)
+          </option>
+          <option value="ppm">
+           ppm
+          </option>
+         </select>
+        </div>
+        <div class="input-with-unit">
+         <label for="v1">
+          Başlangıç Hacmi (V1):
+         </label>
+         <input id="v1" min="0" placeholder="Örn: 10" step="any" type="number"/>
+         <select id="v1Unit">
+          <option value="mL">
+           mL
+          </option>
+          <option value="L">
+           L
+          </option>
+          <option value="µL">
+           µL
+          </option>
+         </select>
+        </div>
+        <div class="input-with-unit">
+         <label for="c2">
+          Hedef Konsantrasyon (C2):
+         </label>
+         <input id="c2" min="0" placeholder="Örn: 10" step="any" type="number"/>
+         <select id="c2Unit">
+          <option value="percent">
+           %
+          </option>
+          <option value="molar">
+           Molar (M)
+          </option>
+          <option value="ppm">
+           ppm
+          </option>
+         </select>
+        </div>
+        <div class="input-with-unit">
+         <label for="v2">
+          Hedef Hacim (V2):
+         </label>
+         <input id="v2" min="0" placeholder="Örn: 50" step="any" type="number"/>
+         <select id="v2Unit">
+          <option value="mL">
+           mL
+          </option>
+          <option value="L">
+           L
+          </option>
+          <option value="µL">
+           µL
+          </option>
+         </select>
+        </div>
+        <button type="submit">
+         Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="dilutionResult">
+       </div>
+       <p class="small-text">
+        C1V1 = C2V2 formülünü kullanarak seyreltme hesaplamaları yapın. Bilinmeyen tek alanı boş bırakın.
+       </p>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="info-section container">
+    <h3>
+     Yüzde Konsantrasyon Nedir?
+    </h3>
+    <p>
+     **Yüzde konsantrasyon**, bir çözeltideki çözünen maddenin toplam çözeltiye oranını yüzde olarak ifade eden yaygın bir konsantrasyon birimidir. Genellikle kimyasal, biyolojik ve farmasötik uygulamalarda kullanılır.
+    </p>
+    <p>
+     Temel olarak iki ana tipi vardır:
+    </p>
+    <h4>
+     1. Kütle/Kütle Yüzde Konsantrasyonu (%w/w)
+    </h4>
+    <p>
+     Bir çözeltinin kütle/kütle yüzde konsantrasyonu, **çözünen maddenin kütlesinin, toplam çözeltinin kütlesine oranı**nın 100 ile çarpılmasıyla bulunur. Hem çözünen hem de çözücü katı, sıvı veya gaz olabilir.
+    </p>
+    <p class="formula-text">
+     %w/w = (Çözünen Madde Kütlesi / Toplam Çözelti Kütlesi) × 100
+    </p>
+    <ul>
+     <li>
+      <strong>
+       Çözelti Kütlesi = Çözünen Madde Kütlesi + Çözücü Kütlesi
+      </strong>
+     </li>
+     <li>
+      Birimler genellikle gram (g) veya kilogram (kg) cinsindendir.
+     </li>
+    </ul>
+    <p>
+     **Örnek:** 10 g tuzun 90 g su içinde çözülmesiyle hazırlanan çözelti:
+     <br/>
+     Çözelti Kütlesi = 10 g (tuz) + 90 g (su) = 100 g
+     <br/>
+     %w/w = (10 g / 100 g) × 100 = %10 w/w tuz çözeltisi
+    </p>
+    <h4>
+     2. Kütle/Hacim Yüzde Konsantrasyonu (%w/v)
+    </h4>
+    <p>
+     Bir çözeltinin kütle/hacim yüzde konsantrasyonu, **çözünen maddenin kütlesinin, toplam çözeltinin hacmine oranı**nın 100 ile çarpılmasıyla bulunur. Genellikle çözünen katı, çözücü ise sıvıdır.
+    </p>
+    <p class="formula-text">
+     %w/v = (Çözünen Madde Kütlesi / Toplam Çözelti Hacmi) × 100
+    </p>
+    <ul>
+     <li>
+      Çözünen madde genellikle gram (g), çözelti hacmi ise mililitre (mL) cinsindendir.
+     </li>
+    </ul>
+    <p>
+     **Örnek:** 5 g şekerin toplam hacmi 250 mL olan bir çözelti içinde çözülmesiyle hazırlanan çözelti:
+     <br/>
+     %w/v = (5 g / 250 mL) × 100 = %2 w/v şeker çözeltisi
+    </p>
+    <h4>
+     Seyreltme Hesaplayıcı (C1V1=C2V2) Nedir?
+    </h4>
+    <p>
+     Seyreltme hesaplayıcı, bir çözeltinin konsantrasyonunu değiştirmek için kullanılan temel bir formül olan **C1V1 = C2V2** prensibine dayanır. Bu formül, bilinen bir stok çözeltiden (C1 konsantrasyonu, V1 hacmi) daha düşük konsantrasyonlu (C2) ve/veya farklı hacimde (V2) bir çözelti hazırlamak için gereken değerleri bulmanıza yardımcı olur.
+    </p>
+    <ul>
+     <li>
+      **C1:** Başlangıç (Stok) Çözelti Konsantrasyonu
+     </li>
+     <li>
+      **V1:** Başlangıç (Stok) Çözelti Hacmi
+     </li>
+     <li>
+      **C2:** Hedef (Seyreltilmiş) Çözelti Konsantrasyonu
+     </li>
+     <li>
+      **V2:** Hedef (Seyreltilmiş) Çözelti Hacmi
+     </li>
+    </ul>
+    <p>
+     Bu hesaplayıcı, üç bilinen değeri girerek dördüncüyü otomatik olarak bulur. Konsantrasyon birimleri (örneğin yüzde, molarite, ppm) ve hacim birimleri (örneğin mL, L) her iki tarafta tutarlı olduğu sürece formül geçerlidir.
+    </p>
+    <h4>
+     Uygulama Alanları:
+    </h4>
+    <ul>
+     <li>
+      **Eczacılık ve Tıp:** İlaç dozajlarının ve serumların konsantrasyonlarının belirlenmesi.
+     </li>
+     <li>
+      **Gıda Bilimi:** Gıda ürünlerindeki bileşenlerin (şeker, tuz vb.) oranlarının kontrolü.
+     </li>
+     <li>
+      **Endüstriyel Kimya:** Üretim süreçlerinde kimyasal karışımların hazırlanması ve kalite kontrolü.
+     </li>
+     <li>
+      **Çevre Mühendisliği:** Su ve atık su analizlerinde kirletici konsantrasyonlarının izlenmesi.
+     </li>
+     <li>
+      **Laboratuvar Çalışmaları:** Biyoloji, kimya ve tıp laboratuvarlarında standart çözeltilerin hazırlanması.
+     </li>
+    </ul>
+    <p class="disclaimer-text">
+     Bu hesaplayıcılar, temel yüzde konsantrasyon ve seyreltme hesaplamaları için birer araçtır. Gerçek dünya uygulamalarında sıcaklık, yoğunluk (özellikle %w/v hesaplamalarında çözücünün hacmini belirlerken), çözünen maddenin çözücü içindeki hacim değişiklikleri ve kimyasal reaksiyonlar gibi faktörler sonuçları etkileyebilir. Hassas uygulamalar için laboratuvar ölçümleri ve ek kimyasal prensipler göz önünde bulundurulmalıdır. C1V1=C2V2 formülü, özellikle ideal çözeltiler ve aynı konsantrasyon birimleriyle çalışıldığında en doğru sonuçları verir.
+    </p>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

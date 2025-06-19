@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Vehicle Fuel Consumption Calculator - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <meta content="Easily calculate your car&amp;#39;s fuel consumption and costs using different methods: consumption per 100 km, distance traveled and fuel used or tank filling method. With detailed explanations and tips." name="description"/>
+  <meta content="fuel consumption, vehicle fuel, fuel cost, gasoline calculation, diesel calculation, LPG calculation, 100 km fuel, calculator fuel, fuel efficiency" name="keywords"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <link href="../css/style.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <style>
+   /* Sadece bu sayfaya özel stil eklemeleri - Genellikle style.css'te olur ama override için burada tutulabilir */
+        .calculator-form-container .input-group {
+            margin-bottom: 20px;
+        }
+        .calculator-form-container .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calculator-form-container .input-group input[type="number"] {
+            width: 100%;
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calculator-form-container .input-group input[type="number"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .calculator-form-container .input-group select {
+            width: auto;
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
+        /* Result display specific styles */
+        .result-display strong {
+            color: #e74c3c;
+        }
+        .result-display p {
+            margin: 5px 0;
+        }
+        .result-display p:last-child {
+            margin-bottom: 0;
+        }
+        .result-display .error {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        /* Calculator explanation styles */
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+        .calc-explanation h4 {
+            color: #34495e;
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            text-align: left; /* Genel stil merkezliyse burayı sola çekebiliriz */
+        }
+        .calc-explanation ul {
+            list-style-type: disc;
+            margin: 10px 0 15px 20px;
+            padding: 0;
+        }
+        .calc-explanation ul li {
+            margin-bottom: 5px;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+
+        /* Gizli ve Aktif Hesaplayıcı Stilleri */
+        .hidden-calc {
+            display: none;
+        }
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+        /* Hero Section için header ile aynı arka plan */
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        /* Calculator Selection Section */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        .calc-type-button {
+            background-color: #3498db;
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 auto; /* Esnek buton genişliği */
+            max-width: 280px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .calculator-form-container button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 10px 0 15px 20px;
+            padding: 0;
+        }
+        .info-section ul li {
+            margin-bottom: 5px;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1.4em;
+            }
+        }
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+  </style>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+  <link href="https://hesapkolik.net/gunluk hayat hesaplamalari/yakit-tuketimi-hesaplayici.html" hreflang="tr" rel="alternate"/>
+  <link href="https://hesapkolik.net/en/gunluk hayat hesaplamalari/yakit-tuketimi-hesaplayici.html" hreflang="en" rel="alternate"/>
+  <link href="https://hesapkolik.net/gunluk hayat hesaplamalari/yakit-tuketimi-hesaplayici.html" hreflang="x-default" rel="alternate"/>
+ </head>
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="hero-section">
+    <div class="container">
+     <h1>
+      Vehicle Fuel Consumption Calculator
+     </h1>
+     <p>
+      Easily calculate your vehicle&amp;#39;s fuel consumption and cost with the method most suitable for you.
+     </p>
+    </div>
+   </section>
+   <section class="calculator-selection-section">
+    <div class="container">
+     <h2>
+      How to Calculate Fuel Consumption? Select Calculation Method:
+     </h2>
+     <div class="calc-buttons-container">
+      <button class="calc-type-button active" data-calc-type="type1">
+       I Know My Consumption Per 100 KM
+      </button>
+      <button class="calc-type-button" data-calc-type="type2">
+       With the distance traveled and fuel consumed
+      </button>
+      <button class="calc-type-button" data-calc-type="type3">
+       With the Tank Filling Method
+      </button>
+      <button class="calc-type-button" data-calc-type="type4">
+       Total Distance and Average Consumption
+      </button>
+     </div>
+     <div class="calc-wrapper" id="calculator-type1">
+      <h3>
+       <i class="fas fa-route icon-small">
+       </i>
+       Cost Calculation with Fuel Consumption per 100 KM
+      </h3>
+      <div class="calculator-form-container">
+       <form id="formType1">
+        <div class="input-group">
+         <label for="fuelConsumption100km">
+          Fuel Consumption of the Vehicle per 100 KM (Liters):
+         </label>
+         <input id="fuelConsumption100km" min="0.1" placeholder="Örn: 7.5" required="" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="fuelPrice1">
+          Fuel Liter Price (TL):
+         </label>
+         <input id="fuelPrice1" min="0.01" placeholder="Örn: 40.00" required="" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="distanceToCalculate1">
+          Distance You Want to Calculate (KM):
+         </label>
+         <input id="distanceToCalculate1" min="1" placeholder="Örn: 500" required="" step="any" type="number"/>
+        </div>
+        <button type="submit">
+         Calculate
+        </button>
+       </form>
+       <div class="result-display" id="resultType1" style="display: none;">
+       </div>
+       <div class="calc-explanation">
+        <h4>
+         How to Calculate?
+        </h4>
+        <p>
+         This method calculates the total fuel requirement and cost for a certain distance using your vehicle&amp;#39;s standard fuel consumption figure (usually the consumption per 100 km stated in the vehicle booklet or specifications).
+        </p>
+        <p class="formula-text">
+         Total Fuel Requirement (Liters) = (Distance to be Calculated / 100) * Consumption per 100 KM
+         <br/>
+         Total Cost (TL) = Total Fuel Requirement * Fuel Liter Price
+        </p>
+        <ul>
+         <li>
+          <strong>
+           Example:
+          </strong>
+          Your car consumes 7.5 liters per 100 km. Fuel costs 40 TL per liter. You will travel 500 km.
+          <ul>
+           <li>
+            Total Fuel Requirement = (500 / 100) * 7.5 = 5 * 7.5 = 37.5 Liters
+           </li>
+           <li>
+            Total Cost = 37.5 Liters * 40 TL/Liter = 1500 TL
+           </li>
+          </ul>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-type2">
+      <h3>
+       <i class="fas fa-road icon-small">
+       </i>
+       Consumption Calculation with Traveled Route and Fuel Consumed
+      </h3>
+      <div class="calculator-form-container">
+       <form id="formType2">
+        <div class="input-group">
+         <label for="drivenDistance">
+          Distance Traveled (KM):
+         </label>
+         <input id="drivenDistance" min="1" placeholder="Örn: 300" required="" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="consumedFuel">
+          Amount of Fuel Consumed (Liters):
+         </label>
+         <input id="consumedFuel" min="0.1" placeholder="Örn: 25" required="" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="fuelPrice2">
+          Fuel Liter Price (TL):
+         </label>
+         <input id="fuelPrice2" min="0.01" placeholder="Örn: 40.00" required="" step="any" type="number"/>
+        </div>
+        <button type="submit">
+         Calculate
+        </button>
+       </form>
+       <div class="result-display" id="resultType2" style="display: none;">
+       </div>
+       <div class="calc-explanation">
+        <h4>
+         How to Calculate?
+        </h4>
+        <p>
+         This method allows you to find the average fuel consumption of your car per 100 km and the total cost of this trip, in cases where you know how much fuel you have used over a certain distance (for example, after a trip).
+        </p>
+        <p class="formula-text">
+         Consumption per 100 KM (Liters) = (Fuel Consumed / Distance Traveled) * 100
+         <br/>
+         Total Cost (TL) = Amount of Fuel Spent * Fuel Liter Price
+        </p>
+        <ul>
+         <li>
+          <strong>
+           Example:
+          </strong>
+          You traveled 300 km and used 25 liters of fuel. The price of a liter of fuel is 40 TL.
+          <ul>
+           <li>
+            Consumption per 100 KM = (25 / 300) * 100 ≈ 8.33 Liters/100 KM
+           </li>
+           <li>
+            Total Cost = 25 Liters * 40 TL/Liter = 1000 TL
+           </li>
+          </ul>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-type3">
+      <h3>
+       <i class="fas fa-fill-drip icon-small">
+       </i>
+       Consumption Calculation with Tank Filling Method
+      </h3>
+      <div class="calculator-form-container">
+       <form id="formType3">
+        <div class="input-group">
+         <label for="odoStart">
+          Mileage Before Filling Tank:
+         </label>
+         <input id="odoStart" min="0" placeholder="Örn: 10000" required="" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="odoEnd">
+          Mileage After Filling the Tank (Current):
+         </label>
+         <input id="odoEnd" min="0" placeholder="Örn: 10450" required="" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="refuelAmount">
+          Fuel Amount Filled (Liters):
+         </label>
+         <input id="refuelAmount" min="0.1" placeholder="Örn: 30" required="" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="fuelPrice3">
+          Fuel Liter Price (TL):
+         </label>
+         <input id="fuelPrice3" min="0.01" placeholder="Örn: 40.00" required="" step="any" type="number"/>
+        </div>
+        <button type="submit">
+         Calculate
+        </button>
+       </form>
+       <div class="result-display" id="resultType3" style="display: none;">
+       </div>
+       <div class="calc-explanation">
+        <h4>
+         How to Calculate?
+        </h4>
+        <p>
+         This is one of the most accurate methods. You fill your vehicle&amp;#39;s tank to the top, note the odometer, drive it for a while, and then fill it to the top again. The amount of fuel you fill is the fuel you use for the distance you travel.
+        </p>
+        <p class="formula-text">
+         Distance Traveled (KM) = Kilometers After Filling the Tank - Kilometers Before Filling the Tank
+         <br/>
+         Consumption per 100 KM (Liters) = (Fuel Amount Filled / Distance Traveled) * 100
+         <br/>
+         Total Cost (TL) = Fuel Amount Filled * Fuel Liter Price
+        </p>
+        <ul>
+         <li>
+          <strong>
+           Example:
+          </strong>
+          Initially 10000 km, now you are at 10450 km. You took 30 liters of fuel to fill the tank. Fuel costs 40 TL per liter.
+          <ul>
+           <li>
+            Distance Traveled = 10450 - 10000 = 450 KM
+           </li>
+           <li>
+            Consumption per 100 KM = (30 / 450) * 100 ≈ 6.67 Liters/100 KM
+           </li>
+           <li>
+            Total Cost = 30 Liters * 40 TL/Liter = 1200 TL
+           </li>
+          </ul>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-type4">
+      <h3>
+       <i class="fas fa-chart-line icon-small">
+       </i>
+       Calculation with Total Distance and Average Consumption
+      </h3>
+      <div class="calculator-form-container">
+       <form id="formType4">
+        <div class="input-group">
+         <label for="totalDistance">
+          Total Distance to be Covered (KM):
+         </label>
+         <input id="totalDistance" min="1" placeholder="Örn: 1200" required="" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="averageConsumption">
+          Average Fuel Consumption of the Vehicle (Liter/100 KM):
+         </label>
+         <input id="averageConsumption" min="0.1" placeholder="Örn: 8.0" required="" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="fuelPrice4">
+          Fuel Liter Price (TL):
+         </label>
+         <input id="fuelPrice4" min="0.01" placeholder="Örn: 40.00" required="" step="any" type="number"/>
+        </div>
+        <button type="submit">
+         Calculate
+        </button>
+       </form>
+       <div class="result-display" id="resultType4" style="display: none;">
+       </div>
+       <div class="calc-explanation">
+        <h4>
+         How to Calculate?
+        </h4>
+        <p>
+         This method is useful before a long trip or when you want to make a general estimate. It calculates how much fuel you will need and how much it will cost based on your car&amp;#39;s known average fuel consumption over a certain distance.
+        </p>
+        <p class="formula-text">
+         Total Fuel Requirement (Liters) = (Total Distance / 100) * Average Fuel Consumption
+         <br/>
+         Total Cost (TL) = Total Fuel Requirement * Fuel Liter Price
+        </p>
+        <ul>
+         <li>
+          <strong>
+           Example:
+          </strong>
+          You will travel 1200 km. The average consumption of your vehicle is 8.0 Liters/100 KM. Fuel per liter is 40 TL.
+          <ul>
+           <li>
+            Total Fuel Requirement = (1200 / 100) * 8.0 = 12 * 8.0 = 96 Liters
+           </li>
+           <li>
+            Total Cost = 96 Liters * 40 TL/Liter = 3840 TL
+           </li>
+          </ul>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="info-section container">
+    <h3>
+     Why Is Fuel Consumption Important?
+    </h3>
+    <p>
+     Knowing and tracking fuel consumption is of great importance from both an **economic** and **environmental** perspective. Understanding how much fuel your vehicle uses will help you plan your monthly budget more accurately and avoid unnecessary expenses.
+    </p>
+    <p>
+     In addition, knowing about fuel efficiency allows you to evaluate your vehicle’s performance, review your driving habits and detect potential problems (e.g. increased consumption) early. Lower fuel consumption also means fewer carbon emissions, reducing your environmental impact.
+    </p>
+    <h4>
+     Factors Affecting Fuel Consumption:
+    </h4>
+    <ul>
+     <li>
+      **Driving Habits:** Sudden acceleration and braking, high speed driving increase consumption.
+     </li>
+     <li>
+      **Vehicle Maintenance:** Incomplete engine maintenance, low tire pressure, dirty air filter reduce fuel efficiency.
+     </li>
+     <li>
+      **Road Conditions and Traffic:** Heavy urban traffic and hilly roads increase consumption.
+     </li>
+     <li>
+      **Weather Conditions:** Very cold or very hot weather, air conditioning use will affect consumption.
+     </li>
+     <li>
+      **Vehicle Load:** Excess weight or aerodynamic resistance (roof rack etc.) increases consumption.
+     </li>
+     <li>
+      **Vehicle Model and Engine Capacity:** The type and engine of the vehicle naturally have a major impact on consumption.
+     </li>
+    </ul>
+    <p class="disclaimer-text">
+     These calculators provide approximate results based on the data entered. Actual fuel consumption may vary depending on many different factors, including vehicle age, road and weather conditions, driving style, and vehicle technical condition. For the most accurate results, it is recommended that you regularly monitor your long-term fuel consumption.
+    </p>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

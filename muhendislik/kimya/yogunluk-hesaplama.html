@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Yoğunluk Hesaplayıcı - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="Kütle ve hacim kullanarak yoğunluğu hesaplayın veya yoğunluk, kütle ve hacim arasındaki diğer değerleri bulun. Farklı birimler arası dönüşüm desteği." name="description"/>
+  <meta content="yoğunluk, kütle, hacim, yoğunluk hesaplama, birim dönüşümü, yoğunluk formülü, fizik, kimya, mühendislik hesaplamaları, hesapkolik yoğunluk, özgül ağırlık" name="keywords"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <script async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <link href="css/style.css" rel="stylesheet"/>
+  <link href="../../css/style.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <style>
+   /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Seçim Bölümü Stilleri */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .calc-type-button {
+            background-color: #3498db; /* Mavi ton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
+            max-width: 250px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        .hidden-calc {
+            display: none;
+        }
+
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin {
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+        }
+        .input-with-unit label {
+            flex-basis: 100%; /* Label her zaman üstte veya solda */
+            margin-bottom: 5px;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input alanı boşluğu doldurur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .input-with-unit select {
+            flex-shrink: 0; /* Select kutusu sabit kalır */
+            width: auto; /* Select kutusu kendi genişliğinde olur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+  </style>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+ </head>
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="hero-section">
+    <div class="container">
+     <h1>
+      Yoğunluk Hesaplayıcı
+     </h1>
+     <p>
+      Kütle ve hacim bilgilerini kullanarak maddelerin yoğunluğunu hesaplayın. Ayrıca, bilinen yoğunluk ve kütle/hacim değerleri ile eksik olan diğer değeri bulun.
+     </p>
+    </div>
+   </section>
+   <section class="calculator-selection-section">
+    <div class="container">
+     <h2>
+      Yapmak İstediğiniz Hesaplama Türünü Seçin
+     </h2>
+     <div class="calc-buttons-container">
+      <button class="calc-type-button active" data-calc-type="calcDensity">
+       Yoğunluğu Hesapla
+      </button>
+      <button class="calc-type-button" data-calc-type="calcMass">
+       Kütleyi Hesapla
+      </button>
+      <button class="calc-type-button" data-calc-type="calcVolume">
+       Hacmi Hesapla
+      </button>
+     </div>
+     <div class="calc-wrapper active-calc" id="calculator-calcDensity">
+      <h3>
+       <i class="fas fa-flask icon-small">
+       </i>
+       Yoğunluğu Hesapla
+      </h3>
+      <div class="calculator-form-container">
+       <form id="densityForm_density">
+        <div class="input-with-unit">
+         <label for="massValue_density">
+          Kütle (m):
+         </label>
+         <input id="massValue_density" min="0.000001" placeholder="Kütle değerini girin" step="any" type="number"/>
+         <select id="massUnit_density">
+          <option value="g">
+           gram (g)
+          </option>
+          <option value="kg">
+           kilogram (kg)
+          </option>
+          <option value="lb">
+           pound (lb)
+          </option>
+         </select>
+        </div>
+        <div class="input-with-unit">
+         <label for="volumeValue_density">
+          Hacim (V):
+         </label>
+         <input id="volumeValue_density" min="0.000001" placeholder="Hacim değerini girin" step="any" type="number"/>
+         <select id="volumeUnit_density">
+          <option value="cm3">
+           santimetreküp (cm³)
+          </option>
+          <option value="m3">
+           metreküp (m³)
+          </option>
+          <option value="L">
+           litre (L)
+          </option>
+          <option value="ft3">
+           kübik fit (ft³)
+          </option>
+          <option value="mL">
+           mililitre (mL)
+          </option>
+         </select>
+        </div>
+        <button type="submit">
+         Yoğunluğu Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="densityResult_density">
+       </div>
+       <div class="calc-explanation">
+        <p>
+         Kütle ve hacim değerlerini girerek maddenin yoğunluğunu hesaplayın. Yoğunluk, birim hacimdeki kütle miktarını ifade eder.
+        </p>
+        <p class="formula-text">
+         $ \rho = \frac{m}{V} $
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-calcMass">
+      <h3>
+       <i class="fas fa-balance-scale icon-small">
+       </i>
+       Kütleyi Hesapla
+      </h3>
+      <div class="calculator-form-container">
+       <form id="densityForm_mass">
+        <div class="input-with-unit">
+         <label for="densityValue_mass">
+          Yoğunluk (p):
+         </label>
+         <input id="densityValue_mass" min="0.000001" placeholder="Yoğunluk değerini girin" step="any" type="number"/>
+         <select id="densityUnit_mass">
+          <option value="g/cm3">
+           g/cm³
+          </option>
+          <option value="kg/m3">
+           kg/m³
+          </option>
+          <option value="lb/ft3">
+           lb/ft³
+          </option>
+          <option value="kg/L">
+           kg/L
+          </option>
+          <option value="g/mL">
+           g/mL
+          </option>
+         </select>
+        </div>
+        <div class="input-with-unit">
+         <label for="volumeValue_mass">
+          Hacim (V):
+         </label>
+         <input id="volumeValue_mass" min="0.000001" placeholder="Hacim değerini girin" step="any" type="number"/>
+         <select id="volumeUnit_mass">
+          <option value="cm3">
+           santimetreküp (cm³)
+          </option>
+          <option value="m3">
+           metreküp (m³)
+          </option>
+          <option value="L">
+           litre (L)
+          </option>
+          <option value="ft3">
+           kübik fit (ft³)
+          </option>
+          <option value="mL">
+           mililitre (mL)
+          </option>
+         </select>
+        </div>
+        <button type="submit">
+         Kütleyi Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="densityResult_mass">
+       </div>
+       <div class="calc-explanation">
+        <p>
+         Maddenin yoğunluğunu ve hacmini girerek kütlesini hesaplayın.
+        </p>
+        <p class="formula-text">
+         $ m = \rho \cdot V $
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-calcVolume">
+      <h3>
+       <i class="fas fa-cube icon-small">
+       </i>
+       Hacmi Hesapla
+      </h3>
+      <div class="calculator-form-container">
+       <form id="densityForm_volume">
+        <div class="input-with-unit">
+         <label for="massValue_volume">
+          Kütle (m):
+         </label>
+         <input id="massValue_volume" min="0.000001" placeholder="Kütle değerini girin" step="any" type="number"/>
+         <select id="massUnit_volume">
+          <option value="g">
+           gram (g)
+          </option>
+          <option value="kg">
+           kilogram (kg)
+          </option>
+          <option value="lb">
+           pound (lb)
+          </option>
+         </select>
+        </div>
+        <div class="input-with-unit">
+         <label for="densityValue_volume">
+          Yoğunluk (p):
+         </label>
+         <input id="densityValue_volume" min="0.000001" placeholder="Yoğunluk değerini girin" step="any" type="number"/>
+         <select id="densityUnit_volume">
+          <option value="g/cm3">
+           g/cm³
+          </option>
+          <option value="kg/m3">
+           kg/m³
+          </option>
+          <option value="lb/ft3">
+           lb/ft³
+          </option>
+          <option value="kg/L">
+           kg/L
+          </option>
+          <option value="g/mL">
+           g/mL
+          </option>
+         </select>
+        </div>
+        <button type="submit">
+         Hacmi Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="densityResult_volume">
+       </div>
+       <div class="calc-explanation">
+        <p>
+         Maddenin kütlesini ve yoğunluğunu girerek hacmini hesaplayın.
+        </p>
+        <p class="formula-text">
+         $ V = \frac{m}{\rho} $
+        </p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="info-section container">
+    <h3>
+     Yoğunluk Nedir?
+    </h3>
+    <p>
+     **Yoğunluk (p veya ρ)**, bir maddenin birim hacimdeki kütlesidir. Maddenin ne kadar "sıkışık" olduğunu veya belirli bir hacimde ne kadar madde bulunduğunu gösteren bir fiziksel özelliktir. Genellikle kimya, fizik ve mühendislikte önemli bir parametredir.
+    </p>
+    <p>
+     Yoğunluğun temel formülü şöyledir:
+    </p>
+    <p class="formula-text">
+     $ \rho = \frac{m}{V} $
+    </p>
+    <ul>
+     <li>
+      <strong>
+       $ \rho $ (Rho):
+      </strong>
+      Yoğunluk (genellikle kg/m³ veya g/cm³ birimleriyle ifade edilir).
+     </li>
+     <li>
+      <strong>
+       $ m $:
+      </strong>
+      Kütle (genellikle kilogram (kg) veya gram (g) birimleriyle ifade edilir).
+     </li>
+     <li>
+      <strong>
+       $ V $:
+      </strong>
+      Hacim (genellikle metreküp (m³) veya santimetreküp (cm³) birimleriyle ifade edilir).
+     </li>
+    </ul>
+    <p>
+     Bu formül, bilinen herhangi iki değeri kullanarak üçüncü değeri hesaplamak için yeniden düzenlenebilir:
+    </p>
+    <ul>
+     <li>
+      <strong>
+       Kütle hesaplamak için:
+      </strong>
+      $ m = \rho \cdot V $
+     </li>
+     <li>
+      <strong>
+       Hacim hesaplamak için:
+      </strong>
+      $ V = \frac{m}{\rho} $
+     </li>
+    </ul>
+    <h4>
+     Yaygın Yoğunluk Birimleri ve Dönüşümleri
+    </h4>
+    <p>
+     Yoğunluk için birçok farklı birim kullanılır. En yaygın olanları gram/santimetreküp (g/cm³) ve kilogram/metreküp (kg/m³)'tür. İşte bazı önemli dönüşümler:
+    </p>
+    <ul>
+     <li>
+      $ 1 \text{ g/cm}^3 = 1000 \text{ kg/m}^3 $
+     </li>
+     <li>
+      $ 1 \text{ kg/m}^3 = 0.001 \text{ g/cm}^3 $
+     </li>
+     <li>
+      $ 1 \text{ g/mL} = 1 \text{ g/cm}^3 $
+     </li>
+     <li>
+      $ 1 \text{ kg/L} = 1000 \text{ g/L} = 1 \text{ kg/dm}^3 = 1 \text{ g/cm}^3 $
+     </li>
+     <li>
+      $ 1 \text{ lb/ft}^3 \approx 16.0185 \text{ kg/m}^3 $
+     </li>
+    </ul>
+    <h4>
+     Yoğunluğa Etki Eden Faktörler:
+    </h4>
+    <ul>
+     <li>
+      <strong>
+       Sıcaklık:
+      </strong>
+      Çoğu maddenin yoğunluğu, sıcaklık arttıkça azalır (su istisnadır, 4°C'de en yüksek yoğunluğa sahiptir).
+     </li>
+     <li>
+      <strong>
+       Basınç:
+      </strong>
+      Gazların yoğunluğu, basınç arttıkça önemli ölçüde artar. Katı ve sıvıların yoğunluğu basınca karşı daha az duyarlıdır.
+     </li>
+     <li>
+      <strong>
+       Madde Durumu:
+      </strong>
+      Genellikle aynı madde için katı haldeki yoğunluk &gt; sıvı haldeki yoğunluk &gt; gaz haldeki yoğunluktur.
+     </li>
+    </ul>
+    <h4>
+     Uygulama Alanları:
+    </h4>
+    <ul>
+     <li>
+      <strong>
+       Malzeme Bilimi:
+      </strong>
+      Yeni malzemelerin geliştirilmesinde ve mevcut malzemelerin özelliklerinin belirlenmesinde.
+     </li>
+     <li>
+      <strong>
+       Gemi Tasarımı:
+      </strong>
+      Gemilerin yüzdürme kuvvetlerinin hesaplanmasında (Arşimet prensibi).
+     </li>
+     <li>
+      <strong>
+       Kimya:
+      </strong>
+      Konsantrasyon hesaplamaları ve kimyasal reaksiyonların stokiyometrisinde.
+     </li>
+     <li>
+      <strong>
+       Jeoloji:
+      </strong>
+      Kayaların ve minerallerin tanımlanmasında.
+     </li>
+     <li>
+      <strong>
+       Gıda Endüstrisi:
+      </strong>
+      Ürün kalitesini kontrol etmek ve içeriklerin oranlarını belirlemek için.
+     </li>
+    </ul>
+    <p class="disclaimer-text">
+     Bu hesaplayıcı, temel yoğunluk, kütle ve hacim hesaplamaları için bir araçtır. Hesaplamalar sırasında doğru birimleri seçtiğinizden emin olun. Gerçek dünya uygulamalarında ölçüm hataları ve çevresel faktörler sonuçları etkileyebilir. Daha kesin sonuçlar için hassas ölçüm cihazları ve belirli materyallerin tablolaştırılmış yoğunluk değerleri kullanılmalıdır.
+    </p>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Paint Recipe Calculation - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="Calculate the amount of material required for the desired color tone based on the weight of the fabric and the dye/chemical percentages. Practical recipe tool for dyehouse processes." name="description"/>
+  <meta content="dye recipe, dye calculation, chemical amount, textile dyeing, dyehouse, color tone, textile engineering calculations, hesapkolik textile" name="keywords"/>
+  <link href="../../css/style.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts2.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <link href="css/style.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+  <link href="https://hesapkolik.net/muhendislik/tekstil/boya-recetesi.html" hreflang="tr" rel="alternate"/>
+  <link href="https://hesapkolik.net/en/muhendislik/tekstil/boya-recetesi.html" hreflang="en" rel="alternate"/>
+  <link href="https://hesapkolik.net/muhendislik/tekstil/boya-recetesi.html" hreflang="x-default" rel="alternate"/>
+ </head>
+ <!-- Google tag (gtag.js) -->
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="health-calculators-section">
+    <div class="container">
+     <h1 class="main-title">
+      Paint Recipe Calculator
+     </h1>
+     <p class="section-description">
+      In textile dyeing processes, it is very important to determine the correct amounts of dyes and auxiliary chemicals to obtain the desired color tone and quality. This tool helps you calculate the amounts of substances you need according to fabric weight and percentage values.
+     </p>
+     <div class="calculator-group">
+      <div class="calculator-card-wrapper">
+       <div class="calculator-header">
+        <i class="fas fa-tint icon-small">
+        </i>
+        <h2>
+         Calculate Paint and Chemical Amount
+        </h2>
+       </div>
+       <div class="calculator-form-container">
+        <form id="dyeRecipeForm">
+         <p class="small-text">
+          Please enter the dry weight of the fabric to be dyed and the percentage (%) for each dye/chemical. The percentage value is calculated in proportion to the fabric weight (%) (OWF - On Weight of Fabric).
+         </p>
+         <div class="input-with-unit">
+          <label for="fabricWeight">
+           Fabric Weight (kg):
+          </label>
+          <input id="fabricWeight" min="0.01" placeholder="Örn: 100" required="" step="0.01" type="number"/>
+         </div>
+         <div class="form-divider">
+         </div>
+         <h4>
+          Paint and Chemical Information
+         </h4>
+         <div id="materialInputs">
+          <div class="input-with-unit material-input-row">
+           <label for="material1Name">
+            Article Name 1:
+           </label>
+           <input class="material-name" id="material1Name" placeholder="Örn: Kırmızı Boya" type="text"/>
+           <label for="material1Percentage">
+            Percentage (%) (OWF):
+           </label>
+           <input class="material-percentage" id="material1Percentage" min="0" placeholder="Örn: 1.5" required="" step="0.01" type="number"/>
+          </div>
+          <div class="input-with-unit material-input-row">
+           <label for="material2Name">
+            Article Name 2:
+           </label>
+           <input class="material-name" id="material2Name" placeholder="Örn: Tuz" type="text"/>
+           <label for="material2Percentage">
+            Percentage (%) (OWF):
+           </label>
+           <input class="material-percentage" id="material2Percentage" min="0" placeholder="Örn: 60" required="" step="0.01" type="number"/>
+          </div>
+         </div>
+         <button class="add-fiber-button" onclick="addMaterialInput()" type="button">
+          Add New Item
+         </button>
+         <button onclick="calculateDyeRecipe()" type="button">
+          Calculate
+         </button>
+        </form>
+        <div class="result-display" id="resultBox">
+         <h3>
+          Results (Quantities Required):
+         </h3>
+        </div>
+        <p class="small-text">
+         The calculated amounts are in grams or kilograms according to the dry weight of the fabric. In laboratory applications, the concentration of the dye/chemical and stock solution ratios should be taken into account.
+        </p>
+       </div>
+      </div>
+      <section class="info-section">
+       <h3>
+        What is a Paint Recipe?
+       </h3>
+       <p>
+        **Dye recipe** is a detailed set of instructions that specify the amount, proportions, application conditions (temperature, time, pH, etc.) and order of dyes and auxiliary chemicals required to achieve the desired color and touch of the textile material (yarn, fabric, fiber). A special recipe is created for each color tone and each fiber type.
+       </p>
+       <p>
+        Recipes are usually prepared according to the &amp;quot;Percentage on Weight of Fabric/Fiber&amp;quot; (OWF) principle. This indicates what percentage of the dye or chemical to be used is used in relation to the dry weight of the material to be dyed.
+       </p>
+       <h4>
+        Why Is Dye Recipe Important?
+       </h4>
+       <ul>
+        <li>
+         **Color Consistency:** Ensuring that the same color gives the same tone in different production batches or different machines.
+        </li>
+        <li>
+         **Cost Control:** Reducing production costs by preventing paint and chemical waste.
+        </li>
+        <li>
+         **Quality Assurance:** To minimize dyeing errors (staining, tone difference, etc.).
+        </li>
+        <li>
+         **Environmental Impact:** Reducing waste by optimizing chemical use.
+        </li>
+        <li>
+         **Efficiency:** To ensure that painting processes are carried out quickly and effectively.
+        </li>
+       </ul>
+       <h4>
+        How to Calculate the Amount of Dye and Chemicals?
+       </h4>
+       <p>
+        The amount of dye or chemical required is calculated using the dry weight of the fabric and the percentage value in the recipe using a simple ratio:
+       </p>
+       <p class="formula-text">
+        Material Amount (kg) = (Fabric Weight (kg) * Material Percentage (%)) / 100
+       </p>
+       <p>
+        This formula will give the result in kilograms if the fabric weight is in kilograms. For a calculation in grams, simply enter the fabric weight in grams.
+       </p>
+       <h4>
+        Application Areas:
+       </h4>
+       <ul>
+        <li>
+         Textile dyehouses and printing enterprises.
+        </li>
+        <li>
+         Chemical suppliers and formulation development.
+        </li>
+        <li>
+         Quality control laboratories.
+        </li>
+        <li>
+         R&amp;amp;D departments (developing new colours and processes).
+        </li>
+        <li>
+         Ready-made clothing and home textile production facilities.
+        </li>
+       </ul>
+       <p class="disclaimer-text">
+        This calculator is for general information purposes and provides theoretical calculations. In real dyehouse operations, many additional factors such as laboratory scale trials, dye yield, water hardness, pH affecting power of auxiliary chemicals, machine type and dye bath ratio should be taken into account. For sensitive and commercial dyeing applications, experienced dye engineers and detailed laboratory analysis should be consulted. If you have any problems with your calculations, please contact us.
+        <a href="../../iletisim.html">
+         communication
+        </a>
+        reach us from our page.
+       </p>
+      </section>
+     </div>
+    </div>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

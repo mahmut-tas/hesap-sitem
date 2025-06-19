@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Sertlik Dönüşümü Hesaplayıcı - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="Rockwell (HRC, HRB, HRA), Brinell (HB), Vickers (HV) ve Knoop (HK) gibi farklı sertlik ölçekleri arasında kolayca dönüşüm yapın. Mühendislik, malzeme bilimi ve metalurji için pratik bir araç." name="description"/>
+  <meta content="sertlik dönüşümü, sertlik hesaplama, Rockwell, Brinell, Vickers, Knoop, HRC, HRB, HRA, HB, HV, HK, malzeme sertliği, metalurji, mühendislik hesaplamaları, hesapkolik sertlik" name="keywords"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <script async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <link href="css/style.css" rel="stylesheet"/>
+  <link href="../../css/style.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <style>
+   /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+       
+        
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Seçim Bölümü Stilleri */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .calc-type-button {
+            background-color: #3498db; /* Mavi ton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
+            max-width: 250px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        .hidden-calc {
+            display: none;
+        }
+
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin {
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+        }
+        .input-with-unit label {
+            flex-basis: 100%; /* Label her zaman üstte veya solda */
+            margin-bottom: 5px;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input alanı boşluğu doldurur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .input-with-unit select {
+            flex-shrink: 0; /* Select kutusu sabit kalır */
+            width: auto; /* Select kutusu kendi genişliğinde olur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .tablo-container {
+            margin-top: 30px;
+            text-align: left;
+            background-color: #fcfcfc;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 20px;
+        }
+        .tablo-container h4 {
+            font-size: 1.4em;
+            color: #34495e;
+            margin-bottom: 15px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .tablo-container table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .tablo-container th, .tablo-container td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        .tablo-container th {
+            background-color: #eaf0f0;
+            font-weight: 600;
+            color: #555;
+        }
+        .tablo-container tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+  </style>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+ </head>
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="hero-section">
+    <div class="container">
+     <h1>
+      Sertlik Dönüşümü Hesaplayıcı
+     </h1>
+     <p>
+      Rockwell (HRC, HRB, HRA), Brinell (HB), Vickers (HV) ve Knoop (HK) gibi farklı sertlik ölçekleri arasında kolayca dönüşüm yapın.
+     </p>
+    </div>
+   </section>
+   <section class="calculator-selection-section">
+    <div class="container">
+     <h2>
+      Sertlik Değeri Dönüştür
+     </h2>
+     <div class="calc-buttons-container">
+      <button class="calc-type-button active" data-calc-type="hardnessConversion">
+       Sertlik Değeri Dönüştür
+      </button>
+     </div>
+     <div class="calc-wrapper active-calc" id="calculator-hardnessConversion">
+      <h3>
+       <i class="fas fa-hard-hat icon-small">
+       </i>
+       Sertlik Dönüşümü Yap
+      </h3>
+      <div class="calculator-form-container">
+       <form id="hardnessConversionForm">
+        <div class="input-with-unit">
+         <label for="sourceScale">
+          Kaynak Sertlik Ölçeği:
+         </label>
+         <select id="sourceScale" required="">
+          <option value="HRC">
+           Rockwell C (HRC)
+          </option>
+          <option value="HRB">
+           Rockwell B (HRB)
+          </option>
+          <option value="HRA">
+           Rockwell A (HRA)
+          </option>
+          <option value="HB">
+           Brinell (HB)
+          </option>
+          <option value="HV">
+           Vickers (HV)
+          </option>
+          <option value="HK">
+           Knoop (HK)
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="hardnessValue">
+          Sertlik Değeri:
+         </label>
+         <input id="hardnessValue" min="0.000001" placeholder="Örn: 50" required="" step="any" type="number"/>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="targetScale">
+          Hedef Sertlik Ölçeği:
+         </label>
+         <select id="targetScale" required="">
+          <option value="HB">
+           Brinell (HB)
+          </option>
+          <option value="HRC">
+           Rockwell C (HRC)
+          </option>
+          <option value="HRB">
+           Rockwell B (HRB)
+          </option>
+          <option value="HRA">
+           Rockwell A (HRA)
+          </option>
+          <option value="HV">
+           Vickers (HV)
+          </option>
+          <option value="HK">
+           Knoop (HK)
+          </option>
+         </select>
+        </div>
+        <button type="submit">
+         Dönüştür
+        </button>
+       </form>
+       <div class="result-display" id="hardnessConversionResult">
+       </div>
+       <div class="calc-explanation">
+        <p>
+         Farklı sertlik ölçekleri arasındaki dönüşümler genellikle ampirik formüllere veya dönüşüm tablolarına dayanır. Bu hesaplayıcı, en yaygın kullanılan sertlik ölçekleri arasında tahmini dönüşümler yapar.
+        </p>
+        <p class="small-text">
+         <strong>
+          Uyarı:
+         </strong>
+         Bu dönüşümler yaklaşıktır ve özellikle çok farklı sertlik aralıklarında veya farklı malzeme tipleri için tam doğru sonuçlar vermeyebilir. Hassas uygulamalar için doğrudan test yapılması veya malzeme üreticisinin verilerine başvurulması önerilir.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="tablo-container">
+      <h4>
+       Yaygın Malzemeler için Yaklaşık Sertlik Değerleri
+      </h4>
+      <table>
+       <thead>
+        <tr>
+         <th>
+          Malzeme
+         </th>
+         <th>
+          HRC
+         </th>
+         <th>
+          HRB
+         </th>
+         <th>
+          HB (Brinell)
+         </th>
+         <th>
+          HV (Vickers)
+         </th>
+        </tr>
+       </thead>
+       <tbody>
+        <tr>
+         <td>
+          Yumuşak Çelik
+         </td>
+         <td>
+          -
+         </td>
+         <td>
+          ~60-90
+         </td>
+         <td>
+          ~100-180
+         </td>
+         <td>
+          ~100-180
+         </td>
+        </tr>
+        <tr>
+         <td>
+          Orta Karbon Çeliği
+         </td>
+         <td>
+          ~10-25
+         </td>
+         <td>
+          ~90-100
+         </td>
+         <td>
+          ~180-250
+         </td>
+         <td>
+          ~180-250
+         </td>
+        </tr>
+        <tr>
+         <td>
+          Paslanmaz Çelik (Tavlanmış)
+         </td>
+         <td>
+          -
+         </td>
+         <td>
+          ~70-95
+         </td>
+         <td>
+          ~150-200
+         </td>
+         <td>
+          ~150-200
+         </td>
+        </tr>
+        <tr>
+         <td>
+          Sertleştirilmiş Çelik
+         </td>
+         <td>
+          ~40-65
+         </td>
+         <td>
+          -
+         </td>
+         <td>
+          ~370-600+
+         </td>
+         <td>
+          ~370-800+
+         </td>
+        </tr>
+        <tr>
+         <td>
+          Alüminyum Alaşımları
+         </td>
+         <td>
+          -
+         </td>
+         <td>
+          ~30-80
+         </td>
+         <td>
+          ~50-150
+         </td>
+         <td>
+          ~50-150
+         </td>
+        </tr>
+        <tr>
+         <td>
+          Pirinç
+         </td>
+         <td>
+          -
+         </td>
+         <td>
+          ~20-70
+         </td>
+         <td>
+          ~50-150
+         </td>
+         <td>
+          ~50-150
+         </td>
+        </tr>
+        <tr>
+         <td>
+          Bakır
+         </td>
+         <td>
+          -
+         </td>
+         <td>
+          ~20-50
+         </td>
+         <td>
+          ~40-120
+         </td>
+         <td>
+          ~40-120
+         </td>
+        </tr>
+       </tbody>
+      </table>
+      <p class="small-text">
+       Bu tablo, yalnızca genel bir referans sağlamaktadır. Malzemenin spesifik alaşımı, ısıl işlem durumu ve test koşulları sertlik değerlerini önemli ölçüde etkileyebilir.
+      </p>
+     </div>
+    </div>
+   </section>
+   <section class="info-section container">
+    <h3>
+     Sertlik Nedir ve Neden Önemlidir?
+    </h3>
+    <p>
+     **Sertlik**, bir malzemenin girintiye, çizilmeye veya aşınmaya karşı gösterdiği direncin ölçüsüdür. Mühendislik ve malzeme biliminde temel bir mekanik özelliktir çünkü malzemenin dayanımı, aşınma direnci ve işlenebilirliği hakkında önemli bilgiler sağlar. Sertlik testleri tahribatsız veya yarı tahribatsız yöntemlerle yapılabilir ve genellikle malzeme kalitesini kontrol etmek, ısıl işlem etkilerini değerlendirmek ve malzeme seçimi yapmak için kullanılır.
+    </p>
+    <p>
+     Birçok farklı sertlik ölçüm ölçeği bulunur ve her biri farklı test yöntemleri, girinti (indentör) tipleri ve uygulanan yükler kullanır. En yaygın olanları şunlardır:
+    </p>
+    <h4>
+     Yaygın Sertlik Ölçekleri:
+    </h4>
+    <ul>
+     <li>
+      <strong>
+       Rockwell Sertlik (HRC, HRB, HRA):
+      </strong>
+      <ul>
+       <li>
+        **HRC (Rockwell C):** Çok sert malzemeler (sertleştirilmiş çelikler) için kullanılır. Konik elmas uçlu indentör ve yüksek yük (150 kg) kullanılır.
+       </li>
+       <li>
+        **HRB (Rockwell B):** Yumuşak ve orta sertlikteki metaller (alüminyum, pirinç, yumuşak çelik) için kullanılır. 1/16 inç çapında çelik bilya ve düşük yük (100 kg) kullanılır.
+       </li>
+       <li>
+        **HRA (Rockwell A):** Çok ince veya çok sert malzemeler için kullanılır. Konik elmas uçlu indentör ve daha düşük yük (60 kg) kullanılır.
+       </li>
+      </ul>
+      <p class="small-text">
+       Rockwell testleri, doğrudan bir sertlik değeri verir ve okunması hızlıdır.
+      </p>
+     </li>
+     <li>
+      <strong>
+       Brinell Sertlik (HB):
+      </strong>
+      <p>
+       Büyük bir küresel sertleştirilmiş çelik veya karbür bilya indentör ile daha yüksek bir yük (örn: 500, 1500, 3000 kg) kullanılarak yapılır. Genellikle daha yumuşak ve orta sertlikteki malzemeler için, büyük taneli yapısı olan dökme demir gibi malzemelerde tercih edilir.
+      </p>
+     </li>
+     <li>
+      <strong>
+       Vickers Sertlik (HV):
+      </strong>
+      <p>
+       Piramit şeklinde elmas uçlu bir indentör kullanılarak yapılır. Hem çok yumuşak hem de çok sert malzemeler için geniş bir aralıkta kullanılabilir. Yükler çok düşükten çok yükseğe değişebilir (örn: 1 kgf - 120 kgf).
+      </p>
+     </li>
+     <li>
+      <strong>
+       Knoop Sertlik (HK):
+      </strong>
+      <p>
+       Küçük bir elmas piramit indentör ile çok düşük yükler kullanılarak yapılır. Özellikle çok ince malzemeler, kaplamalar veya mikro sertlik ölçümleri için idealdir.
+      </p>
+     </li>
+    </ul>
+    <h4>
+     Sertlik Dönüşümü Neden Gereklidir?
+    </h4>
+    <p>
+     Farklı sertlik test yöntemleri, farklı uygulama alanlarına, malzeme tiplerine ve test koşullarına göre geliştirilmiştir. Ancak bazen bir ölçekte ölçülen bir sertlik değerinin başka bir ölçekteki karşılığını bilmek gerekebilir. Bu dönüşümler, doğrudan karşılaştırma yapmayı, farklı kaynaklardan gelen verileri birleştirmeyi ve test ekipmanlarının uygunluğunu değerlendirmeyi sağlar.
+    </p>
+    <p class="disclaimer-text">
+     Sertlik dönüşüm formülleri genellikle ampirik olarak türetilmiştir ve bu nedenle malzemenin türüne, ısıl işlemine, mikro yapısına ve sertlik aralığına bağlı olarak doğrulukları değişebilir. Özellikle farklı malzeme sınıfları veya sertlik aralıkları için dönüşümler büyük sapmalar gösterebilir. **Kritik uygulamalarda, dönüşümden elde edilen değerler yerine daima doğrudan test sonuçları veya malzeme üreticisinin dönüşüm tabloları kullanılmalıdır.**
+    </p>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

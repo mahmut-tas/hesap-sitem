@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Age Calculator - Calculate Practical
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="Calculate your exact age (year, month, day) based on your date of birth, time left until your next birthday, your zodiac sign and the difference between two dates. Interesting statistics and milestones about your age." name="description"/>
+  <meta content="calculate age, birth date calculation, how old am I, difference between two dates, birthday horoscope, chinese horoscope, how many days have I lived, future age calculation, past age calculation, age statistics" name="keywords"/>
+  <link href="css/style.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <style>
+   /* Bu CSS sadece bu sayfa için özeldir. İstersen style.css dosyana taşıyabilirsin. */
+        .age-calculator-section {
+            padding: 60px 0;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        .age-calculator-section h2 {
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 2.5em;
+        }
+
+        .category-buttons, .sub-category-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .category-button, .sub-category-button {
+            background-color: #f1c40f; /* Yaş için sarımsı renk */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen */
+            max-width: 250px;
+            text-align: center;
+            text-decoration: none; /* Link olarak kullanılabilir */
+        }
+        @media (max-width: 768px) {
+            .category-button, .sub-category-button {
+                flex: 1 1 calc(50% - 30px); /* Tabletlerde 2 sütun */
+            }
+        }
+        @media (max-width: 480px) {
+            .category-button, .sub-category-button {
+                flex: 1 1 calc(100% - 30px); /* Mobil cihazlarda 1 sütun */
+            }
+        }
+
+        .category-button:hover, .sub-category-button:hover {
+            background-color: #e6b700;
+            transform: translateY(-3px);
+        }
+
+        .category-button.active, .sub-category-button.active {
+            background-color: #d4ac00; /* Aktif buton rengi */
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .calculator-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 650px;
+            margin: 0 auto;
+            text-align: left;
+            min-height: 300px; /* İçerik geçişlerinde kaymayı azaltmak için */
+            display: flex; /* İçeriklerin dikeyde ortalanması için */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .category-section-content, .calculation-section {
+            display: none; /* Varsayılan olarak tüm bölümler gizli */
+            width: 100%; /* Kapsayıcı genişliğinde olsunlar */
+            text-align: left;
+        }
+        .category-section-content.active, .calculation-section.active {
+            display: block; /* Aktif olan gösterilir */
+        }
+
+        .category-section-content h3 {
+            color: #444;
+            margin-bottom: 20px;
+            font-size: 2em;
+            text-align: center;
+        }
+        .category-section-content p.info-text {
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.1em;
+            color: #666;
+        }
+
+        .calculation-section h4 {
+            color: #555;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            text-align: center;
+            border-bottom: 1px dashed #eee;
+            padding-bottom: 15px;
+            margin-top: 0; /* İlk h4'ün üst boşluğunu sıfırla */
+        }
+
+        .calculation-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calculation-section input[type="date"],
+        .calculation-section input[type="number"],
+        .calculation-section input[type="text"],
+        .calculation-section select {
+            width: calc(100% - 20px); /* İç padding için */
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            font-family: 'Poppins', sans-serif; /* Fontu koru */
+        }
+
+        .calculation-section select {
+            width: 100%;
+        }
+
+        .calculation-section button {
+            background-color: #f1c40f; /* Ana renk ile aynı */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block; /* Butonu blok eleman yapıp ortalamak için */
+            margin: 20px auto 0 auto; /* Ortala */
+        }
+        .calculation-section button:hover {
+            background-color: #d4ac00;
+        }
+
+        .result-output {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-left: 5px solid #f1c40f; /* Ana renk ile aynı */
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            display: none; /* Varsayılan olarak gizli */
+        }
+        .result-output strong {
+            color: #e74c3c; /* Sonuçlar için belirgin renk */
+        }
+        .result-output p {
+            margin-bottom: 5px; /* Sonuç paragrafı arası boşluk */
+        }
+        .result-output p:last-child {
+            margin-bottom: 0;
+        }
+
+
+        .info-text {
+            font-size: 0.9em;
+            color: #777;
+            margin-top: 10px;
+        }
+        .calculation-steps-section {
+            margin-top: 40px;
+            background-color: #f2f2f2;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            text-align: left;
+            display: none; /* Varsayılan olarak gizli */
+        }
+        .calculation-steps-section.active {
+            display: block;
+        }
+        .calculation-steps-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+        .calculation-steps-section p {
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .calculation-steps-section ul {
+            list-style-type: decimal; /* Numaralı liste */
+            padding-left: 25px;
+            color: #555;
+        }
+        .calculation-steps-section ul li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        .calculation-steps-section strong {
+            color: #000;
+        }
+
+        #backToCategories {
+            background-color: #3498db; /* Geri butonu için farklı renk */
+            margin-top: 20px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 0.9em;
+            text-decoration: none; /* Link görünümü */
+        }
+        #backToCategories:hover {
+            background-color: #2980b9;
+        }
+
+        /* Ek olarak, önceki hesaplayıcılardan gelen bazı stiller burada tekrarlanıyor olabilir,
+           genel style.css dosyasında birleştirilirse daha iyi olur. */
+  </style>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+  <link href="https://hesapkolik.net/yas-hesaplayici.html" hreflang="tr" rel="alternate"/>
+  <link href="https://hesapkolik.net/en/yas-hesaplayici.html" hreflang="en" rel="alternate"/>
+  <link href="https://hesapkolik.net/yas-hesaplayici.html" hreflang="x-default" rel="alternate"/>
+ </head>
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="age-calculator-section">
+    <div class="container">
+     <h1 class="main-title">
+      Age Calculator
+     </h1>
+     <p class="section-description" id="main-instruction">
+      Select the type of age calculation you want to perform:
+     </p>
+     <div class="category-buttons" id="main-category-buttons">
+      <button class="category-button" data-category="basic-age">
+       My Age According to Your Date of Birth
+      </button>
+      <button class="category-button" data-category="date-diff">
+       Difference Between Two Dates
+      </button>
+      <button class="category-button" data-category="specific-date-age">
+       My Age on a Specific Date
+      </button>
+      <button class="category-button" data-category="fun-facts">
+       Interesting Age Facts
+      </button>
+     </div>
+     <div class="calculator-container" id="calculator-content-area">
+      <div class="category-section-content active" id="default-message">
+       <p class="info-text">
+        Start calculating your age by selecting one of the categories above.
+       </p>
+      </div>
+      <div class="category-section-content" id="basic-age-content">
+       <h3>
+        My Age According to Your Date of Birth
+       </h3>
+       <p class="info-text">
+        Enter your date of birth to find out your exact age, zodiac sign and the time left until your next birthday.
+       </p>
+       <div class="sub-category-buttons">
+        <button class="sub-category-button" data-calc="fullAge">
+         Exact Age and Birthday
+        </button>
+        <button class="sub-category-button" data-calc="zodiacSigns">
+         Horoscope Information
+        </button>
+       </div>
+      </div>
+      <div class="category-section-content" id="date-diff-content">
+       <h3>
+        Difference Between Two Dates
+       </h3>
+       <p class="info-text">
+        Calculate the time between two selected dates in years, months, days, hours and minutes.
+       </p>
+       <div class="sub-category-buttons">
+        <button class="sub-category-button" data-calc="dateDiffYMD">
+         Year, Month, Day Difference
+        </button>
+        <button class="sub-category-button" data-calc="dateDiffTotalDays">
+         Total Day/Hour/Minute Difference
+        </button>
+       </div>
+      </div>
+      <div class="category-section-content" id="specific-date-age-content">
+       <h3>
+        My Age on a Specific Date
+       </h3>
+       <p class="info-text">
+        Enter your date of birth and a date of your choice to find out your age on that date.
+       </p>
+       <div class="sub-category-buttons">
+        <button class="sub-category-button" data-calc="ageAtFutureDate">
+         My Age at a Future Date
+        </button>
+        <button class="sub-category-button" data-calc="ageAtPastDate">
+         My Life at a Past Date
+        </button>
+       </div>
+      </div>
+      <div class="category-section-content" id="fun-facts-content">
+       <h3>
+        Interesting Age Facts and Statistics
+       </h3>
+       <p class="info-text">
+        Enter your date of birth to find out how many days you&amp;#39;ve lived, your heart rate, and other interesting statistics.
+       </p>
+       <div class="sub-category-buttons">
+        <button class="sub-category-button" data-calc="lifeStatistics">
+         Life Cycle Statistics
+        </button>
+        <button class="sub-category-button" data-calc="milestones">
+         Milestones in Life
+        </button>
+        <button class="sub-category-button" data-calc="remainingLife">
+         Estimated Remaining Time Based on Life Expectancy
+        </button>
+       </div>
+      </div>
+      <div class="calculation-section" id="fullAge-calc">
+       <h4>
+        Exact Age and Time Until Birthday
+       </h4>
+       <label for="birthDateFull">
+        Your Date of Birth:
+       </label>
+       <input id="birthDateFull" required="" type="date"/>
+       <button onclick="calculateFullAge()">
+        Calculate
+       </button>
+       <div class="result-output" id="fullAgeResult">
+       </div>
+       <div class="calculation-steps-section" id="fullAgeSteps">
+       </div>
+      </div>
+      <div class="calculation-section" id="zodiacSigns-calc">
+       <h4>
+        Astrological and Chinese Zodiac Signs
+       </h4>
+       <label for="birthDateZodiac">
+        Your Date of Birth:
+       </label>
+       <input id="birthDateZodiac" required="" type="date"/>
+       <button onclick="calculateZodiacSigns()">
+        Calculate
+       </button>
+       <div class="result-output" id="zodiacSignsResult">
+       </div>
+       <div class="calculation-steps-section" id="zodiacSignsSteps">
+       </div>
+      </div>
+      <div class="calculation-section" id="dateDiffYMD-calc">
+       <h4>
+        Year, Month, Day Difference
+       </h4>
+       <label for="startDateYMD">
+        Start Date:
+       </label>
+       <input id="startDateYMD" required="" type="date"/>
+       <label for="endDateYMD">
+        End Date:
+       </label>
+       <input id="endDateYMD" required="" type="date"/>
+       <button onclick="calculateDateDiffYMD()">
+        Calculate
+       </button>
+       <div class="result-output" id="dateDiffYMDResult">
+       </div>
+       <div class="calculation-steps-section" id="dateDiffYMDSteps">
+       </div>
+      </div>
+      <div class="calculation-section" id="dateDiffTotalDays-calc">
+       <h4>
+        Total Day/Hour/Minute Difference
+       </h4>
+       <label for="startDateTotal">
+        Start Date:
+       </label>
+       <input id="startDateTotal" required="" type="date"/>
+       <label for="endDateTotal">
+        End Date:
+       </label>
+       <input id="endDateTotal" required="" type="date"/>
+       <button onclick="calculateDateDiffTotal()">
+        Calculate
+       </button>
+       <div class="result-output" id="dateDiffTotalDaysResult">
+       </div>
+       <div class="calculation-steps-section" id="dateDiffTotalDaysSteps">
+       </div>
+      </div>
+      <div class="calculation-section" id="ageAtFutureDate-calc">
+       <h4>
+        My Age at a Future Date
+       </h4>
+       <label for="birthDateFuture">
+        Your Date of Birth:
+       </label>
+       <input id="birthDateFuture" required="" type="date"/>
+       <label for="targetDateFuture">
+        Target Date (Future):
+       </label>
+       <input id="targetDateFuture" required="" type="date"/>
+       <button onclick="calculateAgeAtSpecificDate('future')">
+        Calculate
+       </button>
+       <div class="result-output" id="ageAtFutureDateResult">
+       </div>
+       <div class="calculation-steps-section" id="ageAtFutureDateSteps">
+       </div>
+      </div>
+      <div class="calculation-section" id="ageAtPastDate-calc">
+       <h4>
+        My Life at a Past Date
+       </h4>
+       <label for="birthDatePast">
+        Your Date of Birth:
+       </label>
+       <input id="birthDatePast" required="" type="date"/>
+       <label for="targetDatePast">
+        Target Date (Past):
+       </label>
+       <input id="targetDatePast" required="" type="date"/>
+       <button onclick="calculateAgeAtSpecificDate('past')">
+        Calculate
+       </button>
+       <div class="result-output" id="ageAtPastDateResult">
+       </div>
+       <div class="calculation-steps-section" id="ageAtPastDateSteps">
+       </div>
+      </div>
+      <div class="calculation-section" id="lifeStatistics-calc">
+       <h4>
+        Life Cycle Statistics
+       </h4>
+       <label for="birthDateStats">
+        Your Date of Birth:
+       </label>
+       <input id="birthDateStats" required="" type="date"/>
+       <button onclick="calculateLifeStatistics()">
+        Calculate
+       </button>
+       <div class="result-output" id="lifeStatisticsResult">
+       </div>
+       <div class="calculation-steps-section" id="lifeStatisticsSteps">
+       </div>
+      </div>
+      <div class="calculation-section" id="milestones-calc">
+       <h4>
+        Milestones in Life
+       </h4>
+       <label for="birthDateMilestones">
+        Your Date of Birth:
+       </label>
+       <input id="birthDateMilestones" required="" type="date"/>
+       <button onclick="calculateMilestones()">
+        Calculate
+       </button>
+       <div class="result-output" id="milestonesResult">
+       </div>
+       <div class="calculation-steps-section" id="milestonesSteps">
+       </div>
+      </div>
+      <div class="calculation-section" id="remainingLife-calc">
+       <h4>
+        Estimated Remaining Time Based on Life Expectancy
+       </h4>
+       <p class="info-text">
+        <small>
+         This calculation is based on statistical data and does not provide an individual guarantee. Life expectancy varies by country and gender.
+        </small>
+       </p>
+       <label for="birthDateRemaining">
+        Your Date of Birth:
+       </label>
+       <input id="birthDateRemaining" required="" type="date"/>
+       <label for="gender">
+        Gender:
+       </label>
+       <select id="gender">
+        <option value="male">
+         Male
+        </option>
+        <option value="female">
+         Woman
+        </option>
+       </select>
+       <label for="country">
+        Country (For Life Expectancy):
+       </label>
+       <select id="country">
+        <option value="TR">
+         Türkiye (78.6)
+        </option>
+        <option value="US">
+         USA (78.5)
+        </option>
+        <option value="DE">
+         Germany (80.9)
+        </option>
+        <option value="JP">
+         Japan (84.6)
+        </option>
+       </select>
+       <button onclick="calculateRemainingLife()">
+        Calculate
+       </button>
+       <div class="result-output" id="remainingLifeResult">
+       </div>
+       <div class="calculation-steps-section" id="remainingLifeSteps">
+       </div>
+      </div>
+      <button class="category-button" id="backToCategories" style="display: none;">
+       Back (Back to Categories)
+      </button>
+     </div>
+    </div>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

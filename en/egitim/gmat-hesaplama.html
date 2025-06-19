@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   GMAT Focus Score Calculator - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <meta content="Easily calculate your latest GMAT Focus Edition score. Get your estimated score ranges and total score for the Quantitative, Verbal, and Data Insights sections." name="description"/>
+  <meta content="GMAT Focus score calculation, GMAT Focus score, GMAT Focus Quantitative, GMAT Focus Verbal, GMAT Focus Data Insights, GMAT Focus Edition, MBA, graduate exam, accountingcolik GMAT" name="keywords"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <link href="../css/style.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <style>
+   /* Sadece bu sayfaya özel stil eklemeleri - Genel style.css'ten sonra yüklenir */
+        .calculator-form-container .input-group {
+            margin-bottom: 20px;
+        }
+        .calculator-form-container .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calculator-form-container .input-group input[type="number"],
+        .calculator-form-container .input-group select {
+            width: 100%;
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calculator-form-container .input-group input[type="number"]:focus,
+        .calculator-form-container .input-group select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        /* Result display specific styles */
+        .result-display strong {
+            color: #e74c3c;
+        }
+        .result-display p {
+            margin: 5px 0;
+        }
+        .result-display p:last-child {
+            margin-bottom: 0;
+        }
+        .result-display .error {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        /* Calculator explanation styles */
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+        .calc-explanation h4 {
+            color: #34495e;
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .calc-explanation ul {
+            list-style-type: disc;
+            margin: 10px 0 15px 20px;
+            padding: 0;
+        }
+        .calc-explanation ul li {
+            margin-bottom: 5px;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+            overflow-x: auto; /* Küçük ekranlarda formül taşmasını önler */
+        }
+
+        /* Gizli ve Aktif Hesaplayıcı Stilleri */
+        .hidden-calc {
+            display: none;
+        }
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+        /* Hero Section için header ile aynı arka plan */
+        .hero-section {
+            background-color: #34495e; 
+            color: white; 
+            padding: 80px 0; 
+            text-align: center; 
+        }
+        .hero-section h1 {
+            font-size: 3em; 
+            margin-bottom: 20px; 
+        }
+        .hero-section p {
+            font-size: 1.2em; 
+            opacity: 0.9; 
+        }
+        /* Calculator Selection Section */
+        .calculator-selection-section { 
+            padding: 50px 0; 
+            text-align: center; 
+            background-color: #eaf0f0; 
+            border-bottom: 1px solid #dee7e7; 
+        } 
+        .calculator-selection-section h2 { 
+            margin-bottom: 30px; 
+            color: #2c3e50; 
+            font-size: 2.2em; 
+        } 
+        .calc-buttons-container { 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            gap: 15px; 
+            margin-bottom: 40px; 
+        } 
+        .calc-type-button { 
+            background-color: #3498db; 
+            color: white; 
+            padding: 15px 25px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 1.1em; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease, transform 0.2s ease; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+            flex: 1 1 auto; /* Esnek buton genişliği */
+            max-width: 320px; /* Butonların maksimum genişliği */
+            text-align: center; 
+        } 
+        .calc-type-button:hover { 
+            background-color: #2980b9; 
+            transform: translateY(-3px); 
+        } 
+        .calc-wrapper { 
+            background-color: #ffffff; 
+            padding: 40px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); 
+            max-width: 800px; /* Kapsamlı hesaplayıcı için genişlik artırıldı */
+            margin: 30px auto; 
+            text-align: left; 
+        } 
+        .calc-wrapper h3 { 
+            font-size: 2em; 
+            color: #e74c3c; 
+            margin-bottom: 25px; 
+            text-align: center; 
+        } 
+        .calculator-form-container button[type="submit"] { 
+            background-color: #28a745; 
+            color: white; 
+            padding: 12px 20px; 
+            border: none; 
+            border-radius: 5px; 
+            font-size: 1.1em; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease, transform 0.2s ease; 
+            width: 100%; 
+            box-sizing: border-box; 
+            margin-top: 10px; 
+        } 
+        .calculator-form-container button[type="submit"]:hover { 
+            background-color: #218838; 
+            transform: translateY(-2px); 
+        } 
+        .result-display { 
+            margin-top: 25px; 
+            font-size: 1.1em; 
+            font-weight: 600; 
+            color: #2c3e50; 
+            text-align: center; 
+            min-height: 1.8em; 
+            background-color: #ecf0f1; 
+            padding: 15px 20px; 
+            border-radius: 8px; 
+            border: 1px solid #dcdfe4; 
+        } 
+        .result-display .result-value { 
+            color: #e74c3c; 
+            font-weight: 700; 
+            font-size: 1.3em; 
+        } 
+        .info-section { 
+            padding: 40px 0; 
+            background-color: #ffffff; 
+            margin-top: 40px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            border-radius: 8px; 
+        } 
+        .info-section h3 { 
+            color: #e74c3c; 
+            font-size: 1.8em; 
+            margin-bottom: 20px; 
+            text-align: center; 
+        } 
+        .info-section p { 
+            color: #666; 
+            line-height: 1.6; 
+            margin-bottom: 15px; 
+            padding: 0 20px; 
+            text-align: justify; 
+        } 
+        .info-section ul { 
+            list-style-type: disc; 
+            margin: 0 20px 20px 40px; 
+            color: #666; 
+        } 
+        .info-section ul li { 
+            margin-bottom: 10px; 
+            line-height: 1.5; 
+        } 
+        .info-section strong { 
+            color: #333; 
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1em; /* Daha küçük ekranda daha küçük font */
+            }
+        }
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            /* Dinamik yüklenen header ve footer için de responsive düzen gerekebilir, 
+               ancak bu zaten header.css ve style.css içinde yönetilmelidir. */
+        }
+  </style>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+  <link href="https://hesapkolik.net/egitim/gmat-hesaplama.html" hreflang="tr" rel="alternate"/>
+  <link href="https://hesapkolik.net/en/egitim/gmat-hesaplama.html" hreflang="en" rel="alternate"/>
+  <link href="https://hesapkolik.net/egitim/gmat-hesaplama.html" hreflang="x-default" rel="alternate"/>
+ </head>
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="hero-section">
+    <div class="container">
+     <h1>
+      GMAT Focus Edition Score Calculator
+     </h1>
+     <p>
+      Estimate your most up-to-date GMAT Focus Edition scores and get a strong start on your business school applications.
+     </p>
+    </div>
+   </section>
+   <section class="calculator-selection-section">
+    <div class="container">
+     <h2>
+      Select GMAT Focus Calculation Method:
+     </h2>
+     <div class="calc-buttons-container">
+      <button class="calc-type-button active" data-calc-type="gmat-focus-general-score">
+       General Score Calculation
+      </button>
+      <button class="calc-type-button" data-calc-type="gmat-focus-percentile">
+       Percentile Calculation
+      </button>
+      <button class="calc-type-button" data-calc-type="gmat-focus-info">
+       Information About GMAT Focus
+      </button>
+     </div>
+     <div class="calc-wrapper" id="calculator-gmat-focus-general-score">
+      <h3>
+       <i class="fas fa-chart-bar icon-small">
+       </i>
+       GMAT Focus General Score Calculation
+      </h3>
+      <div class="calculator-form-container">
+       <form id="formGmatFocusGeneralScore">
+        <div class="input-group">
+         <label for="quantCorrect">
+          Quantitative Reasoning Number of Correct Answers (Max 21):
+         </label>
+         <input id="quantCorrect" max="21" min="0" placeholder="Örn: 15" required="" step="1" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="verbalCorrect">
+          Verbal Reasoning Number of Correct Answers (Max 23):
+         </label>
+         <input id="verbalCorrect" max="23" min="0" placeholder="Örn: 18" required="" step="1" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="dataInsightsCorrect">
+          Data Insights Number of Correct Answers (Max 20):
+         </label>
+         <input id="dataInsightsCorrect" max="20" min="0" placeholder="Örn: 12" required="" step="1" type="number"/>
+        </div>
+        <button type="submit">
+         Calculate My Score
+        </button>
+       </form>
+       <div class="result-display" id="resultGmatFocusGeneralScore" style="display: none;">
+       </div>
+       <div class="calc-explanation">
+        <h4>
+         How to Calculate?
+        </h4>
+        <p>
+         Each section of the GMAT Focus Edition (Quantitative Reasoning, Verbal Reasoning, Data Insights) is scored in the 60-90 range. The total score is a combination of the scores from all three sections, with a range of 205-805.
+        </p>
+        <p>
+         This calculator provides an estimated score range based on the number of correct answers you enter. Because GMAT Focus is a computer-adaptive test, your score depends not only on the number of correct answers but also on the difficulty of the questions you answer and the overall algorithm of the test. Therefore, the results provided are only estimates.
+        </p>
+        <ul>
+         <li>
+          **Quantitative Reasoning:** It consists of 21 questions in total.
+         </li>
+         <li>
+          **Verbal Reasoning:** It consists of 23 questions in total.
+         </li>
+         <li>
+          **Data Insights:** Consists of 20 questions in total.
+         </li>
+        </ul>
+        <p class="disclaimer-text">
+         This calculator provides estimated values and is not a substitute for the official GMAC GMAT Focus score. Your actual score will depend on your performance on the exam and GMAC&amp;#39;s scoring methodology. Remember, this is not a true-false table; scores are determined by adaptive algorithms.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-gmat-focus-percentile">
+      <h3>
+       <i class="fas fa-chart-pie icon-small">
+       </i>
+       GMAT Focus Percentile Calculation
+      </h3>
+      <div class="calculator-form-container">
+       <form id="formGmatFocusPercentile">
+        <div class="input-group">
+         <label for="totalFocusScore">
+          Your Total GMAT Focus Score (205-805):
+         </label>
+         <input id="totalFocusScore" max="805" min="205" placeholder="Örn: 655" required="" step="10" type="number"/>
+        </div>
+        <button type="submit">
+         Calculate Percentile
+        </button>
+       </form>
+       <div class="result-display" id="resultGmatFocusPercentile" style="display: none;">
+       </div>
+       <div class="calc-explanation">
+        <h4>
+         What is a Percentile and How is it Calculated?
+        </h4>
+        <p>
+         The percentile indicates what percentage of test takers your overall score is better than. GMAT Focus Edition percentiles are based on data published by GMAC and are updated over time based on the performance of the test taker population. This calculator provides an estimated percentile range based on generally accepted averages.
+        </p>
+        <ul>
+         <li>
+          **High Percentiles:** Typically required for the most competitive MBA and other business programs.
+         </li>
+         <li>
+          **GMAC Data:** For the most accurate and up-to-date percentile information, GMAC&amp;#39;s official reports should be consulted.
+         </li>
+        </ul>
+        <p class="disclaimer-text">
+         This percentile estimate is based on historical GMAC data and overall trends. Your actual percentile may vary depending on the time period the exam was administered and the performance of the overall test taker population. Please check the official and current GMAC percentile tables.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-gmat-focus-info">
+      <h3>
+       <i class="fas fa-info-circle icon-small">
+       </i>
+       About GMAT Focus Edition
+      </h3>
+      <div class="calculator-form-container">
+       <p>
+        **GMAT Focus Edition** is a new, shorter, and more flexible version of the GMAT exam, which is used to apply to business schools, introduced in 2023. GMAT Focus aims to measure your analytical, verbal, and numerical skills in a more focused way.
+       </p>
+       <h4>
+        Major Changes:
+       </h4>
+       <ul>
+        <li>
+         **Short Duration:** The exam duration is approximately 2 hours and 15 minutes (more than 1 hour shorter than the old version).
+        </li>
+        <li>
+         **Number of Sections:** It consists of 3 sections in total: Quantitative Reasoning, Verbal Reasoning, and Data Insights. (Analytical Writing Assessment has been removed).
+        </li>
+        <li>
+         **Scoring:** Each section is scored between 60-90 points. The total score is between 205-805, given in 10-point increments and contributes equal weight to the performance of all three sections.
+        </li>
+        <li>
+         **Question Navigation:** Within each section, you can flag questions, review them, and change your answers (this was limited on the old GMAT).
+        </li>
+       </ul>
+       <p>
+        The GMAT Focus Edition offers candidates a more flexible testing experience while still measuring the core skills that business schools need. It’s important to check the requirements of the programs you’re applying to to determine which exam format is right for you.
+       </p>
+       <p class="disclaimer-text">
+        This information is based on GMAC&amp;#39;s published public information, and the official GMAC website should always be the primary source for current testing policies or minor changes.
+       </p>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="info-section container">
+    <h3>
+     What is the GMAT Focus Edition and Why is it Important?
+    </h3>
+    <p>
+     **GMAT Focus Edition** is a standardized exam designed for applications to the world&amp;#39;s leading business schools (MBA, Master in Management, etc.). GMAT Focus evaluates candidates&amp;#39; potential to succeed in business and graduate education by measuring their critical thinking, problem-solving, and data analysis skills.
+    </p>
+    <p>
+     The GMAT Focus score is used by the admissions committees of the program you are applying to as part of a holistic evaluation, along with other application materials such as GPA, work experience, references, and cover letter. A good GMAT Focus score can help you stand out from other applicants, especially when applying to competitive programs.
+    </p>
+    <h4>
+     GMAT Focus Scoring Scale:
+    </h4>
+    <ul>
+     <li>
+      **Quantitative Reasoning:** Between 60-90 points
+     </li>
+     <li>
+      **Verbal Reasoning:** Between 60-90 points
+     </li>
+     <li>
+      **Data Insights:** Between 60-90 points
+     </li>
+     <li>
+      **Total Score:** 205-805 points (in 10 point increments)
+     </li>
+    </ul>
+    <h4>
+     How to Prepare for GMAT Focus?
+    </h4>
+    <ul>
+     <li>
+      **Official Materials:** Use GMAC&amp;#39;s official GMAT Focus prep materials and practice exams.
+     </li>
+     <li>
+      **Practical Focus:** Practice specifically for this area, especially since it is new to the Data Insights section.
+     </li>
+     <li>
+      **Strategy Development:** Due to the adaptive nature of the exam, develop time management and question marking/review strategies.
+     </li>
+     <li>
+      **Strengthening Weaknesses:** Analyze your mock exam results to determine your weak areas and do additional work on these topics.
+     </li>
+    </ul>
+    <p class="disclaimer-text">
+     The GMAT Focus score calculators and percentile estimates on this page are based on generally accepted methodologies and available data. Because the official GMAT Focus test administered by GMAC (Graduate Management Admission Council) is adaptive and has complex scoring algorithms, these calculators are not accurate. Always reference GMAC&amp;#39;s official test scores and up-to-date scoring tables for your most accurate and official GMAT Focus score and percentile.
+    </p>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

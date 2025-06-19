@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Gas Density Calculator - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="Calculate density, molar mass, mass, volume, pressure or temperature of gases using the Ideal Gas Law. Support for multiple unit conversions and comprehensive formulas." name="description"/>
+  <meta content="gas density, density calculation, ideal gas law, PV=nRT, molar mass, gas mass, gas volume, gas pressure, gas temperature, chemistry, physics, engineering calculations, calculus gas" name="keywords"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <link href="../../css/style.css" rel="stylesheet"/>
+  <script async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <style>
+   /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Seçim Bölümü Stilleri */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .calc-type-button {
+            background-color: #3498db; /* Mavi ton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
+            max-width: 250px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        .hidden-calc {
+            display: none;
+        }
+
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin {
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+        }
+        .input-with-unit label {
+            flex-basis: 100%; /* Label her zaman üstte veya solda */
+            margin-bottom: 5px;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input alanı boşluğu doldurur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .input-with-unit select {
+            flex-shrink: 0; /* Select kutusu sabit kalır */
+            width: auto; /* Select kutusu kendi genişliğinde olur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+  </style>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <link href="https://hesapkolik.net/muhendislik/kimya/gaz-yogunlugu.html" hreflang="tr" rel="alternate"/>
+  <link href="https://hesapkolik.net/en/muhendislik/kimya/gaz-yogunlugu.html" hreflang="en" rel="alternate"/>
+  <link href="https://hesapkolik.net/muhendislik/kimya/gaz-yogunlugu.html" hreflang="x-default" rel="alternate"/>
+ </head>
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="hero-section">
+    <div class="container">
+     <h1>
+      Gas Density Calculator
+     </h1>
+     <p>
+      Calculate the density of gases or other unknown parameters such as molar mass, mass, volume, pressure, temperature using the Ideal Gas Law.
+     </p>
+    </div>
+   </section>
+   <section class="calculator-selection-section">
+    <div class="container">
+     <h2>
+      Select the Type of Calculation You Want to Perform
+     </h2>
+     <div class="calc-buttons-container">
+      <button class="calc-type-button active" data-calc-type="gasDensity">
+       Calculate Gas Density (d=PM/RT)
+      </button>
+      <button class="calc-type-button" data-calc-type="idealGasLaw">
+       Calculate Ideal Gas Law Parameters (PV=nRT)
+      </button>
+     </div>
+     <div class="calc-wrapper active-calc" id="calculator-gasDensity">
+      <h3>
+       <i class="fas fa-gas-pump icon-small">
+       </i>
+       Calculate Gas Density (d=PM/RT)
+      </h3>
+      <div class="calculator-form-container">
+       <form id="gasDensityForm">
+        <div class="input-with-unit">
+         <label for="pressure_density">
+          Pressure (P):
+         </label>
+         <input id="pressure_density" min="0.000001" placeholder="Örn: 1" required="" step="any" type="number"/>
+         <select id="pressureUnit_density">
+          <option value="atm">
+           ATM
+          </option>
+          <option value="kPa">
+           kPa
+          </option>
+          <option value="mmHg">
+           mmHg
+          </option>
+          <option value="psi">
+           psi
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="molarMass_density">
+          Molar Mass (M):
+         </label>
+         <input id="molarMass_density" min="0.000001" placeholder="Örn: 28.01 (N2 için)" required="" step="any" type="number"/>
+         <select id="molarMassUnit_density">
+          <option value="g/mol">
+           g/mol
+          </option>
+          <option value="kg/mol">
+           kg/mole
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="temperature_density">
+          Temperature (T):
+         </label>
+         <input id="temperature_density" min="0.000001" placeholder="Örn: 273.15 (Kelvin)" required="" step="any" type="number"/>
+         <select id="temperatureUnit_density">
+          <option value="K">
+           Kelvin (K)
+          </option>
+          <option value="C">
+           Centigrade (°C)
+          </option>
+          <option value="F">
+           Fahrenheit (°F)
+          </option>
+         </select>
+        </div>
+        <button type="submit">
+         Calculate Density
+        </button>
+       </form>
+       <div class="result-display" id="gasDensityResult">
+       </div>
+       <div class="calc-explanation">
+        <p>
+         Bu hesaplayıcı, ideal gaz yasasının türetilmiş hali olan $ d = \frac{PM}{RT} $ formülünü kullanarak bir gazın yoğunluğunu hesaplar.
+        </p>
+        <ul>
+         <li>
+          <strong>
+           d:
+          </strong>
+          Gas density (g/L or kg/m³)
+         </li>
+         <li>
+          <strong>
+           P:
+          </strong>
+          Gas pressure
+         </li>
+         <li>
+          <strong>
+           M:
+          </strong>
+          Molar mass of gas
+         </li>
+         <li>
+          <strong>
+           R:
+          </strong>
+          Ideal gas constant (varies depending on units selected)
+         </li>
+         <li>
+          <strong>
+           T:
+          </strong>
+          Absolute temperature (Kelvin)
+         </li>
+        </ul>
+        <p>
+         Make sure you have selected all units correctly. Temperature must be entered in Kelvin (or will be converted).
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-idealGasLaw">
+      <h3>
+       <i class="fas fa-atom icon-small">
+       </i>
+       Calculate Ideal Gas Law Parameters (PV=nRT)
+      </h3>
+      <div class="calculator-form-container">
+       <form id="idealGasLawForm">
+        <p>
+         Enter the three known values and leave the field you want to calculate blank.
+        </p>
+        <div class="input-with-unit">
+         <label for="pressure_ideal">
+          Pressure (P):
+         </label>
+         <input id="pressure_ideal" min="0" placeholder="Örn: 1" step="any" type="number"/>
+         <select id="pressureUnit_ideal">
+          <option value="atm">
+           ATM
+          </option>
+          <option value="kPa">
+           kPa
+          </option>
+          <option value="mmHg">
+           mmHg
+          </option>
+          <option value="psi">
+           psi
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="volume_ideal">
+          Volume (V):
+         </label>
+         <input id="volume_ideal" min="0" placeholder="Örn: 22.4" step="any" type="number"/>
+         <select id="volumeUnit_ideal">
+          <option value="L">
+           Liter (L)
+          </option>
+          <option value="m3">
+           Cubic meter (m³)
+          </option>
+          <option value="mL">
+           Milliliter (mL)
+          </option>
+          <option value="cm3">
+           Cubic centimeter (cm³)
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="moles_ideal">
+          Number of Moles (n):
+         </label>
+         <input id="moles_ideal" min="0" placeholder="Örn: 1" step="any" type="number"/>
+         <select id="molesUnit_ideal">
+          <option value="mol">
+           mole
+          </option>
+          <option value="mmol">
+           mmol
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="temperature_ideal">
+          Temperature (T):
+         </label>
+         <input id="temperature_ideal" min="0" placeholder="Örn: 273.15" step="any" type="number"/>
+         <select id="temperatureUnit_ideal">
+          <option value="K">
+           Kelvin (K)
+          </option>
+          <option value="C">
+           Centigrade (°C)
+          </option>
+          <option value="F">
+           Fahrenheit (°F)
+          </option>
+         </select>
+        </div>
+        <button type="submit">
+         Calculate
+        </button>
+       </form>
+       <div class="result-display" id="idealGasLawResult">
+       </div>
+       <div class="calc-explanation">
+        <p>
+         Bu hesaplayıcı, gazların dört temel parametresi arasındaki ilişkiyi açıklayan **İdeal Gaz Yasası** ($ PV=nRT $) formülünü kullanarak, bilinen üç değeri kullanarak dördüncü bilinmeyeni bulur.
+        </p>
+        <ul>
+         <li>
+          <strong>
+           P:
+          </strong>
+          Pressure
+         </li>
+         <li>
+          <strong>
+           V:
+          </strong>
+          Volume
+         </li>
+         <li>
+          <strong>
+           n:
+          </strong>
+          Number of moles
+         </li>
+         <li>
+          <strong>
+           R:
+          </strong>
+          Ideal gas constant (automatically adjusted according to selected units)
+         </li>
+         <li>
+          <strong>
+           T:
+          </strong>
+          Absolute temperature (Kelvin)
+         </li>
+        </ul>
+        <p>
+         Please leave the one field you want to calculate blank and enter the other three values. The temperature must be in Kelvin (or it will be converted).
+        </p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="info-section container">
+    <h3>
+     What is Gas Density and the Ideal Gas Law?
+    </h3>
+    <p>
+     The density of a gas is the mass per unit volume of a gas at a given temperature and pressure. Unlike solids and liquids, the density of gases changes significantly with temperature and pressure because the spaces between the molecules of the gas are much greater.
+    </p>
+    <p>
+     **Ideal Gas Law** is a fundamental equation that describes the behavior of gases and can be applied to many gases with high accuracy. Its formula is as follows:
+    </p>
+    <p class="formula-text">
+     $ PV = nRT $
+    </p>
+    <ul>
+     <li>
+      $ \mathbf{P} $: Gazın basıncı (atmosfer, kilopaskal, mmHg vb.)
+     </li>
+     <li>
+      $ \mathbf{V} $: Gazın hacmi (litre, metreküp vb.)
+     </li>
+     <li>
+      $ \mathbf{n} $: Gazın mol sayısı
+     </li>
+     <li>
+      $ \mathbf{R} $: İdeal gaz sabiti (birimlere göre sabit değeri değişir)
+     </li>
+     <li>
+      $ \mathbf{T} $: Mutlak sıcaklık (Kelvin cinsinden)
+     </li>
+    </ul>
+    <h4>
+     Gas Density Formula (Derived from Ideal Gas Law)
+    </h4>
+    <p>
+     From the Ideal Gas Law, we can express the density (d) of the gas in terms of its molar mass (M):
+    </p>
+    <p class="formula-text">
+     $ d = \frac{PM}{RT} $
+    </p>
+    <ul>
+     <li>
+      $ \mathbf{d} $: Gaz yoğunluğu (genellikle g/L veya kg/m³)
+     </li>
+     <li>
+      $ \mathbf{M} $: Gazın mol kütlesi (g/mol veya kg/mol)
+     </li>
+     <li>
+      Other variables are as above.
+     </li>
+    </ul>
+    <h4>
+     Ideal Gas Constant (R) Values
+    </h4>
+    <p>
+     Our calculator will automatically select the appropriate R value based on the units you enter. The most commonly used R values are:
+    </p>
+    <ul>
+     <li>
+      $ R = 0.08206 \text{ L} \cdot \text{atm} / (\text{mol} \cdot \text{K}) $
+     </li>
+     <li>
+      $ R = 8.314 \text{ J} / (\text{mol} \cdot \text{K}) $ (veya $ \text{L} \cdot \text{kPa} / (\text{mol} \cdot \text{K}) $)
+     </li>
+     <li>
+      $ R = 62.36 \text{ L} \cdot \text{mmHg} / (\text{mol} \cdot \text{K}) $
+     </li>
+     <li>
+      $ R = 8.314 \times 10^3 \text{ L} \cdot \text{Pa} / (\text{mol} \cdot \text{K}) $
+     </li>
+    </ul>
+    <h4>
+     Temperature Conversions
+    </h4>
+    <p>
+     In the ideal gas law, the temperature must always be the absolute temperature in Kelvin.
+    </p>
+    <ul>
+     <li>
+      Kelvin (K) = Celsius (°C) + 273.15
+     </li>
+     <li>
+      Celsius (°C) = (Fahrenheit (°F) - 32) / 1.8
+     </li>
+    </ul>
+    <h4>
+     Application Areas:
+    </h4>
+    <ul>
+     <li>
+      <strong>
+       Chemistry and Physics Laboratories:
+      </strong>
+      Calculation of gas reactions, measurement of gas volumes.
+     </li>
+     <li>
+      <strong>
+       Meteorology:
+      </strong>
+      Understand the effects of atmospheric pressure and temperature changes on weather.
+     </li>
+     <li>
+      <strong>
+       Engineering:
+      </strong>
+      Design of HVAC systems, combustion processes, storage tanks.
+     </li>
+     <li>
+      <strong>
+       Diving and Respiratory Systems:
+      </strong>
+      Calculation of gas amount in cylinders and consumption rates.
+     </li>
+     <li>
+      <strong>
+       Space Science:
+      </strong>
+      Design of spacecraft life support systems.
+     </li>
+    </ul>
+    <p class="disclaimer-text">
+     This calculator calculates gas density and other parameters based on the ideal gas law. Real gases can deviate from ideal gas behavior, especially at high pressures and low temperatures. Therefore, more complex gas models (such as the van der Waals equation) should be used in critical applications and when real gas behavior is important. Be sure to use consistent units in your calculations.
+    </p>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

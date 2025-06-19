@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Yarn Length Calculation - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="Calculate the length (meter/yard) of yarn of a given weight (gram/kg) according to different yarn count systems (Tex, Denier, Ne, Nm). Practical tool for yarn supply and production planning." name="description"/>
+  <meta content="yarn length, yarn weight, yarn meter, tex, denier, ne, nm, yarn calculation, textile engineering calculations, hesapkolik textile" name="keywords"/>
+  <link href="../../css/style.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+  <link href="https://hesapkolik.net/muhendislik/tekstil/iplik-uzunlugu.html" hreflang="tr" rel="alternate"/>
+  <link href="https://hesapkolik.net/en/muhendislik/tekstil/iplik-uzunlugu.html" hreflang="en" rel="alternate"/>
+  <link href="https://hesapkolik.net/muhendislik/tekstil/iplik-uzunlugu.html" hreflang="x-default" rel="alternate"/>
+ </head>
+ <!-- Google tag (gtag.js) -->
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="health-calculators-section">
+    <div class="container">
+     <h1 class="main-title">
+      Yarn Length Calculator
+     </h1>
+     <p class="section-description">
+      Easily calculate the approximate length (meters or yards) of yarn of a given weight (grams or kilograms) according to the selected yarn count system (Tex, Denier, Ne, Nm). A practical tool for yarn orders, production planning and stock management.
+     </p>
+     <div class="calculator-group">
+      <div class="calculator-card-wrapper">
+       <div class="calculator-header">
+        <i class="fas fa-arrows-alt-h icon-small">
+        </i>
+        <h2>
+         Calculate Thread Length
+        </h2>
+       </div>
+       <div class="calculator-form-container">
+        <form id="yarnLengthForm">
+         <div class="input-with-unit">
+          <label for="yarnWeight">
+           Yarn Weight:
+          </label>
+          <input id="yarnWeight" min="0" placeholder="Örn: 500" required="" step="0.001" type="number"/>
+          <select id="weightUnit">
+           <option value="gram">
+            Grams (gr)
+           </option>
+           <option value="kg">
+            Kilogram (kg)
+           </option>
+           <option value="pound">
+            Pounds (lb)
+           </option>
+          </select>
+         </div>
+         <div class="input-with-unit">
+          <label for="yarnCount">
+           Yarn Count:
+          </label>
+          <input id="yarnCount" min="0.01" placeholder="Örn: 20" required="" step="0.01" type="number"/>
+          <select id="countSystem">
+           <option value="tex">
+            Tex
+           </option>
+           <option value="denye">
+            Denier
+           </option>
+           <option value="ne">
+            What (Cotton Count)
+           </option>
+           <option value="nm">
+            Nm (Metric Number)
+           </option>
+           <option value="dtex">
+            dTex
+           </option>
+          </select>
+         </div>
+         <button onclick="calculateYarnLength()" type="button">
+          Calculate
+         </button>
+        </form>
+        <div class="result-display" id="resultBox">
+         <h3>
+          Conclusion:
+         </h3>
+         <p>
+          <strong>
+           Estimated Thread Length:
+          </strong>
+          <span class="result-value" id="yarnLengthResult">
+          </span>
+         </p>
+        </div>
+        <p class="small-text">
+         Make sure you enter the yarn count and weight units correctly. Calculations are based on average values.
+        </p>
+       </div>
+      </div>
+      <section class="info-section">
+       <h3>
+        What is Thread Length Calculation?
+       </h3>
+       <p>
+        **Yarn length calculation** is the process of determining how many meters or yards a certain weight (e.g. 1 kilogram) of yarn will be, according to the units representing the fineness (count) of that yarn. This calculation is critical for raw material management, cost analysis, winding, winding and estimating yarn consumption in textile production.
+       </p>
+       <p>
+        Yarn count indicates the length of the yarn per unit weight (indirect systems) or the weight per unit length (direct systems). With these two pieces of information, the total length of the yarn of any weight can be found.
+       </p>
+       <h4>
+        Why Is Thread Length Important?
+       </h4>
+       <ul>
+        <li>
+         **Raw Material Planning:** Estimating how much yarn will be required for a particular production order.
+        </li>
+        <li>
+         **Cost Analysis:** Calculating the yarn cost per unit length (meter).
+        </li>
+        <li>
+         **Stock Management:** Estimating the total length of yarn bobbins or lots in the warehouse.
+        </li>
+        <li>
+         **Production Efficiency:** Optimizing yarn feeding and consumption in weaving or knitting machines.
+        </li>
+        <li>
+         **Quality Control:** Checking the consistency of yarn count and length.
+        </li>
+       </ul>
+       <h4>
+        How to Calculate Thread Length?
+       </h4>
+       <p>
+        Different formulas are used depending on the yarn count system and the unit of weight. Calculations are usually based on the weight of a given length of yarn (direct systems such as Tex, Denier, dTex) or the length of a given weight (indirect systems such as Ne, Nm).
+       </p>
+       <p class="formula-text">
+        **General Principle:** Length = Weight / (Yarn Count * Conversion Factor)
+        <br/>
+        or Length = Weight * (Yarn Count * Conversion Factor)
+       </p>
+       <p>
+        **Some Sample Formulas:**
+        <ul>
+         <li>
+          **Tex (Meter):** Length (m) = (Weight (gr) / Tex) * 1000
+         </li>
+         <li>
+          **Denier (Meter):** Length (m) = (Weight (gr) / Denier) * 9000
+         </li>
+         <li>
+          **Nm (Meter):** Length (m) = Weight (gr) * Nm
+         </li>
+         <li>
+          **What (Yards):** Length (yards) = Weight (lb) * What * 840
+         </li>
+        </ul>
+        Our calculator determines the length by automatically applying the relevant formula based on the units and yarn count system you choose.
+       </p>
+       <h4>
+        Application Areas:
+       </h4>
+       <ul>
+        <li>
+         Yarn spinning mills and winding departments.
+        </li>
+        <li>
+         Production planning units of weaving and knitting factories.
+        </li>
+        <li>
+         Textile laboratories and R&amp;amp;D studies.
+        </li>
+        <li>
+         Manufacturers of all textile products whose raw materials are yarn.
+        </li>
+       </ul>
+       <p class="disclaimer-text">
+        This calculator is for general information purposes only and provides theoretical calculations. Actual yarn length may be affected by factors such as yarn twist, moisture content, winding tension and test conditions. For precise commercial or industrial applications, internationally standardized measuring equipment and tests by experienced personnel should be used as a basis. If you have any problems with your calculations, please contact us.
+        <a href="../../iletisim.html">
+         communication
+        </a>
+        reach us from our page.
+       </p>
+      </section>
+     </div>
+    </div>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

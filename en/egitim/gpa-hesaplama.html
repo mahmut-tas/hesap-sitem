@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   GPA (Grade Point Average) Calculator - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <meta content="Easily calculate your college and high school grade point average (GPA/CGPA). Analyze your academic status with current term, cumulative and target GPA calculation tools." name="description"/>
+  <meta content="gpa calculation, grade point average calculation, CGPA calculation, term grade, cumulative grade point average, target GPA, average increase, course grade calculation, credit grade calculation, hesapkolik education" name="keywords"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <link href="../css/style.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <style>
+   /* Sadece bu sayfaya özel stil eklemeleri - Genel style.css'ten sonra yüklenir */
+        .calculator-form-container .input-group {
+            margin-bottom: 20px;
+        }
+        .calculator-form-container .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calculator-form-container .input-group input[type="number"],
+        .calculator-form-container .input-group select {
+            width: 100%;
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calculator-form-container .input-group input[type="number"]:focus,
+        .calculator-form-container .input-group select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        /* Ders Ekleme/Çıkarma Butonları ve Ders Satırları */
+        .grade-input-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: flex-end; /* Butonların hizasını düzenler */
+        }
+        .grade-input-row .input-group {
+            flex: 1; /* Input gruplarını esnek yapar */
+            margin-bottom: 0; /* İç input gruplarının margin'ini kaldırırız */
+        }
+        .grade-input-row .input-group:last-of-type {
+            flex: 0 0 100px; /* Son input grubunu (not) sabit genişlikte tutar */
+        }
+        .add-remove-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end; /* Butonları sağa hizalar */
+            margin-top: 10px;
+        }
+        .add-lesson-button, .remove-lesson-button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .add-lesson-button {
+            background-color: #28a745;
+            color: white;
+        }
+        .add-lesson-button:hover {
+            background-color: #218838;
+        }
+        .remove-lesson-button {
+            background-color: #dc3545;
+            color: white;
+        }
+        .remove-lesson-button:hover {
+            background-color: #c82333;
+        }
+
+        /* Result display specific styles */
+        .result-display strong {
+            color: #e74c3c;
+        }
+        .result-display p {
+            margin: 5px 0;
+        }
+        .result-display p:last-child {
+            margin-bottom: 0;
+        }
+        .result-display .error {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        /* Calculator explanation styles */
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+        .calc-explanation h4 {
+            color: #34495e;
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .calc-explanation ul {
+            list-style-type: disc;
+            margin: 10px 0 15px 20px;
+            padding: 0;
+        }
+        .calc-explanation ul li {
+            margin-bottom: 5px;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+            overflow-x: auto; /* Küçük ekranlarda formül taşmasını önler */
+        }
+
+        /* Gizli ve Aktif Hesaplayıcı Stilleri */
+        .hidden-calc {
+            display: none;
+        }
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+        /* Hero Section için header ile aynı arka plan */
+        .hero-section {
+            background-color: #34495e; 
+            color: white; 
+            padding: 80px 0; 
+            text-align: center; 
+        }
+        .hero-section h1 {
+            font-size: 3em; 
+            margin-bottom: 20px; 
+        }
+        .hero-section p {
+            font-size: 1.2em; 
+            opacity: 0.9; 
+        }
+        /* Calculator Selection Section */
+        .calculator-selection-section { 
+            padding: 50px 0; 
+            text-align: center; 
+            background-color: #eaf0f0; 
+            border-bottom: 1px solid #dee7e7; 
+        } 
+        .calculator-selection-section h2 { 
+            margin-bottom: 30px; 
+            color: #2c3e50; 
+            font-size: 2.2em; 
+        } 
+        .calc-buttons-container { 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            gap: 15px; 
+            margin-bottom: 40px; 
+        } 
+        .calc-type-button { 
+            background-color: #3498db; 
+            color: white; 
+            padding: 15px 25px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 1.1em; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease, transform 0.2s ease; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+            flex: 1 1 auto; /* Esnek buton genişliği */
+            max-width: 320px; /* Butonların maksimum genişliği */
+            text-align: center; 
+        } 
+        .calc-type-button:hover { 
+            background-color: #2980b9; 
+            transform: translateY(-3px); 
+        } 
+        .calc-wrapper { 
+            background-color: #ffffff; 
+            padding: 40px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); 
+            max-width: 800px; /* Kapsamlı hesaplayıcı için genişlik artırıldı */
+            margin: 30px auto; 
+            text-align: left; 
+        } 
+        .calc-wrapper h3 { 
+            font-size: 2em; 
+            color: #e74c3c; 
+            margin-bottom: 25px; 
+            text-align: center; 
+        } 
+        .calculator-form-container button[type="submit"] { 
+            background-color: #28a745; 
+            color: white; 
+            padding: 12px 20px; 
+            border: none; 
+            border-radius: 5px; 
+            font-size: 1.1em; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease, transform 0.2s ease; 
+            width: 100%; 
+            box-sizing: border-box; 
+            margin-top: 10px; 
+        } 
+        .calculator-form-container button[type="submit"]:hover { 
+            background-color: #218838; 
+            transform: translateY(-2px); 
+        } 
+        .result-display { 
+            margin-top: 25px; 
+            font-size: 1.1em; 
+            font-weight: 600; 
+            color: #2c3e50; 
+            text-align: center; 
+            min-height: 1.8em; 
+            background-color: #ecf0f1; 
+            padding: 15px 20px; 
+            border-radius: 8px; 
+            border: 1px solid #dcdfe4; 
+        } 
+        .result-display .result-value { 
+            color: #e74c3c; 
+            font-weight: 700; 
+            font-size: 1.3em; 
+        } 
+        .info-section { 
+            padding: 40px 0; 
+            background-color: #ffffff; 
+            margin-top: 40px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            border-radius: 8px; 
+        } 
+        .info-section h3 { 
+            color: #e74c3c; 
+            font-size: 1.8em; 
+            margin-bottom: 20px; 
+            text-align: center; 
+        } 
+        .info-section p { 
+            color: #666; 
+            line-height: 1.6; 
+            margin-bottom: 15px; 
+            padding: 0 20px; 
+            text-align: justify; 
+        } 
+        .info-section ul { 
+            list-style-type: disc; 
+            margin: 0 20px 20px 40px; 
+            color: #666; 
+        } 
+        .info-section ul li { 
+            margin-bottom: 10px; 
+            line-height: 1.5; 
+        } 
+        .info-section strong { 
+            color: #333; 
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1em; /* Daha küçük ekranda daha küçük font */
+            }
+            .grade-input-row {
+                flex-direction: column; /* Ders satırlarını dikey hizala */
+                align-items: stretch;
+            }
+            .grade-input-row .input-group {
+                flex: none; /* Esnekliği kaldır */
+                width: 100%; /* Tam genişlik */
+                margin-bottom: 10px;
+            }
+            .grade-input-row .input-group:last-of-type {
+                width: 100%; /* Tam genişlik */
+            }
+        }
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+        }
+  </style>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+  <link href="https://hesapkolik.net/egitim/gpa-hesaplama.html" hreflang="tr" rel="alternate"/>
+  <link href="https://hesapkolik.net/en/egitim/gpa-hesaplama.html" hreflang="en" rel="alternate"/>
+  <link href="https://hesapkolik.net/egitim/gpa-hesaplama.html" hreflang="x-default" rel="alternate"/>
+ </head>
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="hero-section">
+    <div class="container">
+     <h1>
+      GPA (Grade Point Average) Calculator
+     </h1>
+     <p>
+      Track your academic success, achieve your goals! Easily calculate your grade point average (GPA/CGPA) and plan your future.
+     </p>
+    </div>
+   </section>
+   <section class="calculator-selection-section">
+    <div class="container">
+     <h2>
+      Select GPA Calculation Method:
+     </h2>
+     <div class="calc-buttons-container">
+      <button class="calc-type-button active" data-calc-type="current-gpa">
+       Semester / Yearly GPA Calculation
+      </button>
+      <button class="calc-type-button" data-calc-type="cumulative-gpa">
+       Cumulative GPA (CGPA) Calculation
+      </button>
+      <button class="calc-type-button" data-calc-type="target-gpa">
+       Target GPA Reaching Calculator
+      </button>
+     </div>
+     <div class="calc-wrapper" id="calculator-current-gpa">
+      <h3>
+       <i class="fas fa-calculator icon-small">
+       </i>
+       Term / Annual Grade Point Average (GPA) Calculation
+      </h3>
+      <div class="calculator-form-container">
+       <form id="formCurrentGPA">
+        <div id="current-gpa-lessons-container">
+         <div class="grade-input-row">
+          <div class="input-group">
+           <label for="currentLessonCredit1">
+            Course Credits:
+           </label>
+           <input class="current-lesson-credit" id="currentLessonCredit1" min="1" required="" step="0.5" type="number" value="3"/>
+          </div>
+          <div class="input-group">
+           <label for="currentLessonGrade1">
+            Letter Grade:
+           </label>
+           <select class="current-lesson-grade" id="currentLessonGrade1" required="">
+            <option value="4.00">
+             AA
+            </option>
+            <option value="3.70">
+             BA
+            </option>
+            <option value="3.30">
+             BB
+            </option>
+            <option value="3.00">
+             CB
+            </option>
+            <option value="2.70">
+             CC
+            </option>
+            <option value="2.30">
+             DC
+            </option>
+            <option value="2.00">
+             DD
+            </option>
+            <option value="1.70">
+             FD
+            </option>
+            <option value="1.00">
+             FF
+            </option>
+           </select>
+          </div>
+         </div>
+        </div>
+        <div class="add-remove-buttons">
+         <button class="add-lesson-button" id="addCurrentGPALesson" type="button">
+          <i class="fas fa-plus">
+          </i>
+          Add a Course
+         </button>
+         <button class="remove-lesson-button" id="removeCurrentGPALesson" type="button">
+          <i class="fas fa-minus">
+          </i>
+          Delete Last Lesson
+         </button>
+        </div>
+        <button type="submit">
+         Calculate
+        </button>
+       </form>
+       <div class="result-display" id="resultCurrentGPA" style="display: none;">
+       </div>
+       <div class="calc-explanation">
+        <h4>
+         How to Calculate?
+        </h4>
+        <p>
+         This calculator will help you calculate your grade point average (GPA) for your current semester or your chosen courses. Simply enter the credits for each course and the letter grade you received. The numerical values corresponding to the letter grades (e.g. AA=4.00, BB=3.00, etc.) may vary depending on your university&amp;#39;s grading system; the values here are a general example.
+        </p>
+        <p class="formula-text">
+         GPA = (Σ (Course Credit * Letter Grade Numerical Value)) / (Σ Course Credit)
+        </p>
+        <ul>
+         <li>
+          <strong>
+           Example:
+          </strong>
+          You received an AA (4.00) in a 3-credit course and a BB (3.00) in a 4-credit course.
+          <ul>
+           <li>
+            GPA = ((3 * 4.00) + (4 * 3.00)) / (3 + 4) = (12.00 + 12.00) / 7 = 24.00 / 7 ≈ 3.43
+           </li>
+          </ul>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-cumulative-gpa">
+      <h3>
+       <i class="fas fa-chart-line icon-small">
+       </i>
+       Cumulative GPA (CGPA) Calculation
+      </h3>
+      <div class="calculator-form-container">
+       <form id="formCumulativeGPA">
+        <div class="input-group">
+         <label for="previousGPA">
+          Previous Semesters Total GPA (CGPA):
+         </label>
+         <input id="previousGPA" max="4.00" min="0" placeholder="Örn: 2.85" required="" step="0.01" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="previousCredits">
+          Total Credits Completed in Previous Periods:
+         </label>
+         <input id="previousCredits" min="0" placeholder="Örn: 60" required="" step="1" type="number"/>
+        </div>
+        <hr style="margin: 20px 0;"/>
+        <h4>
+         New Term Courses:
+        </h4>
+        <div id="new-gpa-lessons-container">
+         <div class="grade-input-row">
+          <div class="input-group">
+           <label for="newLessonCredit1">
+            Course Credits:
+           </label>
+           <input class="new-lesson-credit" id="newLessonCredit1" min="1" required="" step="0.5" type="number" value="3"/>
+          </div>
+          <div class="input-group">
+           <label for="newLessonGrade1">
+            Letter Grade:
+           </label>
+           <select class="new-lesson-grade" id="newLessonGrade1" required="">
+            <option value="4.00">
+             AA
+            </option>
+            <option value="3.70">
+             BA
+            </option>
+            <option value="3.30">
+             BB
+            </option>
+            <option value="3.00">
+             CB
+            </option>
+            <option value="2.70">
+             CC
+            </option>
+            <option value="2.30">
+             DC
+            </option>
+            <option value="2.00">
+             DD
+            </option>
+            <option value="1.70">
+             FD
+            </option>
+            <option value="1.00">
+             FF
+            </option>
+           </select>
+          </div>
+         </div>
+        </div>
+        <div class="add-remove-buttons">
+         <button class="add-lesson-button" id="addNewGPALesson" type="button">
+          <i class="fas fa-plus">
+          </i>
+          Add a Course
+         </button>
+         <button class="remove-lesson-button" id="removeNewGPALesson" type="button">
+          <i class="fas fa-minus">
+          </i>
+          Delete Last Lesson
+         </button>
+        </div>
+        <button type="submit">
+         Calculate
+        </button>
+       </form>
+       <div class="result-display" id="resultCumulativeGPA" style="display: none;">
+       </div>
+       <div class="calc-explanation">
+        <h4>
+         How to Calculate?
+        </h4>
+        <p>
+         Cumulative GPA (CGPA) shows your average across your academic career. This calculator combines your previous semesters&amp;#39; GPA and the total credits you&amp;#39;ve completed with your current semester&amp;#39;s course grades to find your current GPA.
+        </p>
+        <p class="formula-text">
+         New GPA = ((Previous GPA * Previous Total Credit) + New Term Total Credit Score) / (Previous Total Credit + New Term Total Credit)
+        </p>
+        <ul>
+         <li>
+          <strong>
+           Example:
+          </strong>
+          Previous CGPA: 2.85 (60 credits). In the new semester, you received AA (4.00) from 3 credit courses and BB (3.00) from 4 credit courses.
+          <ul>
+           <li>
+            Previous Credit Score = 2.85 * 60 = 171
+           </li>
+           <li>
+            New Term Credit Score = (3 * 4.00) + (4 * 3.00) = 12 + 12 = 24
+           </li>
+           <li>
+            New Total Credit = 60 + 3 + 4 = 67
+           </li>
+           <li>
+            New GPA = (171 + 24) / 67 = 195 / 67 ≈ 2.91
+           </li>
+          </ul>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-target-gpa">
+      <h3>
+       <i class="fas fa-bullseye icon-small">
+       </i>
+       Target GPA Reaching Calculator
+      </h3>
+      <div class="calculator-form-container">
+       <form id="formTargetGPA">
+        <div class="input-group">
+         <label for="currentCumulativeGPA">
+          Current Cumulative GPA (CGPA):
+         </label>
+         <input id="currentCumulativeGPA" max="4.00" min="0" placeholder="Örn: 2.60" required="" step="0.01" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="completedCredits">
+          Total Credits Completed:
+         </label>
+         <input id="completedCredits" min="0" placeholder="Örn: 75" required="" step="1" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="targetGPA">
+          Target GPA You Want to Achieve:
+         </label>
+         <input id="targetGPA" max="4.00" min="0" placeholder="Örn: 3.00" required="" step="0.01" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="remainingCredits">
+          Number of Remaining Credits (This term and future terms):
+         </label>
+         <input id="remainingCredits" min="1" placeholder="Örn: 45" required="" step="1" type="number"/>
+        </div>
+        <button type="submit">
+         Calculate
+        </button>
+       </form>
+       <div class="result-display" id="resultTargetGPA" style="display: none;">
+       </div>
+       <div class="calc-explanation">
+        <h4>
+         How to Calculate?
+        </h4>
+        <p>
+         This calculator helps you strategize to achieve your academic goals. Using your current GPA, the number of credits you have completed, the target GPA you want to achieve, and the total credits you have left, it calculates the average number of remaining courses you need to take to reach that goal.
+        </p>
+        <p class="formula-text">
+         Required Average from Remaining Courses = ((Target GPA * (Completed Credits + Remaining Credits)) - (Current CGPA * Completed Credits)) / Remaining Credits
+        </p>
+        <ul>
+         <li>
+          <strong>
+           Example:
+          </strong>
+          Current GPA: 2.60 (75 credits). Target GPA: 3.00. Remaining credits: 45.
+          <ul>
+           <li>
+            Total Points Required = (3.00 * (75 + 45)) - (2.60 * 75) = (3.00 * 120) - 195 = 360 - 195 = 165
+           </li>
+           <li>
+            Required Average from Remaining Courses = 165 / 45 ≈ 3.67
+           </li>
+           <li>
+            This means you must get an average of 3.67 (approximately BA-AA) on the remaining 45 credits.
+           </li>
+          </ul>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="info-section container">
+    <h3>
+     What is GPA and Why is it Important?
+    </h3>
+    <p>
+     <strong>
+      GPA (Grade Point Average)
+     </strong>
+     or as it is called in Türkiye **AGNO (Weighted Cumulative Grade Point Average)**, is a numerical value that shows the academic success of a student. It is usually calculated on a 4.00 system and is the average obtained by weighting the credits of the grades a student receives from his courses.
+    </p>
+    <p>
+     GPA not only reflects your academic standing, but also plays a significant role in scholarship applications, graduation degrees (e.g. honors, high honors), internship and job applications, and admissions to graduate/doctoral programs. A high GPA can open doors to future academic and career opportunities.
+    </p>
+    <h4>
+     Grading Systems and Conversions:
+    </h4>
+    <ul>
+     <li>
+      Universities often assign specific numerical equivalents (4.00, 3.50, 3.00, etc.) to letter grades (AA, BA, BB, CC, etc.). These equivalents may vary from university to university.
+     </li>
+     <li>
+      Some universities in Türkiye may also use a 100-point grading system. GPA calculators can help you convert between these different systems.
+     </li>
+    </ul>
+    <h4>
+     Tips to Increase GPA:
+    </h4>
+    <ul>
+     <li>
+      <strong>
+       Regular Study:
+      </strong>
+      Regularly repeating and understanding the topics increases exam success.
+     </li>
+     <li>
+      <strong>
+       Class Participation:
+      </strong>
+      Being active in lessons, asking questions and participating in discussions reinforces learning.
+     </li>
+     <li>
+      <strong>
+       Time Management:
+      </strong>
+      Balancing work and rest hours increases productivity.
+     </li>
+     <li>
+      <strong>
+       Don&amp;#39;t Hesitate to Get Help:
+      </strong>
+      Consult your professors, teaching assistants, or peer groups on topics you do not understand.
+     </li>
+     <li>
+      <strong>
+       Pay Attention to Credit Weight:
+      </strong>
+      Getting good grades in high-credit courses will raise your GPA faster.
+     </li>
+     <li>
+      <strong>
+       Goal Setting:
+      </strong>
+      Set achievable goals for yourself using tools like the &amp;quot;Target GPA Calculator&amp;quot; on this page.
+     </li>
+    </ul>
+    <p class="disclaimer-text">
+     These GPA calculators provide approximate results based on the data entered and general grading systems. Please note that your university or institution may have its own specific grading rules and rounding methods. Always contact your academic advisors or relevant faculty/department units for the most accurate and official results.
+    </p>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

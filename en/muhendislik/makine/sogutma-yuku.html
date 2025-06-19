@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Cooling / Heating Load Calculator - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="Calculate the heat load required for the heating or cooling system design of a space (room, building). Comprehensive analysis with indoor and outdoor temperature differences, area, U-value (heat transfer coefficient) and additional heat gains/losses." name="description"/>
+  <meta content="cooling load, heating load, heat gain, heat loss, heat transfer, u value, heat transfer coefficient, area, temperature difference, internal loads, ventilation load, air conditioning, HVAC, engineering calculations, calculative load" name="keywords"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <link href="../../css/style.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <style>
+   /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Seçim Bölümü Stilleri */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .calc-type-button {
+            background-color: #3498db; /* Mavi ton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
+            max-width: 250px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        .hidden-calc {
+            display: none;
+        }
+
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin {
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+        }
+        .input-with-unit label {
+            flex-basis: 100%; /* Label her zaman üstte veya solda */
+            margin-bottom: 5px;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input alanı boşluğu doldurur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .input-with-unit select {
+            flex-shrink: 0; /* Select kutusu sabit kalır */
+            width: auto; /* Select kutusu kendi genişliğinde olur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+  </style>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <link href="https://hesapkolik.net/muhendislik/makine/sogutma-yuku.html" hreflang="tr" rel="alternate"/>
+  <link href="https://hesapkolik.net/en/muhendislik/makine/sogutma-yuku.html" hreflang="en" rel="alternate"/>
+  <link href="https://hesapkolik.net/muhendislik/makine/sogutma-yuku.html" hreflang="x-default" rel="alternate"/>
+ </head>
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="hero-section">
+    <div class="container">
+     <h1>
+      Cooling / Heating Load Calculator
+     </h1>
+     <p>
+      Calculate the heat load required for the heating or cooling system design of a space (room, building).
+     </p>
+    </div>
+   </section>
+   <section class="calculator-selection-section">
+    <div class="container">
+     <h2>
+      Calculate Heat Load
+     </h2>
+     <div class="calc-buttons-container">
+      <button class="calc-type-button active" data-calc-type="coolingHeatingLoad">
+       Calculate Heat Load
+      </button>
+     </div>
+     <div class="calc-wrapper active-calc" id="calculator-coolingHeatingLoad">
+      <h3>
+       <i class="fas fa-snowflake icon-small">
+       </i>
+       Calculate Heat Load (Q = U ⋅ A ⋅ ΔT)
+      </h3>
+      <div class="calculator-form-container">
+       <form id="coolingHeatingLoadForm">
+        <div class="input-with-unit">
+         <label for="uValue">
+          Total Thermal Transfer Coefficient (U-Value):
+         </label>
+         <input id="uValue" min="0.000001" placeholder="Örn: 0.5 (Duvar için)" required="" step="any" type="number"/>
+         <select id="uValueUnit">
+          <option value="W/m2K">
+           W/(m² K)
+          </option>
+          <option value="Btu/hr-ft2F">
+           Btu/(hr·ft²·F)
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="area_load">
+          Area (A) (Wall, window, etc.):
+         </label>
+         <input id="area_load" min="0.000001" placeholder="Örn: 10 (m²)" required="" step="any" type="number"/>
+         <select id="areaUnit_load">
+          <option value="m2">
+           m²
+          </option>
+          <option value="ft2">
+           ft²
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit">
+         <label for="tempDiff_load">
+          Internal and External Temperature Difference (ΔT):
+         </label>
+         <input id="tempDiff_load" placeholder="Örn: 20 (Dış-İç sıcaklık)" required="" step="any" type="number"/>
+         <select id="tempDiffUnit_load">
+          <option value="C">
+           Centigrade (°C)
+          </option>
+          <option value="K">
+           Kelvin (K)
+          </option>
+          <option value="F">
+           Fahrenheit (°F)
+          </option>
+         </select>
+        </div>
+        <hr class="form-divider"/>
+        <p class="small-text">
+         Optional Additional Heat Gains/Losses:
+        </p>
+        <div class="input-with-unit">
+         <label for="infiltrationLoad">
+          Infiltration Load (Q_inf):
+         </label>
+         <input id="infiltrationLoad" placeholder="Örn: 100 (Watt)" step="any" type="number" value="0"/>
+         <select id="infiltrationLoadUnit">
+          <option value="W">
+           Watts (W)
+          </option>
+          <option value="kW">
+           Kilowatt (kW)
+          </option>
+          <option value="Btu/hr">
+           Btu/hour (Btu/hr)
+          </option>
+         </select>
+        </div>
+        <div class="input-with-unit">
+         <label for="occupancyLoad">
+          Human Load (Q_human):
+         </label>
+         <input id="occupancyLoad" placeholder="Örn: 200 (Watt)" step="any" type="number" value="0"/>
+         <select id="occupancyLoadUnit">
+          <option value="W">
+           Watts (W)
+          </option>
+          <option value="kW">
+           Kilowatt (kW)
+          </option>
+          <option value="Btu/hr">
+           Btu/hour (Btu/hr)
+          </option>
+         </select>
+        </div>
+        <div class="input-with-unit">
+         <label for="equipmentLoad">
+          Equipment Load (Q_equipment):
+         </label>
+         <input id="equipmentLoad" placeholder="Örn: 150 (Watt)" step="any" type="number" value="0"/>
+         <select id="equipmentLoadUnit">
+          <option value="W">
+           Watts (W)
+          </option>
+          <option value="kW">
+           Kilowatt (kW)
+          </option>
+          <option value="Btu/hr">
+           Btu/hour (Btu/hr)
+          </option>
+         </select>
+        </div>
+        <button type="submit">
+         Calculate Heat Load
+        </button>
+       </form>
+       <div class="result-display" id="coolingHeatingLoadResult">
+       </div>
+       <div class="calc-explanation">
+        <p>
+         Bu hesaplayıcı, bir yapı elemanı (duvar, pencere, çatı vb.) üzerinden iletim yoluyla geçen ısı yükünü ve isteğe bağlı olarak diğer iç/dış yükleri ($Q_{toplam} = Q_{iletim} + Q_{ek}$) belirler. Pozitif sonuç ısı kazancını (soğutma ihtiyacı), negatif sonuç ısı kaybını (ısıtma ihtiyacı) gösterir.
+        </p>
+        <p class="formula-text">
+         Q_transmission = U ⋅ A ⋅ ΔT
+        </p>
+        <p class="formula-text small-margin">
+         Q_total = Q_transmission + Q_leakage + Q_people + Q_equipment
+        </p>
+        <ul>
+         <li>
+          **U:** Total heat transfer coefficient (U-Value)
+         </li>
+         <li>
+          **A:** Heat transfer surface area
+         </li>
+         <li>
+          **ΔT:** İç ve dış sıcaklık farkı ($T_{dış} - T_{iç}$ veya $T_{iç} - T_{dış}$ olarak tanımlanabilir, işaretine dikkat edilmeli)
+         </li>
+         <li>
+          **Q_ek:** Other heat gains/losses (leakage, people, equipment, etc.)
+         </li>
+        </ul>
+        <p>
+         Hesaplamanızda doğru işaretli $\Delta T$ kullandığınızdan emin olun. Soğutma yükü için $T_{dış} - T_{iç}$, ısıtma yükü için $T_{iç} - T_{dış}$ genellikle pozitif sonuç verir ve ısıtma/soğutma ihtiyacını belirtir. Bu hesaplayıcıda $\Delta T$ değeri, pozitif ısı kazancı (soğutma) veya negatif ısı kaybı (ısıtma) sağlayacak şekilde doğrudan girilmelidir.
+        </p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="info-section container">
+    <h3>
+     What are Cooling and Heating Load Calculations?
+    </h3>
+    <p>
+     **Heating and cooling load calculations (HVAC - Heating, Ventilation and Air Conditioning)** are critical engineering analyses that determine how much heat energy a building or room must receive or give off to maintain a comfortable indoor temperature. These calculations are vital for selecting properly sized heating and cooling systems (air conditioners, boilers, radiators, etc.).
+    </p>
+    <h4>
+     Main Factors Affecting Heat Load:
+    </h4>
+    <ul>
+     <li>
+      <strong>
+       Transmission Load (Q_transmission):
+      </strong>
+      Heat flow through building envelope elements such as walls, windows, roofs and floors due to the difference in indoor and outdoor temperatures.
+      <p class="formula-text small-margin">
+       Q_transmission = U ⋅ A ⋅ ΔT
+      </p>
+      <ul>
+       <li>
+        **U-Value:** The overall thermal conductivity coefficient that indicates how well a building element conducts heat. A lower U-value means better insulation.
+       </li>
+       <li>
+        **A:** Surface area where heat transfer occurs.
+       </li>
+       <li>
+        **ΔT:** İç ortam ile dış ortam arasındaki sıcaklık farkı. Isıtma için genellikle $T_{iç} - T_{dış}$, soğutma için $T_{dış} - T_{iç}$ kullanılır.
+       </li>
+      </ul>
+     </li>
+     <li>
+      <strong>
+       Infiltration / Ventilation Load (Q_air):
+      </strong>
+      Heat gain or loss due to outside air entering through building cracks or open doors/windows or mechanical ventilation systems.
+     </li>
+     <li>
+      <strong>
+       Internal Heat Gains (Q_internal):
+      </strong>
+      Heat generation from people, lighting and electronic equipment. This is often a factor that increases the cooling load.
+     </li>
+     <li>
+      **Solar Radiation Load (Q_solar):** Heat gain due to solar radiation, especially entering through windows.
+     </li>
+    </ul>
+    <h4>
+     Purpose of Calculation:
+    </h4>
+    <p>
+     These calculators help estimate the total heating or cooling capacity needs for a given area of a building. Correct load calculation ensures that the system operates efficiently, avoids energy waste and ensures indoor comfort. Oversized systems waste energy, while undersized systems fail to provide the desired comfort.
+    </p>
+    <h4>
+     Application Areas:
+    </h4>
+    <ul>
+     <li>
+      <strong>
+       Building Design:
+      </strong>
+      Sizing HVAC systems for residential, commercial and industrial buildings.
+     </li>
+     <li>
+      <strong>
+       Energy Efficiency Analysis:
+      </strong>
+      Assessing and improving the energy performance of existing buildings.
+     </li>
+     <li>
+      <strong>
+       Insulation Material Selection:
+      </strong>
+      Determining the most suitable insulation solutions.
+     </li>
+     <li>
+      <strong>
+       Greenhouse Design:
+      </strong>
+      Maintaining optimum temperature conditions for plant growth.
+     </li>
+    </ul>
+    <p class="disclaimer-text">
+     This calculator provides estimates based on the basic principles of heating and cooling loads and the conduction load. In real world applications, more complex factors such as moisture loads (latent heat), air movements, thermal bridges, heat transfer to adjacent zones and operational scenarios can significantly affect the total heat load. Especially for large or complex buildings, detailed and professional HVAC engineering calculations, energy modeling software and local building code compliance analysis are required. This calculator is designed for general estimates and educational use.
+    </p>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

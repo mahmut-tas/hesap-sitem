@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   IELTS Puan Hesaplayıcı - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <meta content="IELTS puanınızı kolayca hesaplayın. Listening ve Reading için doğru cevap sayınızı, Writing ve Speaking için tahmini bant puanınızı girerek genel bant puanınızı öğrenin." name="description"/>
+  <meta content="IELTS puan hesaplama, IELTS skoru, IELTS Listening, IELTS Reading, IELTS Writing, IELTS Speaking, IELTS genel bant, İngilizce sınavı, doğru cevap sayısı IELTS, ham puan IELTS, hesapkolik IELTS" name="keywords"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <link href="../css/style.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <style>
+   /* Sadece bu sayfaya özel stil eklemeleri - Genel style.css'ten sonra yüklenir */
+        .calculator-form-container .input-group {
+            margin-bottom: 20px;
+        }
+        .calculator-form-container .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calculator-form-container .input-group input[type="number"],
+        .calculator-form-container .input-group select {
+            width: 100%;
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calculator-form-container .input-group input[type="number"]:focus,
+        .calculator-form-container .input-group select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        /* Result display specific styles */
+        .result-display strong {
+            color: #e74c3c;
+        }
+        .result-display p {
+            margin: 5px 0;
+        }
+        .result-display p:last-child {
+            margin-bottom: 0;
+        }
+        .result-display .error {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        /* Calculator explanation styles */
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+        .calc-explanation h4 {
+            color: #34495e;
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .calc-explanation ul {
+            list-style-type: disc;
+            margin: 10px 0 15px 20px;
+            padding: 0;
+        }
+        .calc-explanation ul li {
+            margin-bottom: 5px;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+            overflow-x: auto; /* Küçük ekranlarda formül taşmasını önler */
+        }
+
+        /* Gizli ve Aktif Hesaplayıcı Stilleri */
+        .hidden-calc {
+            display: none;
+        }
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+        /* Hero Section için header ile aynı arka plan */
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        /* Calculator Selection Section */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        .calc-type-button {
+            background-color: #3498db;
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 auto; /* Esnek buton genişliği */
+            max-width: 320px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 800px; /* Kapsamlı hesaplayıcı için genişlik artırıldı */
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .calculator-form-container button[type="submit"] {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button[type="submit"]:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1em; /* Daha küçük ekranda daha küçük font */
+            }
+        }
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+        }
+  </style>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+ </head>
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="hero-section">
+    <div class="container">
+     <h1>
+      IELTS Puan Hesaplayıcı
+     </h1>
+     <p>
+      IELTS sınavınızdaki her bölümden aldığınız veya tahmin ettiğiniz puanları girerek genel bant puanınızı kolayca hesaplayın.
+     </p>
+    </div>
+   </section>
+   <section class="calculator-selection-section">
+    <div class="container">
+     <h2>
+      IELTS Puanınızı Hesaplayın:
+     </h2>
+     <div class="calc-buttons-container" style="justify-content: center;">
+      <button class="calc-type-button active" data-calc-type="ielts-general-score">
+       Genel Bant Puanı Hesaplama
+      </button>
+      <button class="calc-type-button" data-calc-type="ielts-info">
+       IELTS Hakkında Bilgi
+      </button>
+     </div>
+     <div class="calc-wrapper" id="calculator-ielts-general-score">
+      <h3>
+       <i class="fas fa-language icon-small">
+       </i>
+       IELTS Genel Bant Puanı Hesaplama
+      </h3>
+      <div class="calculator-form-container">
+       <form id="formIeltsGeneralScore">
+        <div class="input-group">
+         <label for="listeningRawScore">
+          Listening Doğru Cevap Sayısı (Max 40):
+         </label>
+         <input id="listeningRawScore" max="40" min="0" placeholder="Örn: 30" required="" step="1" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="readingRawScore">
+          Reading Doğru Cevap Sayısı (Max 40):
+         </label>
+         <input id="readingRawScore" max="40" min="0" placeholder="Örn: 28" required="" step="1" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="writingBandScore">
+          Writing Puanınız (0.0 - 9.0):
+         </label>
+         <select id="writingBandScore" required="">
+          <option value="">
+           Puan Seçin
+          </option>
+          <option value="0.0">
+           0.0
+          </option>
+          <option value="0.5">
+           0.5
+          </option>
+          <option value="1.0">
+           1.0
+          </option>
+          <option value="1.5">
+           1.5
+          </option>
+          <option value="2.0">
+           2.0
+          </option>
+          <option value="2.5">
+           2.5
+          </option>
+          <option value="3.0">
+           3.0
+          </option>
+          <option value="3.5">
+           3.5
+          </option>
+          <option value="4.0">
+           4.0
+          </option>
+          <option value="4.5">
+           4.5
+          </option>
+          <option value="5.0">
+           5.0
+          </option>
+          <option value="5.5">
+           5.5
+          </option>
+          <option value="6.0">
+           6.0
+          </option>
+          <option value="6.5">
+           6.5
+          </option>
+          <option value="7.0">
+           7.0
+          </option>
+          <option value="7.5">
+           7.5
+          </option>
+          <option value="8.0">
+           8.0
+          </option>
+          <option value="8.5">
+           8.5
+          </option>
+          <option value="9.0">
+           9.0
+          </option>
+         </select>
+        </div>
+        <div class="input-group">
+         <label for="speakingBandScore">
+          Speaking Puanınız (0.0 - 9.0):
+         </label>
+         <select id="speakingBandScore" required="">
+          <option value="">
+           Puan Seçin
+          </option>
+          <option value="0.0">
+           0.0
+          </option>
+          <option value="0.5">
+           0.5
+          </option>
+          <option value="1.0">
+           1.0
+          </option>
+          <option value="1.5">
+           1.5
+          </option>
+          <option value="2.0">
+           2.0
+          </option>
+          <option value="2.5">
+           2.5
+          </option>
+          <option value="3.0">
+           3.0
+          </option>
+          <option value="3.5">
+           3.5
+          </option>
+          <option value="4.0">
+           4.0
+          </option>
+          <option value="4.5">
+           4.5
+          </option>
+          <option value="5.0">
+           5.0
+          </option>
+          <option value="5.5">
+           5.5
+          </option>
+          <option value="6.0">
+           6.0
+          </option>
+          <option value="6.5">
+           6.5
+          </option>
+          <option value="7.0">
+           7.0
+          </option>
+          <option value="7.5">
+           7.5
+          </option>
+          <option value="8.0">
+           8.0
+          </option>
+          <option value="8.5">
+           8.5
+          </option>
+          <option value="9.0">
+           9.0
+          </option>
+         </select>
+        </div>
+        <button type="submit">
+         Genel Puanı Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="resultIeltsGeneralScore" style="display: none;">
+       </div>
+       <div class="calc-explanation">
+        <h4>
+         Nasıl Hesaplanır?
+        </h4>
+        <p>
+         IELTS Genel Bant Puanı, Listening, Reading, Writing ve Speaking olmak üzere dört bölümden aldığınız puanların ortalaması alınarak hesaplanır. Listening ve Reading bölümleri için 40 sorudan doğru cevap sayınızı girerek tahmini bant puanınızı bulabilirsiniz. Writing ve Speaking bölümleri ise sınav görevlileri tarafından doğrudan 0.0-9.0 bandında puanlandığı için bu puanları manuel olarak seçmelisiniz.
+        </p>
+        <p>
+         Ortaya çıkan ondalıklı bir puan varsa, en yakın tam veya yarım banda yuvarlanır:
+        </p>
+        <ul>
+         <li>
+          Eğer ortalama puanın ondalık kısmı **.25 ile .74** arasında ise, en yakın **yarım banda** yuvarlanır (örneğin 6.25 veya 6.49 ise 6.5'e).
+         </li>
+         <li>
+          Eğer ortalama puanın ondalık kısmı **.75 ve üzeri** ise, bir sonraki **tam banda** yuvarlanır (örneğin 6.75 veya 6.99 ise 7.0'a).
+         </li>
+         <li>
+          Eğer ortalama puanın ondalık kısmı **.24 ve altı** ise, aynı tam banda yuvarlanır (örneğin 6.00 veya 6.24 ise 6.0'a).
+         </li>
+        </ul>
+        <p class="disclaimer-text">
+         Bu hesaplayıcı, resmi IELTS yuvarlama kurallarına uygun olarak puanınızı tahmin eder. Listening ve Reading için doğru cevap sayısı-bant puanı dönüşümleri yaklaşık değerlerdir ve sınavdan sınava küçük farklılıklar gösterebilir. Gerçek IELTS puanınız, sınav merkezleri tarafından verilen resmi sonuç belgenizde belirtilen nihai puandır.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-ielts-info">
+      <h3>
+       <i class="fas fa-info-circle icon-small">
+       </i>
+       IELTS Hakkında Bilgi
+      </h3>
+      <div class="calculator-form-container">
+       <p>
+        **IELTS (International English Language Testing System)**, İngilizce'nin ana dil olarak konuşulduğu ülkelerde eğitim almak, çalışmak veya göç etmek isteyen kişilerin İngilizce yeterliliğini ölçen uluslararası bir sınavdır. Dünya genelinde en çok tanınan İngilizce yeterlilik sınavlarından biridir.
+       </p>
+       <h4>
+        IELTS Bölümleri ve Süreleri:
+       </h4>
+       <ul>
+        <li>
+         **Listening (Dinleme):** 30 Dakika (4 bölüm, 40 soru)
+        </li>
+        <li>
+         **Reading (Okuma):** 60 Dakika (3 bölüm, 40 soru)
+        </li>
+        <li>
+         **Writing (Yazma):** 60 Dakika (2 görev)
+        </li>
+        <li>
+         **Speaking (Konuşma):** 11-14 Dakika (3 bölüm)
+        </li>
+       </ul>
+       <p>
+        Sınav iki ana modülde sunulur:
+       </p>
+       <ul>
+        <li>
+         **Academic (Akademik):** Üniversite eğitimi veya yükseköğretim için.
+        </li>
+        <li>
+         **General Training (Genel Eğitim):** Göçmenlik, mesleki eğitim veya lise düzeyinde eğitim için.
+        </li>
+       </ul>
+       <p>
+        IELTS sınavına hazırlanırken her bir bölümün formatını ve puanlama kriterlerini anlamak kritik önem taşır.
+       </p>
+       <p class="disclaimer-text">
+        Bu bilgiler IELTS'in genel yapısına dairdir. En güncel sınav tarihleri, kayıt süreçleri ve detaylı bilgiler için resmi IELTS web sitesini (British Council, IDP Education veya Cambridge English Language Assessment) ziyaret ediniz.
+       </p>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="info-section container">
+    <h3>
+     IELTS Nedir ve Neden Önemlidir?
+    </h3>
+    <p>
+     **IELTS**, dünya genelinde üniversiteler, işverenler, mesleki kuruluşlar ve göçmenlik büroları tarafından yaygın olarak kabul gören bir İngilizce yeterlilik sınavıdır. İngilizce konuşulan bir ortamda başarılı olmak için gerekli olan dört temel dil becerisini (dinleme, okuma, yazma ve konuşma) adil ve doğru bir şekilde değerlendirir.
+    </p>
+    <p>
+     Yurt dışında eğitim almak, çalışmak veya göç etmek isteyen milyonlarca kişi için IELTS, hedeflerine ulaşmalarında önemli bir basamaktır. Gerekli IELTS puanı, başvurulan kuruma veya ülkeye göre değişir.
+    </p>
+    <h4>
+     IELTS Puanlama Skalası:
+    </h4>
+    <ul>
+     <li>
+      Her bölüm 0 (en düşük) ile 9 (en yüksek) arasında yarım bant (örn. 5.5, 6.0, 6.5) puanlanır.
+     </li>
+     <li>
+      Genel Bant Puanı (Overall Band Score), dört bölüm puanının ortalamasıdır ve en yakın tam veya yarım banda yuvarlanır.
+     </li>
+    </ul>
+    <h4>
+     IELTS'e Nasıl Hazırlanılır?
+    </h4>
+    <ul>
+     <li>
+      **Deneme Sınavları:** Resmi IELTS materyalleriyle düzenli olarak deneme sınavları çözerek sınav formatına ve zaman yönetimine alışın.
+     </li>
+     <li>
+      **Kelime ve Gramer:** Kelime bilginizi genişletin ve gramer kurallarını pekiştirin.
+     </li>
+     <li>
+      **Dinleme ve Okuma Pratiği:** İngilizce podcast'ler, haberler ve akademik makaleler dinleyip okuyun.
+     </li>
+     <li>
+      **Yazma ve Konuşma Becerileri:** Deneme yazma ve konuşma pratiği yapın, mümkünse anadili İngilizce olan birinden veya öğretmenden geri bildirim alın.
+     </li>
+     <li>
+      **Strateji Geliştirme:** Her bölümün kendi özel stratejileri olduğunu unutmayın (örneğin Reading'de anahtar kelime bulma, Writing'de kompozisyon yapısı).
+     </li>
+    </ul>
+    <p class="disclaimer-text">
+     Bu sayfadaki IELTS puan hesaplayıcısı, sınavın resmi yuvarlama kurallarına göre çalışmaktadır. Ancak, sınavda gösterdiğiniz gerçek performans ve nihai puanlama, sınavın kendi iç süreçlerine bağlıdır. En doğru ve resmi IELTS puanınız için her zaman resmi sınav sonuç belgenizi referans alınız.
+    </p>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

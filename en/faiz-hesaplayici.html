@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Interest Calculator (Simple and Compound) - Calculate Practical
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="Calculate your simple interest and compound interest earnings with your principal, interest rate and term information. Step-by-step how-to and where-to-use explanations for each calculation." name="description"/>
+  <meta content="calculate interest, simple interest, compound interest, interest rate, principal, term, investment interest, savings interest, interest formula, what is interest, how to calculate interest" name="keywords"/>
+  <link href="css/style.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <style>
+   /* Bu CSS sadece bu sayfa için özeldir. İstersen style.css dosyana taşıyabilirsin. */
+        .interest-calculator-section {
+            padding: 60px 0;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        .interest-calculator-section h2 {
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 2.5em;
+        }
+
+        .interest-form-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .interest-form-container label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .interest-form-container input[type="number"],
+        .interest-form-container select {
+            width: calc(100% - 20px);
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .interest-form-container select {
+            width: 100%;
+        }
+
+        .interest-form-container button {
+            background-color: #2ecc71; /* Faiz için yeşilimsi renk */
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 20px auto 0 auto;
+        }
+
+        .interest-form-container button:hover {
+            background-color: #27ae60;
+        }
+
+        #interestResult {
+            margin-top: 30px;
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group.hidden {
+            display: none;
+        }
+
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .result-table th, .result-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .result-table th {
+            background-color: #f2f2f2;
+            font-weight: 600;
+        }
+        .form-row {
+            display: flex;
+            gap: 20px;
+            align-items: flex-end;
+        }
+        .form-row .input-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            justify-content: flex-start;
+            align-items: center;
+        }
+        .radio-group input[type="radio"] {
+            margin-right: 5px;
+            width: auto;
+            margin-bottom: 0;
+        }
+        .radio-group label {
+            display: inline-block;
+            margin-bottom: 0;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        /* Bilgi bölümleri için CSS */
+        .info-section {
+            margin-top: 40px;
+            background-color: #f2f2f2;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            text-align: left;
+        }
+        .info-section h5 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 8px;
+        }
+        .info-section p, .info-section ul {
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .info-section ul {
+            list-style-type: decimal;
+            padding-left: 25px;
+        }
+        .info-section ul li {
+            margin-bottom: 5px;
+        }
+        .info-section strong {
+            color: #000;
+        }
+  </style>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+  <link href="https://hesapkolik.net/faiz-hesaplayici.html" hreflang="tr" rel="alternate"/>
+  <link href="https://hesapkolik.net/en/faiz-hesaplayici.html" hreflang="en" rel="alternate"/>
+  <link href="https://hesapkolik.net/faiz-hesaplayici.html" hreflang="x-default" rel="alternate"/>
+ </head>
+ <!-- Google tag (gtag.js) -->
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="interest-calculator-section">
+    <div class="container">
+     <h2>
+      Simple and Compound Interest Calculator
+     </h2>
+     <p>
+      Calculate simple or compound interest returns on your investments or savings.
+     </p>
+     <div class="interest-form-container">
+      <form id="interestForm">
+       <label for="calculationType">
+        Select Calculation Type:
+       </label>
+       <select id="calculationType" name="calculationType">
+        <option value="simpleInterest">
+         Calculate Simple Interest
+        </option>
+        <option value="compoundInterest">
+         Calculate Compound Interest
+        </option>
+       </select>
+       <div class="input-group" id="principalAmountGroup">
+        <label for="principalAmount">
+         Principal (₺):
+        </label>
+        <input id="principalAmount" min="0" name="principalAmount" placeholder="Örn: 10000" required="" step="0.01" type="number"/>
+       </div>
+       <div class="input-group" id="interestRateGroup">
+        <label>
+         Interest Rate Unit:
+        </label>
+        <div class="radio-group">
+         <input checked="" id="rateUnitAnnual" name="rateUnit" type="radio" value="annual"/>
+         <label for="rateUnitAnnual">
+          Annual
+         </label>
+         <input id="rateUnitMonthly" name="rateUnit" type="radio" value="monthly"/>
+         <label for="rateUnitMonthly">
+          Monthly
+         </label>
+        </div>
+        <label for="interestRateValue" id="interestRateLabel">
+         Annual Interest Rate (%):
+        </label>
+        <input id="interestRateValue" min="0" name="interestRateValue" placeholder="Örn: 15" required="" step="0.01" type="number"/>
+       </div>
+       <div class="form-row" id="timePeriodGroups">
+        <div class="input-group" id="timePeriodValueGroup">
+         <label for="timePeriodValue">
+          Maturity:
+         </label>
+         <input id="timePeriodValue" min="1" name="timePeriodValue" placeholder="Örn: 5" required="" step="1" type="number"/>
+        </div>
+        <div class="input-group" id="timePeriodUnitGroup">
+         <label for="timePeriodUnit">
+          Maturity Unit:
+         </label>
+         <select id="timePeriodUnit" name="timePeriodUnit">
+          <option value="years">
+           Year
+          </option>
+          <option value="months">
+           Month
+          </option>
+         </select>
+        </div>
+       </div>
+       <div class="input-group hidden" id="compoundingFrequencyGroup">
+        <label for="compoundingFrequency">
+         Interest Accumulation Frequency (Per Year):
+        </label>
+        <select id="compoundingFrequency" name="compoundingFrequency">
+         <option value="1">
+          Annual
+         </option>
+         <option value="2">
+          Half Yearly
+         </option>
+         <option value="4">
+          Quarterly
+         </option>
+         <option value="12">
+          Monthly
+         </option>
+         <option value="365">
+          Daily
+         </option>
+        </select>
+       </div>
+       <button type="submit">
+        Calculate
+       </button>
+      </form>
+      <div id="interestResult">
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="info-sections-container container">
+    <div class="info-section" id="simpleInterestInfo" style="display: block;">
+     <h3>
+      What is Simple Interest and How is it Calculated?
+     </h3>
+     <p>
+      Simple interest is a type of interest that is calculated only on the initial principal. The interest is calculated by multiplying the principal and the interest rate by the term. This is especially used in short-term loans or simple savings accounts.
+     </p>
+     <h5>
+      Calculation Formula:
+     </h5>
+     <p style="text-align: center; font-size: 1.2em; font-weight: bold; color: #2ecc71;">
+      Simple Interest = Principal × Interest Rate × Maturity (Years)
+     </p>
+     <p>
+      Here;
+      <ul>
+       <li>
+        <strong>
+         Principal (P):
+        </strong>
+        The initial amount deposited or borrowed.
+       </li>
+       <li>
+        <strong>
+         Interest Rate (r):
+        </strong>
+        Annual percentage rate (in decimals).
+       </li>
+       <li>
+        <strong>
+         Maturity (t):
+        </strong>
+        The period (in years) for which interest will be calculated.
+       </li>
+      </ul>
+     </p>
+     <h5>
+      Where is Simple Interest Used?
+     </h5>
+     <ul>
+      <li>
+       <strong>
+        Short Term Loans:
+       </strong>
+       Generally, for debts with a maturity of less than 1 year and not in high volume.
+      </li>
+      <li>
+       <strong>
+        Simple Savings Accounts:
+       </strong>
+       In some basic or daily interest calculations of banks.
+      </li>
+      <li>
+       <strong>
+        Student Loans:
+       </strong>
+       Some student loans may accrue interest as simple interest until payments begin.
+      </li>
+      <li>
+       <strong>
+        Bonds:
+       </strong>
+       Many bonds pay fixed simple interest on the principal.
+      </li>
+     </ul>
+    </div>
+    <div class="info-section" id="compoundInterestInfo" style="display: none;">
+     <h3>
+      What is Compound Interest and How is it Calculated?
+     </h3>
+     <p>
+      Compound interest is a type of interest calculated on both the principal and the interest earned in previous periods. It is also known as &amp;quot;interest on interest&amp;quot; and significantly increases the return on long-term investments. Interest is added to the principal at certain periods (such as annually, monthly, daily) and the interest in the next period is calculated on this new total.
+     </p>
+     <h5>
+      Calculation Formula:
+     </h5>
+     <p style="text-align: center; font-size: 1.2em; font-weight: bold; color: #2ecc71;">
+      Total Accumulated Amount = Principal × (1 + (Interest Rate / Accumulation Frequency))^(Accumulation Frequency × Maturity)
+     </p>
+     <p>
+      Here;
+      <ul>
+       <li>
+        <strong>
+         Principal (P):
+        </strong>
+        The initial amount deposited or borrowed.
+       </li>
+       <li>
+        <strong>
+         Interest Rate (r):
+        </strong>
+        Annual percentage rate (in decimals).
+       </li>
+       <li>
+        <strong>
+         Accumulation Frequency (n):
+        </strong>
+        The number of times interest is added to the principal in a year (e.g. 1 for annual, 12 for monthly).
+       </li>
+       <li>
+        <strong>
+         Maturity (t):
+        </strong>
+        The period (in years) for which interest will be calculated.
+       </li>
+       <li>
+        <strong>
+         Compound Interest Earnings:
+        </strong>
+        Total Accumulated Amount - Principal.
+       </li>
+      </ul>
+     </p>
+     <h5>
+      Where is Compound Interest Used?
+     </h5>
+     <ul>
+      <li>
+       <strong>
+        Savings and Investment Accounts:
+       </strong>
+       In long-term savings such as bank term deposit accounts, mutual funds, and retirement plans.
+      </li>
+      <li>
+       <strong>
+        Credit Cards:
+       </strong>
+       The interest accrued on unpaid balances is often compound interest, which can cause the debt to grow quickly.
+      </li>
+      <li>
+       <strong>
+        Mortgage Loans:
+       </strong>
+       Interest on long-term debt, such as mortgage loans, is usually calculated on a compound basis.
+      </li>
+      <li>
+       <strong>
+        Business Financing:
+       </strong>
+       Many types of long-term debt and bonds operate on the principle of compound interest.
+      </li>
+     </ul>
+    </div>
+   </section>
+  </main>
+  <script>
+   const calculationTypeSelect = document.getElementById('calculationType');
+        const principalAmountGroup = document.getElementById('principalAmountGroup');
+        const interestRateGroup = document.getElementById('interestRateGroup');
+        const rateUnitAnnualRadio = document.getElementById('rateUnitAnnual');
+        const rateUnitMonthlyRadio = document.getElementById('rateUnitMonthly');
+        const interestRateValueInput = document.getElementById('interestRateValue');
+        const interestRateLabel = document.getElementById('interestRateLabel');
+
+        const timePeriodGroups = document.getElementById('timePeriodGroups');
+        const timePeriodValueGroup = document.getElementById('timePeriodValueGroup');
+        const timePeriodUnitGroup = document.getElementById('timePeriodUnitGroup');
+        const compoundingFrequencyGroup = document.getElementById('compoundingFrequencyGroup');
+
+        const principalAmountInput = document.getElementById('principalAmount');
+        const timePeriodValueInput = document.getElementById('timePeriodValue');
+        const timePeriodUnitSelect = document.getElementById('timePeriodUnit');
+        const compoundingFrequencySelect = document.getElementById('compoundingFrequency');
+        const interestResultDiv = document.getElementById('interestResult');
+
+        // Bilgi bölümleri
+        const simpleInterestInfoSection = document.getElementById('simpleInterestInfo');
+        const compoundInterestInfoSection = document.getElementById('compoundInterestInfo');
+
+
+        function updateInterestRateInputLabel() {
+            if (rateUnitAnnualRadio.checked) {
+                interestRateLabel.textContent = 'Yıllık Faiz Oranı (%):';
+                interestRateValueInput.placeholder = 'Örn: 15';
+            } else { // monthly
+                interestRateLabel.textContent = 'Aylık Faiz Oranı (%):';
+                interestRateValueInput.placeholder = 'Örn: 1.25';
+            }
+            interestRateValueInput.value = ''; // Input değerini temizle
+        }
+
+        function updateInputVisibilityAndInfo() {
+            const type = calculationTypeSelect.value;
+
+            // Tüm input gruplarını gizle ve zorunlu alanları kaldır
+            [principalAmountGroup, interestRateGroup, timePeriodGroups, compoundingFrequencyGroup].forEach(group => {
+                group.classList.add('hidden');
+                group.querySelectorAll('input:not([type="radio"]), select').forEach(el => el.removeAttribute('required'));
+            });
+
+            // Tüm bilgi bölümlerini gizle
+            simpleInterestInfoSection.style.display = 'none';
+            compoundInterestInfoSection.style.display = 'none';
+
+            // Seçilen türe göre input gruplarını ve bilgi bölümünü göster
+            switch (type) {
+                case 'simpleInterest':
+                    principalAmountGroup.classList.remove('hidden');
+                    interestRateGroup.classList.remove('hidden');
+                    timePeriodGroups.classList.remove('hidden');
+                    principalAmountInput.setAttribute('required', 'true');
+                    interestRateValueInput.setAttribute('required', 'true');
+                    timePeriodValueInput.setAttribute('required', 'true');
+                    timePeriodUnitSelect.setAttribute('required', 'true');
+                    simpleInterestInfoSection.style.display = 'block'; // Basit faiz bilgisini göster
+                    break;
+                case 'compoundInterest':
+                    principalAmountGroup.classList.remove('hidden');
+                    interestRateGroup.classList.remove('hidden');
+                    timePeriodGroups.classList.remove('hidden');
+                    compoundingFrequencyGroup.classList.remove('hidden');
+                    principalAmountInput.setAttribute('required', 'true');
+                    interestRateValueInput.setAttribute('required', 'true');
+                    timePeriodValueInput.setAttribute('required', 'true');
+                    timePeriodUnitSelect.setAttribute('required', 'true');
+                    compoundingFrequencySelect.setAttribute('required', 'true');
+                    compoundInterestInfoSection.style.display = 'block'; // Bileşik faiz bilgisini göster
+                    break;
+            }
+            interestResultDiv.innerHTML = ''; // Yeni hesaplama türü seçildiğinde sonucu temizle
+            updateTimePeriodLabel(); // Vade birimi seçimine göre etiketi güncelle
+            updateInterestRateInputLabel(); // Faiz oranı birim seçimine göre etiketi güncelle
+        }
+
+        function updateTimePeriodLabel() {
+            const unit = timePeriodUnitSelect.value;
+            document.getElementById('timePeriodValue').placeholder = (unit === 'years') ? 'Örn: 5' : 'Örn: 60';
+            document.querySelector('#timePeriodValueGroup label').textContent = 'Vade (' + (unit === 'years' ? 'Yıl' : 'Ay') + '):';
+        }
+
+        // Başlangıçta input görünürlüğünü ve etiketi ayarla
+        updateInputVisibilityAndInfo();
+
+        // Olay dinleyiciler
+        calculationTypeSelect.addEventListener('change', updateInputVisibilityAndInfo);
+        timePeriodUnitSelect.addEventListener('change', updateTimePeriodLabel);
+        rateUnitAnnualRadio.addEventListener('change', updateInterestRateInputLabel);
+        rateUnitMonthlyRadio.addEventListener('change', updateInterestRateInputLabel);
+
+
+        document.getElementById('interestForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const type = calculationTypeSelect.value;
+            const principal = parseFloat(principalAmountInput.value);
+            const timePeriodValue = parseFloat(timePeriodValueInput.value);
+            const timePeriodUnit = timePeriodUnitSelect.value;
+            const compoundingFreq = parseFloat(compoundingFrequencySelect.value);
+
+            let enteredRate = parseFloat(interestRateValueInput.value);
+            const rateUnit = document.querySelector('input[name="rateUnit"]:checked').value;
+
+            if (isNaN(enteredRate) || enteredRate < 0) {
+                 interestResultDiv.innerHTML = '<span style="color: red;">Lütfen geçerli bir faiz oranı girin.</span>';
+                 return;
+            }
+
+            let annualRateDecimal;
+            if (rateUnit === 'annual') {
+                annualRateDecimal = enteredRate / 100;
+            } else { // monthly
+                annualRateDecimal = (enteredRate * 12) / 100; // Aylık oranı yıllık nominale çevir
+            }
+
+            let timeYears;
+            if (timePeriodUnit === 'years') {
+                timeYears = timePeriodValue;
+            } else { // 'months'
+                timeYears = timePeriodValue / 12;
+            }
+
+            let resultHtml = '';
+
+            if (type === 'simpleInterest') {
+                if (isNaN(principal) || isNaN(timeYears) || principal < 0 || timeYears < 0) {
+                    interestResultDiv.innerHTML = '<span style="color: red;">Lütfen geçerli değerler girin.</span>';
+                    return;
+                }
+                const simpleInterest = principal * annualRateDecimal * timeYears;
+                const totalAmount = principal + simpleInterest;
+                resultHtml = `
+                    <h3>Basit Faiz Hesaplama Sonucu:</h3>
+                    <p>Anapara: <strong>${principal.toFixed(2)} ₺</strong></p>
+                    <p>Basit Faiz Kazancı: <strong>${simpleInterest.toFixed(2)} ₺</strong></p>
+                    <p>Toplam Biriken Miktar: <strong>${totalAmount.toFixed(2)} ₺</strong></p>
+                    <div class="info-section">
+                        <h5>Nasıl Hesaplandı? (Adım Adım)</h5>
+                        <ul>
+                            <li><strong>Adım 1:</strong> Anapara (P), yıllık faiz oranı (r) ve vade (t) değerleri alınır.</li>
+                            <li><strong>Adım 2:</strong> Faiz oranı, yüzde formundan ondalık forma çevrilir (örn. %15 -> 0.15).</li>
+                            <li><strong>Adım 3:</strong> Vade, yıl cinsine çevrilir. (Ay girildiyse 12'ye bölünür.)</li>
+                            <li><strong>Adım 4:</strong> Basit Faiz = Anapara × Faiz Oranı × Vade formülü uygulanır.</li>
+                            <li><strong>Adım 5:</strong> Toplam Biriken Miktar = Anapara + Basit Faiz olarak bulunur.</li>
+                            <li><strong>Sizin Hesabınız:</strong> Anapara ${principal.toFixed(2)} ₺, ${(rateUnit === 'annual' ? 'Yıllık' : 'Aylık')} Faiz Oranı %${enteredRate.toFixed(2)}, Vade ${timePeriodValue} ${timePeriodUnit === 'years' ? 'Yıl' : 'Ay'} ise; Basit Faiz Kazancı: <strong>${simpleInterest.toFixed(2)} ₺</strong>, Toplam Biriken Miktar: <strong>${totalAmount.toFixed(2)} ₺</strong>.</li>
+                        </ul>
+                        <h5>Ne İçin Kullanılır?</h5>
+                        <p>Basit faiz, özellikle kısa vadeli finansal işlemlerde, bazı tasarruf hesaplarında ve tahvil getirilerinin hesaplanmasında kullanılır. Faiz, sadece başlangıçtaki anapara üzerinden hesaplandığı için hesaplaması kolaydır ve genellikle faizden faiz kazanılmayan durumlarda tercih edilir. Kullanıcılar, yatırımlarının veya küçük borçlarının zamanla ne kadar faiz getireceğini veya maliyetini hızlıca öğrenmek için bu hesaplayıcıyı kullanır.</p>
+                    </div>
+                `;
+            } else if (type === 'compoundInterest') {
+                if (isNaN(principal) || isNaN(timeYears) || isNaN(compoundingFreq) || principal < 0 || timeYears < 0 || compoundingFreq <= 0) {
+                    interestResultDiv.innerHTML = '<span style="color: red;">Lütfen geçerli değerler girin.</span>';
+                    return;
+                }
+                const totalAmount = principal * Math.pow((1 + (annualRateDecimal / compoundingFreq)), (compoundingFreq * timeYears));
+                const compoundInterest = totalAmount - principal;
+                resultHtml = `
+                    <h3>Bileşik Faiz Hesaplama Sonucu:</h3>
+                    <p>Anapara: <strong>${principal.toFixed(2)} ₺</strong></p>
+                    <p>Bileşik Faiz Kazancı: <strong>${compoundInterest.toFixed(2)} ₺</strong></p>
+                    <p>Toplam Biriken Miktar: <strong>${totalAmount.toFixed(2)} ₺</strong></p>
+                    <div class="info-section">
+                        <h5>Nasıl Hesaplandı? (Adım Adım)</h5>
+                        <ul>
+                            <li><strong>Adım 1:</strong> Anapara (P), yıllık faiz oranı (r), vade (t) ve faizin yılda birikim sıklığı (n) değerleri alınır.</li>
+                            <li><strong>Adım 2:</strong> Yıllık faiz oranı yüzde formundan ondalık forma çevrilir. (Aylık faiz oranı girildiyse yıllık nominale çevrilir).</li>
+                            <li><strong>Adım 3:</strong> Vade yıl cinsine çevrilir.</li>
+                            <li><strong>Adım 4:</strong> Toplam Biriken Miktar = Anapara × (1 + (Faiz Oranı / Birikim Sıklığı))^(Birikim Sıklığı × Vade) formülü uygulanır.</li>
+                            <li><strong>Adım 5:</strong> Bileşik Faiz Kazancı = Toplam Biriken Miktar - Anapara olarak bulunur.</li>
+                            <li><strong>Sizin Hesabınız:</strong> Anapara ${principal.toFixed(2)} ₺, ${(rateUnit === 'annual' ? 'Yıllık' : 'Aylık')} Faiz Oranı %${enteredRate.toFixed(2)}, Vade ${timePeriodValue} ${timePeriodUnit === 'years' ? 'Yıl' : 'Ay'}, Birikim Sıklığı ${compoundingFreq} ise; Bileşik Faiz Kazancı: <strong>${compoundInterest.toFixed(2)} ₺</strong>, Toplam Biriken Miktar: <strong>${totalAmount.toFixed(2)} ₺</strong>.</li>
+                        </ul>
+                        <h5>Ne İçin Kullanılır?</h5>
+                        <p>Bileşik faiz, uzun vadeli tasarruf ve yatırım hedefleri için kritik öneme sahiptir. Banka mevduatları, emeklilik planları ve yatırım fonları gibi birçok finansal üründe faiz, bileşik olarak işler. Kullanıcılar, yatırımlarının veya birikimlerinin zamanla nasıl katlanarak büyüyeceğini tahmin etmek, farklı yatırım fırsatlarını karşılaştırmak ve finansal hedeflerine ulaşmak için bu hesaplayıcıyı kullanır.</p>
+                    </div>
+                `;
+            }
+
+            interestResultDiv.innerHTML = resultHtml;
+        });
+  </script>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>
