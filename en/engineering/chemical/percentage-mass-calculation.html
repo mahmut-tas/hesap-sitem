@@ -811,5 +811,458 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                errorZeroValue: 'Değer sıfır olamaz.',
+                errorPercentageRange: 'Yüzde konsantrasyon 0 ile 100 arasında olmalıdır.',
+                errorDilutionNegativeResult: 'Hesaplanan değer sıfırdan küçük olamaz. Giriş değerlerini kontrol edin.',
+                errorEmptyField: 'Lütfen hesaplamak istediğiniz tek bir alanı boş bırakın.',
+                errorMultipleEmptyFields: 'Lütfen sadece bir alanı boş bırakın.',
+                resultPrefix: 'Sonuç:',
+                // Yüzde Konsantrasyon Hesaplama
+                calcPercentTitle: 'Yüzde Konsantrasyonu Hesapla',
+                concentrationTypeLabel: 'Konsantrasyon Tipi:',
+                soluteMassLabel: 'Çözünen Kütlesi:',
+                solutionAmountLabel: 'Toplam Çözelti Miktarı:',
+                percentResultLabel: 'Yüzde Konsantrasyon:',
+                unit_percent: '%',
+                // Gerekli Çözünen Maddeyi Hesapla
+                calcSoluteTitle: 'Gerekli Çözünen Madde Miktarını Hesapla',
+                desiredConcentrationLabel: 'İstenen Yüzde Konsantrasyon (%):',
+                soluteAmountResultLabel: 'Gerekli Çözünen Madde Miktarı:',
+                // Gerekli Toplam Çözelti Miktarını Hesapla
+                calcSolutionTitle: 'Gerekli Toplam Çözelti Miktarını Hesapla',
+                solutionAmountResultLabel: 'Gerekli Toplam Çözelti Miktarı:',
+                // Seyreltme Hesaplayıcı (C1V1=C2V2)
+                dilutionTitle: 'Seyreltme Hesaplayıcı (C1V1=C2V2)',
+                dilutionInfo: 'Bilinen üç değeri girin ve hesaplamak istediğiniz alanı boş bırakın.',
+                initialConcentrationLabel: 'Başlangıç Konsantrasyonu (C1):',
+                initialVolumeLabel: 'Başlangıç Hacmi (V1):',
+                targetConcentrationLabel: 'Hedef Konsantrasyon (C2):',
+                targetVolumeLabel: 'Hedef Hacim (V2):',
+                calculatedInitialConcentration: 'Hesaplanan Başlangıç Konsantrasyonu (C1):',
+                calculatedInitialVolume: 'Hesaplanan Başlangıç Hacmi (V1):',
+                calculatedTargetConcentration: 'Hesaplanan Hedef Konsantrasyon (C2):',
+                calculatedTargetVolume: 'Hesaplanan Hedef Hacim (V2):',
+                // Birimler
+                unit_g: 'gram (g)',
+                unit_mg: 'miligram (mg)',
+                unit_kg: 'kilogram (kg)',
+                unit_mL: 'mililitre (mL)',
+                unit_L: 'litre (L)',
+                unit_µL: 'mikrolitre (µL)',
+                unit_percent_short: '%',
+                unit_molar: 'Molar (M)',
+                unit_ppm: 'ppm',
+                unit_g_per_g: 'g/g',
+                unit_g_per_mL: 'g/mL'
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate',
+                invalidInput: 'Please enter valid positive numbers for all fields.',
+                errorZeroValue: 'Value cannot be zero.',
+                errorPercentageRange: 'Percentage concentration must be between 0 and 100.',
+                errorDilutionNegativeResult: 'Calculated value cannot be negative. Check input values.',
+                errorEmptyField: 'Please leave only the field you want to calculate blank.',
+                errorMultipleEmptyFields: 'Please leave only one field blank.',
+                resultPrefix: 'Result:',
+                // Calculate Percent Concentration
+                calcPercentTitle: 'Calculate Percent Concentration',
+                concentrationTypeLabel: 'Concentration Type:',
+                soluteMassLabel: 'Mass of Solute:',
+                solutionAmountLabel: 'Total Solution Amount:',
+                percentResultLabel: 'Percent Concentration:',
+                unit_percent: '%',
+                // Calculate Required Solute
+                calcSoluteTitle: 'Calculate the Amount of Solute Required',
+                desiredConcentrationLabel: 'Desired Percentage Concentration (%):',
+                soluteAmountResultLabel: 'Required Mass of Solute:',
+                // Calculate Required Total Solution
+                calcSolutionTitle: 'Calculate the Total Amount of Solution Required',
+                solutionAmountResultLabel: 'Required Total Solution Amount:',
+                // Dilution Calculator (C1V1=C2V2)
+                dilutionTitle: 'Dilution Calculator (C1V1=C2V2)',
+                dilutionInfo: 'Enter the three known values and leave the field you want to calculate blank.',
+                initialConcentrationLabel: 'Initial Concentration (C1):',
+                initialVolumeLabel: 'Initial Volume (V1):',
+                targetConcentrationLabel: 'Target Concentration (C2):',
+                targetVolumeLabel: 'Target Volume (V2):',
+                calculatedInitialConcentration: 'Calculated Initial Concentration (C1):',
+                calculatedInitialVolume: 'Calculated Initial Volume (V1):',
+                calculatedTargetConcentration: 'Calculated Target Concentration (C2):',
+                calculatedTargetVolume: 'Calculated Target Volume (V2):',
+                // Units
+                unit_g: 'grams (g)',
+                unit_mg: 'milligrams (mg)',
+                unit_kg: 'kilograms (kg)',
+                unit_mL: 'milliliters (mL)',
+                unit_L: 'liters (L)',
+                unit_µL: 'microliters (µL)',
+                unit_percent_short: '%',
+                unit_molar: 'Molar (M)',
+                unit_ppm: 'ppm',
+                unit_g_per_g: 'g/g',
+                unit_g_per_mL: 'g/mL'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // Hesaplayıcı butonları ve içerikleri
+        const calcButtons = document.querySelectorAll('.calc-type-button');
+        const calcWrappers = document.querySelectorAll('.calc-wrapper'); // Burayı genel hale getirdim
+
+        // Function to show/hide calculators
+        function showCalculator(calcType) {
+            calcWrappers.forEach(wrapper => {
+                if (wrapper.id === `calculator-${calcType}`) {
+                    wrapper.classList.remove('hidden-calc');
+                } else {
+                    wrapper.classList.add('hidden-calc');
+                }
+            });
+
+            calcButtons.forEach(button => {
+                if (button.dataset.calcType === calcType) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        // Add click event to buttons
+        calcButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const calcType = this.dataset.calcType;
+                showCalculator(calcType);
+            });
+        });
+
+        // Sayfa yüklendiğinde varsayılan olarak ilk hesaplayıcıyı göster
+        showCalculator('calcPercent');
+
+        // --- Birim Dönüşüm Sabitleri ---
+        // Kütle: grama dönüştürme faktörleri
+        const MASS_TO_G = {
+            'g': 1,
+            'mg': 0.001,
+            'kg': 1000
+        };
+
+        // Hacim: mililitreye dönüştürme faktörleri
+        const VOLUME_TO_ML = {
+            'ml': 1,
+            'L': 1000,
+            'µL': 0.001
+        };
+
+        // Konsantrasyon: yüzdeye dönüştürme faktörleri (dilution için)
+        // Burada % (percent) baz alınmıştır.
+        const CONCENTRATION_TO_PERCENT = {
+            'percent': 1,
+            'molar': 1, // Molar to %w/w or %w/v requires molar mass/density, not a simple conversion
+            'ppm': 0.0001 // 1 ppm = 0.0001%
+        };
+        // Not: Molariteden yüzdeye dönüşüm için maddeye özgü mol kütlesi ve çözelti yoğunluğu gerekir.
+        // Bu yüzden C1V1=C2V2'de aynı birimlerin kullanılması en sağlıklısıdır.
+
+        // --- Yüzde Konsantrasyon Hesapla ---
+        const concentrationForm_calcPercent = document.getElementById('concentrationForm_calcPercent');
+        const concentrationResult_calcPercentDiv = document.getElementById('concentrationResult_calcPercent');
+        const solutionUnitSelect_percent = document.getElementById('solutionUnit_percent');
+        const soluteMassUnitSelect_percent = document.getElementById('soluteMassUnit_percent');
+
+        // Konsantrasyon tipi değiştiğinde birim seçeneklerini güncelle
+        document.getElementById('concentrationType_percent').addEventListener('change', function() {
+            const type = this.value;
+            solutionUnitSelect_percent.innerHTML = ''; // Mevcut seçenekleri temizle
+            soluteMassUnitSelect_percent.innerHTML = '';
+
+            // Çözünen kütlesi için her zaman g, mg, kg seçenekleri uygundur.
+            soluteMassUnitSelect_percent.add(new Option(currentTexts.unit_g, 'g'));
+            soluteMassUnitSelect_percent.add(new Option(currentTexts.unit_mg, 'mg'));
+            soluteMassUnitSelect_percent.add(new Option(currentTexts.unit_kg, 'kg'));
+
+
+            if (type === 'ww') {
+                solutionUnitSelect_percent.add(new Option(currentTexts.unit_g + ' - for %w/w', 'g'));
+                solutionUnitSelect_percent.add(new Option(currentTexts.unit_kg + ' - for %w/w', 'kg'));
+            } else { // type === 'wv'
+                solutionUnitSelect_percent.add(new Option(currentTexts.unit_mL + ' - for %w/v', 'ml'));
+                solutionUnitSelect_percent.add(new Option(currentTexts.unit_L + ' - for %w/v', 'L'));
+            }
+        });
+        // Sayfa yüklendiğinde birimleri ayarla
+        document.getElementById('concentrationType_percent').dispatchEvent(new Event('change'));
+
+        concentrationForm_calcPercent.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const concentrationType = document.getElementById('concentrationType_percent').value;
+            const soluteMass = parseFloat(document.getElementById('soluteMass_percent').value);
+            const solutionAmount = parseFloat(document.getElementById('solutionAmount_percent').value);
+            const soluteMassUnit = document.getElementById('soluteMassUnit_percent').value;
+            const solutionUnit = document.getElementById('solutionUnit_percent').value;
+
+            if (isNaN(soluteMass) || isNaN(solutionAmount) || soluteMass <= 0 || solutionAmount <= 0) {
+                concentrationResult_calcPercentDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                concentrationResult_calcPercentDiv.style.display = 'block';
+                return;
+            }
+
+            let resultPercent;
+            // Birimleri baz birimlere dönüştür
+            const soluteMass_g = soluteMass * MASS_TO_G[soluteMassUnit];
+
+            if (concentrationType === 'ww') {
+                const solutionAmount_g = solutionAmount * MASS_TO_G[solutionUnit];
+                resultPercent = (soluteMass_g / solutionAmount_g) * 100;
+            } else { // %w/v
+                const solutionAmount_mL = solutionAmount * VOLUME_TO_ML[solutionUnit];
+                resultPercent = (soluteMass_g / solutionAmount_mL) * 100;
+            }
+
+            concentrationResult_calcPercentDiv.innerHTML = `
+                <p>${currentTexts.percentResultLabel} <span class="result-value">${resultPercent.toFixed(4)}</span> ${currentTexts.unit_percent_short}</p>
+            `;
+            concentrationResult_calcPercentDiv.style.display = 'block';
+        });
+
+        // --- Gerekli Çözünen Maddeyi Hesapla ---
+        const concentrationForm_calcSolute = document.getElementById('concentrationForm_calcSolute');
+        const concentrationResult_calcSoluteDiv = document.getElementById('concentrationResult_calcSolute');
+        const solutionUnitSelect_solute = document.getElementById('solutionUnit_solute');
+        const soluteMassUnitSelect_solute = document.getElementById('soluteMassUnit_solute');
+
+        document.getElementById('concentrationType_solute').addEventListener('change', function() {
+            const type = this.value;
+            solutionUnitSelect_solute.innerHTML = '';
+            soluteMassUnitSelect_solute.innerHTML = '';
+
+            soluteMassUnitSelect_solute.add(new Option(currentTexts.unit_g, 'g'));
+            soluteMassUnitSelect_solute.add(new Option(currentTexts.unit_mg, 'mg'));
+            soluteMassUnitSelect_solute.add(new Option(currentTexts.unit_kg, 'kg'));
+
+            if (type === 'ww') {
+                solutionUnitSelect_solute.add(new Option(currentTexts.unit_g + ' - for %w/w', 'g'));
+                solutionUnitSelect_solute.add(new Option(currentTexts.unit_kg + ' - for %w/w', 'kg'));
+            } else { // type === 'wv'
+                solutionUnitSelect_solute.add(new Option(currentTexts.unit_mL + ' - for %w/v', 'ml'));
+                solutionUnitSelect_solute.add(new Option(currentTexts.unit_L + ' - for %w/v', 'L'));
+            }
+        });
+        document.getElementById('concentrationType_solute').dispatchEvent(new Event('change'));
+
+        concentrationForm_calcSolute.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const concentrationType = document.getElementById('concentrationType_solute').value;
+            const solutionAmount = parseFloat(document.getElementById('solutionAmount_solute').value);
+            const desiredConcentration = parseFloat(document.getElementById('desiredConcentration_solute').value);
+            const solutionUnit = document.getElementById('solutionUnit_solute').value;
+            const soluteMassUnit = document.getElementById('soluteMassUnit_solute').value; // Hedeflenen birim
+
+            if (isNaN(solutionAmount) || isNaN(desiredConcentration) || solutionAmount <= 0 || desiredConcentration < 0 || desiredConcentration > 100) {
+                concentrationResult_calcSoluteDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                concentrationResult_calcSoluteDiv.style.display = 'block';
+                return;
+            }
+
+            let requiredSoluteAmount_g;
+            if (concentrationType === 'ww') {
+                const solutionAmount_g = solutionAmount * MASS_TO_G[solutionUnit];
+                requiredSoluteAmount_g = (desiredConcentration / 100) * solutionAmount_g;
+            } else { // %w/v
+                const solutionAmount_mL = solutionAmount * VOLUME_TO_ML[solutionUnit];
+                requiredSoluteAmount_g = (desiredConcentration / 100) * solutionAmount_mL;
+            }
+            
+            // Sonucu istenen çözünen kütle birimine dönüştür
+            const finalSoluteAmount = requiredSoluteAmount_g / MASS_TO_G[soluteMassUnit];
+
+            concentrationResult_calcSoluteDiv.innerHTML = `
+                <p>${currentTexts.soluteAmountResultLabel} <span class="result-value">${finalSoluteAmount.toFixed(4)}</span> ${currentTexts[`unit_${soluteMassUnit}`]}</p>
+            `;
+            concentrationResult_calcSoluteDiv.style.display = 'block';
+        });
+
+
+        // --- Gerekli Toplam Çözelti Miktarını Hesapla ---
+        const concentrationForm_calcSolution = document.getElementById('concentrationForm_calcSolution');
+        const concentrationResult_calcSolutionDiv = document.getElementById('concentrationResult_calcSolution');
+        const soluteMassUnitSelect_solution = document.getElementById('soluteMassUnit_solution');
+        const solutionUnitSelect_solution = document.getElementById('solutionUnit_solution');
+
+        document.getElementById('concentrationType_solution').addEventListener('change', function() {
+            const type = this.value;
+            soluteMassUnitSelect_solution.innerHTML = '';
+            solutionUnitSelect_solution.innerHTML = '';
+
+            soluteMassUnitSelect_solution.add(new Option(currentTexts.unit_g, 'g'));
+            soluteMassUnitSelect_solution.add(new Option(currentTexts.unit_mg, 'mg'));
+            soluteMassUnitSelect_solution.add(new Option(currentTexts.unit_kg, 'kg'));
+
+            if (type === 'ww') {
+                solutionUnitSelect_solution.add(new Option(currentTexts.unit_g + ' - for %w/w', 'g'));
+                solutionUnitSelect_solution.add(new Option(currentTexts.unit_kg + ' - for %w/w', 'kg'));
+            } else { // type === 'wv'
+                solutionUnitSelect_solution.add(new Option(currentTexts.unit_mL + ' - for %w/v', 'ml'));
+                solutionUnitSelect_solution.add(new Option(currentTexts.unit_L + ' - for %w/v', 'L'));
+            }
+        });
+        document.getElementById('concentrationType_solution').dispatchEvent(new Event('change'));
+
+        concentrationForm_calcSolution.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const concentrationType = document.getElementById('concentrationType_solution').value;
+            const soluteMass = parseFloat(document.getElementById('soluteMass_solution').value);
+            const desiredConcentration = parseFloat(document.getElementById('desiredConcentration_solution').value);
+            const soluteMassUnit = document.getElementById('soluteMassUnit_solution').value;
+            const solutionUnit = document.getElementById('solutionUnit_solution').value; // Hedeflenen birim
+
+            if (isNaN(soluteMass) || isNaN(desiredConcentration) || soluteMass <= 0 || desiredConcentration <= 0 || desiredConcentration > 100) {
+                concentrationResult_calcSolutionDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                concentrationResult_calcSolutionDiv.style.display = 'block';
+                return;
+            }
+
+            // Çözünen kütlesini baz birime (g) dönüştür
+            const soluteMass_g = soluteMass * MASS_TO_G[soluteMassUnit];
+
+            let requiredSolutionAmount_base; // gram (%w/w) veya mL (%w/v)
+            if (concentrationType === 'ww') {
+                requiredSolutionAmount_base = (soluteMass_g / desiredConcentration) * 100;
+                // Sonucu istenen çözelti kütle birimine dönüştür
+                const finalSolutionAmount = requiredSolutionAmount_base / MASS_TO_G[solutionUnit];
+                concentrationResult_calcSolutionDiv.innerHTML = `
+                    <p>${currentTexts.solutionAmountResultLabel} <span class="result-value">${finalSolutionAmount.toFixed(4)}</span> ${currentTexts[`unit_${solutionUnit}`]}</p>
+                `;
+            } else { // %w/v
+                requiredSolutionAmount_base = (soluteMass_g / desiredConcentration) * 100;
+                // Sonucu istenen çözelti hacim birimine dönüştür
+                const finalSolutionAmount = requiredSolutionAmount_base / VOLUME_TO_ML[solutionUnit];
+                 concentrationResult_calcSolutionDiv.innerHTML = `
+                    <p>${currentTexts.solutionAmountResultLabel} <span class="result-value">${finalSolutionAmount.toFixed(4)}</span> ${currentTexts[`unit_${solutionUnit}`]}</p>
+                `;
+            }
+            concentrationResult_calcSolutionDiv.style.display = 'block';
+        });
+
+        // --- Seyreltme Hesaplayıcı (C1V1=C2V2) ---
+        const dilutionForm = document.getElementById('dilutionForm');
+        const dilutionResultDiv = document.getElementById('dilutionResult');
+
+        dilutionForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let C1 = parseFloat(document.getElementById('c1').value);
+            let V1 = parseFloat(document.getElementById('v1').value);
+            let C2 = parseFloat(document.getElementById('c2').value);
+            let V2 = parseFloat(document.getElementById('v2').value);
+
+            const C1Unit = document.getElementById('c1Unit').value;
+            const V1Unit = document.getElementById('v1Unit').value;
+            const C2Unit = document.getElementById('c2Unit').value;
+            const V2Unit = document.getElementById('v2Unit').value;
+
+            // Boş bırakılan alanı ve girişlerin geçerliliğini kontrol et
+            let emptyFields = [];
+            if (isNaN(C1)) emptyFields.push('C1'); else if (C1 < 0) { dilutionResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`; dilutionResultDiv.style.display = 'block'; return; }
+            if (isNaN(V1)) emptyFields.push('V1'); else if (V1 < 0) { dilutionResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`; dilutionResultDiv.style.display = 'block'; return; }
+            if (isNaN(C2)) emptyFields.push('C2'); else if (C2 < 0) { dilutionResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`; dilutionResultDiv.style.display = 'block'; return; }
+            if (isNaN(V2)) emptyFields.push('V2'); else if (V2 < 0) { dilutionResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`; dilutionResultDiv.style.display = 'block'; return; }
+
+            if (emptyFields.length !== 1) {
+                if (emptyFields.length === 0) {
+                     dilutionResultDiv.innerHTML = `<p class="error">${currentTexts.errorEmptyField}</p>`;
+                } else {
+                     dilutionResultDiv.innerHTML = `<p class="error">${currentTexts.errorMultipleEmptyFields}</p>`;
+                }
+                dilutionResultDiv.style.display = 'block';
+                return;
+            }
+
+            // Birim tutarlılığı kontrolü ve dönüşüm (sadece mantıksal, gerçek dönüşüm yapılmaz)
+            // C1V1=C2V2 formülü birimler tutarlı olduğu sürece çalışır.
+            // Önemli: Yüzde, Molar ve ppm birimleri arasında basit birim dönüşümü yapılmaz.
+            // Kullanıcının aynı birim tipini seçtiği varsayılır (örn: C1 ve C2 ikisi de %, veya ikisi de M).
+            // Hacim birimleri için dönüşüm faktörlerini uygulayalım (mL baz birim olarak)
+            V1 = isNaN(V1) ? null : V1 * VOLUME_TO_ML[V1Unit];
+            V2 = isNaN(V2) ? null : V2 * VOLUME_TO_ML[V2Unit];
+
+            let resultValue;
+            let resultUnit;
+            let resultLabel;
+
+            switch (emptyFields[0]) {
+                case 'C1':
+                    resultValue = (C2 * V2) / V1;
+                    resultUnit = document.getElementById('c1Unit').value; // Orijinal birim
+                    resultLabel = currentTexts.calculatedInitialConcentration;
+                    break;
+                case 'V1':
+                    if (C1 === 0) { // C1 sıfırsa bölüm hatası
+                        dilutionResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroValue}</p>`;
+                        dilutionResultDiv.style.display = 'block';
+                        return;
+                    }
+                    resultValue = (C2 * V2) / C1;
+                    resultUnit = document.getElementById('v1Unit').value; // Orijinal birim
+                    resultValue = resultValue / VOLUME_TO_ML[resultUnit]; // ml'den orijinal birime dönüştür
+                    resultLabel = currentTexts.calculatedInitialVolume;
+                    break;
+                case 'C2':
+                    resultValue = (C1 * V1) / V2;
+                    resultUnit = document.getElementById('c2Unit').value; // Orijinal birim
+                    resultLabel = currentTexts.calculatedTargetConcentration;
+                    break;
+                case 'V2':
+                    if (C2 === 0) { // C2 sıfırsa bölüm hatası
+                        dilutionResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroValue}</p>`;
+                        dilutionResultDiv.style.display = 'block';
+                        return;
+                    }
+                    resultValue = (C1 * V1) / C2;
+                    resultUnit = document.getElementById('v2Unit').value; // Orijinal birim
+                    resultValue = resultValue / VOLUME_TO_ML[resultUnit]; // ml'den orijinal birime dönüştür
+                    resultLabel = currentTexts.calculatedTargetVolume;
+                    break;
+            }
+
+            if (resultValue < 0) { // Negatif sonuçlar olası değil
+                dilutionResultDiv.innerHTML = `<p class="error">${currentTexts.errorDilutionNegativeResult}</p>`;
+                dilutionResultDiv.style.display = 'block';
+                return;
+            }
+
+            let formattedUnit = '';
+            if (resultUnit === 'percent') formattedUnit = currentTexts.unit_percent_short;
+            else if (resultUnit === 'molar') formattedUnit = currentTexts.unit_molar;
+            else if (resultUnit === 'ppm') formattedUnit = currentTexts.unit_ppm;
+            else if (resultUnit === 'mL') formattedUnit = currentTexts.unit_mL;
+            else if (resultUnit === 'L') formattedUnit = currentTexts.unit_L;
+            else if (resultUnit === 'µL') formattedUnit = currentTexts.unit_µL;
+
+
+            dilutionResultDiv.innerHTML = `
+                <p>${resultLabel} <span class="result-value">${resultValue.toFixed(4)}</span> ${formattedUnit}</p>
+            `;
+            dilutionResultDiv.style.display = 'block';
+        });
+    });
+</script>
 </body>
 </html>

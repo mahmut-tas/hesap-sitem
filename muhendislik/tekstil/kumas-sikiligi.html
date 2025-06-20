@@ -283,5 +283,173 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Language detection: Assume English if URL starts with '/en/', otherwise Turkish
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+    // Text strings object for dynamic content
+    const texts = {
+        tr: {
+            calculateButtonText: 'Hesapla',
+            invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+            resultTitle: 'Sonuçlar:',
+            warpDensity: 'Çözgü Sıklığı (tel/cm):',
+            weftDensity: 'Atkı Sıklığı (tel/cm):',
+            courseDensity: 'Kurs Sıklığı (kurs/cm):',
+            waleDensity: 'Sıra Sıklığı (sıra/cm):',
+            explanation: 'Ölçümleri doğru birimlerde ve hassasiyetle yaptığınızdan emin olun. Sonuçlar, kumaşın yapısına ve kullanılan ipliklere göre değişiklik gösterebilir.'
+        },
+        en: {
+            calculateButtonText: 'Calculate',
+            invalidInput: 'Please enter valid positive numbers for all fields.',
+            resultTitle: 'Results:',
+            warpDensity: 'Warp Density (threads/cm):',
+            weftDensity: 'Weft Density (threads/cm):',
+            courseDensity: 'Course Density (courses/cm):',
+            waleDensity: 'Wale Density (wales/cm):',
+            explanation: 'Ensure you take measurements in correct units and with precision. Results may vary depending on fabric structure and yarns used.'
+        }
+    };
+
+    // Select active language texts
+    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+    // --- DOM Elements ---
+    const fabricDensityForm = document.getElementById('fabricDensityForm');
+    const fabricTypeSelect = document.getElementById('fabricType');
+    const dokumaInputsDiv = document.getElementById('dokumaInputs');
+    const ormeInputsDiv = document.getElementById('ormeInputs');
+    const calculateButton = fabricDensityForm.querySelector('button[type="button"]');
+    const resultBox = document.getElementById('resultBox');
+    const explanationParagraph = resultBox.nextElementSibling; // The <p class="small-text"> after resultBox
+
+    // Dokuma Inputs
+    const warpCountInput = document.getElementById('warpCount');
+    const warpMeasureLengthInput = document.getElementById('warpMeasureLength');
+    const weftCountInput = document.getElementById('weftCount');
+    const weftMeasureLengthInput = document.getElementById('weftMeasureLength');
+
+    // Örme Inputs
+    const courseCountInput = document.getElementById('courseCount');
+    const waleCountInput = document.getElementById('waleCount');
+
+    // Update button text and explanation text based on language
+    if (calculateButton) {
+        calculateButton.textContent = currentTexts.calculateButtonText;
+    }
+    if (explanationParagraph) {
+        explanationParagraph.textContent = currentTexts.explanation;
+    }
+
+    // --- Toggle Inputs Function ---
+    window.toggleInputs = function() {
+        if (fabricTypeSelect.value === 'dokuma') {
+            dokumaInputsDiv.style.display = 'block';
+            ormeInputsDiv.style.display = 'none';
+            // Set required for dokuma, remove for orme
+            warpCountInput.setAttribute('required', '');
+            warpMeasureLengthInput.setAttribute('required', '');
+            weftCountInput.setAttribute('required', '');
+            weftMeasureLengthInput.setAttribute('required', '');
+            courseCountInput.removeAttribute('required');
+            waleCountInput.removeAttribute('required');
+        } else {
+            dokumaInputsDiv.style.display = 'none';
+            ormeInputsDiv.style.display = 'block';
+            // Set required for orme, remove for dokuma
+            courseCountInput.setAttribute('required', '');
+            waleCountInput.setAttribute('required', '');
+            warpCountInput.removeAttribute('required');
+            warpMeasureLengthInput.removeAttribute('required');
+            weftCountInput.removeAttribute('required');
+            weftMeasureLengthInput.removeAttribute('required');
+        }
+        // Clear results when toggling
+        resultBox.innerHTML = `<h3>${currentTexts.resultTitle}</h3>`;
+        resultBox.style.display = 'none';
+    };
+
+    // Set initial state based on default select value
+    toggleInputs();
+
+    // --- Calculation Function ---
+    window.calculateFabricDensity = function() {
+        // Clear previous results
+        resultBox.innerHTML = `<h3>${currentTexts.resultTitle}</h3>`;
+        resultBox.style.display = 'none';
+
+        if (fabricTypeSelect.value === 'dokuma') {
+            let warpCount = parseFloat(warpCountInput.value);
+            let warpMeasureLength = parseFloat(warpMeasureLengthInput.value);
+            let weftCount = parseFloat(weftCountInput.value);
+            let weftMeasureLength = parseFloat(weftMeasureLengthInput.value);
+
+            // --- Input Validation for Dokuma ---
+            if (isNaN(warpCount) || isNaN(warpMeasureLength) || isNaN(weftCount) || isNaN(weftMeasureLength) ||
+                warpCount <= 0 || warpMeasureLength <= 0 || weftCount <= 0 || weftMeasureLength <= 0) {
+                alert(currentTexts.invalidInput);
+                return;
+            }
+
+            // --- Perform Calculations for Dokuma ---
+            const calculatedWarpDensity = (warpCount / warpMeasureLength);
+            const calculatedWeftDensity = (weftCount / weftMeasureLength);
+
+            // --- Display Results for Dokuma ---
+            let resultsHtml = `<h3>${currentTexts.resultTitle}</h3>`;
+            resultsHtml += `<p><strong>${currentTexts.warpDensity}</strong> <span class="result-value">${calculatedWarpDensity.toFixed(2)}</span></p>`;
+            resultsHtml += `<p><strong>${currentTexts.weftDensity}</strong> <span class="result-value">${calculatedWeftDensity.toFixed(2)}</span></p>`;
+            resultBox.innerHTML = resultsHtml;
+
+        } else { // Örme Kumaş
+            let courseCount = parseFloat(courseCountInput.value);
+            let waleCount = parseFloat(waleCountInput.value);
+
+            // --- Input Validation for Örme ---
+            if (isNaN(courseCount) || isNaN(waleCount) || courseCount <= 0 || waleCount <= 0) {
+                alert(currentTexts.invalidInput);
+                return;
+            }
+
+            // --- Perform Calculations for Örme ---
+            // For knitted fabrics, the input fields directly represent density per cm
+            const calculatedCourseDensity = courseCount; // Already per cm
+            const calculatedWaleDensity = waleCount;     // Already per cm
+
+            // --- Display Results for Örme ---
+            let resultsHtml = `<h3>${currentTexts.resultTitle}</h3>`;
+            resultsHtml += `<p><strong>${currentTexts.courseDensity}</strong> <span class="result-value">${calculatedCourseDensity.toFixed(2)}</span></p>`;
+            resultsHtml += `<p><strong>${currentTexts.waleDensity}</strong> <span class="result-value">${calculatedWaleDensity.toFixed(2)}</span></p>`;
+            resultBox.innerHTML = resultsHtml;
+        }
+
+        resultBox.style.display = 'block'; // Show the result box
+    };
+
+    // Update form labels based on language
+    document.querySelector('label[for="fabricType"]').textContent = isEnglishPage ? 'Fabric Type:' : 'Kumaş Tipi:';
+    // Dokuma labels
+    document.querySelector('#dokumaInputs h4').textContent = isEnglishPage ? 'Woven Fabric Information' : 'Dokuma Kumaş Bilgileri';
+    document.querySelector('label[for="warpCount"]').textContent = isEnglishPage ? 'Warp Thread Count:' : 'Çözgü Teli Sayısı:';
+    document.querySelector('label[for="warpMeasureLength"]').textContent = isEnglishPage ? 'Warp Measurement Length (cm):' : 'Çözgü Ölçüm Uzunluğu (cm):';
+    document.querySelector('label[for="weftCount"]').textContent = isEnglishPage ? 'Weft Thread Count:' : 'Atkı Teli Sayısı:';
+    document.querySelector('label[for="weftMeasureLength"]').textContent = isEnglishPage ? 'Weft Measurement Length (cm):' : 'Atkı Ölçüm Uzunluğu (cm):';
+
+    // Örme labels
+    document.querySelector('#ormeInputs h4').textContent = isEnglishPage ? 'Knitted Fabric Information' : 'Örme Kumaş Bilgileri';
+    document.querySelector('label[for="courseCount"]').textContent = isEnglishPage ? 'Course Count (per unit length):' : 'Kurs Sayısı (birim uzunluktaki):';
+    document.querySelector('label[for="waleCount"]').textContent = isEnglishPage ? 'Wale Count (per unit length):' : 'Sıra Sayısı (birim uzunluktaki):';
+
+    // Update select options
+    document.querySelector('#fabricType option[value="dokuma"]').textContent = isEnglishPage ? 'Woven Fabric' : 'Dokuma Kumaş';
+    document.querySelector('#fabricType option[value="orme"]').textContent = isEnglishPage ? 'Knitted Fabric' : 'Örme Kumaş';
+
+    // Update small text at the top of the form
+    fabricDensityForm.querySelector('p.small-text').textContent = isEnglishPage ?
+        'Please select fabric type and enter the relevant measurements:' :
+        'Lütfen kumaş tipini seçin ve ilgili ölçüleri girin:';
+});
+  </script>
  </body>
 </html>

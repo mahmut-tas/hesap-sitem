@@ -762,5 +762,239 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli değerler girin.',
+                errorZeroValue: 'Değer sıfır olamaz.',
+                resultPrefix: 'Sonuç:',
+                // Yoğunluk Hesaplama
+                calcDensityTitle: 'Yoğunluk Hesapla',
+                massLabel: 'Kütle (m):',
+                volumeLabel: 'Hacim (V):',
+                densityResultLabel: 'Yoğunluk:',
+                // Kütle Hesaplama
+                calcMassTitle: 'Kütle Hesapla',
+                densityLabel: 'Yoğunluk (ρ):',
+                massResultLabel: 'Kütle:',
+                // Hacim Hesaplama
+                calcVolumeTitle: 'Hacim Hesapla',
+                volumeResultLabel: 'Hacim:'
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate',
+                invalidInput: 'Please enter valid values for all fields.',
+                errorZeroValue: 'Value cannot be zero.',
+                resultPrefix: 'Result:',
+                // Calculate Density
+                calcDensityTitle: 'Calculate Density',
+                massLabel: 'Mass (m):',
+                volumeLabel: 'Volume (V):',
+                densityResultLabel: 'Density:',
+                // Calculate Mass
+                calcMassTitle: 'Calculate Mass',
+                densityLabel: 'Density (ρ):',
+                massResultLabel: 'Mass:',
+                // Calculate Volume
+                calcVolumeTitle: 'Calculate Volume',
+                volumeResultLabel: 'Volume:'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // Hesaplayıcı butonları ve içerikleri
+        const calcButtons = document.querySelectorAll('.calc-type-button');
+        const calcWrappers = document.querySelectorAll('.calc-wrapper');
+
+        // Function to show/hide calculators
+        function showCalculator(calcType) {
+            calcWrappers.forEach(wrapper => {
+                if (wrapper.id === `calculator-${calcType}`) {
+                    wrapper.classList.remove('hidden-calc');
+                } else {
+                    wrapper.classList.add('hidden-calc');
+                }
+            });
+
+            calcButtons.forEach(button => {
+                if (button.dataset.calcType === calcType) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        // Add click event to buttons
+        calcButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const calcType = this.dataset.calcType;
+                showCalculator(calcType);
+                // MathJax'i güncelle (eğer formül görünür hale gelirse)
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            });
+        });
+
+        // Sayfa yüklendiğinde varsayılan olarak ilk hesaplayıcıyı göster
+        showCalculator('calcDensity');
+
+        // MathJax yüklemesini de tetikle
+        if (typeof MathJax !== 'undefined') {
+            MathJax.typesetPromise().then(() => {
+                console.log("MathJax typeset complete for initial load.");
+            }).catch((err) => console.error("MathJax typeset error on initial load:", err));
+        }
+
+        // --- Birim Dönüşüm Sabitleri (Tüm birimleri SI baz birimlerine dönüştürmek için) ---
+        // kg'a dönüştürme faktörleri
+        const MASS_TO_KG = {
+            'g': 0.001,
+            'kg': 1,
+            'lb': 0.453592
+        };
+
+        // m3'e dönüştürme faktörleri
+        const VOLUME_TO_M3 = {
+            'cm3': 0.000001,
+            'm3': 1,
+            'L': 0.001,
+            'ft3': 0.0283168,
+            'mL': 0.000001
+        };
+
+        // kg/m3'e dönüştürme faktörleri
+        const DENSITY_TO_KG_M3 = {
+            'g/cm3': 1000,
+            'kg/m3': 1,
+            'lb/ft3': 16.0185,
+            'kg/L': 1000, // 1 kg/L = 1000 kg/m3
+            'g/mL': 1000 // 1 g/mL = 1 g/cm3 = 1000 kg/m3
+        };
+
+        // --- Yoğunluk Hesaplama (ρ = m / V) ---
+        const densityForm_density = document.getElementById('densityForm_density');
+        const densityResult_densityDiv = document.getElementById('densityResult_density');
+
+        densityForm_density.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const massValue = parseFloat(document.getElementById('massValue_density').value);
+            const volumeValue = parseFloat(document.getElementById('volumeValue_density').value);
+            const massUnit = document.getElementById('massUnit_density').value;
+            const volumeUnit = document.getElementById('volumeUnit_density').value;
+
+            if (isNaN(massValue) || isNaN(volumeValue) || massValue <= 0 || volumeValue <= 0) {
+                densityResult_densityDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                densityResult_densityDiv.style.display = 'block';
+                return;
+            }
+
+            // Birimleri SI baz birimlerine dönüştür (kg ve m³)
+            const mass_kg = massValue * MASS_TO_KG[massUnit];
+            const volume_m3 = volumeValue * VOLUME_TO_M3[volumeUnit];
+
+            // Hesaplama: Yoğunluk (kg/m³)
+            const density_kg_m3 = mass_kg / volume_m3;
+
+            // Yaygın birimlerde sonuçları göster (g/cm³ ve kg/m³)
+            const density_g_cm3 = density_kg_m3 / 1000;
+
+            densityResult_densityDiv.innerHTML = `
+                <p>${currentTexts.densityResultLabel} <span class="result-value">${density_g_cm3.toFixed(4)}</span> g/cm³</p>
+                <p>${currentTexts.densityResultLabel} <span class="result-value">${density_kg_m3.toFixed(4)}</span> kg/m³</p>
+            `;
+            densityResult_densityDiv.style.display = 'block';
+        });
+
+        // --- Kütle Hesaplama (m = ρ * V) ---
+        const densityForm_mass = document.getElementById('densityForm_mass');
+        const densityResult_massDiv = document.getElementById('densityResult_mass');
+
+        densityForm_mass.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const densityValue = parseFloat(document.getElementById('densityValue_mass').value);
+            const volumeValue = parseFloat(document.getElementById('volumeValue_mass').value);
+            const densityUnit = document.getElementById('densityUnit_mass').value;
+            const volumeUnit = document.getElementById('volumeUnit_mass').value;
+
+            if (isNaN(densityValue) || isNaN(volumeValue) || densityValue <= 0 || volumeValue <= 0) {
+                densityResult_massDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                densityResult_massDiv.style.display = 'block';
+                return;
+            }
+
+            // Birimleri SI baz birimlerine dönüştür (kg/m³ ve m³)
+            const density_kg_m3 = densityValue * DENSITY_TO_KG_M3[densityUnit];
+            const volume_m3 = volumeValue * VOLUME_TO_M3[volumeUnit];
+
+            // Hesaplama: Kütle (kg)
+            const mass_kg = density_kg_m3 * volume_m3;
+
+            // Yaygın birimlerde sonuçları göster (g ve kg)
+            const mass_g = mass_kg * 1000;
+
+            densityResult_massDiv.innerHTML = `
+                <p>${currentTexts.massResultLabel} <span class="result-value">${mass_g.toFixed(4)}</span> g</p>
+                <p>${currentTexts.massResultLabel} <span class="result-value">${mass_kg.toFixed(4)}</span> kg</p>
+            `;
+            densityResult_massDiv.style.display = 'block';
+        });
+
+        // --- Hacim Hesaplama (V = m / ρ) ---
+        const densityForm_volume = document.getElementById('densityForm_volume');
+        const densityResult_volumeDiv = document.getElementById('densityResult_volume');
+
+        densityForm_volume.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const massValue = parseFloat(document.getElementById('massValue_volume').value);
+            const densityValue = parseFloat(document.getElementById('densityValue_volume').value);
+            const massUnit = document.getElementById('massUnit_volume').value;
+            const densityUnit = document.getElementById('densityUnit_volume').value;
+
+            if (isNaN(massValue) || isNaN(densityValue) || massValue <= 0 || densityValue <= 0) {
+                densityResult_volumeDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                densityResult_volumeDiv.style.display = 'block';
+                return;
+            }
+            if (densityValue === 0) {
+                densityResult_volumeDiv.innerHTML = `<p class="error">${currentTexts.errorZeroValue}</p>`;
+                densityResult_volumeDiv.style.display = 'block';
+                return;
+            }
+
+            // Birimleri SI baz birimlerine dönüştür (kg ve kg/m³)
+            const mass_kg = massValue * MASS_TO_KG[massUnit];
+            const density_kg_m3 = densityValue * DENSITY_TO_KG_M3[densityUnit];
+
+            // Hesaplama: Hacim (m³)
+            const volume_m3 = mass_kg / density_kg_m3;
+
+            // Yaygın birimlerde sonuçları göster (cm³ ve Litre)
+            const volume_cm3 = volume_m3 * 1000000; // 1 m³ = 1,000,000 cm³
+            const volume_L = volume_m3 * 1000;     // 1 m³ = 1000 L
+
+            densityResult_volumeDiv.innerHTML = `
+                <p>${currentTexts.volumeResultLabel} <span class="result-value">${volume_cm3.toFixed(4)}</span> cm³</p>
+                <p>${currentTexts.volumeResultLabel} <span class="result-value">${volume_L.toFixed(4)}</span> L</p>
+                <p>${currentTexts.volumeResultLabel} <span class="result-value">${volume_m3.toFixed(4)}</span> m³</p>
+            `;
+            densityResult_volumeDiv.style.display = 'block';
+        });
+    });
+</script>
 </body>
 </html>

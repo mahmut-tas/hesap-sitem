@@ -660,5 +660,184 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Pompa Gücünü Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                errorZeroEfficiency: 'Pompa verimliliği sıfırdan büyük olmalıdır.',
+                resultPrefix: 'Hidrolik Güç (P_hidrolik):',
+                shaftPower: 'Şaft Gücü (P_şaft):',
+                motorPower: 'Motor Gücü (P_motor):',
+                // Birimler
+                unit_kg_m3: 'kg/m³',
+                unit_g_cm3: 'g/cm³',
+                unit_lb_ft3: 'lb/ft³',
+                unit_m3_s: 'm³/s',
+                unit_L_s: 'L/s',
+                unit_m3_h: 'm³/saat',
+                unit_gpm: 'gpm',
+                unit_ft3_s: 'ft³/s',
+                unit_m: 'metre (m)',
+                unit_ft: 'fit (ft)',
+                unit_psi: 'psi',
+                unit_kPa: 'kPa',
+                unit_bar: 'bar',
+                unit_W: 'Watt (W)',
+                unit_kW: 'Kilowatt (kW)',
+                unit_HP: 'Beygir Gücü (HP)',
+                unit_percent: '%'
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate Pump Power',
+                invalidInput: 'Please enter valid positive numbers for all fields.',
+                errorZeroEfficiency: 'Pump efficiency must be greater than zero.',
+                resultPrefix: 'Hydraulic Power (P_hydraulic):',
+                shaftPower: 'Shaft Power (P_shaft):',
+                motorPower: 'Motor Power (P_motor):',
+                // Units
+                unit_kg_m3: 'kg/m³',
+                unit_g_cm3: 'g/cm³',
+                unit_lb_ft3: 'lb/ft³',
+                unit_m3_s: 'm³/s',
+                unit_L_s: 'L/s',
+                unit_m3_h: 'm³/hour',
+                unit_gpm: 'gallons per minute (gpm)',
+                unit_ft3_s: 'ft³/s',
+                unit_m: 'meter (m)',
+                unit_ft: 'feet (ft)',
+                unit_psi: 'psi',
+                unit_kPa: 'kPa',
+                unit_bar: 'bar',
+                unit_W: 'Watts (W)',
+                unit_kW: 'Kilowatts (kW)',
+                unit_HP: 'Horsepower (HP)',
+                unit_percent: '%'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // --- Helper Functions (Birim Dönüşüm Sabitleri) ---
+        const GRAVITATIONAL_ACCELERATION_MS2 = 9.81; // m/s²
+        const HP_TO_WATT = 745.7; // 1 HP = 745.7 Watts
+
+        const UNIT_CONVERSIONS = {
+            // Yoğunluk: kg/m³'e dönüştürme faktörleri
+            density: {
+                'kg/m3': 1,
+                'g/cm3': 1000, // 1 g/cm³ = 1000 kg/m³
+                'lb/ft3': 16.0185 // 1 lb/ft³ = 16.0185 kg/m³
+            },
+            // Debi (Hacimsel Akış Hızı): m³/s'ye dönüştürme faktörleri
+            flowRate: {
+                'm3/s': 1,
+                'L/s': 0.001, // 1 L/s = 0.001 m³/s
+                'm3/h': 1 / 3600, // 1 m³/hour = 1/3600 m³/s
+                'gpm': 0.0000630902, // 1 US gallon per minute = 0.0000630902 m³/s
+                'ft3/s': 0.0283168 // 1 ft³/s = 0.0283168 m³/s
+            },
+            // Toplam Yük (Head) veya Basınç Farkı: Metre (m) veya Pascal (Pa) birimlerine dönüştürme
+            headOrPressure: {
+                'm': { type: 'head', factor: 1 }, // Metre (Head)
+                'ft': { type: 'head', factor: 0.3048 }, // Fit (Head)
+                'psi': { type: 'pressure', factor: 6894.76 }, // psi (Pressure) -> Pa
+                'kPa': { type: 'pressure', factor: 1000 }, // kPa (Pressure) -> Pa
+                'bar': { type: 'pressure', factor: 100000 } // bar (Pressure) -> Pa
+            }
+        };
+
+        // --- DOM Elements ---
+        const pumpPowerForm = document.getElementById('pumpPowerForm');
+        const pumpPowerResultDiv = document.getElementById('pumpPowerResult');
+
+        // --- Main Form Submission ---
+        pumpPowerForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get values
+            const fluidDensity = parseFloat(document.getElementById('fluidDensity_pp').value);
+            const flowRate = parseFloat(document.getElementById('flowRate_pp').value);
+            const totalHeadOrPressure = parseFloat(document.getElementById('totalHead_pp').value);
+            const pumpEfficiency = parseFloat(document.getElementById('pumpEfficiency_pp').value); // % olarak
+
+            // Get units
+            const fluidDensityUnit = document.getElementById('fluidDensityUnit_pp').value;
+            const flowRateUnit = document.getElementById('flowRateUnit_pp').value;
+            const totalHeadUnit = document.getElementById('totalHeadUnit_pp').value;
+
+            // --- Input Validation ---
+            if (isNaN(fluidDensity) || isNaN(flowRate) || isNaN(totalHeadOrPressure) || isNaN(pumpEfficiency) ||
+                fluidDensity <= 0 || flowRate <= 0 || totalHeadOrPressure < 0 || pumpEfficiency <= 0 || pumpEfficiency > 100) {
+                pumpPowerResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                pumpPowerResultDiv.style.display = 'block';
+                return;
+            }
+            // Özel durum: Pompa verimliliği sıfır olamaz (bölme hatası)
+            if (pumpEfficiency === 0) {
+                pumpPowerResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroEfficiency}</p>`;
+                pumpPowerResultDiv.style.display = 'block';
+                return;
+            }
+
+            // --- Convert to Base SI Units (kg/m³, m³/s, m veya Pa) ---
+            const rho_kgm3 = fluidDensity * UNIT_CONVERSIONS.density[fluidDensityUnit];
+            const Q_m3s = flowRate * UNIT_CONVERSIONS.flowRate[flowRateUnit];
+
+            let H_m = 0; // Total Head in meters
+            let DeltaP_Pa = 0; // Pressure Difference in Pascals
+
+            const headOrPressureInfo = UNIT_CONVERSIONS.headOrPressure[totalHeadUnit];
+
+            if (headOrPressureInfo.type === 'head') {
+                H_m = totalHeadOrPressure * headOrPressureInfo.factor;
+            } else { // type === 'pressure'
+                DeltaP_Pa = totalHeadOrPressure * headOrPressureInfo.factor;
+            }
+
+            const pumpEfficiency_decimal = pumpEfficiency / 100; // %'den ondalık değere
+
+            // --- Calculate Pump Power ---
+
+            let P_hydraulic_W; // Hidrolik Güç (Watts)
+            if (headOrPressureInfo.type === 'head') {
+                // P_hydraulic = ρ ⋅ g ⋅ Q ⋅ H
+                P_hydraulic_W = rho_kgm3 * GRAVITATIONAL_ACCELERATION_MS2 * Q_m3s * H_m;
+            } else { // type === 'pressure'
+                // P_hydraulic = Q ⋅ ΔP
+                P_hydraulic_W = Q_m3s * DeltaP_Pa;
+            }
+
+            // Şaft Gücü (P_shaft = P_hydraulic / η_pump)
+            const P_shaft_W = P_hydraulic_W / pumpEfficiency_decimal;
+
+            // Motor Gücü (P_motor = P_shaft / η_motor) - Motor verimliliği isteğe bağlı olarak alınabilir, burada varsayılan olarak %90 alalım.
+            // HTML'de motor verimliliği girişi yok, bu yüzden sabit bir değer kullanalım veya atlayalım.
+            // Sadece hidrolik ve şaft gücünü verelim. Eğer motor gücü istenirse, HTML'e yeni bir input eklenebilir.
+            // Şu anki HTML yapısına göre sadece hidrolik ve şaft gücünü göstermek daha mantıklı.
+            // HTML açıklamasında motor gücü formülü var ama inputu yok. Bu yüzden onu burada göstermeyi atlıyorum.
+
+            // --- Display Results ---
+            pumpPowerResultDiv.innerHTML = `
+                <p>${currentTexts.resultPrefix} <span class="result-value">${P_hydraulic_W.toFixed(2)}</span> ${currentTexts.unit_W}</p>
+                <p>${currentTexts.resultPrefix} <span class="result-value">${(P_hydraulic_W / 1000).toFixed(2)}</span> ${currentTexts.unit_kW}</p>
+                <p>${currentTexts.resultPrefix} <span class="result-value">${(P_hydraulic_W / HP_TO_WATT).toFixed(2)}</span> ${currentTexts.unit_HP}</p>
+                <hr class="form-divider">
+                <p>${currentTexts.shaftPower} <span class="result-value">${P_shaft_W.toFixed(2)}</span> ${currentTexts.unit_W}</p>
+                <p>${currentTexts.shaftPower} <span class="result-value">${(P_shaft_W / 1000).toFixed(2)}</span> ${currentTexts.unit_kW}</p>
+                <p>${currentTexts.shaftPower} <span class="result-value">${(P_shaft_W / HP_TO_WATT).toFixed(2)}</span> ${currentTexts.unit_HP}</p>
+            `;
+            pumpPowerResultDiv.style.display = 'block';
+        });
+    });
+</script>
  </body>
 </html>

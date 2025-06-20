@@ -263,5 +263,159 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Language detection: Assume English if URL starts with '/en/', otherwise Turkish
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+    // Text strings object for dynamic content
+    const texts = {
+        tr: {
+            calculateButtonText: 'Kalori İhtiyacı Hesapla',
+            invalidInput: 'Lütfen tüm alanları doğru ve geçerli değerlerle doldurun.',
+            resultTitle: 'Günlük Kalori İhtiyacınız:',
+            calorieGoalMaintain: 'Kilonuzu korumak için günlük ortalama kalori ihtiyacınız:',
+            calorieGoalLose: 'Haftada 0.5 kg kaybetmek için hedef kalori:',
+            calorieGoalGain: 'Haftada 0.5 kg almak için hedef kalori:',
+            genderSelect: 'Seçiniz',
+            genderMale: 'Erkek',
+            genderFemale: 'Kadın',
+            activitySelect: 'Seçiniz',
+            activitySedentary: 'Hareketsiz (Çok az egzersiz veya hiç yok)',
+            activityLightlyActive: 'Az Aktif (Haftada 1-3 gün hafif egzersiz)',
+            activityModeratelyActive: 'Orta Derece Aktif (Haftada 3-5 gün orta egzersiz)',
+            activityVeryActive: 'Çok Aktif (Haftada 6-7 gün yoğun egzersiz)',
+            activitySuperActive: 'Aşırı Aktif (Günde iki kez yoğun egzersiz, fiziksel iş)',
+            ageLabel: 'Yaşınız:',
+            genderLabel: 'Cinsiyet:',
+            heightLabel: 'Boy (cm):',
+            weightLabel: 'Kilo (kg):',
+            activityLabel: 'Aktivite Seviyesi:',
+            placeholderAge: 'Örn: 30',
+            placeholderHeight: 'Örn: 175',
+            placeholderWeight: 'Örn: 70'
+        },
+        en: {
+            calculateButtonText: 'Calculate Calorie Needs',
+            invalidInput: 'Please fill in all fields with correct and valid values.',
+            resultTitle: 'Your Daily Calorie Needs:',
+            calorieGoalMaintain: 'Your average daily calorie need to maintain your weight:',
+            calorieGoalLose: 'Target calories to lose 0.5 kg per week:',
+            calorieGoalGain: 'Target calories to gain 0.5 kg per week:',
+            genderSelect: 'Select',
+            genderMale: 'Male',
+            genderFemale: 'Female',
+            activitySelect: 'Select',
+            activitySedentary: 'Sedentary (Little or no exercise)',
+            activityLightlyActive: 'Lightly Active (Light exercise 1-3 days/week)',
+            activityModeratelyActive: 'Moderately Active (Moderate exercise 3-5 days/week)',
+            activityVeryActive: 'Very Active (Intense exercise 6-7 days/week)',
+            activitySuperActive: 'Super Active (Intense exercise twice daily, physical job)',
+            ageLabel: 'Age:',
+            genderLabel: 'Gender:',
+            heightLabel: 'Height (cm):',
+            weightLabel: 'Weight (kg):',
+            activityLabel: 'Activity Level:',
+            placeholderAge: 'e.g.: 30',
+            placeholderHeight: 'e.g.: 175',
+            placeholderWeight: 'e.g.: 70'
+        }
+    };
+
+    // Select active language texts
+    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+    // --- DOM Elements ---
+    const calorieForm = document.getElementById('calorieForm');
+    const ageInput = document.getElementById('calorie_age');
+    const genderSelect = document.getElementById('calorie_gender');
+    const heightInput = document.getElementById('calorie_height');
+    const weightInput = document.getElementById('calorie_weight');
+    const activitySelect = document.getElementById('calorie_activity');
+    const calorieResultDiv = document.getElementById('calorieResult');
+    const calorieGoalDiv = document.getElementById('calorieGoal');
+    const calculateButton = calorieForm.querySelector('button[type="submit"]');
+
+    // Update static labels and placeholders on load
+    document.querySelector('label[for="calorie_age"]').textContent = currentTexts.ageLabel;
+    ageInput.placeholder = currentTexts.placeholderAge;
+    document.querySelector('label[for="calorie_gender"]').textContent = currentTexts.genderLabel;
+    document.querySelector('#calorie_gender option[value=""]').textContent = currentTexts.genderSelect;
+    document.querySelector('#calorie_gender option[value="male"]').textContent = currentTexts.genderMale;
+    document.querySelector('#calorie_gender option[value="female"]').textContent = currentTexts.genderFemale;
+    document.querySelector('label[for="calorie_height"]').textContent = currentTexts.heightLabel;
+    heightInput.placeholder = currentTexts.placeholderHeight;
+    document.querySelector('label[for="calorie_weight"]').textContent = currentTexts.weightLabel;
+    weightInput.placeholder = currentTexts.placeholderWeight;
+    document.querySelector('label[for="calorie_activity"]').textContent = currentTexts.activityLabel;
+    document.querySelector('#calorie_activity option[value=""]').textContent = currentTexts.activitySelect;
+    document.querySelector('#calorie_activity option[value="sedentary"]').textContent = currentTexts.activitySedentary;
+    document.querySelector('#calorie_activity option[value="lightly_active"]').textContent = currentTexts.activityLightlyActive;
+    document.querySelector('#calorie_activity option[value="moderately_active"]').textContent = currentTexts.activityModeratelyActive;
+    document.querySelector('#calorie_activity option[value="very_active"]').textContent = currentTexts.activityVeryActive;
+    document.querySelector('#calorie_activity option[value="super_active"]').textContent = currentTexts.activitySuperActive;
+    calculateButton.textContent = currentTexts.calculateButtonText;
+
+
+    // Activity Multipliers
+    const activityMultipliers = {
+        sedentary: 1.2,
+        lightly_active: 1.375,
+        moderately_active: 1.55,
+        very_active: 1.725,
+        super_active: 1.9
+    };
+
+    // --- Calorie Calculation Function ---
+    function calculateCalories(event) {
+        event.preventDefault(); // Prevent form submission and page reload
+
+        let age = parseInt(ageInput.value);
+        let gender = genderSelect.value;
+        let heightCm = parseFloat(heightInput.value);
+        let weightKg = parseFloat(weightInput.value);
+        let activityLevel = activitySelect.value;
+
+        // Clear previous results
+        calorieResultDiv.innerHTML = '';
+        calorieGoalDiv.innerHTML = '';
+
+        // --- Input Validation ---
+        if (isNaN(age) || isNaN(heightCm) || isNaN(weightKg) ||
+            age <= 0 || heightCm <= 0 || weightKg <= 0 ||
+            gender === '' || activityLevel === '') {
+            calorieResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            return;
+        }
+
+        let bmr = 0;
+        // Mifflin-St Jeor Formula
+        if (gender === 'male') {
+            bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) + 5;
+        } else { // female
+            bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) - 161;
+        }
+
+        // Calculate TDEE (Total Daily Energy Expenditure)
+        const activityMultiplier = activityMultipliers[activityLevel];
+        const tdee = bmr * activityMultiplier;
+
+        // Display TDEE
+        calorieResultDiv.innerHTML = `<h3>${currentTexts.resultTitle}</h3><p><strong>${currentTexts.calorieGoalMaintain}</strong> <span class="result-value">${tdee.toFixed(0)} kcal</span></p>`;
+
+        // Display calorie goals for weight loss/gain (approx. 500 kcal for 0.5kg/week)
+        const loseWeightCalories = tdee - 500;
+        const gainWeightCalories = tdee + 500;
+
+        calorieGoalDiv.innerHTML = `
+            <p><strong>${currentTexts.calorieGoalLose}</strong> <span class="result-value">${loseWeightCalories.toFixed(0)} kcal</span></p>
+            <p><strong>${currentTexts.calorieGoalGain}</strong> <span class="result-value">${gainWeightCalories.toFixed(0)} kcal</span></p>
+        `;
+    }
+
+    // Add event listener to the form for submission
+    calorieForm.addEventListener('submit', calculateCalories);
+});
+  </script>
  </body>
 </html>

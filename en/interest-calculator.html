@@ -677,5 +677,352 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Language detection (assuming English if '/en/' in path, otherwise Turkish)
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+    // Text strings for dynamic content based on language
+    const texts = {
+        tr: {
+            // General
+            calculateButtonText: 'Hesapla',
+            invalidInput: 'Lütfen geçerli değerler girin.',
+            principalAmountLabel: 'Anapara (₺):',
+            interestRateUnitLabel: 'Faiz Oranı Birimi:',
+            rateUnitAnnual: 'Yıllık',
+            rateUnitMonthly: 'Aylık',
+            interestRateLabelAnnual: 'Yıllık Faiz Oranı (%):',
+            interestRateLabelMonthly: 'Aylık Faiz Oranı (%):',
+            interestRatePlaceholderAnnual: 'Örn: 15',
+            interestRatePlaceholderMonthly: 'Örn: 1.25',
+            timePeriodLabel: 'Vade:',
+            timePeriodUnitYears: 'Yıl',
+            timePeriodUnitMonths: 'Ay',
+            timePeriodPlaceholderYears: 'Örn: 5',
+            timePeriodPlaceholderMonths: 'Örn: 60',
+            compoundingFrequencyLabel: 'Faiz Birikim Sıklığı (Yılda):',
+            compoundingAnnual: 'Yıllık',
+            compoundingSemiAnnual: 'Yarım Yıllık',
+            compoundingQuarterly: 'Üç Aylık',
+            compoundingMonthly: 'Aylık',
+            compoundingDaily: 'Günlük',
+
+            // Simple Interest
+            simpleInterestOption: 'Basit Faiz Hesapla',
+            simpleInterestResultTitle: 'Basit Faiz Hesaplama Sonucu:',
+            principal: 'Anapara:',
+            simpleInterestEarned: 'Basit Faiz Kazancı:',
+            totalAccumulatedSimple: 'Toplam Biriken Miktar:',
+            howCalculatedTitleSimple: 'Nasıl Hesaplandı? (Adım Adım)',
+            step1Simple: 'Anapara (P), yıllık faiz oranı (r) ve vade (t) değerleri alınır.',
+            step2Simple: 'Faiz oranı, yüzde formundan ondalık forma çevrilir (örn. %15 -> 0.15).',
+            step3Simple: 'Vade, yıl cinsine çevrilir. (Ay girildiyse 12\'ye bölünür.)',
+            step4Simple: 'Basit Faiz = Anapara × Faiz Oranı × Vade formülü uygulanır.',
+            step5Simple: 'Toplam Biriken Miktar = Anapara + Basit Faiz olarak bulunur.',
+            yourCalcSimple: 'Sizin Hesabınız:',
+            usedForTitleSimple: 'Ne İçin Kullanılır?',
+            usedForSimple: 'Basit faiz, özellikle kısa vadeli finansal işlemlerde, bazı tasarruf hesaplarında ve tahvil getirilerinin hesaplanmasında kullanılır. Faiz, sadece başlangıçtaki anapara üzerinden hesaplandığı için hesaplaması kolaydır ve genellikle faizden faiz kazanılmayan durumlarda tercih edilir. Kullanıcılar, yatırımlarının veya küçük borçlarının zamanla ne kadar faiz getireceğini veya maliyetini hızlıca öğrenmek için bu hesaplayıcıyı kullanır.',
+
+            // Compound Interest
+            compoundInterestOption: 'Bileşik Faiz Hesapla',
+            compoundInterestResultTitle: 'Bileşik Faiz Hesaplama Sonucu:',
+            compoundInterestEarned: 'Bileşik Faiz Kazancı:',
+            totalAccumulatedCompound: 'Toplam Biriken Miktar:',
+            howCalculatedTitleCompound: 'Nasıl Hesaplandı? (Adım Adım)',
+            step1Compound: 'Anapara (P), yıllık faiz oranı (r), vade (t) ve faizin yılda birikim sıklığı (n) değerleri alınır.',
+            step2Compound: 'Yıllık faiz oranı yüzde formundan ondalık forma çevrilir. (Aylık faiz oranı girildiyse yıllık nominale çevrilir).',
+            step3Compound: 'Vade yıl cinsine çevrilir.',
+            step4Compound: 'Toplam Biriken Miktar = Anapara × (1 + (Faiz Oranı / Birikim Sıklığı))^(Birikim Sıklığı × Vade) formülü uygulanır.',
+            step5Compound: 'Bileşik Faiz Kazancı = Toplam Biriken Miktar - Anapara olarak bulunur.',
+            yourCalcCompound: 'Sizin Hesabınız:',
+            usedForTitleCompound: 'Ne İçin Kullanılır?',
+            usedForCompound: 'Bileşik faiz, uzun vadeli tasarruf ve yatırım hedefleri için kritik öneme sahiptir. Banka mevduatları, emeklilik planları ve yatırım fonları gibi birçok finansal üründe faiz, bileşik olarak işler. Kullanıcılar, yatırımlarının veya birikimlerinin zamanla nasıl katlanarak büyüyeceğini tahmin etmek, farklı yatırım fırsatlarını karşılaştırmak ve finansal hedeflerine ulaşmak için bu hesaplayıcıyı kullanır.'
+        },
+        en: {
+            // General
+            calculateButtonText: 'Calculate',
+            invalidInput: 'Please enter valid values.',
+            principalAmountLabel: 'Principal Amount (₺):', // Assuming ₺ is fine for English example too, or update to $
+            interestRateUnitLabel: 'Interest Rate Unit:',
+            rateUnitAnnual: 'Annual',
+            rateUnitMonthly: 'Monthly',
+            interestRateLabelAnnual: 'Annual Interest Rate (%):',
+            interestRateLabelMonthly: 'Monthly Interest Rate (%):',
+            interestRatePlaceholderAnnual: 'e.g.: 15',
+            interestRatePlaceholderMonthly: 'e.g.: 1.25',
+            timePeriodLabel: 'Term:',
+            timePeriodUnitYears: 'Years',
+            timePeriodUnitMonths: 'Months',
+            timePeriodPlaceholderYears: 'e.g.: 5',
+            timePeriodPlaceholderMonths: 'e.g.: 60',
+            compoundingFrequencyLabel: 'Compounding Frequency (Per Year):',
+            compoundingAnnual: 'Annually',
+            compoundingSemiAnnual: 'Semi-Annually',
+            compoundingQuarterly: 'Quarterly',
+            compoundingMonthly: 'Monthly',
+            compoundingDaily: 'Daily',
+
+            // Simple Interest
+            simpleInterestOption: 'Calculate Simple Interest',
+            simpleInterestResultTitle: 'Simple Interest Calculation Result:',
+            principal: 'Principal:',
+            simpleInterestEarned: 'Simple Interest Earned:',
+            totalAccumulatedSimple: 'Total Accumulated Amount:',
+            howCalculatedTitleSimple: 'How It\'s Calculated? (Step by Step)',
+            step1Simple: 'Principal (P), annual interest rate (r) and term (t) values are taken.',
+            step2Simple: 'Interest rate is converted from percentage to decimal form (e.g., 15% -> 0.15).',
+            step3Simple: 'Term is converted to years. (If entered in months, divide by 12.)',
+            step4Simple: 'The Simple Interest = Principal × Interest Rate × Term formula is applied.',
+            step5Simple: 'Total Accumulated Amount = Principal + Simple Interest is found.',
+            yourCalcSimple: 'Your Calculation:',
+            usedForTitleSimple: 'Where Is Simple Interest Used?',
+            usedForSimple: 'Simple interest is primarily used in short-term financial transactions, certain savings accounts, and bond yield calculations. Since interest is calculated only on the initial principal, it is easy to calculate and typically preferred in situations where interest is not compounded. Users use this calculator to quickly learn how much interest their investments or small debts will generate or cost over time.',
+
+            // Compound Interest
+            compoundInterestOption: 'Calculate Compound Interest',
+            compoundInterestResultTitle: 'Compound Interest Calculation Result:',
+            compoundInterestEarned: 'Compound Interest Earned:',
+            totalAccumulatedCompound: 'Total Accumulated Amount:',
+            howCalculatedTitleCompound: 'How It\'s Calculated? (Step by Step)',
+            step1Compound: 'Principal (P), annual interest rate (r), term (t) and compounding frequency (n) values are taken.',
+            step2Compound: 'Annual interest rate is converted from percentage to decimal form. (If monthly interest rate is entered, it is converted to annual nominal rate).',
+            step3Compound: 'Term is converted to years.',
+            step4Compound: 'The Total Accumulated Amount = Principal × (1 + (Interest Rate / Compounding Frequency))^(Compounding Frequency × Term) formula is applied.',
+            step5Compound: 'Compound Interest Earned = Total Accumulated Amount - Principal is found.',
+            yourCalcCompound: 'Your Calculation:',
+            usedForTitleCompound: 'Where Is Compound Interest Used?',
+            usedForCompound: 'Compound interest is critical for long-term savings and investment goals. Interest often accrues compounded in many financial products such as bank deposits, retirement plans, and investment funds. Users utilize this calculator to estimate how their investments or savings will grow exponentially over time, compare different investment opportunities, and achieve their financial goals.'
+        }
+    };
+
+    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+    // --- DOM Elements ---
+    const calculationTypeSelect = document.getElementById('calculationType');
+    const principalAmountGroup = document.getElementById('principalAmountGroup');
+    const interestRateGroup = document.getElementById('interestRateGroup');
+    const rateUnitAnnualRadio = document.getElementById('rateUnitAnnual');
+    const rateUnitMonthlyRadio = document.getElementById('rateUnitMonthly');
+    const interestRateValueInput = document.getElementById('interestRateValue');
+    const interestRateLabel = document.getElementById('interestRateLabel');
+    const timePeriodGroups = document.getElementById('timePeriodGroups');
+    const timePeriodValueInput = document.getElementById('timePeriodValue');
+    const timePeriodUnitSelect = document.getElementById('timePeriodUnit');
+    const compoundingFrequencyGroup = document.getElementById('compoundingFrequencyGroup');
+    const compoundingFrequencySelect = document.getElementById('compoundingFrequency');
+    const interestResultDiv = document.getElementById('interestResult');
+    const simpleInterestInfoSection = document.getElementById('simpleInterestInfo');
+    const compoundInterestInfoSection = document.getElementById('compoundInterestInfo');
+    const calculateButton = document.querySelector('#interestForm button[type="submit"]');
+
+    // Update static labels and options on load
+    document.querySelector('.interest-calculator-section h2').textContent = isEnglishPage ? 'Simple and Compound Interest Calculator' : 'Basit ve Bileşik Faiz Hesaplayıcı';
+    document.querySelector('.interest-calculator-section p').textContent = isEnglishPage ? 'Calculate your simple or compound interest earnings on your investments or savings.' : 'Yatırımlarınızın veya birikimlerinizin basit veya bileşik faiz getirilerini hesaplayın.';
+    document.querySelector('label[for="calculationType"]').textContent = isEnglishPage ? 'Select Calculation Type:' : 'Hesaplama Türü Seçin:';
+    document.querySelector('#calculationType option[value="simpleInterest"]').textContent = currentTexts.simpleInterestOption;
+    document.querySelector('#calculationType option[value="compoundInterest"]').textContent = currentTexts.compoundInterestOption;
+    principalAmountGroup.querySelector('label').textContent = currentTexts.principalAmountLabel;
+    principalAmountInput.placeholder = isEnglishPage ? 'e.g.: 10000' : 'Örn: 10000';
+    interestRateGroup.querySelector('label').textContent = currentTexts.interestRateUnitLabel;
+    rateUnitAnnualRadio.nextElementSibling.textContent = currentTexts.rateUnitAnnual;
+    rateUnitMonthlyRadio.nextElementSibling.textContent = currentTexts.rateUnitMonthly;
+    timePeriodGroups.querySelector('#timePeriodValueGroup label').textContent = currentTexts.timePeriodLabel;
+    timePeriodUnitSelect.querySelector('option[value="years"]').textContent = currentTexts.timePeriodUnitYears;
+    timePeriodUnitSelect.querySelector('option[value="months"]').textContent = currentTexts.timePeriodUnitMonths;
+    compoundingFrequencyGroup.querySelector('label').textContent = currentTexts.compoundingFrequencyLabel;
+    compoundingFrequencySelect.querySelector('option[value="1"]').textContent = currentTexts.compoundingAnnual;
+    compoundingFrequencySelect.querySelector('option[value="2"]').textContent = currentTexts.compoundingSemiAnnual;
+    compoundingFrequencySelect.querySelector('option[value="4"]').textContent = currentTexts.compoundingQuarterly;
+    compoundingFrequencySelect.querySelector('option[value="12"]').textContent = currentTexts.compoundingMonthly;
+    compoundingFrequencySelect.querySelector('option[value="365"]').textContent = currentTexts.compoundingDaily;
+    calculateButton.textContent = currentTexts.calculateButtonText;
+
+    // Update info section headers
+    simpleInterestInfoSection.querySelector('h3').textContent = isEnglishPage ? 'What is Simple Interest and How is it Calculated?' : 'Basit Faiz Nedir ve Nasıl Hesaplanır?';
+    compoundInterestInfoSection.querySelector('h3').textContent = isEnglishPage ? 'What is Compound Interest and How is it Calculated?' : 'Bileşik Faiz Nedir ve Nasıl Hesaplanır?';
+
+    // Helper to update result info section content
+    function updateInfoSectionContent(type) {
+        if (type === 'simpleInterest') {
+            simpleInterestInfoSection.querySelector('p:nth-of-type(1)').textContent = currentTexts.usedForSimple; // First general paragraph
+            simpleInterestInfoSection.querySelector('h5:nth-of-type(1)').textContent = currentTexts.howCalculatedTitleSimple;
+            simpleInterestInfoSection.querySelector('h5:nth-of-type(2)').textContent = currentTexts.usedForTitleSimple;
+            simpleInterestInfoSection.querySelector('ul:nth-of-type(1) li:nth-of-type(1)').innerHTML = `<strong>Anapara (P):</strong> ${currentTexts.step1Simple.substring(currentTexts.step1Simple.indexOf('Anapara (P)') + 'Anapara (P)'.length).trim()}`;
+            simpleInterestInfoSection.querySelector('ul:nth-of-type(1) li:nth-of-type(2)').innerHTML = `<strong>Faiz Oranı (r):</strong> ${currentTexts.step2Simple.substring(currentTexts.step2Simple.indexOf('Faiz Oranı (r)') + 'Faiz Oranı (r)'.length).trim()}`;
+            simpleInterestInfoSection.querySelector('ul:nth-of-type(1) li:nth-of-type(3)').innerHTML = `<strong>Vade (t):</strong> ${currentTexts.step3Simple.substring(currentTexts.step3Simple.indexOf('Vade (t)') + 'Vade (t)'.length).trim()}`;
+            simpleInterestInfoSection.querySelector('ul:nth-of-type(2) li:nth-of-type(1)').innerHTML = `<strong>Kısa Vadeli Krediler:</strong> ${currentTexts.usedForSimple.substring(currentTexts.usedForSimple.indexOf('Kısa Vadeli Krediler:') + 'Kısa Vadeli Krediler:'.length).trim()}`;
+            // ... (You'll need to manually map all the specific list items like this or refactor the texts object)
+        } else { // compoundInterest
+            compoundInterestInfoSection.querySelector('p:nth-of-type(1)').textContent = currentTexts.usedForCompound; // First general paragraph
+            compoundInterestInfoSection.querySelector('h5:nth-of-type(1)').textContent = currentTexts.howCalculatedTitleCompound;
+            compoundInterestInfoSection.querySelector('h5:nth-of-type(2)').textContent = currentTexts.usedForTitleCompound;
+            // ... (similarly update list items for compound interest)
+        }
+    }
+
+
+    function updateInterestRateInputLabel() {
+        if (rateUnitAnnualRadio.checked) {
+            interestRateLabel.textContent = currentTexts.interestRateLabelAnnual;
+            interestRateValueInput.placeholder = currentTexts.interestRatePlaceholderAnnual;
+        } else { // monthly
+            interestRateLabel.textContent = currentTexts.interestRateLabelMonthly;
+            interestRateValueInput.placeholder = currentTexts.interestRatePlaceholderMonthly;
+        }
+        interestRateValueInput.value = ''; // Clear input value
+    }
+
+    function updateInputVisibilityAndInfo() {
+        const type = calculationTypeSelect.value;
+
+        // Hide all input groups and remove required attributes
+        [principalAmountGroup, interestRateGroup, timePeriodGroups, compoundingFrequencyGroup].forEach(group => {
+            group.classList.add('hidden');
+            group.querySelectorAll('input:not([type="radio"]), select').forEach(el => el.removeAttribute('required'));
+        });
+
+        // Hide all info sections
+        simpleInterestInfoSection.style.display = 'none';
+        compoundInterestInfoSection.style.display = 'none';
+
+        // Show relevant input groups and info section based on selected type
+        switch (type) {
+            case 'simpleInterest':
+                principalAmountGroup.classList.remove('hidden');
+                interestRateGroup.classList.remove('hidden');
+                timePeriodGroups.classList.remove('hidden');
+                principalAmountInput.setAttribute('required', 'true');
+                interestRateValueInput.setAttribute('required', 'true');
+                timePeriodValueInput.setAttribute('required', 'true');
+                timePeriodUnitSelect.setAttribute('required', 'true');
+                simpleInterestInfoSection.style.display = 'block'; // Show simple interest info
+                break;
+            case 'compoundInterest':
+                principalAmountGroup.classList.remove('hidden');
+                interestRateGroup.classList.remove('hidden');
+                timePeriodGroups.classList.remove('hidden');
+                compoundingFrequencyGroup.classList.remove('hidden');
+                principalAmountInput.setAttribute('required', 'true');
+                interestRateValueInput.setAttribute('required', 'true');
+                timePeriodValueInput.setAttribute('required', 'true');
+                timePeriodUnitSelect.setAttribute('required', 'true');
+                compoundingFrequencySelect.setAttribute('required', 'true');
+                compoundInterestInfoSection.style.display = 'block'; // Show compound interest info
+                break;
+        }
+        interestResultDiv.innerHTML = ''; // Clear result when switching calculation type
+        updateTimePeriodLabel(); // Update term unit label
+        updateInterestRateInputLabel(); // Update interest rate label
+    }
+
+    function updateTimePeriodLabel() {
+        const unit = timePeriodUnitSelect.value;
+        timePeriodValueInput.placeholder = (unit === 'years') ? currentTexts.timePeriodPlaceholderYears : currentTexts.timePeriodPlaceholderMonths;
+        document.querySelector('#timePeriodValueGroup label').textContent = `${currentTexts.timePeriodLabel} (${unit === 'years' ? currentTexts.timePeriodUnitYears : currentTexts.timePeriodUnitMonths}):`;
+    }
+
+    // Initial setup
+    updateInputVisibilityAndInfo();
+
+    // Event listeners for changes
+    calculationTypeSelect.addEventListener('change', updateInputVisibilityAndInfo);
+    timePeriodUnitSelect.addEventListener('change', updateTimePeriodLabel);
+    rateUnitAnnualRadio.addEventListener('change', updateInterestRateInputLabel);
+    rateUnitMonthlyRadio.addEventListener('change', updateInterestRateInputLabel);
+
+    document.getElementById('interestForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const type = calculationTypeSelect.value;
+        const principal = parseFloat(principalAmountInput.value);
+        const timePeriodValue = parseFloat(timePeriodValueInput.value);
+        const timePeriodUnit = timePeriodUnitSelect.value;
+        const compoundingFreq = parseFloat(compoundingFrequencySelect.value); // Only used for compound interest
+
+        let enteredRate = parseFloat(interestRateValueInput.value);
+        const rateUnit = document.querySelector('input[name="rateUnit"]:checked').value;
+
+        // --- Input Validation ---
+        if (isNaN(principal) || principal < 0 ||
+            isNaN(enteredRate) || enteredRate < 0 ||
+            isNaN(timePeriodValue) || timePeriodValue <= 0) {
+            interestResultDiv.innerHTML = `<span style="color: red;">${currentTexts.invalidInput}</span>`;
+            return;
+        }
+        if (type === 'compoundInterest' && (isNaN(compoundingFreq) || compoundingFreq <= 0)) {
+             interestResultDiv.innerHTML = `<span style="color: red;">${currentTexts.invalidInput}</span>`;
+             return;
+        }
+
+        let annualRateDecimal;
+        if (rateUnit === 'annual') {
+            annualRateDecimal = enteredRate / 100;
+        } else { // monthly
+            annualRateDecimal = (enteredRate * 12) / 100; // Convert monthly rate to annual nominal rate
+        }
+
+        let timeYears;
+        if (timePeriodUnit === 'years') {
+            timeYears = timePeriodValue;
+        } else { // 'months'
+            timeYears = timePeriodValue / 12;
+        }
+
+        let resultHtml = '';
+
+        if (type === 'simpleInterest') {
+            const simpleInterest = principal * annualRateDecimal * timeYears;
+            const totalAmount = principal + simpleInterest;
+
+            resultHtml = `
+                <h3>${currentTexts.simpleInterestResultTitle}</h3>
+                <p>${currentTexts.principal} <strong>${principal.toFixed(2)} ₺</strong></p>
+                <p>${currentTexts.simpleInterestEarned} <strong>${simpleInterest.toFixed(2)} ₺</strong></p>
+                <p>${currentTexts.totalAccumulatedSimple} <strong>${totalAmount.toFixed(2)} ₺</strong></p>
+                <div class="info-section">
+                    <h5>${currentTexts.howCalculatedTitleSimple}</h5>
+                    <ul>
+                        <li>${currentTexts.step1Simple}</li>
+                        <li>${currentTexts.step2Simple}</li>
+                        <li>${currentTexts.step3Simple}</li>
+                        <li>${currentTexts.step4Simple}</li>
+                        <li>${currentTexts.step5Simple}</li>
+                        <li><strong>${currentTexts.yourCalcSimple}</strong> ${currentTexts.principal} ${principal.toFixed(2)} ₺, ${(rateUnit === 'annual' ? currentTexts.interestRateLabelAnnual : currentTexts.interestRateLabelMonthly).replace(':', '')} %${enteredRate.toFixed(2)}, ${currentTexts.timePeriodLabel.replace(':', '')} ${timePeriodValue} ${timePeriodUnit === 'years' ? currentTexts.timePeriodUnitYears : currentTexts.timePeriodUnitMonths} ise; ${currentTexts.simpleInterestEarned} <strong>${simpleInterest.toFixed(2)} ₺</strong>, ${currentTexts.totalAccumulatedSimple} <strong>${totalAmount.toFixed(2)} ₺</strong>.</li>
+                    </ul>
+                    <h5>${currentTexts.usedForTitleSimple}</h5>
+                    <p>${currentTexts.usedForSimple}</p>
+                </div>
+            `;
+        } else if (type === 'compoundInterest') {
+            // A = P * (1 + r/n)^(nt)
+            const totalAmount = principal * Math.pow((1 + (annualRateDecimal / compoundingFreq)), (compoundingFreq * timeYears));
+            const compoundInterest = totalAmount - principal;
+
+            resultHtml = `
+                <h3>${currentTexts.compoundInterestResultTitle}</h3>
+                <p>${currentTexts.principal} <strong>${principal.toFixed(2)} ₺</strong></p>
+                <p>${currentTexts.compoundInterestEarned} <strong>${compoundInterest.toFixed(2)} ₺</strong></p>
+                <p>${currentTexts.totalAccumulatedCompound} <strong>${totalAmount.toFixed(2)} ₺</strong></p>
+                <div class="info-section">
+                    <h5>${currentTexts.howCalculatedTitleCompound}</h5>
+                    <ul>
+                        <li>${currentTexts.step1Compound}</li>
+                        <li>${currentTexts.step2Compound}</li>
+                        <li>${currentTexts.step3Compound}</li>
+                        <li>${currentTexts.step4Compound}</li>
+                        <li>${currentTexts.step5Compound}</li>
+                        <li><strong>${currentTexts.yourCalcCompound}</strong> ${currentTexts.principal} ${principal.toFixed(2)} ₺, ${(rateUnit === 'annual' ? currentTexts.interestRateLabelAnnual : currentTexts.interestRateLabelMonthly).replace(':', '')} %${enteredRate.toFixed(2)}, ${currentTexts.timePeriodLabel.replace(':', '')} ${timePeriodValue} ${timePeriodUnit === 'years' ? currentTexts.timePeriodUnitYears : currentTexts.timePeriodUnitMonths}, ${currentTexts.compoundingFrequencyLabel.replace(':', '')} ${compoundingFreq} ise; ${currentTexts.compoundInterestEarned} <strong>${compoundInterest.toFixed(2)} ₺</strong>, ${currentTexts.totalAccumulatedCompound} <strong>${totalAmount.toFixed(2)} ₺</strong>.</li>
+                    </ul>
+                    <h5>${currentTexts.usedForTitleCompound}</h5>
+                    <p>${currentTexts.usedForCompound}</p>
+                </div>
+            `;
+        }
+
+        interestResultDiv.innerHTML = resultHtml;
+    });
+});
+  </script>
 </body>
 </html>

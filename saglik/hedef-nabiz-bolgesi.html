@@ -181,5 +181,87 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Language detection: Assume English if URL starts with '/en/', otherwise Turkish
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+    // Text strings object for dynamic content
+    const texts = {
+        tr: {
+            calculateButtonText: 'Hedef Nabız Hesapla',
+            ageLabel: 'Yaşınız:',
+            invalidInput: 'Lütfen geçerli bir yaş değeri girin (10 - 80 arası).',
+            resultTitle: 'Sonuç:',
+            maxHeartRate: 'Maksimum Kalp Atış Hızınız (MHR):',
+            targetZone: 'Hedef Nabız Bölgeniz (Orta Yoğunluk):',
+            unitBpm: 'atım/dakika',
+            explanation: 'Bu aralık, egzersiz sırasında kalp sağlığınızı geliştirmek ve yağ yakımını optimize etmek için idealdir. Antrenman sırasında nabzınızı bu aralıkta tutmaya çalışın.'
+        },
+        en: {
+            calculateButtonText: 'Calculate Target Heart Rate',
+            ageLabel: 'Your Age:',
+            invalidInput: 'Please enter a valid age (between 10 and 80).',
+            resultTitle: 'Result:',
+            maxHeartRate: 'Your Maximum Heart Rate (MHR):',
+            targetZone: 'Your Target Heart Rate Zone (Moderate Intensity):',
+            unitBpm: 'bpm',
+            explanation: 'This range is ideal for improving cardiovascular health and optimizing fat burning during exercise. Try to keep your heart rate within this range during your workout.'
+        }
+    };
+
+    // Select active language texts
+    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+    // --- DOM Elements ---
+    const heartRateForm = document.getElementById('heartRateForm');
+    const ageInput = document.getElementById('age');
+    const heartRateResultDiv = document.getElementById('heartRateResult');
+    const heartRateGoalDiv = document.getElementById('heartRateGoal'); // For the explanation text
+    const calculateButton = heartRateForm.querySelector('button[type="submit"]');
+
+    // Update static labels and placeholders on load
+    document.querySelector('label[for="age"]').textContent = currentTexts.ageLabel;
+    ageInput.placeholder = isEnglishPage ? 'e.g.: 30' : 'Örn: 30';
+    calculateButton.textContent = currentTexts.calculateButtonText;
+
+    // --- Heart Rate Calculation Function ---
+    function calculateHeartRate(event) {
+        event.preventDefault(); // Prevent form submission and page reload
+
+        let age = parseInt(ageInput.value);
+
+        // Clear previous results
+        heartRateResultDiv.innerHTML = '';
+        heartRateGoalDiv.innerHTML = '';
+
+        // --- Input Validation ---
+        if (isNaN(age) || age < 10 || age > 80) {
+            heartRateResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            return;
+        }
+
+        // Calculate Maximum Heart Rate (MHR)
+        const mhr = 220 - age;
+
+        // Calculate Target Heart Rate Zone (60% to 80% of MHR)
+        const targetMin = mhr * 0.60;
+        const targetMax = mhr * 0.80;
+
+        // Display results
+        heartRateResultDiv.innerHTML = `
+            <h3>${currentTexts.resultTitle}</h3>
+            <p><strong>${currentTexts.maxHeartRate}</strong> <span class="result-value">${mhr} ${currentTexts.unitBpm}</span></p>
+            <p><strong>${currentTexts.targetZone}</strong> <span class="result-value">${targetMin.toFixed(0)} - ${targetMax.toFixed(0)} ${currentTexts.unitBpm}</span></p>
+        `;
+
+        // Display explanation
+        heartRateGoalDiv.innerHTML = `<p class="small-text">${currentTexts.explanation}</p>`;
+    }
+
+    // Add event listener to the form for submission
+    heartRateForm.addEventListener('submit', calculateHeartRate);
+});
+  </script>
  </body>
 </html>

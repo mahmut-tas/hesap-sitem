@@ -736,5 +736,232 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Language detection: Assume English if URL starts with '/en/', otherwise Turkish
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+    // Text strings object for dynamic content
+    const texts = {
+        tr: {
+            calculateButtonText: 'Vücut Yağ Oranını Hesapla',
+            genderLabel: 'Cinsiyet:',
+            genderMale: 'Erkek',
+            genderFemale: 'Kadın',
+            ageLabel: 'Yaş:',
+            heightLabel: 'Boy:',
+            neckLabel: 'Boyun Çevresi:',
+            waistLabel: 'Bel Çevresi:',
+            hipLabel: 'Kalça Çevresi:',
+            invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+            resultTitle: 'Sonuç:',
+            bodyFatPercentage: 'Vücut Yağ Oranınız:',
+            commentEssentialFat: 'Temel Yağ',
+            commentAthletes: 'Sporcular',
+            commentFitness: 'Fitness (Sağlıklı)',
+            commentAverage: 'Ortalama',
+            commentObese: 'Obez',
+            commentBelowHealthy: 'Sağlıklı aralığın altında (Temel yağ seviyesine yakın)',
+            commentHealthy: 'Sağlıklı aralıkta',
+            commentSlightlyHigh: 'Biraz yüksek (Ortalama üzeri)',
+            commentHigh: 'Yüksek (Obez kategorisinde)',
+            placeholderAge: 'Örn: 30',
+            placeholderHeight: 'Örn: 175 (cm)',
+            placeholderNeck: 'Örn: 38 (cm)',
+            placeholderWaist: 'Örn: 80 (cm)',
+            placeholderHip: 'Örn: 95 (cm)',
+            unitCm: 'cm',
+            unitIn: 'inç',
+            formulaNote: 'Ölçümler inç cinsinden olduğunda kullanılan formüller:',
+            disclaimer: 'Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Sonuçlar, kişinin genel sağlığı, kas kütlesi ve vücut tipi gibi faktörlere bağlı olarak değişebilir. Herhangi bir sağlıkla ilgili karar vermeden önce daima bir sağlık uzmanına danışmalısınız.'
+        },
+        en: {
+            calculateButtonText: 'Calculate Your Body Fat Percentage',
+            genderLabel: 'Gender:',
+            genderMale: 'Male',
+            genderFemale: 'Woman',
+            ageLabel: 'Age:',
+            heightLabel: 'Height:',
+            neckLabel: 'Neck Circumference:',
+            waistLabel: 'Waist Circumference:',
+            hipLabel: 'Hip Circumference:',
+            invalidInput: 'Please enter valid positive numbers for all fields.',
+            resultTitle: 'Result:',
+            bodyFatPercentage: 'Your Body Fat Percentage:',
+            commentEssentialFat: 'Essential Fat',
+            commentAthletes: 'Athletes',
+            commentFitness: 'Fitness (Healthy)',
+            commentAverage: 'Average',
+            commentObese: 'Obese',
+            commentBelowHealthy: 'Below healthy range (Close to essential fat level)',
+            commentHealthy: 'In healthy range',
+            commentSlightlyHigh: 'Slightly high (Above average)',
+            commentHigh: 'High (In obese category)',
+            placeholderAge: 'e.g.: 30',
+            placeholderHeight: 'e.g.: 175 (cm)',
+            placeholderNeck: 'e.g.: 38 (cm)',
+            placeholderWaist: 'e.g.: 80 (cm)',
+            placeholderHip: 'e.g.: 95 (cm)',
+            unitCm: 'cm',
+            unitIn: 'inch',
+            formulaNote: 'Formulas (When measurements are in inches):',
+            disclaimer: 'This calculator provides a quick and easy estimate, but is not as accurate as other professional methods (DEXA, hydrostatic weighing). Results are a general guide and may vary depending on factors such as a person\'s overall health, muscle mass, and body type. You should always consult a healthcare professional before making any health-related decisions.'
+        }
+    };
+
+    // Select active language texts
+    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+    // --- DOM Elements ---
+    const bodyFatForm = document.getElementById('bodyFatForm');
+    const genderSelect = document.getElementById('gender');
+    const ageInput = document.getElementById('age');
+    const heightInput = document.getElementById('height');
+    const heightUnitSelect = document.getElementById('heightUnit');
+    const neckInput = document.getElementById('neck');
+    const neckUnitSelect = document.getElementById('neckUnit');
+    const waistInput = document.getElementById('waist');
+    const waistUnitSelect = document.getElementById('waistUnit');
+    const hipInput = document.getElementById('hip');
+    const hipUnitSelect = document.getElementById('hipUnit');
+    const hipMeasurementDiv = document.getElementById('hipMeasurementDiv'); // Div for hip measurement
+    const hipDivider = document.getElementById('hipDivider'); // Divider before hip measurement
+
+    const bodyFatResultDiv = document.getElementById('bodyFatResult');
+    const calculateButton = bodyFatForm.querySelector('button[type="submit"]');
+
+    // Update static labels and placeholders on load
+    document.querySelector('label[for="gender"]').textContent = currentTexts.genderLabel;
+    document.querySelector('#gender option[value="male"]').textContent = currentTexts.genderMale;
+    document.querySelector('#gender option[value="female"]').textContent = currentTexts.genderFemale;
+    document.querySelector('label[for="age"]').textContent = currentTexts.ageLabel;
+    ageInput.placeholder = currentTexts.placeholderAge;
+    document.querySelector('label[for="height"]').textContent = currentTexts.heightLabel;
+    heightInput.placeholder = currentTexts.placeholderHeight;
+    document.querySelector('label[for="neck"]').textContent = currentTexts.neckLabel;
+    neckInput.placeholder = currentTexts.placeholderNeck;
+    document.querySelector('label[for="waist"]').textContent = currentTexts.waistLabel;
+    waistInput.placeholder = currentTexts.placeholderWaist;
+    document.querySelector('label[for="hip"]').textContent = currentTexts.hipLabel;
+    hipInput.placeholder = currentTexts.placeholderHip;
+
+    // Update unit options
+    document.querySelectorAll('#heightUnit option[value="cm"]').forEach(opt => opt.textContent = currentTexts.unitCm);
+    document.querySelectorAll('#heightUnit option[value="in"]').forEach(opt => opt.textContent = currentTexts.unitIn);
+    document.querySelectorAll('#neckUnit option[value="cm"]').forEach(opt => opt.textContent = currentTexts.unitCm);
+    document.querySelectorAll('#neckUnit option[value="in"]').forEach(opt => opt.textContent = currentTexts.unitIn);
+    document.querySelectorAll('#waistUnit option[value="cm"]').forEach(opt => opt.textContent = currentTexts.unitCm);
+    document.querySelectorAll('#waistUnit option[value="in"]').forEach(opt => opt.textContent = currentTexts.unitIn);
+    document.querySelectorAll('#hipUnit option[value="cm"]').forEach(opt => opt.textContent = currentTexts.unitCm);
+    document.querySelectorAll('#hipUnit option[value="in"]').forEach(opt => opt.textContent = currentTexts.unitIn);
+
+    calculateButton.textContent = currentTexts.calculateButtonText;
+    document.querySelector('.calc-explanation p.small-text').innerHTML = `
+        <p class="small-text">
+            <strong>${currentTexts.formulaNote}</strong>
+            <br/>
+            <strong>${isEnglishPage ? 'Men:' : 'Erkekler:'}</strong> %Fat = 86.010 * log10(Waist - Neck) - 70.041 * log10(Height) + 36.76
+            <br/>
+            <strong>${isEnglishPage ? 'Women:' : 'Kadınlar:'}</strong> %Fat = 163.205 * log10(Waist + Hip - Neck) - 97.684 * log10(Height) - 78.387
+        </p>
+    `;
+    document.querySelector('.disclaimer-text').textContent = currentTexts.disclaimer;
+
+
+    // --- Toggle Hip Measurement based on Gender ---
+    genderSelect.addEventListener('change', function() {
+        if (genderSelect.value === 'male') {
+            hipMeasurementDiv.style.display = 'none';
+            hipDivider.style.display = 'none';
+            hipInput.removeAttribute('required');
+        } else { // female
+            hipMeasurementDiv.style.display = 'flex'; // Use flex to match input-with-unit style
+            hipDivider.style.display = 'block';
+            hipInput.setAttribute('required', '');
+        }
+        bodyFatResultDiv.innerHTML = ''; // Clear results on gender change
+    });
+
+    // Initial state setup
+    genderSelect.dispatchEvent(new Event('change'));
+
+    // --- Unit Conversion Helper ---
+    function convertToInches(value, unit) {
+        if (unit === 'cm') {
+            return value * 0.393701; // 1 cm = 0.393701 inches
+        }
+        return value; // Already in inches
+    }
+
+    // --- Body Fat Calculation Function ---
+    function calculateBodyFat(event) {
+        event.preventDefault(); // Prevent form submission and page reload
+
+        let gender = genderSelect.value;
+        let age = parseFloat(ageInput.value);
+        let height = parseFloat(heightInput.value);
+        let neck = parseFloat(neckInput.value);
+        let waist = parseFloat(waistInput.value);
+        let hip = parseFloat(hipInput.value); // Will be 0 or null for male, but formula handles it.
+
+        // Clear previous results
+        bodyFatResultDiv.innerHTML = '';
+
+        // --- Input Validation ---
+        if (isNaN(age) || age < 1 ||
+            isNaN(height) || height <= 0 ||
+            isNaN(neck) || neck <= 0 ||
+            isNaN(waist) || waist <= 0 ||
+            (gender === 'female' && (isNaN(hip) || hip <= 0))) {
+            bodyFatResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            return;
+        }
+
+        // Convert all measurements to inches for the formula
+        const heightIn = convertToInches(height, heightUnitSelect.value);
+        const neckIn = convertToInches(neck, neckUnitSelect.value);
+        const waistIn = convertToInches(waist, waistUnitSelect.value);
+        const hipIn = convertToInches(hip, hipUnitSelect.value);
+
+        let bodyFatPercentage = 0;
+
+        // US Navy Formula
+        if (gender === 'male') {
+            bodyFatPercentage = 86.010 * Math.log10(waistIn - neckIn) - 70.041 * Math.log10(heightIn) + 36.76;
+        } else { // female
+            bodyFatPercentage = 163.205 * Math.log10(waistIn + hipIn - neckIn) - 97.684 * Math.log10(heightIn) - 78.387;
+        }
+
+        // Ensure percentage is not negative or excessively high
+        bodyFatPercentage = Math.max(0, Math.min(100, bodyFatPercentage));
+
+        // Display Body Fat Percentage
+        let resultHtml = `<h3>${currentTexts.resultTitle}</h3>`;
+        resultHtml += `<p><strong>${currentTexts.bodyFatPercentage}</strong> <span class="result-value">${bodyFatPercentage.toFixed(2)} %</span></p>`;
+
+        // Add category comment based on ACE guidelines and age (simplified for calculator)
+        let comment = '';
+        if (gender === 'male') {
+            if (bodyFatPercentage < 6) comment = currentTexts.commentEssentialFat;
+            else if (bodyFatPercentage >= 6 && bodyFatPercentage <= 13) comment = currentTexts.commentAthletes;
+            else if (bodyFatPercentage >= 14 && bodyFatPercentage <= 17) comment = currentTexts.commentFitness;
+            else if (bodyFatPercentage >= 18 && bodyFatPercentage <= 24) comment = currentTexts.commentAverage;
+            else if (bodyFatPercentage >= 25) comment = currentTexts.commentObese;
+        } else { // female
+            if (bodyFatPercentage < 14) comment = currentTexts.commentEssentialFat;
+            else if (bodyFatPercentage >= 14 && bodyFatPercentage <= 20) comment = currentTexts.commentAthletes;
+            else if (bodyFatPercentage >= 21 && bodyFatPercentage <= 24) comment = currentTexts.commentFitness;
+            else if (bodyFatPercentage >= 25 && bodyFatPercentage <= 31) comment = currentTexts.commentAverage;
+            else if (bodyFatPercentage >= 32) comment = currentTexts.commentObese;
+        }
+        resultHtml += `<p class="small-text">${currentTexts.bmiInterpretation} <span class="result-category">${comment}</span></p>`; // Re-using bmiInterpretation key for a general intro.
+
+        bodyFatResultDiv.innerHTML = resultHtml;
+    }
+
+    // Add event listener to the form for submission
+    bodyFatForm.addEventListener('submit', calculateBodyFat);
+});
+  </script>
 </body>
 </html>

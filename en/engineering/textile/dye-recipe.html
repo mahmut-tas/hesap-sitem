@@ -241,5 +241,229 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButtonText: 'Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                errorPercentageRange: 'Yüzde oranları 0 ile 100 arasında olmalıdır.',
+                infoRemainingPercentage: 'Girilen yüzdelerin toplamı %{sum} oldu. Kalan kısım genellikle su veya açıcı patıdır. Toplamın %100 olması beklenir.',
+                resultTitle: 'Sonuçlar (Gerekli Miktarlar):',
+                // Bileşen Girişleri
+                materialNameLabel: 'Madde Adı {num}:',
+                materialPercentageLabel: 'Yüzde (%) (OWF):',
+                materialNamePlaceholder: 'Örn: Kırmızı Boya',
+                materialPercentagePlaceholder: 'Örn: 1.5',
+                addMaterialText: '<i class="fas fa-plus"></i> Yeni Madde Ekle',
+                removeMaterialText: 'Kaldır', // For dynamically added rows' remove button
+                // Sonuç Çıktıları
+                materialAmountResult: '{name}: <span class="result-value">{amount}</span> kg',
+                totalEnteredPercentage: 'Girilen Yüzdelerin Toplamı:',
+                fabricWeightResult: 'Kumaş Ağırlığı:',
+                unit_kg: 'kg',
+                unit_percent: '%'
+            },
+            en: {
+                // General
+                calculateButtonText: 'Calculate',
+                invalidInput: 'Please enter valid positive numbers for all fields.',
+                errorPercentageRange: 'Percentage values must be between 0 and 100.',
+                infoRemainingPercentage: 'The sum of entered percentages is {sum}%. The remaining portion is typically water or diluent paste. Total is expected to be 100%.',
+                resultTitle: 'Results (Required Quantities):',
+                // Component Inputs
+                materialNameLabel: 'Material Name {num}:',
+                materialPercentageLabel: 'Percentage (%) (OWF):',
+                materialNamePlaceholder: 'Ex: Red Dye',
+                materialPercentagePlaceholder: 'Ex: 1.5',
+                addMaterialText: '<i class="fas fa-plus"></i> Add New Material',
+                removeMaterialText: 'Remove',
+                // Result Outputs
+                materialAmountResult: '{name}: <span class="result-value">{amount}</span> kg',
+                totalEnteredPercentage: 'Total Entered Percentage:',
+                fabricWeightResult: 'Fabric Weight:',
+                unit_kg: 'kg',
+                unit_percent: '%'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // --- DOM Elements ---
+        const dyeRecipeForm = document.getElementById('dyeRecipeForm');
+        const fabricWeightInput = document.getElementById('fabricWeight');
+        const materialInputsContainer = document.getElementById('materialInputs');
+        const resultBox = document.getElementById('resultBox');
+
+        // Buttons (ensure these IDs exist or add them in HTML for clarity)
+        const addMaterialButton = document.querySelector('.add-fiber-button'); // Using existing class as selector
+        const calculateButton = document.querySelector('#dyeRecipeForm button:last-of-type'); // Select the last button in the form
+
+
+        if (addMaterialButton) {
+            addMaterialButton.id = 'addMaterialButton'; // Add ID for cleaner JS binding
+            addMaterialButton.innerHTML = currentTexts.addMaterialText;
+        }
+        if (calculateButton) {
+            calculateButton.id = 'calculateButton'; // Add ID for cleaner JS binding
+            calculateButton.textContent = currentTexts.calculateButtonText;
+            calculateButton.setAttribute('type', 'button'); // Prevent default form submission
+        }
+
+
+        // Global counter for dynamic materials (starts after initial static ones)
+        let materialCounter = 2; // Initial HTML has 2 material rows
+
+
+        // --- Helper Functions ---
+
+        // Function to update labels of existing static material rows
+        function updateStaticMaterialLabels() {
+            for (let i = 1; i <= 2; i++) { // For material1 and material2
+                const nameLabel = document.querySelector(`label[for="material${i}Name"]`);
+                const percentageLabel = document.querySelector(`label[for="material${i}Percentage"]`);
+                const nameInput = document.getElementById(`material${i}Name`);
+                const percentageInput = document.getElementById(`material${i}Percentage`);
+
+                if (nameLabel) {
+                    nameLabel.textContent = currentTexts.materialNameLabel.replace('{num}', i);
+                }
+                if (percentageLabel) {
+                    percentageLabel.textContent = currentTexts.materialPercentageLabel;
+                }
+                if (nameInput) {
+                    nameInput.placeholder = currentTexts.materialNamePlaceholder;
+                }
+                if (percentageInput) {
+                    percentageInput.placeholder = currentTexts.materialPercentagePlaceholder;
+                }
+            }
+        }
+        updateStaticMaterialLabels(); // Call on load to update static labels
+
+        // Function to create a new material input row
+        function createMaterialInputRow(num) {
+            const rowDiv = document.createElement('div');
+            rowDiv.classList.add('input-with-unit', 'material-input-row');
+            rowDiv.setAttribute('data-material-id', num); // Unique ID for each row
+
+            rowDiv.innerHTML = `
+                <label for="material${num}Name">${currentTexts.materialNameLabel.replace('{num}', num)}</label>
+                <input type="text" class="material-name" id="material${num}Name" placeholder="${currentTexts.materialNamePlaceholder}">
+                <label for="material${num}Percentage">${currentTexts.materialPercentageLabel}</label>
+                <input type="number" class="material-percentage" id="material${num}Percentage" min="0" step="0.01" placeholder="${currentTexts.materialPercentagePlaceholder}" required>
+                <button type="button" class="remove-material-button fas fa-times-circle" title="${currentTexts.removeMaterialText}"></button>
+            `;
+
+            const removeButton = rowDiv.querySelector('.remove-material-button');
+            removeButton.addEventListener('click', () => {
+                rowDiv.remove();
+                // Re-calculate results if needed after removal
+                calculateDyeRecipe();
+            });
+
+            return rowDiv;
+        }
+
+        // --- Event Listeners ---
+
+        // Add Material button click
+        if (addMaterialButton) {
+            addMaterialButton.addEventListener('click', function() {
+                materialCounter++;
+                materialInputsContainer.appendChild(createComponentInputRow(materialCounter));
+            });
+        }
+
+        // Calculate button click
+        if (calculateButton) {
+            calculateButton.addEventListener('click', calculateDyeRecipe);
+        }
+
+        // --- Main Calculation Function ---
+        function calculateDyeRecipe() {
+            let fabricWeight = parseFloat(fabricWeightInput.value);
+
+            // Clear previous results
+            resultBox.innerHTML = `<h3>${currentTexts.resultTitle}</h3>`;
+            resultBox.style.display = 'none';
+
+            // Validate fabric weight
+            if (isNaN(fabricWeight) || fabricWeight <= 0) {
+                resultBox.innerHTML += `<p class="error">${currentTexts.invalidInput}</p>`;
+                resultBox.style.display = 'block';
+                return;
+            }
+
+            let totalPercentageSum = 0;
+            const materialRows = materialInputsContainer.querySelectorAll('.material-input-row');
+            let resultsHtmlContent = '';
+            let hasError = false;
+
+            materialRows.forEach(row => {
+                const nameInput = row.querySelector('.material-name');
+                const percentageInput = row.querySelector('.material-percentage');
+
+                let materialName = nameInput ? nameInput.value.trim() : '';
+                let percentage = parseFloat(percentageInput ? percentageInput.value : '');
+
+                // Validate individual material percentages
+                if (isNaN(percentage) || percentage < 0 || percentage > 100) {
+                    resultBox.innerHTML = `<p class="error">${currentTexts.errorPercentageRange}</p>`;
+                    resultBox.style.display = 'block';
+                    hasError = true;
+                    return; // Exit forEach
+                }
+                // Validate material name if percentage is given
+                if (componentName === '' && percentage > 0) { // If percentage is non-zero but name is empty
+                    materialName = isEnglishPage ? `Component (${percentage}%)` : `Bileşen (%${percentage})`;
+                } else if (componentName === '' && percentage === 0) {
+                    // If both name and percentage are empty/zero, skip this row
+                    return;
+                }
+
+                const amount = (fabricWeight * percentage) / 100;
+                totalPercentageSum += percentage;
+
+                resultsHtmlContent += `
+                    <div class="result-item">
+                        <strong>${materialName}</strong> 
+                        <span class="result-value">${amount.toFixed(3)} ${currentTexts.unit_kg}</span>
+                    </div>
+                `;
+            });
+
+            if (hasError) return; // Stop if any error occurred in forEach
+
+            // Display results
+            resultBox.innerHTML = `
+                <h3>${currentTexts.resultTitle}</h3>
+                ${resultsHtmlContent}
+                <hr class="form-divider" style="margin: 15px 0;">
+                <div class="result-item">
+                    <strong>${currentTexts.totalEnteredPercentage}</strong>
+                    <span class="result-value">${totalPercentageSum.toFixed(2)} ${currentTexts.unit_percent}</span>
+                </div>
+                <div class="result-item">
+                    <strong>${currentTexts.fabricWeightResult}</strong>
+                    <span class="result-value">${fabricWeight.toFixed(2)} ${currentTexts.unit_kg}</span>
+                </div>
+            `;
+
+            // Inform if total percentage is not 100%
+            if (totalPercentageSum > 100.01 || totalPercentageSum < 99.99) { // Allow for small floating point inaccuracies
+                 resultBox.innerHTML += `<p class="small-text error">${currentTexts.infoRemainingPercentage.replace('{sum}', totalPercentageSum.toFixed(2))}</p>`;
+            }
+
+            resultBox.style.display = 'block';
+        }
+    });
+</script>
 </body>
 </html>

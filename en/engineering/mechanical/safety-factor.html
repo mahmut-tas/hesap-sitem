@@ -589,5 +589,103 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Emniyet Faktörünü Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                errorZeroLoad: 'Uygulanan yük veya gerilme sıfır olamaz.',
+                resultPrefix: 'Emniyet Faktörü (FS):',
+                // Birimler
+                unit_Pa: 'Pascal (Pa)',
+                unit_kPa: 'Kilopascal (kPa)',
+                unit_MPa: 'Megapascal (MPa)',
+                unit_GPa: 'Gigapascal (GPa)',
+                unit_psi: 'psi',
+                unit_ksi: 'ksi',
+                designStrengthLabel: 'Tasarım Dayanımı (Akma veya Çekme Dayanımı):',
+                appliedLoadLabel: 'Uygulanan Gerilme veya Yük (Tasarım Yükü):'
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate Safety Factor',
+                invalidInput: 'Please enter valid positive numbers for all fields.',
+                errorZeroLoad: 'Applied load or stress cannot be zero.',
+                resultPrefix: 'Safety Factor (FS):',
+                // Units
+                unit_Pa: 'Pascal (Pa)',
+                unit_kPa: 'Kilopascal (kPa)',
+                unit_MPa: 'Megapascal (MPa)',
+                unit_GPa: 'Gigapascal (GPa)',
+                unit_psi: 'psi',
+                unit_ksi: 'ksi',
+                designStrengthLabel: 'Design Strength (Yield or Tensile Strength):',
+                appliedLoadLabel: 'Applied Stress or Load (Design Load):'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // --- Helper Functions (Birim Dönüşüm Sabitleri) ---
+        // Gerilme birimlerini Pascal (Pa)'ya dönüştürme faktörleri
+        const STRESS_TO_PA = {
+            'Pa': 1,
+            'kPa': 1e3,
+            'MPa': 1e6,
+            'GPa': 1e9,
+            'psi': 6894.76,
+            'ksi': 6894757 // 1 ksi = 1000 psi = 6.89476 MPa = 6.89476e6 Pa
+        };
+
+        // --- DOM Elements ---
+        const factorOfSafetyForm = document.getElementById('factorOfSafetyForm');
+        const factorOfSafetyResultDiv = document.getElementById('factorOfSafetyResult');
+
+        // --- Main Form Submission ---
+        factorOfSafetyForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get values
+            const designStrength = parseFloat(document.getElementById('designStrength').value);
+            const appliedLoad = parseFloat(document.getElementById('appliedLoad').value);
+
+            // Get units
+            const designStrengthUnit = document.getElementById('designStrengthUnit').value;
+            const appliedLoadUnit = document.getElementById('appliedLoadUnit').value;
+
+            // --- Input Validation ---
+            if (isNaN(designStrength) || isNaN(appliedLoad) || designStrength <= 0) { // Applied load can be 0 theoretically, but leads to division by zero
+                factorOfSafetyResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                factorOfSafetyResultDiv.style.display = 'block';
+                return;
+            }
+            if (appliedLoad <= 0) { // Uygulanan yük sıfır veya negatif olamaz (bölme hatası)
+                factorOfSafetyResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroLoad}</p>`;
+                factorOfSafetyResultDiv.style.display = 'block';
+                return;
+            }
+
+            // --- Convert to Base SI Units (Pa) ---
+            const designStrength_Pa = designStrength * STRESS_TO_PA[designStrengthUnit];
+            const appliedLoad_Pa = appliedLoad * STRESS_TO_PA[appliedLoadUnit];
+
+            // --- Calculate Safety Factor (FS = Strength / Load) ---
+            const safetyFactor = designStrength_Pa / appliedLoad_Pa;
+
+            // --- Display Results ---
+            factorOfSafetyResultDiv.innerHTML = `
+                <p>${currentTexts.resultPrefix} <span class="result-value">${safetyFactor.toFixed(3)}</span></p>
+            `;
+            factorOfSafetyResultDiv.style.display = 'block';
+        });
+    });
+</script>
 </body>
 </html>

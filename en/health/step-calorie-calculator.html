@@ -687,5 +687,334 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+    const texts = {
+        tr: {
+            calculateButtonText: 'Hesapla',
+            invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+            resultTitle: 'Yakılan Kalori:',
+            caloriesBurned: 'Yakılan Tahmini Kalori:',
+            distanceCovered: 'Kat Edilen Mesafe:',
+            kmUnit: 'km',
+            meterUnit: 'metre', // Added for potential future use or clarity
+            warningMessage: 'Adım sayınız ve yürüme hızınız birbiriyle tutarlı olmalıdır. Örneğin, 10.000 adım ortalama bir tempoda yaklaşık 7-8 km\'ye denk gelir.',
+            // Type 1 specific
+            type1Title: 'Adım Uzunluğu ile Kalori Hesaplama',
+            weight1Label: 'Vücut Ağırlığınız (KG):',
+            steps1Label: 'Atılan Adım Sayısı:',
+            strideLength1Label: 'Ortalama Adım Uzunluğunuz (CM):',
+            strideLengthSmallText: '(Boyunuzun yaklaşık %40-45\'i olabilir)',
+            activityLevel1Label: 'Aktivite Seviyesi:',
+            activityLight: 'Yavaş Yürüyüş (Hafif)',
+            activityModerate: 'Orta Yürüyüş (Normal)',
+            activityBrisk: 'Hızlı Yürüyüş (Tempolu)',
+            activityRunning: 'Koşu',
+            // Type 2 specific
+            type2Title: 'Yürüme Hızı ile Kalori Hesaplama',
+            weight2Label: 'Vücut Ağırlığınız (KG):',
+            steps2Label: 'Atılan Adım Sayısı:',
+            paceUnitLabel: 'Hız Birimi:',
+            paceKmPerHour: 'Kilometre/Saat (km/s)',
+            paceMinPerKm: 'Dakika/Kilometre (dk/km)',
+            pace2Label: 'Ortalama Yürüme Hızı (Örn: 5 km/s veya 12 dk/km):',
+            activityDuration2Label: 'Aktivite Süresi (Dakika):',
+            // Type 3 specific
+            type3Title: 'Ortalama Değerler ile Tahmini Kalori',
+            weight3Label: 'Vücut Ağırlığınız (KG):',
+            steps3Label: 'Atılan Adım Sayısı:',
+            // Button texts
+            calcButtonType1: 'Adım Uzunluğu ile Hesapla',
+            calcButtonType2: 'Yürüme Hızı ile Hesapla',
+            calcButtonType3: 'Ortalama Değerler ile Hesapla'
+        },
+        en: {
+            calculateButtonText: 'Calculate',
+            invalidInput: 'Please enter valid positive numbers for all fields.',
+            resultTitle: 'Calories Burned:',
+            caloriesBurned: 'Estimated Calories Burned:',
+            distanceCovered: 'Distance Covered:',
+            kmUnit: 'km',
+            meterUnit: 'meters',
+            warningMessage: 'Your step count and walking speed should be consistent. For example, 10,000 steps at an average pace is approximately 7-8 km.',
+            // Type 1 specific
+            type1Title: 'Calorie Calculation with Step Length',
+            weight1Label: 'Your Body Weight (KG):',
+            steps1Label: 'Number of Steps Taken:',
+            strideLength1Label: 'Your Average Stride Length (CM):',
+            strideLengthSmallText: '(It can be about 40-45% of your height)',
+            activityLevel1Label: 'Activity Level:',
+            activityLight: 'Slow Walking (Light)',
+            activityModerate: 'Moderate Walking (Normal)',
+            activityBrisk: 'Fast Walking (Brisk)',
+            activityRunning: 'Running',
+            // Type 2 specific
+            type2Title: 'Calorie Calculation with Walking Speed',
+            weight2Label: 'Your Body Weight (KG):',
+            steps2Label: 'Number of Steps Taken:',
+            paceUnitLabel: 'Step Rate Unit:',
+            paceKmPerHour: 'Kilometer/Hour (km/h)',
+            paceMinPerKm: 'Minute/Kilometer (min/km)',
+            pace2Label: 'Average Walking Speed (e.g.: 5 km/h or 12 min/km):',
+            activityDuration2Label: 'Activity Duration (Minutes):',
+            // Type 3 specific
+            type3Title: 'Calorie Estimation with Average Values',
+            weight3Label: 'Your Body Weight (KG):',
+            steps3Label: 'Number of Steps Taken:',
+            // Button texts
+            calcButtonType1: 'Calculate with Step Length',
+            calcButtonType2: 'Calculate with Walking Speed',
+            calcButtonType3: 'Estimated with Average Values'
+        }
+    };
+
+    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+    // --- DOM Elements for Tab Switching ---
+    const calcButtons = document.querySelectorAll('.calc-type-button');
+    const calcWrappers = document.querySelectorAll('.calc-wrapper');
+    const heroSectionH1 = document.querySelector('.hero-section h1');
+    const heroSectionP = document.querySelector('.hero-section p');
+    const calculatorSelectionH2 = document.querySelector('.calculator-selection-section h2');
+
+    // Initial text updates for static elements
+    if (heroSectionH1) heroSectionH1.textContent = isEnglishPage ? 'Step Calorie Calculator' : 'Adım Kalori Hesaplayıcı';
+    if (heroSectionP) heroSectionP.textContent = isEnglishPage ? 'Calculate the estimated number of calories you burn based on the number of steps you take, your body weight and your activity.' : 'Attığınız adım sayısına, vücut ağırlığınıza ve aktivitenize göre yakacağınız tahmini kalori miktarını hesaplayın.';
+    if (calculatorSelectionH2) calculatorSelectionH2.textContent = isEnglishPage ? 'Select Calorie Calculation Method:' : 'Kalori Hesaplama Yöntemini Seçin:';
+
+    // Update button texts
+    calcButtons.forEach(button => {
+        const calcType = button.dataset.calcType;
+        if (calcType === 'type1') button.textContent = currentTexts.calcButtonType1;
+        else if (calcType === 'type2') button.textContent = currentTexts.calcButtonType2;
+        else if (calcType === 'type3') button.textContent = currentTexts.calcButtonType3;
+    });
+
+    // Function to toggle calculator forms
+    function showCalculator(calcType) {
+        calcWrappers.forEach(wrapper => {
+            wrapper.classList.add('hidden-calc');
+        });
+        document.getElementById(`calculator-${calcType}`).classList.remove('hidden-calc');
+
+        calcButtons.forEach(button => {
+            if (button.dataset.calcType === calcType) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        });
+    }
+
+    // Attach click listeners to buttons for switching calculators
+    calcButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            showCalculator(button.dataset.calcType);
+        });
+    });
+
+    // Show the first calculator by default on page load
+    showCalculator('type1'); // Default to type1
+
+    // --- Type 1: Calculate with Step Length ---
+    const formType1 = document.getElementById('formType1');
+    const weight1Input = document.getElementById('weight1');
+    const steps1Input = document.getElementById('steps1');
+    const strideLength1Input = document.getElementById('strideLength1');
+    const activityLevel1Select = document.getElementById('activityLevel1');
+    const resultType1Div = document.getElementById('resultType1');
+
+    // Update labels and placeholders for Type 1
+    document.querySelector('#calculator-type1 h3').innerHTML = `<i class="fas fa-shoe-prints icon-small"></i> ${currentTexts.type1Title}`;
+    document.querySelector('label[for="weight1"]').textContent = currentTexts.weight1Label;
+    document.querySelector('label[for="steps1"]').textContent = currentTexts.steps1Label;
+    document.querySelector('label[for="strideLength1"]').textContent = currentTexts.strideLength1Label;
+    document.querySelector('#strideLength1 + small em').textContent = currentTexts.strideLengthSmallText;
+    document.querySelector('label[for="activityLevel1"]').textContent = currentTexts.activityLevel1Label;
+    document.querySelector('#activityLevel1 option[value="light"]').textContent = currentTexts.activityLight;
+    document.querySelector('#activityLevel1 option[value="moderate"]').textContent = currentTexts.activityModerate;
+    document.querySelector('#activityLevel1 option[value="brisk"]').textContent = currentTexts.activityBrisk;
+    document.querySelector('#activityLevel1 option[value="running"]').textContent = currentTexts.activityRunning;
+    formType1.querySelector('button[type="submit"]').textContent = currentTexts.calculateButtonText;
+    // Update explanation for Type 1
+    const type1Explanation = document.querySelector('#calculator-type1 .calc-explanation');
+    type1Explanation.querySelector('h4').textContent = isEnglishPage ? 'How to Calculate?' : 'Nasıl Hesaplanır?';
+    type1Explanation.querySelector('p:nth-of-type(1)').textContent = isEnglishPage ? 'This method uses your steps taken and average stride length to calculate your distance, then estimates calories burned based on your body weight and activity level.' : 'Bu yöntem, attığınız adımları ve ortalama adım uzunluğunuzu kullanarak kat ettiğiniz mesafeyi hesaplar, ardından vücut ağırlığınız ve aktivite seviyenize göre yakılan kaloriyi tahmin eder.';
+    type1Explanation.querySelector('p.formula-text').innerHTML = isEnglishPage ?
+        'Distance Traveled (KM) = (Number of Steps * Step Length (CM)) / 100000<br/>Calories Burned = Body Weight (KG) * Distance Covered (KM) * MET Value' :
+        'Kat Edilen Mesafe (KM) = (Adım Sayısı * Adım Uzunluğu (CM)) / 100000<br/>Yakılan Kalori = Vücut Ağırlığı (KG) * Kat Edilen Mesafe (KM) * MET Değeri';
+    type1Explanation.querySelector('ul li:nth-of-type(1) strong').textContent = isEnglishPage ? 'MET Value (Metabolic Equivalent):' : 'MET Değeri (Metabolik Eşdeğer):';
+    type1Explanation.querySelector('ul li:nth-of-type(1) ul li:nth-of-type(1)').textContent = isEnglishPage ? 'Slow Walking: ~2.0 - 3.0 METs' : 'Yavaş Yürüyüş: ~2.0 - 3.0 METs';
+    type1Explanation.querySelector('ul li:nth-of-type(1) ul li:nth-of-type(2)').textContent = isEnglishPage ? 'Moderate Walking: ~3.5 - 4.5 METs' : 'Orta Yürüyüş: ~3.5 - 4.5 METs';
+    type1Explanation.querySelector('ul li:nth-of-type(1) ul li:nth-of-type(3)').textContent = isEnglishPage ? 'Fast Walking: ~5.0 - 6.0 METs' : 'Hızlı Yürüyüş: ~5.0 - 6.0 METs';
+    type1Explanation.querySelector('ul li:nth-of-type(1) ul li:nth-of-type(4)').textContent = isEnglishPage ? 'Running: ~8.0 - 10.0+ METs' : 'Koşu: ~8.0 - 10.0+ METs';
+    type1Explanation.querySelector('ul li:nth-of-type(2) strong').textContent = isEnglishPage ? 'Example:' : 'Örnek:';
+
+
+    const metValues = {
+        light: 2.5, // Average for slow walking
+        moderate: 4.0, // Average for moderate walking
+        brisk: 5.5, // Average for fast walking
+        running: 9.0 // Average for running
+    };
+
+    formType1.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const weight = parseFloat(weight1Input.value);
+        const steps = parseFloat(steps1Input.value);
+        const strideLength = parseFloat(strideLength1Input.value); // in CM
+        const activityLevel = activityLevel1Select.value;
+
+        if (isNaN(weight) || isNaN(steps) || isNaN(strideLength) || weight <= 0 || steps <= 0 || strideLength <= 0) {
+            resultType1Div.style.display = 'block';
+            resultType1Div.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            return;
+        }
+
+        const distanceKm = (steps * strideLength) / 100000; // Convert cm to km
+        const met = metValues[activityLevel];
+        
+        // Calories Burned = Weight (kg) * Distance (km) * MET Value (This is a simplified approach, often MET is per hour, not per km)
+        // A more common formula: Calories = METs * weight in kg * time in hours.
+        // For per step, it's often more complex or uses average calories per km.
+        // Let's use a simplified approach that fits the spirit of "steps" with MET, assuming MET represents intensity per distance unit for this context.
+        // A common approximation for walking: 0.5 - 1.0 kcal per kg per km.
+        // Let's adjust MET values to fit this better, or simply use a direct factor.
+        // For simplicity and matching the formula-text: Calories Burned = Body Weight (KG) * Distance Covered (KM) * MET Value
+        const caloriesBurned = weight * distanceKm * met;
+
+        resultType1Div.style.display = 'block';
+        resultType1Div.innerHTML = `
+            <h3>${currentTexts.resultTitle}</h3>
+            <p><strong>${currentTexts.distanceCovered}</strong> <span class="result-value">${distanceKm.toFixed(2)} ${currentTexts.kmUnit}</span></p>
+            <p><strong>${currentTexts.caloriesBurned}</strong> <span class="result-value">${caloriesBurned.toFixed(0)} kcal</span></p>
+        `;
+    });
+
+    // --- Type 2: Calculate with Walking Speed ---
+    const formType2 = document.getElementById('formType2');
+    const weight2Input = document.getElementById('weight2');
+    const steps2Input = document.getElementById('steps2');
+    const paceUnitSelect = document.getElementById('paceUnit');
+    const pace2Input = document.getElementById('pace2');
+    const activityDuration2Input = document.getElementById('activityDuration2');
+    const resultType2Div = document.getElementById('resultType2');
+    const paceInputGroupLabel = document.querySelector('#paceInputGroup label'); // Label for pace2 input
+
+    // Update labels and placeholders for Type 2
+    document.querySelector('#calculator-type2 h3').innerHTML = `<i class="fas fa-running icon-small"></i> ${currentTexts.type2Title}`;
+    document.querySelector('label[for="weight2"]').textContent = currentTexts.weight2Label;
+    document.querySelector('label[for="steps2"]').textContent = currentTexts.steps2Label;
+    document.querySelector('label[for="paceUnit"]').textContent = currentTexts.paceUnitLabel;
+    document.querySelector('#paceUnit option[value="km_per_hour"]').textContent = currentTexts.paceKmPerHour;
+    document.querySelector('#paceUnit option[value="min_per_km"]').textContent = currentTexts.paceMinPerKm;
+    paceInputGroupLabel.textContent = currentTexts.pace2Label;
+    document.querySelector('label[for="activityDuration2"]').textContent = currentTexts.activityDuration2Label;
+    formType2.querySelector('button[type="submit"]').textContent = currentTexts.calculateButtonText;
+    document.querySelector('#calculator-type2 .calc-explanation small').textContent = currentTexts.warningMessage;
+
+    paceUnitSelect.addEventListener('change', function() {
+        if (paceUnitSelect.value === 'km_per_hour') {
+            pace2Input.placeholder = isEnglishPage ? 'e.g.: 5' : 'Örn: 5';
+            paceInputGroupLabel.textContent = currentTexts.pace2Label;
+        } else {
+            pace2Input.placeholder = isEnglishPage ? 'e.g.: 12' : 'Örn: 12';
+            paceInputGroupLabel.textContent = currentTexts.pace2Label; // Label text doesn't change much for min/km, so reuse
+        }
+    });
+    paceUnitSelect.dispatchEvent(new Event('change')); // Set initial placeholder
+
+    // MET values approximated for typical walking/running speeds (km/h)
+    // These are simplified and approximate. Real METs vary.
+    // 3 km/h = 2.0 METs (slow)
+    // 5 km/h = 3.5 METs (moderate)
+    // 6.5 km/h = 5.0 METs (brisk)
+    // 8 km/h = 8.0 METs (running)
+    function getMetForSpeedKmH(speedKmH) {
+        if (speedKmH <= 3.5) return 2.5; // Very slow to slow walk
+        if (speedKmH <= 5.5) return 3.5; // Moderate walk
+        if (speedKmH <= 7.5) return 5.0; // Brisk walk / light jog
+        return 8.0; // Running
+    }
+
+    formType2.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const weight = parseFloat(weight2Input.value);
+        const steps = parseFloat(steps2Input.value); // Not used in calorie calculation directly, but might be for validation/info
+        let pace = parseFloat(pace2Input.value);
+        const paceUnit = paceUnitSelect.value;
+        const durationMinutes = parseFloat(activityDuration2Input.value);
+
+        if (isNaN(weight) || isNaN(pace) || isNaN(durationMinutes) || weight <= 0 || pace <= 0 || durationMinutes <= 0) {
+            resultType2Div.style.display = 'block';
+            resultType2Div.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            return;
+        }
+
+        let speedKmH;
+        if (paceUnit === 'min_per_km') {
+            speedKmH = 60 / pace; // Convert minutes per km to km per hour
+        } else { // km_per_hour
+            speedKmH = pace;
+        }
+
+        const durationHours = durationMinutes / 60;
+        const met = getMetForSpeedKmH(speedKmH);
+        
+        // Calories Burned = METs * weight in kg * time in hours
+        const caloriesBurned = met * weight * durationHours;
+        const distanceKm = speedKmH * durationHours;
+
+        resultType2Div.style.display = 'block';
+        resultType2Div.innerHTML = `
+            <h3>${currentTexts.resultTitle}</h3>
+            <p><strong>${currentTexts.distanceCovered}</strong> <span class="result-value">${distanceKm.toFixed(2)} ${currentTexts.kmUnit}</span></p>
+            <p><strong>${currentTexts.caloriesBurned}</strong> <span class="result-value">${caloriesBurned.toFixed(0)} kcal</span></p>
+        `;
+    });
+
+    // --- Type 3: Estimated with Average Values ---
+    const formType3 = document.getElementById('formType3');
+    const weight3Input = document.getElementById('weight3');
+    const steps3Input = document.getElementById('steps3');
+    const resultType3Div = document.getElementById('resultType3');
+
+    // Update labels and placeholders for Type 3
+    document.querySelector('#calculator-type3 h3').innerHTML = `<i class="fas fa-walking icon-small"></i> ${currentTexts.type3Title}`;
+    document.querySelector('label[for="weight3"]').textContent = currentTexts.weight3Label;
+    document.querySelector('label[for="steps3"]').textContent = currentTexts.steps3Label;
+    formType3.querySelector('button[type="submit"]').textContent = currentTexts.calculateButtonText;
+
+    formType3.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const weight = parseFloat(weight3Input.value);
+        const steps = parseFloat(steps3Input.value);
+
+        if (isNaN(weight) || isNaN(steps) || weight <= 0 || steps <= 0) {
+            resultType3Div.style.display = 'block';
+            resultType3Div.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            return;
+        }
+
+        // Simplified estimation:
+        // A common rule of thumb: ~0.04 - 0.05 calories per step for average person.
+        // Let's make it slightly dependent on weight.
+        // A common rough estimate is 0.5 calories per kg per km.
+        // Assuming average stride length is 70 cm (0.0007 km per step).
+        // Calories per step = 0.5 * Weight * 0.0007
+        const caloriesPerStepFactor = 0.0007; // This is a rough average value for conversion factor
+        const averageCaloriesPerStep = 0.5 * weight * caloriesPerStepFactor;
+        const totalCaloriesBurned = averageCaloriesPerStep * steps;
+
+        resultType3Div.style.display = 'block';
+        resultType3Div.innerHTML = `
+            <h3>${currentTexts.resultTitle}</h3>
+            <p><strong>${currentTexts.caloriesBurned}</strong> <span class="result-value">${totalCaloriesBurned.toFixed(0)} kcal</span></p>
+        `;
+    });
+});
+  </script>
 </body>
 </html>

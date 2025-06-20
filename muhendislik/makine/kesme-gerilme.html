@@ -573,5 +573,141 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Kesme Gerilmesini Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                errorZeroArea: 'Kesme alanı sıfır olamaz.',
+                resultPrefix: 'Kesme Gerilmesi (τ):',
+                // Birimler
+                unit_N: 'Newton (N)',
+                unit_kN: 'Kilonewton (kN)',
+                unit_lbf: 'Pound-kuvvet (lbf)',
+                unit_m2: 'metrekare (m²)',
+                unit_mm2: 'milimetrekare (mm²)',
+                unit_cm2: 'santimetrekare (cm²)',
+                unit_in2: 'inç kare (in²)',
+                unit_Pa: 'Pascal (Pa)',
+                unit_kPa: 'Kilopascal (kPa)',
+                unit_MPa: 'Megapascal (MPa)',
+                unit_GPa: 'Gigapascal (GPa)',
+                unit_psi: 'psi',
+                unit_ksi: 'ksi',
+                forceLabel: 'Uygulanan Kesme Kuvveti (F):',
+                areaLabel: 'Kesme Alanı (A):'
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate Shear Stress',
+                invalidInput: 'Please enter valid positive numbers for all fields.',
+                errorZeroArea: 'Cutting area cannot be zero.',
+                resultPrefix: 'Shear Stress (τ):',
+                // Units
+                unit_N: 'Newtons (N)',
+                unit_kN: 'Kilonewton (kN)',
+                unit_lbf: 'Pound-force (lbf)',
+                unit_m2: 'square meter (m²)',
+                unit_mm2: 'square millimeter (mm²)',
+                unit_cm2: 'square centimeter (cm²)',
+                unit_in2: 'square inch (in²)',
+                unit_Pa: 'Pascal (Pa)',
+                unit_kPa: 'Kilopascal (kPa)',
+                unit_MPa: 'Megapascal (MPa)',
+                unit_GPa: 'Gigapascal (GPa)',
+                unit_psi: 'psi',
+                unit_ksi: 'ksi',
+                forceLabel: 'Applied Cutting Force (F):',
+                areaLabel: 'Cutting Area (A):'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // --- Helper Functions (Birim Dönüşüm Sabitleri) ---
+        // Kuvvet birimlerini Newton (N)'a dönüştürme faktörleri
+        const FORCE_TO_N = {
+            'N': 1,
+            'kN': 1000,
+            'lbf': 4.44822 // 1 lbf = 4.44822 N
+        };
+
+        // Alan birimlerini metrekare (m²)'ye dönüştürme faktörleri
+        const AREA_TO_M2 = {
+            'm2': 1,
+            'mm2': 1e-6, // (0.001 m)^2
+            'cm2': 1e-4, // (0.01 m)^2
+            'in2': 0.00064516 // (0.0254 m)^2
+        };
+
+        // Gerilme birimlerini Pascal (Pa)'ya dönüştürme faktörleri (sadece bilgi amaçlı, ters dönüşüm için)
+        const STRESS_TO_PA = {
+            'Pa': 1,
+            'kPa': 1e3,
+            'MPa': 1e6,
+            'GPa': 1e9,
+            'psi': 6894.76,
+            'ksi': 6894757 // 1 ksi = 1000 psi = 6.89476 MPa
+        };
+
+        // --- DOM Elements ---
+        const shearStressForm = document.getElementById('shearStressForm');
+        const shearStressResultDiv = document.getElementById('shearStressResult');
+
+        // --- Main Form Submission ---
+        shearStressForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get values
+            const force = parseFloat(document.getElementById('force_shear').value);
+            const area = parseFloat(document.getElementById('area_shear').value);
+
+            // Get units
+            const forceUnit = document.getElementById('forceUnit_shear').value;
+            const areaUnit = document.getElementById('areaUnit_shear').value;
+
+            // --- Input Validation ---
+            if (isNaN(force) || isNaN(area) || force <= 0) { // Force can't be zero or negative
+                shearStressResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                shearStressResultDiv.style.display = 'block';
+                return;
+            }
+            // Özel durum: Kesme alanı sıfır olamaz (bölme hatası)
+            if (area <= 0) {
+                shearStressResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroArea}</p>`;
+                shearStressResultDiv.style.display = 'block';
+                return;
+            }
+
+            // --- Convert to Base SI Units (N, m²) ---
+            const F_N = force * FORCE_TO_N[forceUnit];
+            const A_m2 = area * AREA_TO_M2[areaUnit];
+
+            // --- Calculate Shear Stress (τ = F / A) in Pascals (Pa) ---
+            const shearStress_Pa = F_N / A_m2;
+
+            // --- Display Results in common units ---
+            // 1 MPa = 10^6 Pa
+            const shearStress_MPa = shearStress_Pa / 1e6;
+            // 1 psi = 6894.76 Pa
+            const shearStress_psi = shearStress_Pa / STRESS_TO_PA['psi'];
+
+
+            shearStressResultDiv.innerHTML = `
+                <p>${currentTexts.resultPrefix} <span class="result-value">${shearStress_Pa.toExponential(3)}</span> ${currentTexts.unit_Pa}</p>
+                <p>${currentTexts.resultPrefix} <span class="result-value">${shearStress_MPa.toFixed(3)}</span> ${currentTexts.unit_MPa}</p>
+                <p>${currentTexts.resultPrefix} <span class="result-value">${shearStress_psi.toFixed(3)}</span> ${currentTexts.unit_psi}</p>
+            `;
+            shearStressResultDiv.style.display = 'block';
+        });
+    });
+</script>
  </body>
 </html>

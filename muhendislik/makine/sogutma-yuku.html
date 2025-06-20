@@ -650,5 +650,177 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Isı Yükünü Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli sayılar girin.',
+                errorPositiveUValue: 'U-Değeri (Toplam Isı Transfer Katsayısı) sıfırdan büyük olmalıdır.',
+                errorPositiveArea: 'Alan sıfırdan büyük olmalıdır.',
+                resultPrefix: 'Toplam Isı Yükü:',
+                transmissionLoadLabel: 'İletim Yükü (Q_iletim):',
+                infiltrationLoadLabel: 'İnfiltrasyon Yükü (Q_sızıntı):',
+                occupancyLoadLabel: 'İnsan Yükü (Q_insan):',
+                equipmentLoadLabel: 'Ekipman Yükü (Q_ekipman):',
+                // Birimler
+                unit_W_m2K: 'W/(m² K)',
+                unit_Btu_hr_ft2F: 'Btu/(saat·ft²·°F)',
+                unit_m2: 'm²',
+                unit_ft2: 'ft²',
+                unit_C: '°C',
+                unit_K: 'K',
+                unit_F: '°F',
+                unit_W: 'Watt (W)',
+                unit_kW: 'Kilowatt (kW)',
+                unit_Btu_hr: 'Btu/saat (Btu/hr)',
+                optionalAdditionalLoads: 'İsteğe Bağlı Ek Isı Kazançları/Kayıpları:',
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate Heat Load',
+                invalidInput: 'Please enter valid numbers for all fields.',
+                errorPositiveUValue: 'U-Value (Total Thermal Transfer Coefficient) must be greater than zero.',
+                errorPositiveArea: 'Area must be greater than zero.',
+                resultPrefix: 'Total Heat Load:',
+                transmissionLoadLabel: 'Transmission Load (Q_transmission):',
+                infiltrationLoadLabel: 'Infiltration Load (Q_inf):',
+                occupancyLoadLabel: 'Human Load (Q_human):',
+                equipmentLoadLabel: 'Equipment Load (Q_equipment):',
+                // Units
+                unit_W_m2K: 'W/(m² K)',
+                unit_Btu_hr_ft2F: 'Btu/(hr·ft²·°F)',
+                unit_m2: 'm²',
+                unit_ft2: 'ft²',
+                unit_C: '°C',
+                unit_K: 'K',
+                unit_F: '°F',
+                unit_W: 'Watts (W)',
+                unit_kW: 'Kilowatts (kW)',
+                unit_Btu_hr: 'Btu/hour (Btu/hr)',
+                optionalAdditionalLoads: 'Optional Additional Heat Gains/Losses:',
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // --- Helper Functions ---
+        // U-Değeri: W/(m² K) birimine dönüştürme faktörleri
+        const U_VALUE_TO_WM2K = {
+            'W/m2K': 1,
+            'Btu/hr-ft2F': 5.67826 // 1 Btu/(hr·ft²·°F) = 5.67826 W/(m²·K)
+        };
+
+        // Alan: m²'ye dönüştürme faktörleri
+        const AREA_TO_M2 = {
+            'm2': 1,
+            'ft2': 0.092903
+        };
+
+        // Sıcaklık Farkı: °C veya K farkına dönüştürme faktörleri (sayısal olarak aynı)
+        // DeltaT için her zaman pozitif bir değer girmeyi beklediğimiz için mutlak dönüşüm gerekmez.
+        const TEMP_DIFF_TO_C = {
+            'C': 1,
+            'K': 1, // ΔK = Δ°C
+            'F': 5 / 9 // Δ°F = Δ°C * 9/5 => Δ°C = Δ°F * 5/9
+        };
+
+        // Isı Yükü: Watt'a dönüştürme faktörleri
+        const LOAD_TO_W = {
+            'W': 1,
+            'kW': 1000,
+            'Btu/hr': 0.293071 // 1 Btu/hr = 0.293071 Watts
+        };
+
+        // --- DOM Elements ---
+        const coolingHeatingLoadForm = document.getElementById('coolingHeatingLoadForm');
+        const coolingHeatingLoadResultDiv = document.getElementById('coolingHeatingLoadResult');
+
+        // --- Main Form Submission ---
+        coolingHeatingLoadForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get values
+            const uValue = parseFloat(document.getElementById('uValue').value);
+            const area_load = parseFloat(document.getElementById('area_load').value);
+            const tempDiff_load = parseFloat(document.getElementById('tempDiff_load').value); // Can be positive (cooling) or negative (heating)
+
+            const uValueUnit = document.getElementById('uValueUnit').value;
+            const areaUnit_load = document.getElementById('areaUnit_load').value;
+            const tempDiffUnit_load = document.getElementById('tempDiffUnit_load').value;
+
+            // Optional loads (default to 0 if not filled or invalid)
+            let infiltrationLoad = parseFloat(document.getElementById('infiltrationLoad').value) || 0;
+            let occupancyLoad = parseFloat(document.getElementById('occupancyLoad').value) || 0;
+            let equipmentLoad = parseFloat(document.getElementById('equipmentLoad').value) || 0;
+
+            const infiltrationLoadUnit = document.getElementById('infiltrationLoadUnit').value;
+            const occupancyLoadUnit = document.getElementById('occupancyLoadUnit').value;
+            const equipmentLoadUnit = document.getElementById('equipmentLoadUnit').value;
+
+            // --- Input Validation ---
+            if (isNaN(uValue) || isNaN(area_load) || isNaN(tempDiff_load) ||
+                uValue <= 0 || area_load <= 0) { // tempDiff_load can be zero or negative
+                coolingHeatingLoadResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                coolingHeatingLoadResultDiv.style.display = 'block';
+                return;
+            }
+
+            // Validate optional loads if they are entered (don't force them to be positive if they are losses)
+            if ((document.getElementById('infiltrationLoad').value !== '' && isNaN(infiltrationLoad)) ||
+                (document.getElementById('occupancyLoad').value !== '' && isNaN(occupancyLoad)) ||
+                (document.getElementById('equipmentLoad').value !== '' && isNaN(equipmentLoad))) {
+                coolingHeatingLoadResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                coolingHeatingLoadResultDiv.style.display = 'block';
+                return;
+            }
+
+            // --- Convert to Base SI Units (W/(m² K), m², K, W) ---
+            const U_Wm2K = uValue * U_VALUE_TO_WM2K[uValueUnit];
+            const A_m2 = area_load * AREA_TO_M2[areaUnit_load];
+            const DeltaT_C = tempDiff_load * TEMP_DIFF_TO_C[tempDiffUnit_load]; // DeltaT için K ve C aynı
+
+            // Convert optional loads to Watts
+            const Q_inf_W = infiltrationLoad * LOAD_TO_W[infiltrationLoadUnit];
+            const Q_human_W = occupancyLoad * LOAD_TO_W[occupancyLoadUnit];
+            const Q_equipment_W = equipmentLoad * LOAD_TO_W[equipmentLoadUnit];
+
+            // --- Calculations ---
+            // İletim Yükü (Q_transmission = U * A * ΔT)
+            const Q_transmission_W = U_Wm2K * A_m2 * DeltaT_C;
+
+            // Toplam Isı Yükü
+            // Formül: Q_total = Q_transmission + Q_leakage + Q_people + Q_equipment
+            // Bu formül toplama işlemi yapar. Isı kazançları pozitif, ısı kayıpları negatif girilmelidir.
+            const totalHeatLoad_W = Q_transmission_W + Q_inf_W + Q_human_W + Q_equipment_W;
+
+            // --- Display Results ---
+            // Soğutma/Isıtma ihtiyacını belirtmek için işaretini yorumlayalım
+            let loadTypeMessage = '';
+            if (totalHeatLoad_W > 0) {
+                loadTypeMessage = isEnglishPage ? '(Cooling Required)' : '(Soğutma İhtiyacı)';
+            } else if (totalHeatLoad_W < 0) {
+                loadTypeMessage = isEnglishPage ? '(Heating Required)' : '(Isıtma İhtiyacı)';
+            } else {
+                loadTypeMessage = isEnglishPage ? '(No Net Load)' : '(Net Yük Yok)';
+            }
+
+
+            coolingHeatingLoadResultDiv.innerHTML = `
+                <p>${currentTexts.transmissionLoadLabel} <span class="result-value">${Q_transmission_W.toFixed(2)}</span> ${currentTexts.unit_W}</p>
+                <p>${currentTexts.resultPrefix} <span class="result-value">${totalHeatLoad_W.toFixed(2)}</span> ${currentTexts.unit_W} ${loadTypeMessage}</p>
+                <p>${currentTexts.resultPrefix} <span class="result-value">${(totalHeatLoad_W / 1000).toFixed(2)}</span> ${currentTexts.unit_kW} ${loadTypeMessage}</p>
+                <p>${currentTexts.resultPrefix} <span class="result-value">${(totalHeatLoad_W / LOAD_TO_W['Btu/hr']).toFixed(2)}</span> ${currentTexts.unit_Btu_hr} ${loadTypeMessage}</p>
+            `;
+            coolingHeatingLoadResultDiv.style.display = 'block';
+        });
+    });
+</script>
  </body>
 </html>

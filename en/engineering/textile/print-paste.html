@@ -285,5 +285,214 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButtonText: 'Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                errorPercentageRange: 'Yüzde oranları 0 ile 100 arasında olmalıdır.',
+                errorSumOfPercentages: 'Bileşen yüzdelerinin toplamı %100\'ü aşıyor. Lütfen oranları kontrol edin.',
+                infoRemainingPercentage: 'Kalan yüzde (su veya açıcı pat) hesaplamaya dahil edilmediği için toplam %{sum} oldu. Toplamın %100 olması beklenir.',
+                resultTitle: 'Sonuçlar (Gerekli Miktarlar):',
+                // Bileşen Girişleri
+                componentNameLabel: 'Bileşen Adı {num}:',
+                componentPercentageLabel: 'Yüzde (%):',
+                componentNamePlaceholder: 'Örn: Pigment Boya',
+                componentPercentagePlaceholder: 'Örn: 3',
+                addComponentText: '<i class="fas fa-plus"></i> Yeni Bileşen Ekle',
+                removeComponentText: '<i class="fas fa-minus"></i> Kaldır',
+                // Sonuç Çıktıları
+                componentAmountResult: '{name}: <span class="result-value">{amount}</span> kg',
+                totalEnteredPercentage: 'Girilen Bileşen Yüzdeleri Toplamı:',
+                totalPasteWeightResult: 'Toplam Baskı Patı:',
+                unit_kg: 'kg',
+                unit_percent: '%'
+            },
+            en: {
+                // General
+                calculateButtonText: 'Calculate',
+                invalidInput: 'Please enter valid positive numbers for all fields.',
+                errorPercentageRange: 'Percentage values must be between 0 and 100.',
+                errorSumOfPercentages: 'The sum of component percentages exceeds 100%. Please check the ratios.',
+                infoRemainingPercentage: 'The sum of percentages is {sum}%. The remaining portion (e.g., water or clear paste) is not explicitly calculated here.',
+                resultTitle: 'Results (Required Quantities):',
+                // Component Inputs
+                componentNameLabel: 'Component Name {num}:',
+                componentPercentageLabel: 'Percentage (%):',
+                componentNamePlaceholder: 'Ex: Pigment Dye',
+                componentPercentagePlaceholder: 'Ex: 3',
+                addComponentText: '<i class="fas fa-plus"></i> Add New Component',
+                removeComponentText: '<i class="fas fa-minus"></i> Remove',
+                // Result Outputs
+                componentAmountResult: '{name}: <span class="result-value">{amount}</span> kg',
+                totalEnteredPercentage: 'Total Entered Percentage:',
+                totalPasteWeightResult: 'Total Printing Paste:',
+                unit_kg: 'kg',
+                unit_percent: '%'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // --- DOM Elements ---
+        const printingPasteForm = document.getElementById('printingPasteForm');
+        const totalPasteWeightInput = document.getElementById('totalPasteWeight');
+        const componentInputsContainer = document.getElementById('componentInputs');
+        const resultBox = document.getElementById('resultBox');
+
+        // Buttons (assuming IDs are added to HTML for clarity)
+        // If your HTML buttons don't have these IDs, add them:
+        // <button type="button" id="addComponentButton">Yeni Bileşen Ekle</button>
+        // <button type="button" id="calculateButton">Hesapla</button>
+        const addComponentButton = document.querySelector('.add-fiber-button'); // Use existing class if no ID
+        const calculateButton = document.querySelector('#printingPasteForm button[type="button"]'); // Select the calculate button
+
+        if (addComponentButton) {
+            addComponentButton.id = 'addComponentButton'; // Ensure ID for JS binding
+            addComponentButton.innerHTML = currentTexts.addComponentText;
+        }
+        if (calculateButton) {
+             calculateButton.id = 'calculateButton'; // Ensure ID for JS binding
+             calculateButton.textContent = currentTexts.calculateButtonText;
+        }
+
+
+        // Global counter for dynamic components (starts after initial static ones)
+        let componentCounter = 3; 
+
+        // --- Helper Functions ---
+
+        // Function to create a new component input row
+        function createComponentInputRow(num) {
+            const rowDiv = document.createElement('div');
+            rowDiv.classList.add('input-with-unit', 'component-input-row');
+            rowDiv.setAttribute('data-component-id', num); // Unique ID for each row
+
+            rowDiv.innerHTML = `
+                <label for="component${num}Name">${currentTexts.componentNameLabel.replace('{num}', num)}</label>
+                <input type="text" class="component-name" id="component${num}Name" placeholder="${currentTexts.componentNamePlaceholder}">
+                <label for="component${num}Percentage">${currentTexts.componentPercentageLabel}</label>
+                <input type="number" class="component-percentage" id="component${num}Percentage" min="0" step="0.01" placeholder="${currentTexts.componentPercentagePlaceholder}" required>
+                <button type="button" class="remove-component-button fas fa-times-circle" title="${currentTexts.removeComponentText}"></button>
+            `;
+
+            const removeButton = rowDiv.querySelector('.remove-component-button');
+            removeButton.addEventListener('click', () => {
+                rowDiv.remove();
+                // Optionally adjust componentCounter if needed, but not critical for this calculator
+                // Re-calculate total percentage after removal if results are displayed
+                calculatePrintingPaste();
+            });
+
+            return rowDiv;
+        }
+
+        // --- Event Listeners ---
+
+        // Add Component button click
+        if (addComponentButton) {
+            addComponentButton.addEventListener('click', function() {
+                componentCounter++;
+                componentInputsContainer.appendChild(createComponentInputRow(componentCounter));
+            });
+        }
+
+        // Calculate button click
+        if (calculateButton) {
+            calculateButton.addEventListener('click', calculatePrintingPaste);
+        }
+
+        // --- Main Calculation Function ---
+        function calculatePrintingPaste() {
+            let totalPasteWeight = parseFloat(totalPasteWeightInput.value);
+
+            // Clear previous results
+            resultBox.innerHTML = `<h3>${currentTexts.resultTitle}</h3>`;
+            resultBox.style.display = 'none';
+
+            // Validate total paste weight
+            if (isNaN(totalPasteWeight) || totalPasteWeight <= 0) {
+                resultBox.innerHTML += `<p class="error">${currentTexts.invalidInput}</p>`;
+                resultBox.style.display = 'block';
+                return;
+            }
+
+            let totalPercentageSum = 0;
+            const componentRows = componentInputsContainer.querySelectorAll('.component-input-row');
+            let resultsHtmlContent = '';
+
+            componentRows.forEach(row => {
+                const nameInput = row.querySelector('.component-name');
+                const percentageInput = row.querySelector('.component-percentage');
+
+                let componentName = nameInput ? nameInput.value.trim() : '';
+                let percentage = parseFloat(percentageInput ? percentageInput.value : '');
+
+                // Validate individual component inputs
+                if (isNaN(percentage) || percentage < 0 || percentage > 100) {
+                    resultBox.innerHTML = `<p class="error">${currentTexts.errorPercentageRange}</p>`;
+                    resultBox.style.display = 'block';
+                    return; // Stop calculation on first error
+                }
+
+                if (componentName === '') {
+                    // If name is empty, use a generic name based on its percentage or index
+                    componentName = isEnglishPage ? `Component (${percentage}%)` : `Bileşen (%${percentage})`;
+                }
+
+                const amount = (totalPasteWeight * percentage) / 100;
+                totalPercentageSum += percentage;
+
+                resultsHtmlContent += `
+                    <div class="result-item">
+                        <strong>${componentName}</strong> 
+                        <span class="result-value">${amount.toFixed(3)} ${currentTexts.unit_kg}</span>
+                    </div>
+                `;
+            });
+
+            // Display results
+            resultBox.innerHTML = `
+                <h3>${currentTexts.resultTitle}</h3>
+                ${resultsHtmlContent}
+                <hr class="form-divider" style="margin: 15px 0;">
+                <div class="result-item">
+                    <strong>${currentTexts.totalEnteredPercentage}</strong>
+                    <span class="result-value">${totalPercentageSum.toFixed(2)} ${currentTexts.unit_percent}</span>
+                </div>
+                <div class="result-item">
+                    <strong>${currentTexts.totalPasteWeightResult}</strong>
+                    <span class="result-value">${totalPasteWeight.toFixed(2)} ${currentTexts.unit_kg}</span>
+                </div>
+            `;
+
+            // Warn if total percentage is not 100%
+            if (totalPercentageSum > 100.01 || totalPercentageSum < 99.99) { // Allow for small floating point inaccuracies
+                 resultBox.innerHTML += `<p class="small-text error">${currentTexts.infoRemainingPercentage.replace('{sum}', totalPercentageSum.toFixed(2))}</p>`;
+            }
+
+            resultBox.style.display = 'block';
+        }
+
+        // Initialize display of existing component rows' labels with proper language
+        componentInputsContainer.querySelectorAll('.component-input-row').forEach((row, index) => {
+            const nameLabel = row.querySelector('label[for$="Name"]'); // Select label ending with "Name"
+            if (nameLabel) {
+                nameLabel.textContent = currentTexts.componentNameLabel.replace('{num}', index + 1);
+            }
+            const percentageLabel = row.querySelector('label[for$="Percentage"]'); // Select label ending with "Percentage"
+            if (percentageLabel) {
+                percentageLabel.textContent = currentTexts.componentPercentageLabel;
+            }
+        });
+    });
+</script>
 </body>
 </html>

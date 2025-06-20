@@ -397,5 +397,148 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Language detection: Assume English if URL starts with '/en/', otherwise Turkish
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+    // Text strings object for dynamic content
+    const texts = {
+        tr: {
+            calculateButtonText: 'Hesapla',
+            invalidInput: 'Lütfen geçerli bir iplik numarası değeri girin.',
+            resultTitle: 'Sonuçlar:',
+            texLabel: 'Tex:',
+            denyeLabel: 'Denye:',
+            neLabel: 'Ne (Pamuk Numarası):',
+            nmLabel: 'Nm (Metrik Numara):',
+            dtexLabel: 'dTex:',
+            explanation: 'Bu hesaplayıcı, iplik numarası sistemleri arasında temel dönüşümler sağlar. Daha karmaşık senaryolar ve belirli elyaf türleri için endüstri standartlarına başvurulması önerilir.'
+        },
+        en: {
+            calculateButtonText: 'Calculate',
+            invalidInput: 'Please enter a valid yarn count value.',
+            resultTitle: 'Results:',
+            texLabel: 'Tex:',
+            denyeLabel: 'Denier:',
+            neLabel: 'Ne (Cotton Count):',
+            nmLabel: 'Nm (Metric Number):',
+            dtexLabel: 'dTex:',
+            explanation: 'This calculator provides basic conversions between yarn count systems. For more complex scenarios and specific fiber types, it is recommended to consult industry standards.'
+        }
+    };
+
+    // Select active language texts
+    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+    // --- DOM Elements ---
+    const iplikNumarasiForm = document.getElementById('iplikNumarasiForm');
+    const inputNumber = document.getElementById('inputNumber');
+    const inputSystem = document.getElementById('inputSystem');
+    const resultBox = document.getElementById('resultBox');
+    const calculateButton = iplikNumarasiForm.querySelector('button[type="button"]');
+
+    // Result display spans
+    const resultTex = document.getElementById('resultTex');
+    const resultDenye = document.getElementById('resultDenye');
+    const resultNe = document.getElementById('resultNe');
+    const resultNm = document.getElementById('resultNm');
+    const resultDtex = document.getElementById('resultDtex');
+
+    // Update button text and explanation text based on language
+    if (calculateButton) {
+        calculateButton.textContent = currentTexts.calculateButtonText;
+    }
+
+    const explanationParagraph = resultBox.nextElementSibling; // The <p class="small-text"> after resultBox
+    if (explanationParagraph && explanationParagraph.className === 'small-text') {
+        explanationParagraph.textContent = currentTexts.explanation;
+    }
+
+    // Update result box header and labels
+    const resultBoxHeader = resultBox.querySelector('h3');
+    if (resultBoxHeader) {
+        resultBoxHeader.textContent = currentTexts.resultTitle;
+    }
+    resultBox.querySelector('p:nth-of-type(1) strong').textContent = currentTexts.texLabel;
+    resultBox.querySelector('p:nth-of-type(2) strong').textContent = currentTexts.denyeLabel;
+    resultBox.querySelector('p:nth-of-type(3) strong').textContent = currentTexts.neLabel;
+    resultBox.querySelector('p:nth-of-type(4) strong').textContent = currentTexts.nmLabel;
+    resultBox.querySelector('p:nth-of-type(5) strong').textContent = currentTexts.dtexLabel;
+
+
+    // --- Conversion Logic ---
+    function convertToTex(value, system) {
+        switch (system) {
+            case 'tex':
+                return value;
+            case 'denye':
+                return value / 9;
+            case 'ne':
+                return 590.54 / value;
+            case 'nm':
+                return 1000 / value;
+            case 'dtex':
+                return value / 10;
+            default:
+                return 0;
+        }
+    }
+
+    function convertFromTex(texValue, targetSystem) {
+        switch (targetSystem) {
+            case 'tex':
+                return texValue;
+            case 'denye':
+                return texValue * 9;
+            case 'ne':
+                return 590.54 / texValue;
+            case 'nm':
+                return 1000 / texValue;
+            case 'dtex':
+                return texValue * 10;
+            default:
+                return 0;
+        }
+    }
+
+    // --- Calculation Function ---
+    window.hesaplaIplikNumarasi = function() {
+        let value = parseFloat(inputNumber.value);
+        let system = inputSystem.value;
+
+        // Clear previous results
+        resultTex.textContent = '';
+        resultDenye.textContent = '';
+        resultNe.textContent = '';
+        resultNm.textContent = '';
+        resultDtex.textContent = '';
+        resultBox.style.display = 'none'; // Hide results until valid input
+
+        // --- Input Validation ---
+        if (isNaN(value) || value <= 0) {
+            alert(currentTexts.invalidInput);
+            return;
+        }
+
+        // Convert the input value to a common base (Tex)
+        const baseTex = convertToTex(value, system);
+
+        // Convert from Tex to all other systems
+        resultTex.textContent = convertFromTex(baseTex, 'tex').toFixed(2);
+        resultDenye.textContent = convertFromTex(baseTex, 'denye').toFixed(2);
+        resultNe.textContent = convertFromTex(baseTex, 'ne').toFixed(2);
+        resultNm.textContent = convertFromTex(baseTex, 'nm').toFixed(2);
+        resultDtex.textContent = convertFromTex(baseTex, 'dtex').toFixed(2);
+
+        resultBox.style.display = 'block'; // Show the result box
+    };
+
+    // Initial setup for the result box title
+    if (resultBoxHeader) {
+        resultBoxHeader.textContent = currentTexts.resultTitle;
+    }
+});
+  </script>
 </body>
 </html>

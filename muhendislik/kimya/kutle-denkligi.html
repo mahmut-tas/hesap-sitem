@@ -190,5 +190,92 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                input1Label: 'Giriş Akışı 1 (kg/sa):',
+                input2Label: 'Giriş Akışı 2 (kg/sa):',
+                calculateButton: 'Kütle Denkliğini Hesapla',
+                outputFlow: 'Toplam Çıkış Akışı:',
+                kgPerHour: 'kg/sa',
+                invalidInput: 'Lütfen geçerli pozitif sayılar girin.',
+                categoryPositive: 'Dengede (Net Giriş Akışı)',
+                categoryNegative: 'Dengede (Net Çıkış Akışı)',
+                categoryZero: 'Dengede (Net Akış Yok)',
+                // Bu hesaplayıcının tek bir formu olduğu için diğer butonları ve wrapper'ları yönetmeye gerek yok.
+                // Eğer ileride farklı kütle denkliği senaryoları eklenirse, GMAT/GRE/TOEFL örneklerindeki gibi bir seçim mekanizması eklenebilir.
+            },
+            en: {
+                input1Label: 'Input Flow 1 (kg/h):',
+                input2Label: 'Input Flow 2 (kg/h):',
+                calculateButton: 'Calculate Mass Balance',
+                outputFlow: 'Total Output Flow:',
+                kgPerHour: 'kg/h',
+                invalidInput: 'Please enter valid positive numbers.',
+                categoryPositive: 'In Balance (Net Input Flow)',
+                categoryNegative: 'In Balance (Net Output Flow)',
+                categoryZero: 'In Balance (No Net Flow)',
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // Kütle Denkliği Formu
+        const massBalanceForm = document.getElementById('massBalanceForm');
+        const massBalanceResultDiv = document.getElementById('massBalanceResult');
+        const massBalanceCategoryDiv = document.getElementById('massBalanceCategory');
+
+        massBalanceForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Formun varsayılan submit davranışını engelle
+
+            const input1 = parseFloat(document.getElementById('input1').value);
+            const input2 = parseFloat(document.getElementById('input2').value);
+
+            // Giriş doğrulaması
+            if (isNaN(input1) || isNaN(input2) || input1 < 0 || input2 < 0) {
+                massBalanceResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                massBalanceResultDiv.style.display = 'block';
+                massBalanceCategoryDiv.style.display = 'none'; // Kategori gösterme
+                return;
+            }
+
+            const totalOutputFlow = input1 + input2;
+
+            massBalanceResultDiv.innerHTML = `
+                <p>${currentTexts.outputFlow} <span class="result-value">${totalOutputFlow.toFixed(2)}</span> ${currentTexts.kgPerHour}</p>
+            `;
+            massBalanceResultDiv.style.display = 'block';
+
+            // Kategori belirleme ve gösterme
+            if (totalOutputFlow > 0) {
+                massBalanceCategoryDiv.innerHTML = `<p>${currentTexts.categoryPositive}</p>`;
+            } else if (totalOutputFlow < 0) { // Negatif akış teorik olarak olabilir (çıkışın girişi geçtiği durum)
+                massBalanceCategoryDiv.innerHTML = `<p>${currentTexts.categoryNegative}</p>`;
+            } else {
+                massBalanceCategoryDiv.innerHTML = `<p>${currentTexts.categoryZero}</p>`;
+            }
+            massBalanceCategoryDiv.style.display = 'block';
+        });
+
+        // Bu sayfada tek bir ana hesaplayıcı olduğu için, diğer sayfalardaki gibi
+        // 'calc-type-button' ve 'calc-wrapper' geçiş mantığına ihtiyaç duyulmaz.
+        // Ancak HTML'de bu elementler var ve CSS tarafından yönetiliyorlar.
+        // Eğer ileride ek hesaplayıcılar eklenirse, bu mantık yeniden dahil edilebilir.
+        // Şimdilik, var olan calc-buttons-container'ın aktifliğini sadece ilk buton için yönetebiliriz:
+        const initialCalcButton = document.querySelector('.calc-type-button[data-calc-type]');
+        if (initialCalcButton) {
+            // Sadece bu sayfadaki ilk butonu aktif yap.
+            // Diğer butonlar zaten gizli divlere bağlı olduğundan ek JS kontrolüne gerek yok.
+            // Bu sadece ilk yüklemede aktif sınıfını doğru butona atar.
+            initialCalcButton.classList.add('active'); 
+        }
+    });
+</script>
  </body>
 </html>

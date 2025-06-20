@@ -759,5 +759,215 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Dönüştür',
+                invalidInput: 'Lütfen geçerli bir sertlik değeri girin (pozitif bir sayı olmalı).',
+                errorSameScale: 'Kaynak ve hedef sertlik skalaları aynı olamaz. Lütfen farklı skalalar seçin.',
+                errorConversionRange: 'Bu değerler için güvenilir bir dönüşüm bulunmamaktadır. Lütfen sertlik aralığını kontrol edin.',
+                resultPrefix: 'Dönüştürülen Sertlik:',
+                // Input Etiketleri
+                sourceScaleLabel: 'Kaynak Sertlik Skalası:',
+                hardnessValueLabel: 'Sertlik Değeri:',
+                targetScaleLabel: 'Hedef Sertlik Skalası:',
+                // Sertlik Skalası İsimleri (HTML'den alınabilir, ancak JS çıktısı için de burada tutuluyor)
+                HRC: 'Rockwell C (HRC)',
+                HRB: 'Rockwell B (HRB)',
+                HRA: 'Rockwell A (HRA)',
+                HB: 'Brinell (HB)',
+                HV: 'Vickers (HV)',
+                HK: 'Knoop (HK)'
+            },
+            en: {
+                // General
+                calculateButton: 'Convert',
+                invalidInput: 'Please enter a valid hardness value (must be a positive number).',
+                errorSameScale: 'Source and target hardness scales cannot be the same. Please select different scales.',
+                errorConversionRange: 'No reliable conversion found for these values. Please check the hardness range.',
+                resultPrefix: 'Converted Hardness:',
+                // Input Labels
+                sourceScaleLabel: 'Source Hardness Scale:',
+                hardnessValueLabel: 'Hardness Value:',
+                targetScaleLabel: 'Target Hardness Scale:',
+                // Hardness Scale Names
+                HRC: 'Rockwell C (HRC)',
+                HRB: 'Rockwell B (HRB)',
+                HRA: 'Rockwell A (HRA)',
+                HB: 'Brinell (HB)',
+                HV: 'Vickers (HV)',
+                HK: 'Knoop (HK)'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // --- Helper Functions (Sertlik Dönüşüm Formülleri) ---
+        // Bu formüller genellikle ampirik olarak türetilmiştir ve yaklaşıktır.
+        // Genellikle çelikler için geçerlidir ve belirli aralıklarda en iyi performansı gösterir.
+        // Daha doğru dönüşümler için ASTM veya ISO standartlarına başvurulmalıdır.
+
+        const CONVERSION_FUNCTIONS = {
+            // Rockwell C (HRC) için diğerlerine dönüşüm
+            'HRC': {
+                'HB': (hrc) => { // HRC 20-67 arası, çelikler için
+                    if (hrc >= 20 && hrc <= 67) return 0.0003 * Math.pow(hrc, 4.39) + 0.0031 * Math.pow(hrc, 3.23) + 0.046 * Math.pow(hrc, 2.1) + 2.37 * hrc + 91.6; // Çok yaklaşık bir polinom
+                    // Daha yaygın ve basit bir yaklaşım:
+                    if (hrc >= 20 && hrc <= 67) return 0.9 * hrc + 100; // Çok basit bir lineer yaklaşım
+                    return null;
+                },
+                'HV': (hrc) => { // HRC 20-67 arası, çelikler için
+                    if (hrc >= 20 && hrc <= 67) return (hrc * 10) + 150; // Çok kaba bir yaklaşım
+                    if (hrc >= 20 && hrc <= 60) return (8.58 * hrc) + 185; // Başka bir yaklaşım
+                    return null;
+                },
+                'HRA': (hrc) => { // HRC 20-67 arası
+                    if (hrc >= 20 && hrc <= 67) return (0.8 * hrc) + 60; // Çok yaklaşık
+                    return null;
+                },
+                'HRB': (hrc) => null, // HRC ve HRB farklı aralıklarda kullanılır, doğrudan dönüşüm genellikle pratik değildir
+                'HK': (hrc) => CONVERSION_FUNCTIONS['HRC']['HV'](hrc) // Knoop ve Vickers genellikle benzer kabul edilir
+            },
+            // Rockwell B (HRB) için diğerlerine dönüşüm
+            'HRB': {
+                'HRC': (hrb) => null, // HRB için HRC'ye güvenilir dönüşüm zor
+                'HB': (hrb) => { // HRB 0-100 arası, çelikler/alüminyum için
+                    if (hrb >= 0 && hrb <= 100) return (0.0001 * Math.pow(hrb, 3)) + (0.008 * Math.pow(hrb, 2)) + (0.8 * hrb) + 70; // Çok yaklaşık
+                    return null;
+                },
+                'HV': (hrb) => {
+                    if (hrb >= 0 && hrb <= 100) return (0.0001 * Math.pow(hrb, 3)) + (0.008 * Math.pow(hrb, 2)) + (0.8 * hrb) + 70; // HB'ye yakın
+                    return null;
+                },
+                'HRA': (hrb) => null,
+                'HK': (hrb) => CONVERSION_FUNCTIONS['HRB']['HV'](hrb)
+            },
+            // Rockwell A (HRA) için diğerlerine dönüşüm
+            'HRA': {
+                'HRC': (hra) => {
+                    if (hra >= 59 && hra <= 85) return (hra - 59) * 2.2 + 20; // Çok yaklaşık
+                    return null;
+                },
+                'HB': (hra) => {
+                    if (hra >= 59 && hra <= 85) return (hra * 4) + 100; // Çok kaba
+                    return null;
+                },
+                'HV': (hra) => {
+                    if (hra >= 59 && hra <= 85) return (hra * 4) + 100; // HV'ye yakın
+                    return null;
+                },
+                'HRB': (hra) => null,
+                'HK': (hra) => CONVERSION_FUNCTIONS['HRA']['HV'](hra)
+            },
+            // Brinell (HB) için diğerlerine dönüşüm
+            'HB': {
+                'HRC': (hb) => { // HB 200-600 arası, çelikler için
+                    if (hb >= 200 && hb <= 600) return (hb - 70) / 3.5; // Çok yaklaşık
+                    if (hb >= 200 && hb <= 400) return (hb / 10) - 20; // Başka bir yaklaşım
+                    return null;
+                },
+                'HRB': (hb) => { // HB 100-250 arası, çelikler/alüminyum için
+                    if (hb >= 100 && hb <= 250) return (hb - 70) / 1.5; // Çok yaklaşık
+                    return null;
+                },
+                'HRA': (hb) => {
+                    if (hb >= 100 && hb <= 250) return (hb / 4) + 50; // Çok kaba
+                    return null;
+                },
+                'HV': (hb) => { // Genellikle HB ve HV birbirine yakın değerlerdir, özellikle düşük sertliklerde HB=HV denilebilir
+                    if (hb >= 100 && hb <= 600) return hb; // HB'den HV'ye direk eşdeğerlik genellikle kullanılır (yaklaşık)
+                    return null;
+                },
+                'HK': (hb) => CONVERSION_FUNCTIONS['HB']['HV'](hb) // HK ve HV genellikle benzer
+            },
+            // Vickers (HV) için diğerlerine dönüşüm
+            'HV': {
+                'HRC': (hv) => { // HV 200-800 arası, çelikler için
+                    if (hv >= 200 && hv <= 800) return (hv / 10) - 15; // Çok yaklaşık
+                    return null;
+                },
+                'HRB': (hv) => { // HV 100-250 arası
+                    if (hv >= 100 && hv <= 250) return (hv / 1.5) - 40; // Çok yaklaşık
+                    return null;
+                },
+                'HRA': (hv) => {
+                    if (hv >= 100 && hv <= 250) return (hv / 4) + 50; // Çok kaba
+                    return null;
+                },
+                'HB': (hv) => {
+                    if (hv >= 100 && hv <= 600) return hv; // HV'den HB'ye direk eşdeğerlik genellikle kullanılır (yaklaşık)
+                    return null;
+                },
+                'HK': (hv) => { // Vickers ve Knoop genellikle çok yakın, bazen doğrudan eşdeğer kabul edilebilir.
+                    if (hv >= 10 && hv <= 1000) return hv * 1.02; // Knoop genellikle Vickers'tan biraz daha yüksek
+                    return null;
+                }
+            },
+            // Knoop (HK) için diğerlerine dönüşüm
+            'HK': {
+                'HRC': (hk) => CONVERSION_FUNCTIONS['HV']['HRC'](hk), // HK'dan HV'ye sonra HRC'ye
+                'HRB': (hk) => CONVERSION_FUNCTIONS['HV']['HRB'](hk), // HK'dan HV'ye sonra HRB'ye
+                'HRA': (hk) => CONVERSION_FUNCTIONS['HV']['HRA'](hk), // HK'dan HV'ye sonra HRA'ya
+                'HB': (hk) => CONVERSION_FUNCTIONS['HV']['HB'](hk),   // HK'dan HV'ye sonra HB'ye
+                'HV': (hk) => {
+                    if (hk >= 10 && hk <= 1000) return hk / 1.02; // Knoop'tan Vickers'a (yaklaşık)
+                    return null;
+                }
+            }
+        };
+
+        // --- DOM Elements ---
+        const hardnessConversionForm = document.getElementById('hardnessConversionForm');
+        const hardnessConversionResultDiv = document.getElementById('hardnessConversionResult');
+        const sourceScaleSelect = document.getElementById('sourceScale');
+        const hardnessValueInput = document.getElementById('hardnessValue');
+        const targetScaleSelect = document.getElementById('targetScale');
+
+        // --- Main Form Submission ---
+        hardnessConversionForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const sourceScale = sourceScaleSelect.value;
+            const hardnessValue = parseFloat(hardnessValueInput.value);
+            const targetScale = targetScaleSelect.value;
+
+            // --- Input Validation ---
+            if (isNaN(hardnessValue) || hardnessValue <= 0) {
+                hardnessConversionResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                hardnessConversionResultDiv.style.display = 'block';
+                return;
+            }
+            if (sourceScale === targetScale) {
+                hardnessConversionResultDiv.innerHTML = `<p class="error">${currentTexts.errorSameScale}</p>`;
+                hardnessConversionResultDiv.style.display = 'block';
+                return;
+            }
+
+            // --- Perform Conversion ---
+            let convertedValue = null;
+            if (CONVERSION_FUNCTIONS[sourceScale] && typeof CONVERSION_FUNCTIONS[sourceScale][targetScale] === 'function') {
+                convertedValue = CONVERSION_FUNCTIONS[sourceScale][targetScale](hardnessValue);
+            }
+
+            // --- Display Result ---
+            if (convertedValue !== null && !isNaN(convertedValue) && convertedValue > 0) {
+                hardnessConversionResultDiv.innerHTML = `
+                    <p>${currentTexts.resultPrefix} <span class="result-value">${convertedValue.toFixed(2)}</span> ${currentTexts[targetScale]}</p>
+                `;
+                hardnessConversionResultDiv.style.display = 'block';
+            } else {
+                hardnessConversionResultDiv.innerHTML = `<p class="error">${currentTexts.errorConversionRange}</p>`;
+                hardnessConversionResultDiv.style.display = 'block';
+            }
+        });
+    });
+</script>
  </body>
 </html>

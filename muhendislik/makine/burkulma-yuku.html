@@ -633,5 +633,170 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Kritik Burkulma Yükünü Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                errorZeroValue: 'Değer sıfır veya negatif olamaz.',
+                resultPrefix: 'Kritik Burkulma Yükü (P_cr):',
+                // Input Etiketleri
+                elasticityModulusLabel: 'Elastisite Modülü (E):',
+                momentOfInertiaLabel: 'Alan Atalet Momenti (I):',
+                columnLengthLabel: 'Kolon Uzunluğu (L):',
+                supportConditionLabel: 'Mesnet Koşulu:',
+                // Mesnet Koşulları Seçenekleri
+                fixedFixed: 'İki Uçtan Sabit (K=0.5)',
+                fixedPinned: 'Bir Uçtan Sabit, Diğer Uçtan Mafsallı (K=0.7)',
+                pinnedPinned: 'İki Uçtan Mafsallı (K=1.0)',
+                fixedFree: 'Bir Uçtan Sabit, Diğer Uçtan Serbest (K=2.0)',
+                // Birimler
+                unit_GPa: 'Gigapascal (GPa)',
+                unit_MPa: 'Megapascal (MPa)',
+                unit_psi: 'psi',
+                unit_m4: 'metre üzeri 4 (m⁴)',
+                unit_mm4: 'milimetre üzeri 4 (mm⁴)',
+                unit_cm4: 'santimetre üzeri 4 (cm⁴)',
+                unit_in4: 'inç üzeri 4 (in⁴)',
+                unit_m: 'metre (m)',
+                unit_cm: 'santimetre (cm)',
+                unit_mm: 'milimetre (mm)',
+                unit_in: 'inç',
+                unit_N: 'Newton (N)',
+                unit_kN: 'Kilonewton (kN)',
+                unit_lbf: 'pound-kuvvet (lbf)'
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate Critical Buckling Load',
+                invalidInput: 'Please enter valid positive numbers for all fields.',
+                errorZeroValue: 'Value cannot be zero or negative.',
+                resultPrefix: 'Critical Buckling Load (P_cr):',
+                // Input Labels
+                elasticityModulusLabel: 'Modulus of Elasticity (E):',
+                momentOfInertiaLabel: 'Area Moment of Inertia (I):',
+                columnLengthLabel: 'Column Length (L):',
+                supportConditionLabel: 'Support Condition:',
+                // Support Condition Options
+                fixedFixed: 'Fixed-Fixed (K=0.5)',
+                fixedPinned: 'Fixed-Pinned (K=0.7)',
+                pinnedPinned: 'Pinned-Pinned (K=1.0)',
+                fixedFree: 'Fixed-Free (K=2.0)',
+                // Units
+                unit_GPa: 'Gigapascal (GPa)',
+                unit_MPa: 'Megapascal (MPa)',
+                unit_psi: 'psi',
+                unit_m4: 'meter to the 4th (m⁴)',
+                unit_mm4: 'millimeter to the 4th (mm⁴)',
+                unit_cm4: 'centimeter to the 4th (cm⁴)',
+                unit_in4: 'inch to the 4th (in⁴)',
+                unit_m: 'meter (m)',
+                unit_cm: 'centimeter (cm)',
+                unit_mm: 'millimeter (mm)',
+                unit_in: 'inch',
+                unit_N: 'Newton (N)',
+                unit_kN: 'Kilonewton (kN)',
+                unit_lbf: 'pound-force (lbf)'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // --- Helper Functions ---
+        // Elastisite Modülü: Pa'ya dönüştürme faktörleri
+        const ELASTICITY_TO_PA = {
+            'GPa': 1e9,
+            'MPa': 1e6,
+            'psi': 6894.76
+        };
+
+        // Alan Atalet Momenti: m⁴'e dönüştürme faktörleri
+        const MOMENT_OF_INERTIA_TO_M4 = {
+            'm4': 1,
+            'mm4': 1e-12, // (0.001 m)^4
+            'cm4': 1e-8,  // (0.01 m)^4
+            'in4': 4.162314e-7 // (0.0254 m)^4
+        };
+
+        // Uzunluk: metreye dönüştürme faktörleri
+        const LENGTH_TO_M = {
+            'm': 1,
+            'cm': 0.01,
+            'mm': 0.001,
+            'in': 0.0254
+        };
+
+        // Mesnet koşullarına göre etkili uzunluk faktörü (K)
+        const SUPPORT_CONDITIONS = {
+            'fixedFixed': 0.5,
+            'fixedPinned': 0.7,
+            'pinnedPinned': 1.0,
+            'fixedFree': 2.0
+        };
+
+        // --- DOM Elements ---
+        const criticalBucklingLoadForm = document.getElementById('criticalBucklingLoadForm');
+        const criticalBucklingLoadResultDiv = document.getElementById('criticalBucklingLoadResult');
+
+        // --- Main Form Submission ---
+        criticalBucklingLoadForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get values
+            const elasticityModulus = parseFloat(document.getElementById('elasticityModulus').value);
+            const momentOfInertia = parseFloat(document.getElementById('momentOfInertia').value);
+            const columnLength = parseFloat(document.getElementById('columnLength').value);
+            const supportCondition = document.getElementById('supportCondition').value;
+
+            // Get units
+            const elasticityModulusUnit = document.getElementById('elasticityModulusUnit').value;
+            const momentOfInertiaUnit = document.getElementById('momentOfInertiaUnit').value;
+            const columnLengthUnit = document.getElementById('columnLengthUnit').value;
+
+            // --- Input Validation ---
+            if (isNaN(elasticityModulus) || isNaN(momentOfInertia) || isNaN(columnLength) ||
+                elasticityModulus <= 0 || momentOfInertia <= 0 || columnLength <= 0) {
+                criticalBucklingLoadResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                criticalBucklingLoadResultDiv.style.display = 'block';
+                return;
+            }
+
+            // --- Convert to Base SI Units (Pa, m⁴, m) ---
+            const E_Pa = elasticityModulus * ELASTICITY_TO_PA[elasticityModulusUnit];
+            const I_m4 = momentOfInertia * MOMENT_OF_INERTIA_TO_M4[momentOfInertiaUnit];
+            const L_m = columnLength * LENGTH_TO_M[columnLengthUnit];
+
+            const K_factor = SUPPORT_CONDITIONS[supportCondition];
+            const effectiveLength = K_factor * L_m;
+
+            // --- Calculate Critical Buckling Load (P_cr) using Euler's formula (N) ---
+            // P_cr = (π² * E * I) / (K * L)²
+            if (effectiveLength === 0) { // Should not happen with positive L and K factors
+                criticalBucklingLoadResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroValue}</p>`;
+                criticalBucklingLoadResultDiv.style.display = 'block';
+                return;
+            }
+            const P_cr_N = (Math.pow(Math.PI, 2) * E_Pa * I_m4) / Math.pow(effectiveLength, 2);
+
+            // --- Display Results in common units ---
+            const P_cr_kN = P_cr_N / 1000; // N to kN
+            const P_cr_lbf = P_cr_N / 4.44822; // N to lbf (1 lbf = 4.44822 N)
+
+            criticalBucklingLoadResultDiv.innerHTML = `
+                <p>${currentTexts.resultPrefix} <span class="result-value">${P_cr_N.toExponential(3)}</span> ${currentTexts.unit_N}</p>
+                <p>${currentTexts.resultPrefix} <span class="result-value">${P_cr_kN.toFixed(3)}</span> ${currentTexts.unit_kN}</p>
+                <p>${currentTexts.resultPrefix} <span class="result-value">${P_cr_lbf.toFixed(3)}</span> ${currentTexts.unit_lbf}</p>
+            `;
+            criticalBucklingLoadResultDiv.style.display = 'block';
+        });
+    });
+</script>
  </body>
 </html>

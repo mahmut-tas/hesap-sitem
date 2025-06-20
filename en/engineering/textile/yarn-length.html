@@ -262,5 +262,149 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    // Language detection: Assume English if URL starts with '/en/', otherwise Turkish
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+    // Text strings object for dynamic content
+    const texts = {
+        tr: {
+            calculateButtonText: 'Hesapla',
+            invalidInput: 'Lütfen iplik ağırlığı ve iplik numarası için geçerli pozitif sayılar girin.',
+            resultTitle: 'Sonuç:',
+            estimatedYarnLength: 'Tahmini İplik Uzunluğu:',
+            unit_meter: 'metre',
+            unit_yard: 'yarda',
+            explanation: 'İplik numarası ve ağırlık birimlerini doğru girdiğinizden emin olun. Hesaplamalar ortalama değerlere dayanır.'
+        },
+        en: {
+            calculateButtonText: 'Calculate',
+            invalidInput: 'Please enter valid positive numbers for yarn weight and yarn count.',
+            resultTitle: 'Conclusion:',
+            estimatedYarnLength: 'Estimated Yarn Length:',
+            unit_meter: 'meters',
+            unit_yard: 'yards',
+            explanation: 'Ensure you enter the correct yarn count and weight units. Calculations are based on average values.'
+        }
+    };
+
+    // Select active language texts
+    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+    // --- DOM Elements ---
+    const yarnLengthForm = document.getElementById('yarnLengthForm');
+    const yarnWeightInput = document.getElementById('yarnWeight');
+    const weightUnitSelect = document.getElementById('weightUnit');
+    const yarnCountInput = document.getElementById('yarnCount');
+    const countSystemSelect = document.getElementById('countSystem');
+    const yarnLengthResultSpan = document.getElementById('yarnLengthResult');
+    const resultBox = document.getElementById('resultBox');
+    const calculateButton = yarnLengthForm.querySelector('button[type="button"]');
+
+    // Update button text and explanation text based on language
+    if (calculateButton) {
+        calculateButton.textContent = currentTexts.calculateButtonText;
+    }
+
+    const explanationParagraph = resultBox.nextElementSibling; // The <p class="small-text"> after resultBox
+    if (explanationParagraph && explanationParagraph.className === 'small-text') {
+        explanationParagraph.textContent = currentTexts.explanation;
+    }
+
+    // --- Calculation Function ---
+    window.calculateYarnLength = function() {
+        let yarnWeight = parseFloat(yarnWeightInput.value);
+        let weightUnit = weightUnitSelect.value;
+        let yarnCount = parseFloat(yarnCountInput.value);
+        let countSystem = countSystemSelect.value;
+
+        // Clear previous results and hide result box initially
+        yarnLengthResultSpan.textContent = '';
+        resultBox.style.display = 'none';
+
+        // --- Input Validation ---
+        if (isNaN(yarnWeight) || isNaN(yarnCount) || yarnWeight <= 0 || yarnCount <= 0) {
+            alert(currentTexts.invalidInput);
+            return;
+        }
+
+        let calculatedLength = 0;
+        let outputUnit = ''; // Will be 'meter' or 'yard'
+
+        // Convert yarn weight to grams for Tex, Denye, dTex or to pounds for Ne
+        let weightInGrams = yarnWeight;
+        let weightInPounds = yarnWeight;
+
+        if (weightUnit === 'kg') {
+            weightInGrams = yarnWeight * 1000;
+            weightInPounds = yarnWeight * 2.20462;
+        } else if (weightUnit === 'pound') {
+            weightInGrams = yarnWeight * 453.592;
+            weightInPounds = yarnWeight;
+        }
+        // If weightUnit is 'gram', weightInGrams is already set, weightInPounds needs conversion
+        else if (weightUnit === 'gram') {
+             weightInPounds = yarnWeight / 453.592;
+        }
+
+
+        // --- Perform Calculations based on Yarn Count System ---
+        switch (countSystem) {
+            case 'tex':
+                // Tex: Weight in grams of 1000 meters of yarn
+                // Length (m) = (Weight (gr) / Tex) * 1000
+                calculatedLength = (weightInGrams / yarnCount) * 1000;
+                outputUnit = currentTexts.unit_meter;
+                break;
+            case 'denye':
+                // Denye: Weight in grams of 9000 meters of yarn
+                // Length (m) = (Weight (gr) / Denye) * 9000
+                calculatedLength = (weightInGrams / yarnCount) * 9000;
+                outputUnit = currentTexts.unit_meter;
+                break;
+            case 'ne':
+                // Ne (Cotton Count): Number of 840-yard hanks per pound
+                // Length (yarda) = Weight (lb) * Ne * 840
+                calculatedLength = weightInPounds * yarnCount * 840;
+                outputUnit = currentTexts.unit_yard;
+                break;
+            case 'nm':
+                // Nm (Metric Count): Number of kilometers per kilogram
+                // Length (m) = Weight (kg) * Nm * 1000 (if weight is in kg)
+                // Length (m) = Weight (gr) * Nm (if weight is in gr)
+                calculatedLength = yarnWeight * yarnCount; // If yarnWeight is in grams, Nm * grams = meters
+                if (weightUnit === 'kg') {
+                    calculatedLength = yarnWeight * yarnCount * 1000;
+                } else if (weightUnit === 'pound') {
+                    // Convert pound to kg first
+                    calculatedLength = (yarnWeight * 0.453592) * yarnCount * 1000;
+                }
+                outputUnit = currentTexts.unit_meter;
+                break;
+            case 'dtex':
+                // dTex: Weight in grams of 10,000 meters of yarn (1 dTex = 1 gram/10,000 m)
+                // Length (m) = (Weight (gr) / dTex) * 10000
+                calculatedLength = (weightInGrams / yarnCount) * 10000;
+                outputUnit = currentTexts.unit_meter;
+                break;
+            default:
+                calculatedLength = 0; // Should not happen with valid select options
+                break;
+        }
+
+        // --- Display Results ---
+        yarnLengthResultSpan.textContent = `${calculatedLength.toFixed(2)} ${outputUnit}`;
+        resultBox.style.display = 'block'; // Show the result box
+
+        // Update result box header and label
+        const resultBoxHeader = resultBox.querySelector('h3');
+        if (resultBoxHeader) {
+            resultBoxHeader.textContent = currentTexts.resultTitle;
+        }
+        resultBox.querySelector('p strong').textContent = currentTexts.estimatedYarnLength;
+    };
+});
+  </script>
 </body>
 </html>

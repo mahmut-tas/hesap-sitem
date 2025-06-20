@@ -497,5 +497,181 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                errorZeroMolarMass: 'Mol kütlesi sıfır olamaz.',
+                errorZeroVolume: 'Çözelti hacmi sıfır olamaz.',
+                errorZeroPurity: 'Saflık yüzdesi sıfır olamaz.',
+                resultPrefix: 'Sonuç:',
+                // Molarite Hesaplama
+                molarityTitle: 'Molariteyi Hesapla',
+                soluteMassLabel: 'Çözünen Kütlesi (gram):',
+                molarMassLabel: 'Çözünen Mol Kütlesi (g/mol):',
+                solutionVolumeLabel: 'Çözelti Hacmi (Litre):',
+                molarityResultLabel: 'Molarite:',
+                unit_M: 'M',
+                unit_g: 'gram',
+                unit_mL: 'mL',
+                // Çözelti Hazırlama
+                prepareSolutionTitle: 'Hedef Molaritede Çözelti Hazırla',
+                targetMolarityLabel: 'Hedef Molarite (mM):',
+                targetVolumeLabel: 'Hedef Çözelti Hacmi (mL):',
+                concPurityLabel: 'Konsantre Asit Saflığı (% w/w):',
+                concDensityLabel: 'Konsantre Asit Yoğunluğu (g/mL):',
+                requiredMassOfSolute: 'Gerekli Saf Madde Kütlesi:',
+                requiredVolumeOfConcAcid: 'Gerekli Konsantre Çözelti Hacmi:'
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate',
+                invalidInput: 'Please enter valid positive numbers for all fields.',
+                errorZeroMolarMass: 'Molar mass cannot be zero.',
+                errorZeroVolume: 'Solution volume cannot be zero.',
+                errorZeroPurity: 'Purity percentage cannot be zero.',
+                resultPrefix: 'Result:',
+                // Calculate Molarity
+                molarityTitle: 'Calculate Molarity',
+                soluteMassLabel: 'Mass of Solute (grams):',
+                molarMassLabel: 'Molar Mass of Solute (g/mol):',
+                solutionVolumeLabel: 'Solution Volume (Liters):',
+                molarityResultLabel: 'Molarity:',
+                unit_M: 'M',
+                unit_g: 'grams',
+                unit_mL: 'mL',
+                // Prepare Solution
+                prepareSolutionTitle: 'Prepare Solution at Target Molarity',
+                targetMolarityLabel: 'Target Molarity (mM):',
+                targetVolumeLabel: 'Target Solution Volume (mL):',
+                concPurityLabel: 'Concentrated Acid Purity (% w/w):',
+                concDensityLabel: 'Concentrated Acid Density (g/mL):',
+                requiredMassOfSolute: 'Required Mass of Pure Solute:',
+                requiredVolumeOfConcAcid: 'Required Volume of Concentrated Solution:'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // Hesaplayıcı butonları ve içerikleri
+        const calcButtons = document.querySelectorAll('.calc-type-button');
+        // HTML'deki percent-calculator-wrapper sınıfını calc-wrapper olarak daha genel bir isimle hedefleyelim
+        const calcWrappers = document.querySelectorAll('.percent-calculator-wrapper');
+
+        // Function to show/hide calculators
+        function showCalculator(calcType) {
+            calcWrappers.forEach(wrapper => {
+                if (wrapper.id === `calculator-${calcType}`) {
+                    wrapper.classList.remove('hidden-calc');
+                } else {
+                    wrapper.classList.add('hidden-calc');
+                }
+            });
+
+            calcButtons.forEach(button => {
+                if (button.dataset.calcType === calcType) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        // Add click event to buttons
+        calcButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const calcType = this.dataset.calcType;
+                showCalculator(calcType);
+            });
+        });
+
+        // Sayfa yüklendiğinde varsayılan olarak ilk hesaplayıcıyı göster
+        showCalculator('calculateMolarity');
+
+        // --- Molarite Hesaplama Formu ---
+        const molarityForm = document.getElementById('molarityForm');
+        const molarityResultDiv = document.getElementById('molarityResult');
+
+        molarityForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const soluteMass = parseFloat(document.getElementById('soluteMass').value);
+            const molarMass = parseFloat(document.getElementById('molarMass').value);
+            const solutionVolume = parseFloat(document.getElementById('solutionVolume').value);
+
+            if (isNaN(soluteMass) || isNaN(molarMass) || isNaN(solutionVolume) ||
+                soluteMass < 0 || molarMass <= 0 || solutionVolume <= 0) {
+                molarityResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                molarityResultDiv.style.display = 'block';
+                return;
+            }
+
+            // Mol sayısı = Kütle / Mol Kütlesi
+            const moles = soluteMass / molarMass;
+            // Molarite = Mol sayısı / Çözelti Hacmi (Litre)
+            const molarity = moles / solutionVolume;
+
+            molarityResultDiv.innerHTML = `
+                <p>${currentTexts.molarityResultLabel} <span class="result-value">${molarity.toFixed(4)}</span> ${currentTexts.unit_M}</p>
+            `;
+            molarityResultDiv.style.display = 'block';
+        });
+
+        // --- Hedef Molaritede Çözelti Hazırlama Formu (Seyreltme) ---
+        const dilutionForm = document.getElementById('dilutionForm');
+        const dilutionResultDiv = document.getElementById('dilutionResult');
+
+        dilutionForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const targetMolarity_mM = parseFloat(document.getElementById('targetMolarity_mM').value);
+            const targetVolume_mL = parseFloat(document.getElementById('targetVolume_mL').value);
+            const concPurity = parseFloat(document.getElementById('concPurity').value); // % w/w
+            const concDensity = parseFloat(document.getElementById('concDensity').value); // g/mL
+
+            // Asetik Asit için mol kütlesi (CH3COOH)
+            // Bu değer HTML'in açıklama kısmında da belirtilmiştir, sabit olarak kullanılabilir.
+            const ACETIC_ACID_MOLAR_MASS = 60.052; // g/mol
+
+            if (isNaN(targetMolarity_mM) || isNaN(targetVolume_mL) || isNaN(concPurity) || isNaN(concDensity) ||
+                targetMolarity_mM <= 0 || targetVolume_mL <= 0 || concPurity <= 0 || concPurity > 100 || concDensity <= 0) {
+                dilutionResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                dilutionResultDiv.style.display = 'block';
+                return;
+            }
+
+            // 1. Hedef molariteyi M'e çevir (mM -> M)
+            const targetMolarity_M = targetMolarity_mM / 1000;
+            // 2. Hedef hacmi L'ye çevir (mL -> L)
+            const targetVolume_L = targetVolume_mL / 1000;
+
+            // Gerekli mol = Hedef Molarite (M) * Hedef Hacim (L)
+            const requiredMoles = targetMolarity_M * targetVolume_L;
+
+            // Gerekli saf madde kütlesi (gram) = Gerekli Mol * Mol Kütlesi (g/mol)
+            const requiredPureSoluteMass_g = requiredMoles * ACETIC_ACID_MOLAR_MASS;
+
+            // Gerekli konsantre çözelti kütlesi (gram) = Gerekli Saf Madde Kütlesi / (Saflık Yüzdesi / 100)
+            const requiredConcSolutionMass_g = requiredPureSoluteMass_g / (concPurity / 100);
+
+            // Gerekli konsantre çözelti hacmi (mL) = Gerekli Konsantre Çözelti Kütlesi (g) / Konsantre Çözelti Yoğunluğu (g/mL)
+            const requiredConcSolutionVolume_mL = requiredConcSolutionMass_g / concDensity;
+
+            dilutionResultDiv.innerHTML = `
+                <p>${currentTexts.requiredMassOfSolute} <span class="result-value">${requiredPureSoluteMass_g.toFixed(4)}</span> ${currentTexts.unit_g}</p>
+                <p>${currentTexts.requiredVolumeOfConcAcid} <span class="result-value">${requiredConcSolutionVolume_mL.toFixed(4)}</span> ${currentTexts.unit_mL}</p>
+            `;
+            dilutionResultDiv.style.display = 'block';
+        });
+    });
+</script>
 </body>
 </html>

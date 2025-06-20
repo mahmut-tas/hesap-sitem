@@ -607,5 +607,157 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Eğilme Gerilmesini Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                errorZeroMomentOfInertia: 'Atalet momenti sıfır olamaz.',
+                resultPrefix: 'Eğilme Gerilmesi:',
+                // Birimler
+                unit_Nm: 'Newton-metre (N m)',
+                unit_kNm: 'Kilonewton-metre (kN m)',
+                unit_lbf_ft: 'Pound-force-feet (lbf ft)',
+                unit_lbf_in: 'Pound-force-inch (lbf in)',
+                unit_m: 'metre (m)',
+                unit_mm: 'milimetre (mm)',
+                unit_cm: 'santimetre (cm)',
+                unit_in: 'inç',
+                unit_m4: 'metre üzeri 4 (m⁴)',
+                unit_mm4: 'milimetre üzeri 4 (mm⁴)',
+                unit_cm4: 'santimetre üzeri 4 (cm⁴)',
+                unit_in4: 'inç üzeri 4 (in⁴)',
+                unit_Pa: 'Pascal (Pa)',
+                unit_MPa: 'Megapascal (MPa)',
+                unit_psi: 'psi (pound per square inch)'
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate Bending Stress',
+                invalidInput: 'Please enter valid positive numbers for all fields.',
+                errorZeroMomentOfInertia: 'Moment of inertia cannot be zero.',
+                resultPrefix: 'Bending Stress:',
+                // Units
+                unit_Nm: 'Newton-meter (N m)',
+                unit_kNm: 'Kilonewton-meter (kN m)',
+                unit_lbf_ft: 'Pound-force-feet (lbf ft)',
+                unit_lbf_in: 'Pound-force-inch (lbf in)',
+                unit_m: 'meter (m)',
+                unit_mm: 'millimeter (mm)',
+                unit_cm: 'centimeter (cm)',
+                unit_in: 'inch',
+                unit_m4: 'meter to the 4th (m⁴)',
+                unit_mm4: 'millimeter to the 4th (mm⁴)',
+                unit_cm4: 'centimeter to the 4th (cm⁴)',
+                unit_in4: 'inch to the 4th (in⁴)',
+                unit_Pa: 'Pascal (Pa)',
+                unit_MPa: 'Megapascal (MPa)',
+                unit_psi: 'psi (pound per square inch)'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // --- Helper Functions ---
+        // Basınç dönüştürme faktörleri (Pa'ya)
+        const PRESSURE_TO_PA = {
+            'Pa': 1,
+            'MPa': 1e6,
+            'kPa': 1e3,
+            'psi': 6894.76
+        };
+
+        // Kuvvet dönüştürme faktörleri (N'ye)
+        const FORCE_TO_N = {
+            'N': 1,
+            'kN': 1000,
+            'lbf': 4.44822
+        };
+
+        // Uzunluk dönüştürme faktörleri (m'ye)
+        const LENGTH_TO_M = {
+            'm': 1,
+            'mm': 0.001,
+            'cm': 0.01,
+            'in': 0.0254,
+            'ft': 0.3048
+        };
+
+        // Alan Atalet Momenti dönüştürme faktörleri (m⁴'e)
+        const MOMENT_OF_INERTIA_TO_M4 = {
+            'm4': 1,
+            'mm4': 1e-12, // (0.001)^4
+            'cm4': 1e-8,  // (0.01)^4
+            'in4': 4.16231e-7 // (0.0254)^4
+        };
+
+        // Tork/Moment dönüştürme faktörleri (N m'ye)
+        const MOMENT_TO_NM = {
+            'Nm': 1,
+            'kNm': 1000,
+            'lbf-ft': 1.35582, // 1 lbf·ft = 1.35582 N·m
+            'lbf-in': 0.112985 // 1 lbf·in = 0.112985 N·m
+        };
+
+        // --- DOM Elements ---
+        const bendingStressForm = document.getElementById('bendingStressForm');
+        const bendingStressResultDiv = document.getElementById('bendingStressResult');
+
+        // --- Main Form Submission ---
+        bendingStressForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get values
+            const bendingMoment = parseFloat(document.getElementById('bendingMoment').value);
+            const distanceToNeutralAxis = parseFloat(document.getElementById('distanceToNeutralAxis').value);
+            const momentOfInertia = parseFloat(document.getElementById('momentOfInertia').value);
+
+            // Get units
+            const bendingMomentUnit = document.getElementById('bendingMomentUnit').value;
+            const distanceToNeutralAxisUnit = document.getElementById('distanceToNeutralAxisUnit').value;
+            const momentOfInertiaUnit = document.getElementById('momentOfInertiaUnit').value;
+
+            // --- Input Validation ---
+            if (isNaN(bendingMoment) || isNaN(distanceToNeutralAxis) || isNaN(momentOfInertia) ||
+                bendingMoment <= 0 || distanceToNeutralAxis <= 0 || momentOfInertia <= 0) {
+                bendingStressResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                bendingStressResultDiv.style.display = 'block';
+                return;
+            }
+            // Özel durum: Atalet momenti sıfır olamaz (bölme hatası)
+            if (momentOfInertia === 0) {
+                bendingStressResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroMomentOfInertia}</p>`;
+                bendingStressResultDiv.style.display = 'block';
+                return;
+            }
+
+            // --- Convert to Base SI Units (N·m, m, m⁴) ---
+            const M_Nm = bendingMoment * MOMENT_TO_NM[bendingMomentUnit];
+            const y_m = distanceToNeutralAxis * LENGTH_TO_M[distanceToNeutralAxisUnit];
+            const I_m4 = momentOfInertia * MOMENT_OF_INERTIA_TO_M4[momentOfInertiaUnit];
+
+            // --- Calculate Bending Stress (Pa) ---
+            const bendingStress_Pa = (M_Nm * y_m) / I_m4;
+
+            // --- Display Results in common units ---
+            const bendingStress_MPa = bendingStress_Pa / 1e6; // 1 MPa = 10^6 Pa
+            const bendingStress_psi = bendingStress_Pa * PRESSURE_TO_PA['psi']; // Convert Pa to psi
+
+            bendingStressResultDiv.innerHTML = `
+                <p>${currentTexts.resultPrefix} <span class="result-value">${bendingStress_Pa.toExponential(3)}</span> ${currentTexts.unit_Pa}</p>
+                <p>${currentTexts.resultPrefix} <span class="result-value">${bendingStress_MPa.toFixed(3)}</span> ${currentTexts.unit_MPa}</p>
+                <p>${currentTexts.resultPrefix} <span class="result-value">${bendingStress_psi.toFixed(3)}</span> ${currentTexts.unit_psi}</p>
+            `;
+            bendingStressResultDiv.style.display = 'block';
+        });
+    });
+</script>
 </body>
 </html>

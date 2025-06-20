@@ -648,5 +648,407 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+    const texts = {
+        tr: {
+            mainTitle: 'Kapsamlı Yüzde Hesaplayıcı',
+            mainDescription: 'İhtiyacınız olan tüm yüzde hesaplamalarını hızlı ve kolayca yapın: İndirim, KDV, Zam, Oran ve Orijinal Değer Bulma.',
+            selectCalcType: 'Yapmak İstediğiniz Hesaplama Türünü Seçin',
+            // Button Texts
+            btnIncrease: 'A Sayısını %B Artır (Zam/KDV Dahil)',
+            btnDecrease: 'A Sayısını %B Azalt (İndirim/KDV Hariç)',
+            btnWhatPercent: 'A Sayısı, B Sayısının Yüzde Kaçıdır?',
+            btnValueFromPercent: 'A Sayısının %B\'si Kaçtır?',
+            btnOriginalValue: 'A Sayısı %C\'si İse, Bütün Sayı B Kaçtır?',
+            btnPercentChange: 'Yüzde Artış/Azalış (Değişim Oranı)',
+            // Common
+            resultTitle: 'Sonuç:',
+            invalidInput: 'Lütfen geçerli sayılar girin.',
+            // Increase
+            increaseTitle: 'Yüzde Artırma Hesaplayıcı (Zam ve KDV Dahil Hesaplama)',
+            increaseValueALabel: 'Başlangıç Sayısı (A):',
+            increaseValueAPlaceholder: 'Örn: 100 (Ürünün fiyatı)',
+            increaseValueBLabel: 'Yüzde Oranı (%B):',
+            increaseValueBPlaceholder: 'Örn: 20 (Zam veya KDV oranı)',
+            increaseFormula: 'Yeni Değer = Sayı A + (Sayı A * %B / 100) veya A * (1 + %B / 100)',
+            increaseExplanation: 'Bu hesaplayıcı, verilen bir sayıyı belirli bir yüzde kadar artırılması durumunda yeni değerin ne olacağını bulur. Bu, özellikle ürün zamlarında veya KDV dahil fiyat hesaplamalarında kullanışlıdır.',
+            // Decrease
+            decreaseTitle: 'Yüzde Azaltma Hesaplayıcı (İndirim ve KDV Hariç Hesaplama)',
+            decreaseValueALabel: 'Başlangıç Sayısı (A):',
+            decreaseValueAPlaceholder: 'Örn: 150 (Ürünün fiyatı)',
+            decreaseValueBLabel: 'Yüzde Oranı (%B):',
+            decreaseValueBPlaceholder: 'Örn: 10 (İndirim veya KDV oranı)',
+            decreaseFormula: 'Yeni Değer = Sayı A - (Sayı A * %B / 100) veya A * (1 - %B / 100)',
+            decreaseExplanation: 'Bu hesaplayıcı, bir sayıyı başlangıçta verdiğiniz belirli bir yüzde kadar azaltılması durumunda kalan değeri hesaplar. İndirimli fiyatları bulmak veya bir fiyattan KDV\'yi çıkarmak için kullanışlıdır.',
+            // What Percent
+            whatPercentTitle: 'Yüzde Kaçı Hesaplayıcı (Oran Bulma)',
+            whatPercentValueALabel: 'Küçük Sayı (A):',
+            whatPercentValueAPlaceholder: 'Örn: 20 (Parça değeri)',
+            whatPercentValueBLabel: 'Büyük Sayı (B):',
+            whatPercentValueBPlaceholder: 'Örn: 80 (Toplam değer)',
+            whatPercentFormula: 'Yüzde = (Sayı A / Sayı B) * 100',
+            whatPercentExplanation: 'Bu hesaplayıcı, bir sayının (A) başka bir sayıya (B) oranının yüzde olarak ifadesini verir. Not ortalaması, başarı oranı veya herhangi bir oransal ilişkiyi yüzde olarak ifade etmek için harikadır.',
+            whatPercentDivideByZero: 'Büyük sayı sıfır olamaz.',
+            // Value From Percent
+            valueFromPercentTitle: 'Bir Sayının Yüzdesini Bulma (Belirli Yüzdelik Değer)',
+            valueFromPercentValueALabel: 'Ana Sayı (A):',
+            valueFromPercentValueAPlaceholder: 'Örn: 200 (Genel miktar)',
+            valueFromPercentValueBLabel: 'Yüzde Oranı (%B):',
+            valueFromPercentValueBPlaceholder: 'Örn: 15 (Bulunmak istenen yüzde)',
+            valueFromPercentFormula: 'Parça Değer = Sayı A * (%B / 100)',
+            valueFromPercentExplanation: 'Bu hesaplayıcı, verilen bir sayının belirli bir yüzdelik dilimine karşılık gelen değeri bulur. Bir ürünün indirim miktarını, ödenecek komisyonu veya bir bütünün belirli bir kısmını bulmak için kullanışlıdır.',
+            // Original Value
+            originalValueTitle: 'Orijinal Değer Hesaplayıcı (KDV Hariç / İndirim Öncesi Fiyat)',
+            originalValueValueALabel: 'Parça Değer (A):',
+            originalValueValueAPlaceholder: 'Örn: 30 (Parçayı temsil eden sayı)',
+            originalValueValueBLabel: 'Yüzde Oranı (%C):',
+            originalValueValueBPlaceholder: 'Örn: 20 (Parçanın temsil ettiği yüzde)',
+            originalValueFormula: 'Bütün Sayı = Sayı A / (%C / 100)',
+            originalValueExplanation: 'Bu hesaplayıcı, bir parçanın (A) ve bu parçanın temsil ettiği yüzdelik oranın (C) bilindiği durumlarda orijinal bütünün (B) değerini bulur. Örneğin, KDV dahil bir fiyattan KDV hariç fiyatı veya indirim sonrası bir fiyattan orijinal fiyatı bulmak için kullanılır.',
+            originalValueDivideByZero: 'Yüzde oranı sıfır olamaz.',
+            // Percent Change
+            percentChangeTitle: 'Yüzde Artış/Azalış Hesaplayıcı (Değişim Oranı)',
+            percentChangeValueStartLabel: 'Başlangıç Değeri:',
+            percentChangeValueStartPlaceholder: 'Örn: 100 (Eski değer)',
+            percentChangeValueEndLabel: 'Bitiş Değeri:',
+            percentChangeValueEndPlaceholder: 'Örn: 120 (Yeni değer)',
+            percentChangeFormula: 'Yüzde Değişim = ((Bitiş Değeri - Başlangıç Değeri) / Başlangıç Değeri) * 100',
+            percentChangeExplanation: 'Bu hesaplayıcı, iki sayı arasındaki yüzde değişimi (artış veya azalış) bulur. Negatif sonuç azalışı, pozitif sonuç artışı gösterir. Bir hisse senedinin fiyatının ne kadar arttığını veya bir ürünün fiyatının ne kadar düştüğünü hesaplamak için kullanışlıdır.',
+            percentChangeDivideByZero: 'Başlangıç değeri sıfır olamaz.',
+            percentChangeIncrease: '% artış',
+            percentChangeDecrease: '% azalış'
+        },
+        en: {
+            mainTitle: 'Comprehensive Percentage Calculator',
+            mainDescription: 'Perform all the percentage calculations you need quickly and easily: Discount, VAT, Markup, Rate and Original Value Finding.',
+            selectCalcType: 'Select the Type of Calculation You Want to Perform',
+            // Button Texts
+            btnIncrease: 'Increase A Number by %B (Including Increase/VAT)',
+            btnDecrease: 'Reduce A Number by %B (Discount/VAT Excluded)',
+            btnWhatPercent: 'What Percentage of Number A is B?',
+            btnValueFromPercent: 'What is B% of A?',
+            btnOriginalValue: 'If A is %C of B, What is B?',
+            btnPercentChange: 'Percentage Increase/Decrease (Rate of Change)',
+            // Common
+            resultTitle: 'Result:',
+            invalidInput: 'Please enter valid numbers.',
+            // Increase
+            increaseTitle: 'Percentage Increase Calculator (Calculation Including Increase and VAT)',
+            increaseValueALabel: 'Starting Number (A):',
+            increaseValueAPlaceholder: 'e.g.: 100 (Product price)',
+            increaseValueBLabel: 'Percentage Rate (%B):',
+            increaseValueBPlaceholder: 'e.g.: 20 (Markup or VAT rate)',
+            increaseFormula: 'New Value = Number A + (Number A * %B / 100) OR A * (1 + %B / 100)',
+            increaseExplanation: 'This calculator calculates the new value by increasing a given number by a certain percentage. This is useful, for example, when the price of an item has increased or you are wondering what the VAT will be after it is added.',
+            // Decrease
+            decreaseTitle: 'Percentage Reduction Calculator (Calculation Excluding Discount and VAT)',
+            decreaseValueALabel: 'Starting Number (A):',
+            decreaseValueAPlaceholder: 'e.g.: 150 (Product price)',
+            decreaseValueBLabel: 'Percentage Rate (%B):',
+            decreaseValueBPlaceholder: 'e.g.: 10 (Discount or VAT rate)',
+            decreaseFormula: 'New Value = Number A - (Number A * %B / 100) OR A * (1 - %B / 100)',
+            decreaseExplanation: 'This calculator calculates the remaining value by reducing a number you initially provide by a certain percentage. Useful for calculating discounted prices or subtracting VAT from a price.',
+            // What Percent
+            whatPercentTitle: 'What Percentage Calculator (Finding Ratio)',
+            whatPercentValueALabel: 'Small Number (A):',
+            whatPercentValueAPlaceholder: 'e.g.: 20 (Part value)',
+            whatPercentValueBLabel: 'Big Number (B):',
+            whatPercentValueBPlaceholder: 'e.g.: 80 (Total value)',
+            whatPercentFormula: 'Percentage = (Number A / Number B) * 100',
+            whatPercentExplanation: 'This calculator finds what percentage one number (A) is of another number (B). Great for expressing GPA, success rate, or any proportional relationship as a percentage.',
+            whatPercentDivideByZero: 'The big number cannot be zero.',
+            // Value From Percent
+            valueFromPercentTitle: 'Finding Percentage of a Number (Specific Percentage Value)',
+            valueFromPercentValueALabel: 'Main Number (A):',
+            valueFromPercentValueAPlaceholder: 'e.g.: 200 (General amount)',
+            valueFromPercentValueBLabel: 'Percentage Rate (%B):',
+            valueFromPercentValueBPlaceholder: 'e.g.: 15 (Percentage to find)',
+            valueFromPercentFormula: 'Part Value = Number A * (%B / 100)',
+            valueFromPercentExplanation: 'This calculator finds the value that corresponds to a certain percentile of a given number. Useful for finding the discount amount of a product, the commission to be paid, or a certain fraction of a whole.',
+            // Original Value
+            originalValueTitle: 'Original Value Calculator (Price Excluding VAT/Before Discount)',
+            originalValueValueALabel: 'Part Value (A):',
+            originalValueValueAPlaceholder: 'e.g.: 30 (Number representing the part)',
+            originalValueValueBLabel: 'Percentage Rate (%C):',
+            originalValueValueBPlaceholder: 'e.g.: 20 (Percentage represented by the part)',
+            originalValueFormula: 'Whole Number = Number A / (%C / 100)',
+            originalValueExplanation: 'This calculator finds the value of the original whole (B) when a part (A) and the percentage it represents (C) are known. For example, it is used to find the price excluding VAT from a price including VAT, or the original price from a price after discount.',
+            originalValueDivideByZero: 'The percentage rate cannot be zero.',
+            // Percent Change
+            percentChangeTitle: 'Percentage Increase/Decrease Calculator (Rate of Change)',
+            percentChangeValueStartLabel: 'Starting Value:',
+            percentChangeValueStartPlaceholder: 'e.g.: 100 (Old value)',
+            percentChangeValueEndLabel: 'End Value:',
+            percentChangeValueEndPlaceholder: 'e.g.: 120 (New value)',
+            percentChangeFormula: 'Percentage Change = ((Ending Value - Starting Value) / Starting Value) * 100',
+            percentChangeExplanation: 'This calculator finds the percentage change (increase or decrease) between two numbers. A negative result indicates a decrease, a positive result indicates an increase. It\'s useful for calculating how much the price of a stock has increased or how much the price of a product has decreased.',
+            percentChangeDivideByZero: 'Starting value cannot be zero.',
+            percentChangeIncrease: '% increase',
+            percentChangeDecrease: '% decrease'
+        }
+    };
+
+    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+    // --- DOM Elements ---
+    const calcButtons = document.querySelectorAll('.calc-type-button');
+    const calcWrappers = document.querySelectorAll('.percent-calculator-wrapper');
+    const mainTitleElement = document.querySelector('.hero-section h1');
+    const mainDescriptionElement = document.querySelector('.hero-section p');
+    const selectCalcTypeElement = document.querySelector('.calculator-selection-section h2');
+    const explanationSectionTitle1 = document.querySelector('.explanation-section:nth-of-type(1) h3');
+    const explanationSectionTitle2 = document.querySelector('.explanation-section:nth-of-type(2) h3');
+    const explanationSectionP1 = document.querySelector('.explanation-section:nth-of-type(1) p:nth-of-type(1)');
+    const explanationSectionP2 = document.querySelector('.explanation-section:nth-of-type(2) p:nth-of-type(1)');
+    const explanationSectionList1 = document.querySelector('.explanation-section:nth-of-type(1) ul');
+    const explanationSectionList2 = document.querySelector('.explanation-section:nth-of-type(2) ul');
+
+
+    // Update static header texts
+    if (mainTitleElement) mainTitleElement.textContent = currentTexts.mainTitle;
+    if (mainDescriptionElement) mainDescriptionElement.textContent = currentTexts.mainDescription;
+    if (selectCalcTypeElement) selectCalcTypeElement.textContent = currentTexts.selectCalcType;
+
+    // Update button texts
+    calcButtons.forEach(button => {
+        const type = button.dataset.calcType;
+        if (type === 'increase') button.textContent = currentTexts.btnIncrease;
+        else if (type === 'decrease') button.textContent = currentTexts.btnDecrease;
+        else if (type === 'whatPercent') button.textContent = currentTexts.btnWhatPercent;
+        else if (type === 'valueFromPercent') button.textContent = currentTexts.btnValueFromPercent;
+        else if (type === 'originalValue') button.textContent = currentTexts.btnOriginalValue;
+        else if (type === 'percentChange') button.textContent = currentTexts.btnPercentChange;
+    });
+
+    // Update main explanation section content
+    if (explanationSectionTitle1) explanationSectionTitle1.textContent = isEnglishPage ? 'What is the Use of a Percentage Calculator?' : 'Yüzde Hesaplayıcı Ne İşe Yarar?';
+    if (explanationSectionP1) explanationSectionP1.innerHTML = isEnglishPage ? 
+        `Our <strong>Percentage Calculator</strong> allows you to perform various percentage-based calculations that are frequently encountered in daily life and business quickly and accurately. Whether you want to find the <strong>discounted price</strong> of a product, find a certain percentage of a number or calculate <strong>prices including/excluding VAT</strong>, this tool saves you time and simplifies complex calculations. It is especially ideal for your needs such as <strong>calculating discounts online</strong> or <strong>finding markup rates</strong>.` :
+        `Our <strong>Percentage Calculator</strong> allows you to perform various percentage-based calculations that are frequently encountered in daily life and business quickly and accurately. Whether you want to find the <strong>discounted price</strong> of a product, find a certain percentage of a number or calculate <strong>prices including/excluding VAT</strong>, this tool saves you time and simplifies complex calculations. It is especially ideal for your needs such as <strong>calculating discounts online</strong> or <strong>finding markup rates</strong>.`;
+
+    if (explanationSectionList1) {
+        // Assuming list items are direct children and in a specific order
+        const listItems = explanationSectionList1.querySelectorAll('li');
+        if (listItems.length >= 5) {
+            listItems[0].querySelector('strong').textContent = isEnglishPage ? 'Financial Calculations:' : 'Finansal Hesaplamalar:';
+            listItems[0].innerHTML = `<strong>${isEnglishPage ? 'Financial Calculations:' : 'Finansal Hesaplamalar:'}</strong> ${isEnglishPage ? 'Financial analysis such as interest rates, investment returns, stock changes and <strong>compound interest calculation</strong>.' : 'Faiz oranları, yatırım getirileri, hisse senedi değişimleri ve <strong>bileşik faiz hesaplama</strong> gibi finansal analizler.'}`;
+            listItems[1].querySelector('strong').textContent = isEnglishPage ? 'Shopping and Discounts:' : 'Alışveriş ve İndirimler:';
+            listItems[1].innerHTML = `<strong>${isEnglishPage ? 'Shopping and Discounts:' : 'Alışveriş ve İndirimler:'}</strong> ${isEnglishPage ? 'Instant discounted prices, <strong>VAT rates</strong>, price increases and <strong>net price calculations</strong>.' : 'Anında indirimli fiyatlar, <strong>KDV oranları</strong>, fiyat artışları ve <strong>net fiyat hesaplamaları</strong>.'}`;
+            listItems[2].querySelector('strong').textContent = isEnglishPage ? 'Education:' : 'Eğitim:';
+            listItems[2].innerHTML = `<strong>${isEnglishPage ? 'Education:' : 'Eğitim:'}</strong> ${isEnglishPage ? 'Understanding percentiles of exam grades, interpreting statistical data and learning <strong>data analysis</strong>.' : 'Sınav notlarının yüzdeliklerini anlama, istatistiksel verileri yorumlama ve <strong>veri analizi</strong> öğrenme.'}`;
+            listItems[3].querySelector('strong').textContent = isEnglishPage ? 'Business:' : 'İşletme:';
+            listItems[3].innerHTML = `<strong>${isEnglishPage ? 'Business:' : 'İşletme:'}</strong> ${isEnglishPage ? 'Profit margins, growth rates, commission calculations, <strong>budget planning</strong> and cost analysis.' : 'Kar marjları, büyüme oranları, komisyon hesaplamaları, <strong>bütçe planlaması</strong> ve maliyet analizi.'}`;
+            listItems[4].querySelector('strong').textContent = isEnglishPage ? 'Daily Life:' : 'Günlük Hayat:';
+            listItems[4].innerHTML = `<strong>${isEnglishPage ? 'Daily Life:' : 'Günlük Hayat:'}</strong> ${isEnglishPage ? 'Adjusting ingredient ratios in recipes, calculating tips, and solving general <strong>mathematical problems</strong>.' : 'Yemek tariflerindeki malzeme oranlarını ayarlama, bahşiş hesaplama ve genel <strong>matematiksel problemler</strong> çözme.'}`;
+        }
+    }
+
+    if (explanationSectionTitle2) explanationSectionTitle2.textContent = isEnglishPage ? 'How to Calculate? Percentage Calculation Formulas and Examples' : 'Nasıl Hesaplanır? Yüzde Hesaplama Formülleri ve Örnekleri';
+    if (explanationSectionP2) explanationSectionP2.innerHTML = isEnglishPage ? 
+        `Percentage calculations are based on basic mathematical formulas. The logic behind each option in our calculator is explained below. With these formulas, you can easily understand the answer to the question <strong>how to find percentage</strong>:` :
+        `Yüzde hesaplamaları temel matematiksel formüllere dayanır. Hesaplayıcımızdaki her bir seçeneğin arkasındaki mantık aşağıda açıklanmıştır. Bu formüllerle, <strong>yüzde nasıl bulunur</strong> sorusunun cevabını kolayca anlayabilirsiniz:`;
+
+
+    // Function to toggle calculator forms and update content
+    function showCalculator(type) {
+        calcWrappers.forEach(wrapper => {
+            wrapper.classList.add('hidden-calc');
+        });
+        document.getElementById(`calculator-${type}`).classList.remove('hidden-calc');
+
+        calcButtons.forEach(button => {
+            if (button.dataset.calcType === type) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        });
+    }
+
+    // Attach click listeners to buttons for switching calculators
+    calcButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            showCalculator(button.dataset.calcType);
+        });
+    });
+
+    // Show the first calculator by default on page load
+    showCalculator('increase'); // Default to 'increase' type
+
+    // --- Calculator Logic for Each Type ---
+
+    // Type: Increase (A number by %B)
+    const increaseValueA = document.getElementById('increase-valueA');
+    const increaseValueB = document.getElementById('increase-valueB');
+    const increaseResult = document.getElementById('increase-result');
+    increaseValueA.placeholder = currentTexts.increaseValueAPlaceholder;
+    increaseValueB.placeholder = currentTexts.increaseValueBPlaceholder;
+    document.querySelector('#calculator-increase h3').textContent = currentTexts.increaseTitle;
+    document.querySelector('#calculator-increase label[for="increase-valueA"]').textContent = currentTexts.increaseValueALabel;
+    document.querySelector('#calculator-increase label[for="increase-valueB"]').textContent = currentTexts.increaseValueBLabel;
+    document.querySelector('#calculator-increase .calc-explanation p:nth-of-type(1)').textContent = currentTexts.increaseExplanation;
+    document.querySelector('#calculator-increase .calc-explanation strong').textContent = currentTexts.resultTitle;
+    document.querySelector('#calculator-increase .calc-explanation p:nth-of-type(2)').textContent = currentTexts.increaseFormula;
+
+    function calculateIncrease() {
+        let a = parseFloat(increaseValueA.value);
+        let b = parseFloat(increaseValueB.value);
+        if (isNaN(a) || isNaN(b)) {
+            increaseResult.textContent = currentTexts.invalidInput;
+            return;
+        }
+        let result = a * (1 + b / 100);
+        increaseResult.textContent = `${currentTexts.resultTitle} ${result.toFixed(2)}`;
+    }
+    increaseValueA.addEventListener('input', calculateIncrease);
+    increaseValueB.addEventListener('input', calculateIncrease);
+
+    // Type: Decrease (A number by %B)
+    const decreaseValueA = document.getElementById('decrease-valueA');
+    const decreaseValueB = document.getElementById('decrease-valueB');
+    const decreaseResult = document.getElementById('decrease-result');
+    decreaseValueA.placeholder = currentTexts.decreaseValueAPlaceholder;
+    decreaseValueB.placeholder = currentTexts.decreaseValueBPlaceholder;
+    document.querySelector('#calculator-decrease h3').textContent = currentTexts.decreaseTitle;
+    document.querySelector('#calculator-decrease label[for="decrease-valueA"]').textContent = currentTexts.decreaseValueALabel;
+    document.querySelector('#calculator-decrease label[for="decrease-valueB"]').textContent = currentTexts.decreaseValueBLabel;
+    document.querySelector('#calculator-decrease .calc-explanation p:nth-of-type(1)').textContent = currentTexts.decreaseExplanation;
+    document.querySelector('#calculator-decrease .calc-explanation strong').textContent = currentTexts.resultTitle;
+    document.querySelector('#calculator-decrease .calc-explanation p:nth-of-type(2)').textContent = currentTexts.decreaseFormula;
+
+    function calculateDecrease() {
+        let a = parseFloat(decreaseValueA.value);
+        let b = parseFloat(decreaseValueB.value);
+        if (isNaN(a) || isNaN(b)) {
+            decreaseResult.textContent = currentTexts.invalidInput;
+            return;
+        }
+        let result = a * (1 - b / 100);
+        decreaseResult.textContent = `${currentTexts.resultTitle} ${result.toFixed(2)}`;
+    }
+    decreaseValueA.addEventListener('input', calculateDecrease);
+    decreaseValueB.addEventListener('input', calculateDecrease);
+
+    // Type: What Percent (A is % of B)
+    const whatPercentValueA = document.getElementById('whatPercent-valueA');
+    const whatPercentValueB = document.getElementById('whatPercent-valueB');
+    const whatPercentResult = document.getElementById('whatPercent-result');
+    whatPercentValueA.placeholder = currentTexts.whatPercentValueAPlaceholder;
+    whatPercentValueB.placeholder = currentTexts.whatPercentValueBPlaceholder;
+    document.querySelector('#calculator-whatPercent h3').textContent = currentTexts.whatPercentTitle;
+    document.querySelector('#calculator-whatPercent label[for="whatPercent-valueA"]').textContent = currentTexts.whatPercentValueALabel;
+    document.querySelector('#calculator-whatPercent label[for="whatPercent-valueB"]').textContent = currentTexts.whatPercentValueBLabel;
+    document.querySelector('#calculator-whatPercent .calc-explanation p:nth-of-type(1)').textContent = currentTexts.whatPercentExplanation;
+    document.querySelector('#calculator-whatPercent .calc-explanation strong').textContent = currentTexts.resultTitle;
+    document.querySelector('#calculator-whatPercent .calc-explanation p:nth-of-type(2)').textContent = currentTexts.whatPercentFormula;
+
+    function calculateWhatPercent() {
+        let a = parseFloat(whatPercentValueA.value);
+        let b = parseFloat(whatPercentValueB.value);
+        if (isNaN(a) || isNaN(b)) {
+            whatPercentResult.textContent = currentTexts.invalidInput;
+            return;
+        }
+        if (b === 0) {
+            whatPercentResult.textContent = currentTexts.whatPercentDivideByZero;
+            return;
+        }
+        let result = (a / b) * 100;
+        whatPercentResult.textContent = `${currentTexts.resultTitle} %${result.toFixed(2)}`;
+    }
+    whatPercentValueA.addEventListener('input', calculateWhatPercent);
+    whatPercentValueB.addEventListener('input', calculateWhatPercent);
+
+    // Type: Value From Percent (B% of A)
+    const valueFromPercentValueA = document.getElementById('valueFromPercent-valueA');
+    const valueFromPercentValueB = document.getElementById('valueFromPercent-valueB');
+    const valueFromPercentResult = document.getElementById('valueFromPercent-result');
+    valueFromPercentValueA.placeholder = currentTexts.valueFromPercentValueAPlaceholder;
+    valueFromPercentValueB.placeholder = currentTexts.valueFromPercentValueBPlaceholder;
+    document.querySelector('#calculator-valueFromPercent h3').textContent = currentTexts.valueFromPercentTitle;
+    document.querySelector('#calculator-valueFromPercent label[for="valueFromPercent-valueA"]').textContent = currentTexts.valueFromPercentValueALabel;
+    document.querySelector('#calculator-valueFromPercent label[for="valueFromPercent-valueB"]').textContent = currentTexts.valueFromPercentValueBLabel;
+    document.querySelector('#calculator-valueFromPercent .calc-explanation p:nth-of-type(1)').textContent = currentTexts.valueFromPercentExplanation;
+    document.querySelector('#calculator-valueFromPercent .calc-explanation strong').textContent = currentTexts.resultTitle;
+    document.querySelector('#calculator-valueFromPercent .calc-explanation p:nth-of-type(2)').textContent = currentTexts.valueFromPercentFormula;
+
+    function calculateValueFromPercent() {
+        let a = parseFloat(valueFromPercentValueA.value);
+        let b = parseFloat(valueFromPercentValueB.value);
+        if (isNaN(a) || isNaN(b)) {
+            valueFromPercentResult.textContent = currentTexts.invalidInput;
+            return;
+        }
+        let result = a * (b / 100);
+        valueFromPercentResult.textContent = `${currentTexts.resultTitle} ${result.toFixed(2)}`;
+    }
+    valueFromPercentValueA.addEventListener('input', calculateValueFromPercent);
+    valueFromPercentValueB.addEventListener('input', calculateValueFromPercent);
+
+    // Type: Original Value (If A is %C of B, what is B?)
+    const originalValueValueA = document.getElementById('originalValue-valueA');
+    const originalValueValueB = document.getElementById('originalValue-valueB'); // This is %C
+    const originalValueResult = document.getElementById('originalValue-result');
+    originalValueValueA.placeholder = currentTexts.originalValueValueAPlaceholder;
+    originalValueValueB.placeholder = currentTexts.originalValueValueBPlaceholder;
+    document.querySelector('#calculator-originalValue h3').textContent = currentTexts.originalValueTitle;
+    document.querySelector('#calculator-originalValue label[for="originalValue-valueA"]').textContent = currentTexts.originalValueValueALabel;
+    document.querySelector('#calculator-originalValue label[for="originalValue-valueB"]').textContent = currentTexts.originalValueValueBLabel;
+    document.querySelector('#calculator-originalValue .calc-explanation p:nth-of-type(1)').textContent = currentTexts.originalValueExplanation;
+    document.querySelector('#calculator-originalValue .calc-explanation strong').textContent = currentTexts.resultTitle;
+    document.querySelector('#calculator-originalValue .calc-explanation p:nth-of-type(2)').textContent = currentTexts.originalValueFormula;
+
+    function calculateOriginalValue() {
+        let a = parseFloat(originalValueValueA.value);
+        let c = parseFloat(originalValueValueB.value); // %C
+        if (isNaN(a) || isNaN(c)) {
+            originalValueResult.textContent = currentTexts.invalidInput;
+            return;
+        }
+        if (c === 0) {
+            originalValueResult.textContent = currentTexts.originalValueDivideByZero;
+            return;
+        }
+        let result = a / (c / 100);
+        originalValueResult.textContent = `${currentTexts.resultTitle} ${result.toFixed(2)}`;
+    }
+    originalValueValueA.addEventListener('input', calculateOriginalValue);
+    originalValueValueB.addEventListener('input', calculateOriginalValue);
+
+    // Type: Percent Change (Increase/Decrease)
+    const percentChangeValueStart = document.getElementById('percentChange-valueStart');
+    const percentChangeValueEnd = document.getElementById('percentChange-valueEnd');
+    const percentChangeResult = document.getElementById('percentChange-result');
+    percentChangeValueStart.placeholder = currentTexts.percentChangeValueStartPlaceholder;
+    percentChangeValueEnd.placeholder = currentTexts.percentChangeValueEndPlaceholder;
+    document.querySelector('#calculator-percentChange h3').textContent = currentTexts.percentChangeTitle;
+    document.querySelector('#calculator-percentChange label[for="percentChange-valueStart"]').textContent = currentTexts.percentChangeValueStartLabel;
+    document.querySelector('#calculator-percentChange label[for="percentChange-valueEnd"]').textContent = currentTexts.percentChangeValueEndLabel;
+    document.querySelector('#calculator-percentChange .calc-explanation p:nth-of-type(1)').textContent = currentTexts.percentChangeExplanation;
+    document.querySelector('#calculator-percentChange .calc-explanation strong').textContent = currentTexts.resultTitle;
+    document.querySelector('#calculator-percentChange .calc-explanation p:nth-of-type(2)').textContent = currentTexts.percentChangeFormula;
+
+    function calculatePercentChange() {
+        let start = parseFloat(percentChangeValueStart.value);
+        let end = parseFloat(percentChangeValueEnd.value);
+        if (isNaN(start) || isNaN(end)) {
+            percentChangeResult.textContent = currentTexts.invalidInput;
+            return;
+        }
+        if (start === 0) {
+            percentChangeResult.textContent = currentTexts.percentChangeDivideByZero;
+            return;
+        }
+        let change = ((end - start) / start) * 100;
+        let changeText = change >= 0 ? currentTexts.percentChangeIncrease : currentTexts.percentChangeDecrease;
+        percentChangeResult.textContent = `${currentTexts.resultTitle} ${Math.abs(change).toFixed(2)}${changeText}`;
+    }
+    percentChangeValueStart.addEventListener('input', calculatePercentChange);
+    percentChangeValueEnd.addEventListener('input', calculatePercentChange);
+});
+  </script>
  </body>
 </html>

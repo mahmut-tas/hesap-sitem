@@ -238,5 +238,122 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Language detection: Assume English if URL starts with '/en/', otherwise Turkish
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+    // Text strings object for dynamic content
+    const texts = {
+        tr: {
+            calculateButtonText: 'BMI Hesapla',
+            heightLabel: 'Boy (cm):',
+            weightLabel: 'Kilo (kg):',
+            invalidInput: 'Lütfen boy ve kilo için geçerli pozitif sayılar girin.',
+            resultBMI: 'BMI Değeriniz:',
+            categoryWeak: 'Zayıf',
+            categoryNormal: 'Normal Kilo',
+            categoryOverweight: 'Fazla Kilolu',
+            categoryObeseI: 'Obez (Sınıf I)',
+            categoryObeseII: 'Obez (Sınıf II)',
+            categoryObeseIII: 'Aşırı Obez (Sınıf III)',
+            bmiInterpretation: 'Vücut Kitle İndeksi (BMI) değerinize göre ağırlık kategoriniz: ',
+            inputPlaceholderHeight: 'Örn: 175',
+            inputPlaceholderWeight: 'Örn: 70'
+        },
+        en: {
+            calculateButtonText: 'Calculate BMI',
+            heightLabel: 'Height (cm):',
+            weightLabel: 'Weight (kg):',
+            invalidInput: 'Please enter valid positive numbers for height and weight.',
+            resultBMI: 'Your BMI Value:',
+            categoryWeak: 'Underweight',
+            categoryNormal: 'Normal Weight',
+            categoryOverweight: 'Overweight',
+            categoryObeseI: 'Obese (Class I)',
+            categoryObeseII: 'Obese (Class II)',
+            categoryObeseIII: 'Extremely Obese (Class III)',
+            bmiInterpretation: 'Your weight category according to Body Mass Index (BMI): ',
+            inputPlaceholderHeight: 'e.g.: 175',
+            inputPlaceholderWeight: 'e.g.: 70'
+        }
+    };
+
+    // Select active language texts
+    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+    // --- DOM Elements ---
+    const bmiForm = document.getElementById('bmiForm');
+    const bmiHeightInput = document.getElementById('bmi_height');
+    const bmiWeightInput = document.getElementById('bmi_weight');
+    const bmiResultDiv = document.getElementById('bmiResult');
+    const bmiCategoryDiv = document.getElementById('bmiCategory');
+    const calculateButton = bmiForm.querySelector('button[type="submit"]');
+
+    // Update static labels and placeholders on load
+    document.querySelector('label[for="bmi_height"]').textContent = currentTexts.heightLabel;
+    document.querySelector('label[for="bmi_weight"]').textContent = currentTexts.weightLabel;
+    bmiHeightInput.placeholder = currentTexts.inputPlaceholderHeight;
+    bmiWeightInput.placeholder = currentTexts.inputPlaceholderWeight;
+    calculateButton.textContent = currentTexts.calculateButtonText;
+
+    // --- BMI Calculation Function ---
+    function calculateBMI(event) {
+        event.preventDefault(); // Prevent form submission and page reload
+
+        let heightCm = parseFloat(bmiHeightInput.value);
+        let weightKg = parseFloat(bmiWeightInput.value);
+
+        // Clear previous results
+        bmiResultDiv.innerHTML = '';
+        bmiCategoryDiv.innerHTML = '';
+
+        // --- Input Validation ---
+        if (isNaN(heightCm) || isNaN(weightKg) || heightCm <= 0 || weightKg <= 0) {
+            bmiResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            return;
+        }
+
+        // Convert height from cm to meters
+        const heightM = heightCm / 100;
+
+        // Calculate BMI
+        const bmi = weightKg / (heightM * heightM);
+
+        // Display BMI result
+        bmiResultDiv.innerHTML = `<p><strong>${currentTexts.resultBMI}</strong> <span class="result-value">${bmi.toFixed(2)}</span></p>`;
+
+        // Determine BMI category
+        let category = '';
+        let categoryColor = '';
+
+        if (bmi < 18.5) {
+            category = currentTexts.categoryWeak;
+            categoryColor = 'category-underweight';
+        } else if (bmi >= 18.5 && bmi <= 24.9) {
+            category = currentTexts.categoryNormal;
+            categoryColor = 'category-normal';
+        } else if (bmi >= 25.0 && bmi <= 29.9) {
+            category = currentTexts.categoryOverweight;
+            categoryColor = 'category-overweight';
+        } else if (bmi >= 30.0 && bmi <= 34.9) {
+            category = currentTexts.categoryObeseI;
+            categoryColor = 'category-obese-i';
+        } else if (bmi >= 35.0 && bmi <= 39.9) {
+            category = currentTexts.categoryObeseII;
+            categoryColor = 'category-obese-ii';
+        } else { // bmi >= 40.0
+            category = currentTexts.categoryObeseIII;
+            categoryColor = 'category-obese-iii';
+        }
+
+        // Display category
+        bmiCategoryDiv.innerHTML = `<p><strong>${currentTexts.bmiInterpretation}</strong> <span class="result-category ${categoryColor}">${category}</span></p>`;
+    }
+
+    // Add event listener to the form for submission
+    bmiForm.addEventListener('submit', calculateBMI);
+});
+  </script>
 </body>
 </html>

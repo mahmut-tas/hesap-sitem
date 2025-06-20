@@ -38,7 +38,7 @@
 <section class="health-calculators-section">
 <div class="container">
 <h1 class="main-title">
-      Menstrual Cycle Tracking
+      Menstrual & Pregnancy Calculator
      </h1>
 <p class="section-description">
       Predict your next period and ovulation date by entering the first day of your last menstrual period.
@@ -49,7 +49,7 @@
 <i class="fas fa-calendar-alt icon-small">
 </i>
 <h2>
-         Cycle Tracking
+        Menstrual & Pregnancy Calculator
         </h2>
 </div>
 <div class="calculator-form-container">
@@ -71,6 +71,20 @@
 <div class="category-display" id="ovulationResult">
 </div>
 <div class="category-display" id="fertileWindowResult">
+    <hr class="form-divider"/>
+<div class="calculator-header">
+    <i class="fas fa-baby icon-small"></i>
+    <h2>Pregnancy & Baby Calculator</h2>
+</div>
+<p class="small-text">
+    If you are pregnant or planning to conceive, you can get an estimate of your pregnancy week, due date, and baby's zodiac sign based on your Last Menstrual Period (LMP).
+</p>
+<div class="result-display" id="pregnancyWeekResult">
+</div>
+<div class="result-display" id="dueDateResult">
+</div>
+<div class="result-display" id="babyZodiacResult">
+</div>
 </div>
 </div>
 </div>
@@ -191,6 +205,212 @@
             }
         })
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Language detection: Assume English if URL starts with '/en/', otherwise Turkish
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+    // Text strings object for dynamic content
+    const texts = {
+        tr: {
+            // General
+            calculateButtonText: 'Hesapla',
+            invalidInput: 'Lütfen son adet tarihini ve ortalama döngü uzunluğunu girin.',
+            // Cycle Tracking
+            lastPeriodDateLabel: 'Son Adet Döneminizin İlk Günü:',
+            cycleLengthLabel: 'Ortalama Döngü Uzunluğu (Gün):',
+            nextPeriodStart: 'Tahmini Sonraki Adet Başlangıcı:',
+            ovulationDay: 'Tahmini Yumurtlama Günü:',
+            fertileWindow: 'Tahmini Doğurganlık Penceresi:',
+            toText: '-', // For date ranges "Start Date - End Date"
+            // Pregnancy & Baby
+            pregnancyHeader: 'Hamilelik & Bebek Hesaplayıcı',
+            pregnancyIntro: 'Hamileyseniz veya hamile kalmayı planlıyorsanız, Son Adet Tarihinize (SAT) göre tahmini hamilelik haftanızı, doğum tarihinizi ve bebeğinizin burcunu öğrenebilirsiniz.',
+            currentPregnancyWeek: 'Mevcut Hamilelik Haftanız:',
+            estimatedDueDate: 'Tahmini Doğum Tarihi:',
+            babyZodiacSign: 'Bebeğinizin Burcu:',
+            // Zodiac Signs (Order matters for date checking)
+            zodiacSigns: [
+                { name: 'Oğlak', enName: 'Capricorn', startMonth: 0, startDate: 22, endMonth: 1, endDate: 19 }, // Jan 20 - Feb 18
+                { name: 'Kova', enName: 'Aquarius', startMonth: 1, startDate: 20, endMonth: 2, endDate: 19 }, // Feb 19 - Mar 20
+                { name: 'Balık', enName: 'Pisces', startMonth: 2, startDate: 20, endMonth: 3, endDate: 20 }, // Mar 21 - Apr 19
+                { name: 'Koç', enName: 'Aries', startMonth: 3, startDate: 21, endMonth: 4, endDate: 20 }, // Apr 20 - May 20
+                { name: 'Boğa', enName: 'Taurus', startMonth: 4, startDate: 21, endMonth: 5, endDate: 21 }, // May 21 - Jun 20
+                { name: 'İkizler', enName: 'Gemini', startMonth: 5, startDate: 21, endMonth: 6, endDate: 22 }, // Jun 21 - Jul 22
+                { name: 'Yengeç', enName: 'Cancer', startMonth: 6, startDate: 23, endMonth: 7, endDate: 22 }, // Jul 23 - Aug 22
+                { name: 'Aslan', enName: 'Leo', startMonth: 7, startDate: 23, endMonth: 8, endDate: 22 }, // Aug 23 - Sep 22
+                { name: 'Başak', enName: 'Virgo', startMonth: 8, startDate: 23, endMonth: 9, endDate: 22 }, // Sep 23 - Oct 22
+                { name: 'Terazi', enName: 'Libra', startMonth: 9, startDate: 23, endMonth: 10, endDate: 21 }, // Oct 23 - Nov 21
+                { name: 'Akrep', enName: 'Scorpio', startMonth: 10, startDate: 22, endMonth: 11, endDate: 21 }, // Nov 22 - Dec 21
+                { name: 'Yay', enName: 'Sagittarius', startMonth: 11, startDate: 22, endMonth: 0, endDate: 20 } // Dec 22 - Jan 19
+            ]
+        },
+        en: {
+            // General
+            calculateButtonText: 'Calculate',
+            invalidInput: 'Please enter your last period date and average cycle length.',
+            // Cycle Tracking
+            lastPeriodDateLabel: 'First Day of Your Last Menstrual Period:',
+            cycleLengthLabel: 'Average Cycle Length (Days):',
+            nextPeriodStart: 'Estimated Next Period Start:',
+            ovulationDay: 'Estimated Ovulation Day:',
+            fertileWindow: 'Estimated Fertile Window:',
+            toText: 'to',
+            // Pregnancy & Baby
+            pregnancyHeader: 'Pregnancy & Baby Calculator',
+            pregnancyIntro: 'If you are pregnant or planning to conceive, you can get an estimate of your pregnancy week, due date, and baby\'s zodiac sign based on your Last Menstrual Period (LMP).',
+            currentPregnancyWeek: 'Current Pregnancy Week:',
+            estimatedDueDate: 'Estimated Due Date:',
+            babyZodiacSign: 'Baby\'s Zodiac Sign:',
+            // Zodiac Signs (Order matters for date checking)
+            zodiacSigns: [
+                { name: 'Capricorn', enName: 'Capricorn', startMonth: 0, startDate: 22, endMonth: 1, endDate: 19 },
+                { name: 'Aquarius', enName: 'Aquarius', startMonth: 1, startDate: 20, endMonth: 2, endDate: 19 },
+                { name: 'Pisces', enName: 'Pisces', startMonth: 2, startDate: 20, endMonth: 3, endDate: 20 },
+                { name: 'Aries', enName: 'Aries', startMonth: 3, startDate: 21, endMonth: 4, endDate: 20 },
+                { name: 'Taurus', enName: 'Taurus', startMonth: 4, startDate: 21, endMonth: 5, endDate: 21 },
+                { name: 'Gemini', enName: 'Gemini', startMonth: 5, startDate: 21, endMonth: 6, endDate: 22 },
+                { name: 'Cancer', enName: 'Cancer', startMonth: 6, startDate: 23, endMonth: 7, endDate: 22 },
+                { name: 'Leo', enName: 'Leo', startMonth: 7, startDate: 23, endMonth: 8, endDate: 22 },
+                { name: 'Virgo', enName: 'Virgo', startMonth: 8, startDate: 23, endMonth: 9, endDate: 22 },
+                { name: 'Libra', enName: 'Libra', startMonth: 9, startDate: 23, endMonth: 10, endDate: 21 },
+                { name: 'Scorpio', enName: 'Scorpio', startMonth: 10, startDate: 22, endMonth: 11, endDate: 21 },
+                { name: 'Sagittarius', enName: 'Sagittarius', startMonth: 11, startDate: 22, endMonth: 0, endDate: 20 }
+            ]
+        }
+    };
+
+    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+    // --- DOM Elements ---
+    const periodTrackerForm = document.getElementById('periodTrackerForm');
+    const lastPeriodDateInput = document.getElementById('lastPeriodDate');
+    const cycleLengthInput = document.getElementById('cycleLength');
+    const calculateButton = periodTrackerForm.querySelector('button[type="submit"]');
+
+    const periodResultDiv = document.getElementById('periodResult');
+    const ovulationResultDiv = document.getElementById('ovulationResult');
+    const fertileWindowResultDiv = document.getElementById('fertileWindowResult');
+    
+    // New Pregnancy & Baby related elements
+    const pregnancyHeader = document.querySelector('.calculator-group .calculator-card-wrapper .calculator-form-container .calculator-header h2');
+    const pregnancyIntro = document.querySelector('.calculator-group .calculator-card-wrapper .calculator-form-container > p.small-text');
+    const pregnancyWeekResultDiv = document.getElementById('pregnancyWeekResult');
+    const dueDateResultDiv = document.getElementById('dueDateResult');
+    const babyZodiacResultDiv = document.getElementById('babyZodiacResult');
+
+
+    // Update static labels and placeholders on load
+    document.querySelector('label[for="lastPeriodDate"]').textContent = currentTexts.lastPeriodDateLabel;
+    document.querySelector('label[for="cycleLength"]').textContent = currentTexts.cycleLengthLabel;
+    cycleLengthInput.placeholder = isEnglishPage ? 'e.g.: 28' : 'Örn: 28';
+    calculateButton.textContent = currentTexts.calculateButtonText;
+    
+    // Update new pregnancy section texts
+    // Update main header of the calculator card
+    document.querySelector('.calculator-header h2').textContent = isEnglishPage ? 'Menstrual & Pregnancy Calculator' : 'Adet & Hamilelik Hesaplayıcı';
+    
+    document.querySelector('.calculator-form-container .calculator-header:nth-of-type(2) h2').textContent = currentTexts.pregnancyHeader;
+    document.querySelector('.calculator-form-container .calculator-header:nth-of-type(2) + p.small-text').textContent = currentTexts.pregnancyIntro;
+
+
+    // Helper function to format date
+    function formatDate(date) {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return date.toLocaleDateString(isEnglishPage ? 'en-US' : 'tr-TR', options);
+    }
+
+    // Helper function to get Zodiac Sign
+    function getZodiacSign(date) {
+        const day = date.getDate();
+        const month = date.getMonth(); // 0-indexed
+
+        for (let i = 0; i < currentTexts.zodiacSigns.length; i++) {
+            const sign = currentTexts.zodiacSigns[i];
+            
+            // Handle Capricorn which crosses year boundary (Dec-Jan)
+            if (sign.name === 'Oğlak' || sign.enName === 'Capricorn') {
+                if ((month === sign.startMonth && day >= sign.startDate) || (month === sign.endMonth && day <= sign.endDate)) {
+                    return isEnglishPage ? sign.enName : sign.name;
+                }
+            } else {
+                if ((month === sign.startMonth && day >= sign.startDate) || (month === sign.endMonth && day <= sign.endDate)) {
+                    return isEnglishPage ? sign.enName : sign.name;
+                }
+            }
+        }
+        return ''; // Should not happen with complete data
+    }
+
+
+    // --- Calculate Cycle & Pregnancy Function ---
+    function calculateCycleAndPregnancy(event) {
+        event.preventDefault(); // Prevent form submission and page reload
+
+        const lastPeriodDateStr = lastPeriodDateInput.value;
+        const cycleLength = parseInt(cycleLengthInput.value);
+
+        // Clear previous results
+        periodResultDiv.innerHTML = '';
+        ovulationResultDiv.innerHTML = '';
+        fertileWindowResultDiv.innerHTML = '';
+        pregnancyWeekResultDiv.innerHTML = '';
+        dueDateResultDiv.innerHTML = '';
+        babyZodiacResultDiv.innerHTML = '';
+
+        // --- Input Validation ---
+        if (!lastPeriodDateStr || isNaN(cycleLength) || cycleLength < 20 || cycleLength > 45) {
+            periodResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            return;
+        }
+
+        const lastPeriodDate = new Date(lastPeriodDateStr);
+        lastPeriodDate.setHours(0, 0, 0, 0); // Normalize to start of day
+
+        // --- Menstrual Cycle Tracking ---
+        const nextPeriodStart = new Date(lastPeriodDate);
+        nextPeriodStart.setDate(lastPeriodDate.getDate() + cycleLength);
+
+        const ovulationDay = new Date(nextPeriodStart);
+        ovulationDay.setDate(nextPeriodStart.getDate() - 14); // Ovulation typically 14 days before next period
+
+        const fertileWindowStart = new Date(ovulationDay);
+        fertileWindowStart.setDate(ovulationDay.getDate() - 5); // 5 days before ovulation
+
+        const fertileWindowEnd = new Date(ovulationDay);
+        fertileWindowEnd.setDate(ovulationDay.getDate() + 1); // 1 day after ovulation
+
+        periodResultDiv.innerHTML = `<p><strong>${currentTexts.nextPeriodStart}</strong> <span class="result-value">${formatDate(nextPeriodStart)}</span></p>`;
+        ovulationResultDiv.innerHTML = `<p><strong>${currentTexts.ovulationDay}</strong> <span class="result-value">${formatDate(ovulationDay)}</span></p>`;
+        fertileWindowResultDiv.innerHTML = `<p><strong>${currentTexts.fertileWindow}</strong> <span class="result-value">${formatDate(fertileWindowStart)} ${currentTexts.toText} ${formatDate(fertileWindowEnd)}</span></p>`;
+
+        // --- Pregnancy & Baby Calculation ---
+        // Pregnancy Week: Days since LMP / 7
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Normalize to start of day
+
+        const diffTime = Math.abs(today.getTime() - lastPeriodDate.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        const pregnancyWeeks = Math.floor(diffDays / 7);
+        const remainingDays = diffDays % 7;
+
+        pregnancyWeekResultDiv.innerHTML = `<p><strong>${currentTexts.currentPregnancyWeek}</strong> <span class="result-value">${pregnancyWeeks} ${isEnglishPage ? 'weeks' : 'hafta'} ${remainingDays > 0 ? (remainingDays + ' ' + (isEnglishPage ? 'days' : 'gün')) : ''}</span></p>`;
+
+        // Estimated Due Date: LMP + 280 days (40 weeks)
+        const estimatedDueDate = new Date(lastPeriodDate);
+        estimatedDueDate.setDate(lastPeriodDate.getDate() + 280);
+
+        dueDateResultDiv.innerHTML = `<p><strong>${currentTexts.estimatedDueDate}</strong> <span class="result-value">${formatDate(estimatedDueDate)}</span></p>`;
+        
+        // Baby's Zodiac Sign
+        const babyZodiac = getZodiacSign(estimatedDueDate);
+        babyZodiacResultDiv.innerHTML = `<p><strong>${currentTexts.babyZodiacSign}</strong> <span class="result-value">${babyZodiac}</span></p>`;
+    }
+
+    // Add event listener to the form for submission
+    periodTrackerForm.addEventListener('submit', calculateCycleAndPregnancy);
 });
   </script>
 </body>

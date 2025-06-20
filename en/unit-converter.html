@@ -1351,5 +1351,567 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Language detection (assuming English if '/en/' in path, otherwise Turkish)
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+    // Text strings for dynamic content based on language
+    const texts = {
+        tr: {
+            // General
+            selectCategoryPrompt: 'Yukarıdaki kategorilerden birini seçerek birim dönüştürmeye başlayın.',
+            inputValue: 'Değer:',
+            fromUnit: 'Çevrilecek Birim:',
+            toUnit: 'Hedef Birim:',
+            resultPrefix: 'Sonuç:',
+            invalidInput: 'Lütfen geçerli bir sayı girin.',
+            sameUnitError: 'Lütfen farklı birimler seçin.',
+
+            // Categories
+            length: 'Uzunluk',
+            weight: 'Ağırlık/Kütle',
+            temperature: 'Sıcaklık',
+            area: 'Alan',
+            volume: 'Hacim',
+            time: 'Zaman',
+            speed: 'Hız',
+            energy: 'Enerji',
+            power: 'Güç',
+            pressure: 'Basınç',
+            data: 'Veri',
+            currency: 'Para Birimi',
+
+            // Converter Titles
+            lengthConverterTitle: 'Uzunluk Dönüştürücü',
+            weightConverterTitle: 'Ağırlık/Kütle Dönüştürücü',
+            temperatureConverterTitle: 'Sıcaklık Dönüştürücü',
+            areaConverterTitle: 'Alan Dönüştürücü',
+            volumeConverterTitle: 'Hacim Dönüştürücü',
+            timeConverterTitle: 'Zaman Dönüştürücü',
+            speedConverterTitle: 'Hız Dönüştürücü',
+            energyConverterTitle: 'Enerji Dönüştürücü',
+            powerConverterTitle: 'Güç Dönüştürücü',
+            pressureConverterTitle: 'Basınç Dönüştürücü',
+            dataConverterTitle: 'Veri Dönüştürücü',
+            currencyConverterTitle: 'Para Birimi Dönüştürücü (API Gerekli)',
+            currencyApiInfo: 'Para birimi dönüşümleri için güncel döviz kuru verilerine ihtiyaç duyulur. Bu, genellikle harici bir API (örn. ExchangeRate-API, Open Exchange Rates) ile sağlanır ve canlı bir sunucu ortamında çalışır. Hesaplayıcımızdaki değerler örnek amaçlıdır ve gerçek zamanlı değildir.',
+            lastUpdated: 'Son Güncelleme:',
+            currencyFetchError: 'Döviz kurları çekilirken hata oluştu.'
+        },
+        en: {
+            // General
+            selectCategoryPrompt: 'Select a unit category above to start converting.',
+            inputValue: 'Value:',
+            fromUnit: 'From Unit:',
+            toUnit: 'To Unit:',
+            resultPrefix: 'Result:',
+            invalidInput: 'Please enter a valid number.',
+            sameUnitError: 'Please select different units.',
+
+            // Categories
+            length: 'Length',
+            weight: 'Weight/Mass',
+            temperature: 'Temperature',
+            area: 'Area',
+            volume: 'Volume',
+            time: 'Time',
+            speed: 'Speed',
+            energy: 'Energy',
+            power: 'Power',
+            pressure: 'Pressure',
+            data: 'Data',
+            currency: 'Currency',
+
+            // Converter Titles
+            lengthConverterTitle: 'Length Converter',
+            weightConverterTitle: 'Weight/Mass Converter',
+            temperatureConverterTitle: 'Temperature Converter',
+            areaConverterTitle: 'Area Converter',
+            volumeConverterTitle: 'Volume Converter',
+            timeConverterTitle: 'Time Converter',
+            speedConverterTitle: 'Speed Converter',
+            energyConverterTitle: 'Energy Converter',
+            powerConverterTitle: 'Power Converter',
+            pressureConverterTitle: 'Pressure Converter',
+            dataConverterTitle: 'Data Converter',
+            currencyConverterTitle: 'Currency Converter (API Required)',
+            currencyApiInfo: 'Currency conversions require up-to-date exchange rate data. This is typically provided by an external API (e.g., ExchangeRate-API, Open Exchange Rates) and runs in a live server environment. Values in our calculator are for example purposes only and are not real-time.',
+            lastUpdated: 'Last Updated:',
+            currencyFetchError: 'Error fetching exchange rates.'
+        }
+    };
+
+    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+    // --- DOM Elements ---
+    const categoryButtons = document.querySelectorAll('.category-button');
+    const converterSections = document.querySelectorAll('.converter-section');
+    const defaultMessage = document.getElementById('default-message');
+    const mainTitle = document.querySelector('.unit-converter-section h2');
+    const sectionDescription = document.querySelector('.unit-converter-section p');
+
+    // Update static texts
+    mainTitle.textContent = isEnglishPage ? 'Unit Converter' : 'Birim Dönüştürücü';
+    sectionDescription.textContent = isEnglishPage ? 'Select the unit category you want to convert:' : 'Dönüştürmek istediğiniz birim kategorisini seçin:';
+    defaultMessage.querySelector('p').textContent = currentTexts.selectCategoryPrompt;
+
+    // Update category button texts
+    categoryButtons.forEach(button => {
+        const category = button.dataset.category;
+        button.textContent = currentTexts[category];
+    });
+
+    // Update converter section titles
+    document.getElementById('length-converter').querySelector('h3').textContent = currentTexts.lengthConverterTitle;
+    document.getElementById('weight-converter').querySelector('h3').textContent = currentTexts.weightConverterTitle;
+    document.getElementById('temperature-converter').querySelector('h3').textContent = currentTexts.temperatureConverterTitle;
+    document.getElementById('area-converter').querySelector('h3').textContent = currentTexts.areaConverterTitle;
+    document.getElementById('volume-converter').querySelector('h3').textContent = currentTexts.volumeConverterTitle;
+    document.getElementById('time-converter').querySelector('h3').textContent = currentTexts.timeConverterTitle;
+    document.getElementById('speed-converter').querySelector('h3').textContent = currentTexts.speedConverterTitle;
+    document.getElementById('energy-converter').querySelector('h3').textContent = currentTexts.energyConverterTitle;
+    document.getElementById('power-converter').querySelector('h3').textContent = currentTexts.powerConverterTitle;
+    document.getElementById('pressure-converter').querySelector('h3').textContent = currentTexts.pressureConverterTitle;
+    document.getElementById('data-converter').querySelector('h3').textContent = currentTexts.dataConverterTitle;
+    document.getElementById('currency-converter').querySelector('h3').textContent = currentTexts.currencyConverterTitle;
+    document.querySelector('#currency-converter > p').textContent = currentTexts.currencyApiInfo;
+
+
+    // Function to show/hide converter sections
+    function showConverter(category) {
+        converterSections.forEach(section => {
+            section.classList.remove('active');
+        });
+        defaultMessage.classList.remove('active'); // Hide default message
+
+        const targetSection = document.getElementById(`${category}-converter`);
+        if (targetSection) {
+            targetSection.classList.add('active');
+        } else {
+            defaultMessage.classList.add('active'); // Fallback if category not found
+        }
+
+        categoryButtons.forEach(button => {
+            if (button.dataset.category === category) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        });
+        // Clear previous results when switching categories
+        document.querySelectorAll('.conversion-result').forEach(resultDiv => resultDiv.innerHTML = '');
+    }
+
+    // Attach click listeners to category buttons
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            showConverter(button.dataset.category);
+        });
+    });
+
+    // Set default view on page load
+    showConverter('default-message'); // Show default message initially
+
+    // --- Conversion Logic ---
+
+    // Base conversion function (converts to a base unit, then to target unit)
+    function convertUnit(value, fromUnit, toUnit, conversionRates, resultDiv) {
+        if (isNaN(value)) {
+            resultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            return;
+        }
+        if (fromUnit === toUnit) {
+            resultDiv.innerHTML = `<p class="error">${currentTexts.sameUnitError}</p>`;
+            return;
+        }
+
+        const valueInBase = value * conversionRates[fromUnit];
+        const convertedValue = valueInBase / conversionRates[toUnit];
+
+        resultDiv.innerHTML = `<p>${currentTexts.resultPrefix} <span class="result-value">${convertedValue.toFixed(4)} ${toUnit}</span></p>`;
+    }
+
+    // --- Length Converter ---
+    const lengthValueInput = document.getElementById('lengthValue');
+    const lengthFromUnitSelect = document.getElementById('lengthFromUnit');
+    const lengthToUnitSelect = document.getElementById('lengthToUnit');
+    const lengthResultDiv = document.getElementById('lengthResult');
+
+    // Rates to Meter (base unit)
+    const lengthRates = {
+        'km': 1000, 'm': 1, 'cm': 0.01, 'mm': 0.001, 'um': 0.000001, 'nm': 0.000000001,
+        'inch': 0.0254, 'ft': 0.3048, 'yd': 0.9144, 'mi': 1609.34
+    };
+
+    function updateLengthConversion() {
+        convertUnit(parseFloat(lengthValueInput.value), lengthFromUnitSelect.value, lengthToUnitSelect.value, lengthRates, lengthResultDiv);
+    }
+    lengthValueInput.addEventListener('input', updateLengthConversion);
+    lengthFromUnitSelect.addEventListener('change', updateLengthConversion);
+    lengthToUnitSelect.addEventListener('change', updateLengthConversion);
+
+    // Update labels for length converter
+    lengthValueInput.previousElementSibling.textContent = currentTexts.inputValue;
+    lengthFromUnitSelect.previousElementSibling.textContent = currentTexts.fromUnit;
+    lengthToUnitSelect.previousElementSibling.textContent = currentTexts.toUnit;
+
+
+    // --- Weight Converter ---
+    const weightValueInput = document.getElementById('weightValue');
+    const weightFromUnitSelect = document.getElementById('weightFromUnit');
+    const weightToUnitSelect = document.getElementById('weightToUnit');
+    const weightResultDiv = document.getElementById('weightResult');
+
+    // Rates to Kilogram (base unit)
+    const weightRates = {
+        'kg': 1, 'g': 0.001, 'mg': 0.000001, 'ug': 0.000000001, 'ng': 0.000000000001,
+        't': 1000, 'lb': 0.453592, 'oz': 0.0283495
+    };
+
+    function updateWeightConversion() {
+        convertUnit(parseFloat(weightValueInput.value), weightFromUnitSelect.value, weightToUnitSelect.value, weightRates, weightResultDiv);
+    }
+    weightValueInput.addEventListener('input', updateWeightConversion);
+    weightFromUnitSelect.addEventListener('change', updateWeightConversion);
+    weightToUnitSelect.addEventListener('change', updateWeightConversion);
+
+    // Update labels for weight converter
+    weightValueInput.previousElementSibling.textContent = currentTexts.inputValue;
+    weightFromUnitSelect.previousElementSibling.textContent = currentTexts.fromUnit;
+    weightToUnitSelect.previousElementSibling.textContent = currentTexts.toUnit;
+
+    // --- Temperature Converter ---
+    const tempValueInput = document.getElementById('tempValue');
+    const tempFromUnitSelect = document.getElementById('tempFromUnit');
+    const tempToUnitSelect = document.getElementById('tempToUnit');
+    const temperatureResultDiv = document.getElementById('temperatureResult');
+
+    // Temperature conversion requires specific formulas, not simple multiplication
+    function convertTemperature() {
+        let value = parseFloat(tempValueInput.value);
+        const fromUnit = tempFromUnitSelect.value;
+        const toUnit = tempToUnitSelect.value;
+        let convertedValue;
+
+        if (isNaN(value)) {
+            temperatureResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            return;
+        }
+        if (fromUnit === toUnit) {
+            temperatureResultDiv.innerHTML = `<p class="error">${currentTexts.sameUnitError}</p>`;
+            return;
+        }
+
+        // Convert to Celsius first
+        let celsiusValue;
+        if (fromUnit === 'celsius') {
+            celsiusValue = value;
+        } else if (fromUnit === 'fahrenheit') {
+            celsiusValue = (value - 32) / 1.8;
+        } else if (fromUnit === 'kelvin') {
+            celsiusValue = value - 273.15;
+        }
+
+        // Convert from Celsius to target unit
+        if (toUnit === 'celsius') {
+            convertedValue = celsiusValue;
+        } else if (toUnit === 'fahrenheit') {
+            convertedValue = (celsiusValue * 1.8) + 32;
+        } else if (toUnit === 'kelvin') {
+            convertedValue = celsiusValue + 273.15;
+        }
+
+        temperatureResultDiv.innerHTML = `<p>${currentTexts.resultPrefix} <span class="result-value">${convertedValue.toFixed(2)} ${toUnit === 'celsius' ? '°C' : toUnit === 'fahrenheit' ? '°F' : 'K'}</span></p>`;
+    }
+    tempValueInput.addEventListener('input', convertTemperature);
+    tempFromUnitSelect.addEventListener('change', convertTemperature);
+    tempToUnitSelect.addEventListener('change', convertTemperature);
+
+    // Update labels for temperature converter
+    tempValueInput.previousElementSibling.textContent = currentTexts.inputValue;
+    tempFromUnitSelect.previousElementSibling.textContent = currentTexts.fromUnit;
+    tempToUnitSelect.previousElementSibling.textContent = currentTexts.toUnit;
+
+    // --- Area Converter ---
+    const areaValueInput = document.getElementById('areaValue');
+    const areaFromUnitSelect = document.getElementById('areaFromUnit');
+    const areaToUnitSelect = document.getElementById('areaToUnit');
+    const areaResultDiv = document.getElementById('areaResult');
+
+    // Rates to Square Meter (base unit)
+    const areaRates = {
+        'sqm': 1, 'sqcm': 0.0001, 'sqmm': 0.000001, 'sqkm': 1000000,
+        'hectare': 10000, 'acre': 4046.86, 'sqft': 0.092903, 'sqyd': 0.836127, 'sqmi': 2589988
+    };
+
+    function updateAreaConversion() {
+        convertUnit(parseFloat(areaValueInput.value), areaFromUnitSelect.value, areaToUnitSelect.value, areaRates, areaResultDiv);
+    }
+    areaValueInput.addEventListener('input', updateAreaConversion);
+    areaFromUnitSelect.addEventListener('change', updateAreaConversion);
+    areaToUnitSelect.addEventListener('change', updateAreaConversion);
+    
+    // Update labels for area converter
+    areaValueInput.previousElementSibling.textContent = currentTexts.inputValue;
+    areaFromUnitSelect.previousElementSibling.textContent = currentTexts.fromUnit;
+    areaToUnitSelect.previousElementSibling.textContent = currentTexts.toUnit;
+
+    // --- Volume Converter ---
+    const volumeValueInput = document.getElementById('volumeValue');
+    const volumeFromUnitSelect = document.getElementById('volumeFromUnit');
+    const volumeToUnitSelect = document.getElementById('volumeToUnit');
+    const volumeResultDiv = document.getElementById('volumeResult');
+
+    // Rates to Liter (base unit)
+    const volumeRates = {
+        'liter': 1, 'ml': 0.001, 'ul': 0.000001,
+        'cubicm': 1000, 'cubiccm': 0.001, 'cubicmm': 0.000001,
+        'gallon': 3.78541, 'quart': 0.946353, 'pint': 0.473176, 'cup': 0.236588, 'fluid_oz': 0.0295735
+    };
+
+    function updateVolumeConversion() {
+        convertUnit(parseFloat(volumeValueInput.value), volumeFromUnitSelect.value, volumeToUnitSelect.value, volumeRates, volumeResultDiv);
+    }
+    volumeValueInput.addEventListener('input', updateVolumeConversion);
+    volumeFromUnitSelect.addEventListener('change', updateVolumeConversion);
+    volumeToUnitSelect.addEventListener('change', updateVolumeConversion);
+
+    // Update labels for volume converter
+    volumeValueInput.previousElementSibling.textContent = currentTexts.inputValue;
+    volumeFromUnitSelect.previousElementSibling.textContent = currentTexts.fromUnit;
+    volumeToUnitSelect.previousElementSibling.textContent = currentTexts.toUnit;
+
+    // --- Time Converter ---
+    const timeValueInput = document.getElementById('timeValue');
+    const timeFromUnitSelect = document.getElementById('timeFromUnit');
+    const timeToUnitSelect = document.getElementById('timeToUnit');
+    const timeResultDiv = document.getElementById('timeResult');
+
+    // Rates to Second (base unit)
+    const timeRates = {
+        'nanosecond': 0.000000001, 'microsecond': 0.000001, 'millisecond': 0.001, 'second': 1,
+        'minute': 60, 'hour': 3600, 'day': 86400, 'week': 604800, 'month': 2629746, 'year': 31556952 // Avg month/year
+    };
+
+    function updateTimeConversion() {
+        convertUnit(parseFloat(timeValueInput.value), timeFromUnitSelect.value, timeToUnitSelect.value, timeRates, timeResultDiv);
+    }
+    timeValueInput.addEventListener('input', updateTimeConversion);
+    timeFromUnitSelect.addEventListener('change', updateTimeConversion);
+    timeToUnitSelect.addEventListener('change', updateTimeConversion);
+
+    // Update labels for time converter
+    timeValueInput.previousElementSibling.textContent = currentTexts.inputValue;
+    timeFromUnitSelect.previousElementSibling.textContent = currentTexts.fromUnit;
+    timeToUnitSelect.previousElementSibling.textContent = currentTexts.toUnit;
+
+    // --- Speed Converter ---
+    const speedValueInput = document.getElementById('speedValue');
+    const speedFromUnitSelect = document.getElementById('speedFromUnit');
+    const speedToUnitSelect = document.getElementById('speedToUnit');
+    const speedResultDiv = document.getElementById('speedResult');
+
+    // Rates to Meter per Second (base unit)
+    const speedRates = {
+        'mps': 1, 'kmph': 1 / 3.6, 'mph': 0.44704, 'knot': 0.514444, 'fps': 0.3048
+    };
+
+    function updateSpeedConversion() {
+        convertUnit(parseFloat(speedValueInput.value), speedFromUnitSelect.value, speedToUnitSelect.value, speedRates, speedResultDiv);
+    }
+    speedValueInput.addEventListener('input', updateSpeedConversion);
+    speedFromUnitSelect.addEventListener('change', updateSpeedConversion);
+    speedToUnitSelect.addEventListener('change', updateSpeedConversion);
+
+    // Update labels for speed converter
+    speedValueInput.previousElementSibling.textContent = currentTexts.inputValue;
+    speedFromUnitSelect.previousElementSibling.textContent = currentTexts.fromUnit;
+    speedToUnitSelect.previousElementSibling.textContent = currentTexts.toUnit;
+
+    // --- Energy Converter ---
+    const energyValueInput = document.getElementById('energyValue');
+    const energyFromUnitSelect = document.getElementById('energyFromUnit');
+    const energyToUnitSelect = document.getElementById('energyToUnit');
+    const energyResultDiv = document.getElementById('energyResult');
+
+    // Rates to Joule (base unit)
+    const energyRates = {
+        'joule': 1, 'kilojoule': 1000, 'cal': 4.184, 'kcal': 4184, 'kwh': 3600000, 'btu': 1055.06
+    };
+
+    function updateEnergyConversion() {
+        convertUnit(parseFloat(energyValueInput.value), energyFromUnitSelect.value, energyToUnitSelect.value, energyRates, energyResultDiv);
+    }
+    energyValueInput.addEventListener('input', updateEnergyConversion);
+    energyFromUnitSelect.addEventListener('change', updateEnergyConversion);
+    energyToUnitSelect.addEventListener('change', updateEnergyConversion);
+
+    // Update labels for energy converter
+    energyValueInput.previousElementSibling.textContent = currentTexts.inputValue;
+    energyFromUnitSelect.previousElementSibling.textContent = currentTexts.fromUnit;
+    energyToUnitSelect.previousElementSibling.textContent = currentTexts.toUnit;
+
+    // --- Power Converter ---
+    const powerValueInput = document.getElementById('powerValue');
+    const powerFromUnitSelect = document.getElementById('powerFromUnit');
+    const powerToUnitSelect = document.getElementById('powerToUnit');
+    const powerResultDiv = document.getElementById('powerResult');
+
+    // Rates to Watt (base unit)
+    const powerRates = {
+        'watt': 1, 'kilowatt': 1000, 'hp': 745.7, 'ps': 735.5, 'btu_per_hour': 0.293071
+    };
+
+    function updatePowerConversion() {
+        convertUnit(parseFloat(powerValueInput.value), powerFromUnitSelect.value, powerToUnitSelect.value, powerRates, powerResultDiv);
+    }
+    powerValueInput.addEventListener('input', updatePowerConversion);
+    powerFromUnitSelect.addEventListener('change', updatePowerConversion);
+    powerToUnitSelect.addEventListener('change', updatePowerConversion);
+
+    // Update labels for power converter
+    powerValueInput.previousElementSibling.textContent = currentTexts.inputValue;
+    powerFromUnitSelect.previousElementSibling.textContent = currentTexts.fromUnit;
+    powerToUnitSelect.previousElementSibling.textContent = currentTexts.toUnit;
+
+    // --- Pressure Converter ---
+    const pressureValueInput = document.getElementById('pressureValue');
+    const pressureFromUnitSelect = document.getElementById('pressureFromUnit');
+    const pressureToUnitSelect = document.getElementById('pressureToUnit');
+    const pressureResultDiv = document.getElementById('pressureResult');
+
+    // Rates to Pascal (base unit)
+    const pressureRates = {
+        'pascal': 1, 'kilopascal': 1000, 'bar': 100000, 'atm': 101325, 'psi': 6894.76, 'torr': 133.322
+    };
+
+    function updatePressureConversion() {
+        convertUnit(parseFloat(pressureValueInput.value), pressureFromUnitSelect.value, pressureToUnitSelect.value, pressureRates, pressureResultDiv);
+    }
+    pressureValueInput.addEventListener('input', updatePressureConversion);
+    pressureFromUnitSelect.addEventListener('change', updatePressureConversion);
+    pressureToUnitSelect.addEventListener('change', updatePressureConversion);
+
+    // Update labels for pressure converter
+    pressureValueInput.previousElementSibling.textContent = currentTexts.inputValue;
+    pressureFromUnitSelect.previousElementSibling.textContent = currentTexts.fromUnit;
+    pressureToUnitSelect.previousElementSibling.textContent = currentTexts.toUnit;
+
+
+    // --- Data Converter ---
+    const dataValueInput = document.getElementById('dataValue');
+    const dataFromUnitSelect = document.getElementById('dataFromUnit');
+    const dataToUnitSelect = document.getElementById('dataToUnit');
+    const dataResultDiv = document.getElementById('dataResult');
+
+    // Rates to Bit (base unit), using powers of 1024 for binary units
+    const dataRates = {
+        'bit': 1, 'byte': 8,
+        'kilobit': 1000, 'kilobyte': 8000, // Using decimal Kilo for Kb/KB (10^3)
+        'megabit': 1000000, 'megabyte': 8000000,
+        'gigabit': 1000000000, 'gigabyte': 8000000000,
+        'terabit': 1000000000000, 'terabyte': 8000000000000
+    };
+    // Note: For kilobyte (KB) and megabyte (MB) etc., often 1024 (2^10) is used in computing context.
+    // The current HTML uses standard decimal prefixes (kilo=1000), which is common in networking.
+    // If you prefer binary prefixes (KiB, MiB), rates should be adjusted (e.g., 1 KiB = 1024 bytes = 8192 bits).
+    // Sticking to 1000 for K, 1000000 for M etc. for consistency with general SI prefixes in other converters.
+
+    function updateDataConversion() {
+        convertUnit(parseFloat(dataValueInput.value), dataFromUnitSelect.value, dataToUnitSelect.value, dataRates, dataResultDiv);
+    }
+    dataValueInput.addEventListener('input', updateDataConversion);
+    dataFromUnitSelect.addEventListener('change', updateDataConversion);
+    dataToUnitSelect.addEventListener('change', updateDataConversion);
+
+    // Update labels for data converter
+    dataValueInput.previousElementSibling.textContent = currentTexts.inputValue;
+    dataFromUnitSelect.previousElementSibling.textContent = currentTexts.fromUnit;
+    dataToUnitSelect.previousElementSibling.textContent = currentTexts.toUnit;
+
+
+    // --- Currency Converter (Requires API - Simulating for demonstration) ---
+    const currencyValueInput = document.getElementById('currencyValue');
+    const currencyFromUnitSelect = document.getElementById('currencyFromUnit');
+    const currencyToUnitSelect = document.getElementById('currencyToUnit');
+    const currencyResultDiv = document.getElementById('currencyResult');
+    const lastUpdateTimeSpan = document.getElementById('lastUpdateTime');
+
+    // Hardcoded rates for demonstration purposes (replace with actual API fetch)
+    let exchangeRates = {
+        "USD": { "TRY": 32.5, "EUR": 0.92, "GBP": 0.79, "JPY": 158.0, "CNY": 7.26, "CAD": 1.37, "AUD": 1.50, "USD": 1 },
+        "EUR": { "TRY": 35.3, "USD": 1.08, "GBP": 0.85, "JPY": 171.0, "CNY": 7.87, "CAD": 1.48, "AUD": 1.62, "EUR": 1 },
+        "TRY": { "USD": 0.0307, "EUR": 0.0283, "GBP": 0.0243, "JPY": 4.86, "CNY": 0.22, "CAD": 0.042, "AUD": 0.046, "TRY": 1 },
+        "GBP": { "TRY": 40.8, "USD": 1.27, "EUR": 1.17, "JPY": 200.0, "CNY": 9.19, "CAD": 1.73, "AUD": 1.89, "GBP": 1 },
+        "JPY": { "TRY": 0.205, "USD": 0.0063, "EUR": 0.0058, "GBP": 0.005, "CNY": 0.045, "CAD": 0.0086, "AUD": 0.0095, "JPY": 1 },
+        "CNY": { "TRY": 4.47, "USD": 0.137, "EUR": 0.127, "GBP": 0.109, "JPY": 22.0, "CAD": 0.188, "AUD": 0.206, "CNY": 1 },
+        "CAD": { "TRY": 23.7, "USD": 0.73, "EUR": 0.67, "GBP": 0.58, "JPY": 115.0, "CNY": 5.31, "AUD": 1.10, "CAD": 1 },
+        "AUD": { "TRY": 21.6, "USD": 0.67, "EUR": 0.61, "GBP": 0.53, "JPY": 105.0, "CNY": 4.85, "CAD": 0.90, "AUD": 1 }
+    };
+    
+    // Simulate fetching exchange rates and updating time
+    function fetchExchangeRatesAndConvert() {
+        // In a real application, you'd make a fetch() call to an exchange rate API here.
+        // E.g., fetch('https://api.exchangerate-api.com/v4/latest/USD')
+        // .then(response => response.json())
+        // .then(data => {
+        //    exchangeRates = data.rates; // Update rates based on API response
+        //    lastUpdateTimeSpan.textContent = `Last Updated: ${new Date().toLocaleString()}`;
+        //    updateCurrencyConversion();
+        // })
+        // .catch(error => {
+        //    console.error(currentTexts.currencyFetchError, error);
+        //    lastUpdateTimeSpan.textContent = currentTexts.currencyFetchError;
+        //    currencyResultDiv.innerHTML = `<p class="error">${currentTexts.currencyFetchError}</p>`;
+        // });
+
+        // For this demo, just update the time
+        lastUpdateTimeSpan.textContent = `${currentTexts.lastUpdated} ${new Date().toLocaleString(isEnglishPage ? 'en-US' : 'tr-TR')}`;
+        updateCurrencyConversion();
+    }
+
+    function updateCurrencyConversion() {
+        let value = parseFloat(currencyValueInput.value);
+        const fromUnit = currencyFromUnitSelect.value;
+        const toUnit = currencyToUnitSelect.value;
+        let convertedValue;
+
+        if (isNaN(value)) {
+            currencyResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            return;
+        }
+        if (fromUnit === toUnit) {
+            convertedValue = value; // Same currency, no conversion needed
+        } else if (exchangeRates[fromUnit] && exchangeRates[fromUnit][toUnit]) {
+            const rate = exchangeRates[fromUnit][toUnit];
+            convertedValue = value * rate;
+        } else {
+            currencyResultDiv.innerHTML = `<p class="error">${currentTexts.currencyFetchError} (Invalid units or no rate available)</p>`;
+            return;
+        }
+        
+        // Get currency symbol for display
+        const symbolMap = {
+            'TRY': '₺', 'USD': '$', 'EUR': '€', 'GBP': '£', 'JPY': '¥', 'CNY': '¥', 'CAD': 'C$', 'AUD': 'A$'
+        };
+        const targetSymbol = symbolMap[toUnit] || toUnit; // Use actual symbol or unit name
+
+        currencyResultDiv.innerHTML = `<p>${currentTexts.resultPrefix} <span class="result-value">${convertedValue.toFixed(2)} ${targetSymbol}</span></p>`;
+    }
+
+    currencyValueInput.addEventListener('input', fetchExchangeRatesAndConvert);
+    currencyFromUnitSelect.addEventListener('change', fetchExchangeRatesAndConvert);
+    currencyToUnitSelect.addEventListener('change', fetchExchangeRatesAndConvert);
+
+    // Initial fetch/update for currency when the page loads
+    fetchExchangeRatesAndConvert();
+
+    // Update labels for currency converter
+    currencyValueInput.previousElementSibling.textContent = currentTexts.inputValue;
+    currencyFromUnitSelect.previousElementSibling.textContent = currentTexts.fromUnit;
+    currencyToUnitSelect.previousElementSibling.textContent = currentTexts.toUnit;
+});
+  </script>
 </body>
 </html>

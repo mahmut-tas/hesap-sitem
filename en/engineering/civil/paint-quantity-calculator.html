@@ -811,5 +811,290 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Boya Miktarını Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                errorZeroDimension: 'Uzunluk ve yükseklik sıfır olamaz.',
+                errorPaintCoverage: 'Boya kaplama oranı sıfırdan büyük olmalıdır.',
+                errorNumberOfCoats: 'Kat sayısı en az 1 olmalıdır.',
+                errorPaintDensity: 'Boya yoğunluğu sıfırdan büyük olmalıdır.',
+                errorWastageFactor: 'Fire oranı 0 ile 100 arasında olmalıdır.',
+                resultTitle: 'Gerekli Boya Miktarı:',
+                // Sonuç Çıktıları
+                totalWallArea: 'Toplam Duvar Alanı:',
+                totalOpeningsArea: 'Toplam Boşluk Alanı:',
+                netPaintableArea: 'Net Boyanacak Alan:',
+                paintNeededLiters: 'Gerekli Boya (Litre):',
+                paintNeededKg: 'Gerekli Boya (kg):',
+                // Birimler
+                unit_m: 'm',
+                unit_cm: 'cm',
+                unit_mm: 'mm',
+                unit_m2: 'm²',
+                unit_litre: 'litre',
+                unit_kg: 'kg',
+                unit_kat: 'kat',
+                unit_percent: '%',
+                unit_m2_per_litre: 'm²/litre',
+                unit_kg_per_litre: 'kg/litre',
+                // Kapılar/Pencereler
+                addOpeningButton: '<i class="fas fa-plus"></i> Kapı/Pencere Boşluğu Ekle',
+                removeOpeningButton: 'Kaldır',
+                openingLengthPlaceholder: 'Uzunluk',
+                openingHeightPlaceholder: 'Yükseklik',
+                noOpeningsAdded: 'Hiç boşluk eklenmedi.',
+                // Advanced Options
+                advancedSettings: 'Gelişmiş Ayarlar (Boya Yoğunluğu ve Fire)',
+                paintDensityLabel: 'Boya Yoğunluğu (kg/litre):',
+                paintDensityInfo: 'Boya miktarını litre yerine kilogram olarak da görmek isterseniz yoğunluğunu giriniz. Genellikle boya kutusunda yazar.',
+                paintWastageLabel: 'Boya Fire Oranı (%):',
+                paintWastageInfo: 'Boya yaparken oluşabilecek dökülme, israf veya fırça/rulo kayıpları için eklenen yüzde.'
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate Paint Amount',
+                invalidInput: 'Please enter valid positive numbers for all fields.',
+                errorZeroDimension: 'Length and height cannot be zero.',
+                errorPaintCoverage: 'Paint coverage rate must be greater than zero.',
+                errorNumberOfCoats: 'Number of coats must be at least 1.',
+                errorPaintDensity: 'Paint density must be greater than zero.',
+                errorWastageFactor: 'Wastage rate must be between 0 and 100.',
+                resultTitle: 'Required Paint Amount:',
+                // Result Outputs
+                totalWallArea: 'Total Wall Area:',
+                totalOpeningsArea: 'Total Openings Area:',
+                netPaintableArea: 'Net Paintable Area:',
+                paintNeededLiters: 'Paint Needed (Liters):',
+                paintNeededKg: 'Paint Needed (kg):',
+                // Units
+                unit_m: 'm',
+                unit_cm: 'cm',
+                unit_mm: 'mm',
+                unit_m2: 'm²',
+                unit_litre: 'liters',
+                unit_kg: 'kg',
+                unit_kat: 'coats',
+                unit_percent: '%',
+                unit_m2_per_litre: 'm²/liter',
+                unit_kg_per_litre: 'kg/liter',
+                // Openings
+                addOpeningButton: '<i class="fas fa-plus"></i> Add Door/Window Opening',
+                removeOpeningButton: 'Remove',
+                openingLengthPlaceholder: 'Length',
+                openingHeightPlaceholder: 'Height',
+                noOpeningsAdded: 'No openings added yet.',
+                // Advanced Options
+                advancedSettings: 'Advanced Settings (Paint Density and Waste)',
+                paintDensityLabel: 'Paint Density (kg/liter):',
+                paintDensityInfo: 'Enter the density if you want to see the paint amount in kilograms instead of liters. Usually stated on the paint can.',
+                paintWastageLabel: 'Paint Wastage Rate (%):',
+                paintWastageInfo: 'Percentage added for spills, waste, or brush/roller losses that may occur during painting.'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // --- Helper Functions ---
+        // Uzunluk birimlerini metreye dönüştürme faktörleri
+        const LENGTH_TO_METER = {
+            'm': 1,
+            'cm': 0.01,
+            'mm': 0.001
+            // ft ve inch bu HTML'de görünmüyor, gerekirse eklenebilir.
+        };
+
+        // --- DOM Elements ---
+        const paintAmountForm = document.getElementById('paintAmountForm');
+        const paintAmountResultDiv = document.getElementById('paintAmountResult');
+
+        const wall1LengthInput = document.getElementById('wall1Length');
+        const wall1LengthUnitSelect = document.getElementById('wall1LengthUnit');
+        const wall1HeightInput = document.getElementById('wall1Height');
+        const wall1HeightUnitSelect = document.getElementById('wall1HeightUnit');
+
+        const wall2LengthInput = document.getElementById('wall2Length');
+        const wall2LengthUnitSelect = document.getElementById('wall2LengthUnit');
+        const wall2HeightInput = document.getElementById('wall2Height');
+        const wall2HeightUnitSelect = document.getElementById('wall2HeightUnit');
+
+        const openingsContainer = document.getElementById('openingsContainer');
+        const addOpeningButton = document.getElementById('addOpeningButton');
+
+        const paintCoverageInput = document.getElementById('paintCoverage');
+        const numberOfCoatsInput = document.getElementById('numberOfCoats');
+
+        const toggleAdvancedOptionsButton = document.getElementById('toggleAdvancedOptions');
+        const advancedOptionsContent = document.getElementById('advancedOptionsContent');
+        const paintDensityInput = document.getElementById('paintDensity');
+        const paintWastageFactorInput = document.getElementById('paintWastageFactor');
+
+        // --- Event Listeners ---
+
+        // Advanced Options toggle
+        toggleAdvancedOptionsButton.addEventListener('click', function() {
+            advancedOptionsContent.classList.toggle('hidden-section');
+            toggleAdvancedOptionsButton.classList.toggle('active');
+            toggleAdvancedOptionsButton.innerHTML = advancedOptionsContent.classList.contains('hidden-section') ?
+                `<i class="fas fa-cogs"></i> ${currentTexts.advancedSettings}` :
+                `<i class="fas fa-cogs"></i> ${currentTexts.advancedSettings}`; // Aynı kalabilir veya farklı metin olabilir
+        });
+
+        // Add Opening button text update
+        addOpeningButton.innerHTML = currentTexts.addOpeningButton;
+
+
+        // Add/Remove Opening functionality
+        let openingCounter = 0;
+        addOpeningButton.addEventListener('click', function() {
+            openingCounter++;
+            const openingDiv = document.createElement('div');
+            openingDiv.classList.add('opening-item');
+            openingDiv.innerHTML = `
+                <div class="input-with-unit">
+                    <input type="number" min="0.01" step="any" class="opening-length" placeholder="${currentTexts.openingLengthPlaceholder}">
+                    <select class="opening-length-unit">
+                        <option value="m">${currentTexts.unit_m}</option>
+                        <option value="cm">${currentTexts.unit_cm}</option>
+                        <option value="mm">${currentTexts.unit_mm}</option>
+                    </select>
+                </div>
+                <div class="input-with-unit">
+                    <input type="number" min="0.01" step="any" class="opening-height" placeholder="${currentTexts.openingHeightPlaceholder}">
+                    <select class="opening-height-unit">
+                        <option value="m">${currentTexts.unit_m}</option>
+                        <option value="cm">${currentTexts.unit_cm}</option>
+                        <option value="mm">${currentTexts.unit_mm}</option>
+                    </select>
+                </div>
+                <button type="button" class="remove-opening-button">${currentTexts.removeOpeningButton}</button>
+            `;
+            openingsContainer.appendChild(openingDiv);
+
+            // "Hiç boşluk eklenmedi" metnini gizle
+            const noOpeningsText = openingsContainer.querySelector('p.small-text');
+            if (noOpeningsText) {
+                noOpeningsText.style.display = 'none';
+            }
+
+            // Remove button functionality
+            openingDiv.querySelector('.remove-opening-button').addEventListener('click', function() {
+                openingDiv.remove();
+                openingCounter--;
+                if (openingCounter === 0 && noOpeningsText) {
+                    noOpeningsText.style.display = 'block';
+                }
+            });
+        });
+
+        // Main form submission
+        paintAmountForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // --- Get Wall Dimensions ---
+            const wall1Length = parseFloat(wall1LengthInput.value) * LENGTH_TO_METER[wall1LengthUnitSelect.value];
+            const wall1Height = parseFloat(wall1HeightInput.value) * LENGTH_TO_METER[wall1HeightUnitSelect.value];
+            
+            let wall2Length = 0, wall2Height = 0;
+            if (wall2LengthInput.value && wall2HeightInput.value) { // Check if optional wall 2 inputs are filled
+                wall2Length = parseFloat(wall2LengthInput.value) * LENGTH_TO_METER[wall2LengthUnitSelect.value];
+                wall2Height = parseFloat(wall2HeightInput.value) * LENGTH_TO_METER[wall2HeightUnitSelect.value];
+            }
+
+            // --- Input Validation ---
+            if (isNaN(wall1Length) || isNaN(wall1Height) || wall1Length <= 0 || wall1Height <= 0) {
+                paintAmountResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroDimension}</p>`;
+                paintAmountResultDiv.style.display = 'block';
+                return;
+            }
+             if ((wall2LengthInput.value && isNaN(wall2Length) || isNaN(wall2Height)) ||
+                (wall2LengthInput.value && wall2Length <= 0 || wall2Height <= 0)) {
+                paintAmountResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroDimension}</p>`;
+                paintAmountResultDiv.style.display = 'block';
+                return;
+            }
+
+
+            // --- Calculate Total Wall Area ---
+            const totalWallArea = (wall1Length * wall1Height) + (wall2Length * wall2Height);
+
+            // --- Calculate Total Openings Area ---
+            let totalOpeningsArea = 0;
+            const openingItems = document.querySelectorAll('.opening-item');
+            for (const item of openingItems) {
+                const lengthInput = item.querySelector('.opening-length');
+                const lengthUnitSelect = item.querySelector('.opening-length-unit');
+                const heightInput = item.querySelector('.opening-height');
+                const heightUnitSelect = item.querySelector('.opening-height-unit');
+
+                const length = parseFloat(lengthInput.value) * LENGTH_TO_METER[lengthUnitSelect.value];
+                const height = parseFloat(heightInput.value) * LENGTH_TO_METER[heightUnitSelect.value];
+
+                if (isNaN(length) || isNaN(height) || length <= 0 || height <= 0) {
+                     paintAmountResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput} (${currentTexts.openingLengthPlaceholder} / ${currentTexts.openingHeightPlaceholder})</p>`;
+                     paintAmountResultDiv.style.display = 'block';
+                     return;
+                }
+                totalOpeningsArea += (length * height);
+            }
+
+            // --- Get Paint Details ---
+            const paintCoverage = parseFloat(paintCoverageInput.value);
+            const numberOfCoats = parseInt(numberOfCoatsInput.value);
+            const paintDensity = parseFloat(paintDensityInput.value);
+            const paintWastageFactor = parseFloat(paintWastageFactorInput.value) / 100; // % to decimal
+
+            // --- Validation for Paint Details ---
+            if (isNaN(paintCoverage) || paintCoverage <= 0) {
+                paintAmountResultDiv.innerHTML = `<p class="error">${currentTexts.errorPaintCoverage}</p>`;
+                paintAmountResultDiv.style.display = 'block';
+                return;
+            }
+            if (isNaN(numberOfCoats) || numberOfCoats < 1) {
+                paintAmountResultDiv.innerHTML = `<p class="error">${currentTexts.errorNumberOfCoats}</p>`;
+                paintAmountResultDiv.style.display = 'block';
+                return;
+            }
+            if (isNaN(paintDensity) || paintDensity <= 0) {
+                paintAmountResultDiv.innerHTML = `<p class="error">${currentTexts.errorPaintDensity}</p>`;
+                paintAmountResultDiv.style.display = 'block';
+                return;
+            }
+            if (isNaN(paintWastageFactor) || paintWastageFactor < 0 || paintWastageFactor > 1) {
+                paintAmountResultDiv.innerHTML = `<p class="error">${currentTexts.errorWastageFactor}</p>`;
+                paintAmountResultDiv.style.display = 'block';
+                return;
+            }
+
+            // --- Calculations ---
+            const netPaintableArea = Math.max(0, totalWallArea - totalOpeningsArea); // Negatif alanı önle
+            
+            let paintNeededLiters = (netPaintableArea * numberOfCoats) / paintCoverage;
+            paintNeededLiters *= (1 + paintWastageFactor); // Fire oranı ekle
+
+            const paintNeededKg = paintNeededLiters * paintDensity;
+
+            // --- Display Results ---
+            paintAmountResultDiv.innerHTML = `
+                <h4>${currentTexts.resultTitle}</h4>
+                <div class="result-item"><strong>${currentTexts.totalWallArea}</strong> <span class="result-value">${totalWallArea.toFixed(2)} ${currentTexts.unit_m2}</span></div>
+                <div class="result-item"><strong>${currentTexts.totalOpeningsArea}</strong> <span class="result-value">${totalOpeningsArea.toFixed(2)} ${currentTexts.unit_m2}</span></div>
+                <div class="result-item"><strong>${currentTexts.netPaintableArea}</strong> <span class="result-value">${netPaintableArea.toFixed(2)} ${currentTexts.unit_m2}</span></div>
+                <hr class="form-divider" style="margin: 15px 0;">
+                <div class="result-item"><strong>${currentTexts.paintNeededLiters}</strong> <span class="result-value">${paintNeededLiters.toFixed(2)} ${currentTexts.unit_litre}</span></div>
+                <div class="result-item"><strong>${currentTexts.paintNeededKg}</strong> <span class="result-value">${paintNeededKg.toFixed(2)} ${currentTexts.unit_kg}</span></div>
+            `;
+            paintAmountResultDiv.style.display = 'block';
+        });
+    });
+</script>
 </body>
 </html>

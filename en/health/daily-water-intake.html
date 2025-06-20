@@ -188,5 +188,92 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Language detection: Assume English if URL starts with '/en/', otherwise Turkish
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+    // Text strings object for dynamic content
+    const texts = {
+        tr: {
+            calculateButtonText: 'Su İhtiyacınızı Hesapla',
+            weightLabel: 'Kilo (kg):',
+            invalidInput: 'Lütfen geçerli bir kilo değeri girin (10 kg ve üzeri).',
+            resultTitle: 'Günlük Su İhtiyacınız:',
+            waterAmount: 'Günde yaklaşık',
+            unitLiter: 'litre',
+            explanation: 'Hesaplanan değer, kilonuza göre tahmini günlük su ihtiyacınızı gösterir. Aktivite seviyeniz, iklim ve sağlık durumunuz gibi faktörler bu ihtiyacı etkileyebilir.',
+            placeholderWeight: 'Örn: 70'
+        },
+        en: {
+            calculateButtonText: 'Calculate Your Water Needs',
+            weightLabel: 'Weight (kg):',
+            invalidInput: 'Please enter a valid weight (10 kg and above).',
+            resultTitle: 'Your Daily Water Need:',
+            waterAmount: 'Approximately',
+            unitLiter: 'liters',
+            explanation: 'The calculated value shows your estimated daily water need based on your weight. Factors such as your activity level, climate, and health conditions can affect this need.',
+            placeholderWeight: 'e.g.: 70'
+        }
+    };
+
+    // Select active language texts
+    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+    // --- DOM Elements ---
+    const waterIntakeForm = document.getElementById('waterIntakeForm');
+    const waterWeightInput = document.getElementById('water_weight');
+    const waterIntakeResultDiv = document.getElementById('waterIntakeResult');
+    const waterIntakeGoalDiv = document.getElementById('waterIntakeGoal'); // This is for the explanation text below the result
+    const calculateButton = waterIntakeForm.querySelector('button[type="submit"]');
+
+    // Update static labels and placeholders on load
+    document.querySelector('label[for="water_weight"]').textContent = currentTexts.weightLabel;
+    waterWeightInput.placeholder = currentTexts.placeholderWeight;
+    calculateButton.textContent = currentTexts.calculateButtonText;
+
+    // Update the explanation text below the results
+    const initialExplanation = document.querySelector('.calculator-form-container .small-text');
+    if (initialExplanation) {
+        initialExplanation.textContent = currentTexts.explanation;
+    }
+
+    // --- Water Intake Calculation Function ---
+    function calculateWaterIntake(event) {
+        event.preventDefault(); // Prevent form submission and page reload
+
+        let weightKg = parseFloat(waterWeightInput.value);
+
+        // Clear previous results
+        waterIntakeResultDiv.innerHTML = '';
+        waterIntakeGoalDiv.innerHTML = '';
+
+        // --- Input Validation ---
+        if (isNaN(weightKg) || weightKg < 10) { // Minimum realistic weight
+            waterIntakeResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            return;
+        }
+
+        // Calculate water need range (30-40 ml per kg)
+        const minWaterMl = weightKg * 30;
+        const maxWaterMl = weightKg * 40;
+
+        const minWaterL = minWaterMl / 1000;
+        const maxWaterL = maxWaterMl / 1000;
+
+        // Display results
+        waterIntakeResultDiv.innerHTML = `
+            <h3>${currentTexts.resultTitle}</h3>
+            <p><strong>${currentTexts.waterAmount}</strong> <span class="result-value">${minWaterL.toFixed(1)} - ${maxWaterL.toFixed(1)} ${currentTexts.unitLiter}</span></p>
+        `;
+        
+        // Use the waterIntakeGoalDiv for the explanation, assuming it's available and styled
+        waterIntakeGoalDiv.innerHTML = `<p class="small-text">${currentTexts.explanation}</p>`;
+    }
+
+    // Add event listener to the form for submission
+    waterIntakeForm.addEventListener('submit', calculateWaterIntake);
+});
+  </script>
 </body>
 </html>

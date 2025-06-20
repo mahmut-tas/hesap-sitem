@@ -848,5 +848,297 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Isı Transferini Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli değerler girin.',
+                errorZeroValue: 'Değer sıfır veya negatif olamaz.',
+                resultPrefix: 'Transfer Edilen Isı:',
+                // İletim
+                conductionTitle: 'Isı İletimi ile Isı Transferi',
+                thermalConductivityLabel: 'Isı İletim Katsayısı (k):',
+                areaLabel: 'Alan (A):',
+                tempDiffLabel: 'Sıcaklık Farkı (ΔT):',
+                thicknessLabel: 'Malzeme Kalınlığı (L):',
+                // Konveksiyon
+                convectionTitle: 'Konveksiyon ile Isı Transferi',
+                convectionCoefficientLabel: 'Konveksiyon Isı Transfer Katsayısı (h):',
+                surfaceTempLabel: 'Yüzey Sıcaklığı (T_s):',
+                fluidTempLabel: 'Akışkan Sıcaklığı (T_∞):',
+                // Işınım
+                radiationTitle: 'Işınım ile Isı Transferi',
+                emissivityLabel: 'Yayma Gücü (ε - Emisivite):',
+                ambientTempLabel: 'Ortam Sıcaklığı (T_çevre):',
+                // Birimler
+                unit_W: 'Watt (W)',
+                unit_Btu_hr: 'Btu/sa',
+                unit_K: 'K',
+                unit_C: '°C',
+                unit_F: '°F',
+                unit_m: 'm',
+                unit_cm: 'cm',
+                unit_mm: 'mm',
+                unit_ft: 'ft',
+                unit_inch: 'inç',
+                unit_m2: 'm²',
+                unit_ft2: 'ft²',
+                unit_WmK: 'W/(m K)',
+                unit_Btu_hr_ftF: 'Btu/(sa·ft·°F)',
+                unit_Wm2K: 'W/(m² K)',
+                unit_Btu_hr_ft2F: 'Btu/(sa·ft²·°F)'
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate Heat Transfer',
+                invalidInput: 'Please enter valid values for all fields.',
+                errorZeroValue: 'Value cannot be zero or negative.',
+                resultPrefix: 'Heat Transferred:',
+                // Conduction
+                conductionTitle: 'Heat Transfer by Conduction',
+                thermalConductivityLabel: 'Thermal Conductivity Coefficient (k):',
+                areaLabel: 'Area (A):',
+                tempDiffLabel: 'Temperature Difference (ΔT):',
+                thicknessLabel: 'Material Thickness (L):',
+                // Convection
+                convectionTitle: 'Heat Transfer by Convection',
+                convectionCoefficientLabel: 'Convection Heat Transfer Coefficient (h):',
+                surfaceTempLabel: 'Surface Temperature (T_s):',
+                fluidTempLabel: 'Fluid Temperature (T_∞):',
+                // Radiation
+                radiationTitle: 'Heat Transfer by Radiation',
+                emissivityLabel: 'Emissivity (ε):',
+                ambientTempLabel: 'Ambient Temperature (T_environment):',
+                // Units
+                unit_W: 'Watt (W)',
+                unit_Btu_hr: 'Btu/hr',
+                unit_K: 'K',
+                unit_C: '°C',
+                unit_F: '°F',
+                unit_m: 'm',
+                unit_cm: 'cm',
+                unit_mm: 'mm',
+                unit_ft: 'ft',
+                unit_inch: 'inch',
+                unit_m2: 'm²',
+                unit_ft2: 'ft²',
+                unit_WmK: 'W/(m K)',
+                unit_Btu_hr_ftF: 'Btu/(hr·ft·°F)',
+                unit_Wm2K: 'W/(m² K)',
+                unit_Btu_hr_ft2F: 'Btu/(hr·ft²·°F)'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // Hesaplayıcı butonları ve içerikleri
+        const calcButtons = document.querySelectorAll('.calc-type-button');
+        const calcWrappers = document.querySelectorAll('.calc-wrapper');
+
+        // Function to show/hide calculators
+        function showCalculator(calcType) {
+            calcWrappers.forEach(wrapper => {
+                if (wrapper.id === `calculator-${calcType}`) {
+                    wrapper.classList.remove('hidden-calc');
+                } else {
+                    wrapper.classList.add('hidden-calc');
+                }
+            });
+
+            calcButtons.forEach(button => {
+                if (button.dataset.calcType === calcType) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        // Add click event to buttons
+        calcButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const calcType = this.dataset.calcType;
+                showCalculator(calcType);
+                // MathJax'i güncelle (eğer formül görünür hale gelirse)
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            });
+        });
+
+        // Sayfa yüklendiğinde varsayılan olarak ilk hesaplayıcıyı göster
+        showCalculator('conduction');
+
+        // MathJax yüklemesini de tetikle
+        if (typeof MathJax !== 'undefined') {
+            MathJax.typesetPromise().then(() => {
+                console.log("MathJax typeset complete for initial load.");
+            }).catch((err) => console.error("MathJax typeset error on initial load:", err));
+        }
+
+        // --- Birim Dönüşüm Sabitleri ---
+        const UNIT_CONVERSIONS = {
+            // Uzunluk: metreye dönüştürme faktörleri
+            length: {
+                'm': 1,
+                'cm': 0.01,
+                'mm': 0.001,
+                'ft': 0.3048,
+                'inch': 0.0254
+            },
+            // Alan: m²'ye dönüştürme faktörleri
+            area: {
+                'm2': 1,
+                'ft2': 0.092903
+            },
+            // Sıcaklık: Kelvin'e dönüştürme faktörleri (mutlak sıcaklık için)
+            temperature: {
+                'K': temp => temp,
+                'C': temp => temp + 273.15,
+                'F': temp => (temp - 32) * 5 / 9 + 273.15
+            },
+            // Sıcaklık Farkı: Kelvin veya °C farkına dönüştürme faktörleri (sayısal olarak aynı)
+            tempDifference: {
+                'K': 1,
+                'C': 1,
+                'F': 5 / 9 // Δ°F = Δ°C * 9/5 => Δ°C = Δ°F * 5/9
+            },
+            // Isı İletim Katsayısı: W/(m K) birimine dönüştürme faktörleri
+            thermalConductivity: {
+                'W/mK': 1, // Base unit
+                'Btu/hr-ftF': 1.730735 // 1 Btu/(hr·ft·°F) = 1.730735 W/(m·K)
+            },
+            // Konveksiyon Isı Transfer Katsayısı: W/(m² K) birimine dönüştürme faktörleri
+            convectionCoefficient: {
+                'W/m2K': 1, // Base unit
+                'Btu/hr-ft2F': 5.67826 // 1 Btu/(hr·ft²·°F) = 5.67826 W/(m²·K)
+            }
+        };
+
+        const STEFAN_BOLTZMANN_CONSTANT = 5.67e-8; // W/(m²·K⁴)
+
+        // --- Isı İletimi (Conduction) Hesaplama ---
+        const conductionForm = document.getElementById('conductionForm');
+        const conductionResultDiv = document.getElementById('conductionResult');
+
+        conductionForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const k = parseFloat(document.getElementById('thermalConductivity').value);
+            const A = parseFloat(document.getElementById('area_conduction').value);
+            const deltaT = parseFloat(document.getElementById('tempDiff_conduction').value);
+            const L = parseFloat(document.getElementById('thickness').value);
+
+            const kUnit = document.getElementById('thermalConductivityUnit').value;
+            const AUnit = document.getElementById('areaUnit_conduction').value;
+            const deltaTUnit = document.getElementById('tempDiffUnit_conduction').value;
+            const LUnit = document.getElementById('thicknessUnit').value;
+
+            if (isNaN(k) || isNaN(A) || isNaN(deltaT) || isNaN(L) ||
+                k <= 0 || A <= 0 || L <= 0) { // deltaT can be 0, meaning no heat transfer
+                conductionResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                conductionResultDiv.style.display = 'block';
+                return;
+            }
+
+            // Birimleri SI'a dönüştür: W/(m K), m², K, m
+            const k_WmK = k * UNIT_CONVERSIONS.thermalConductivity[kUnit];
+            const A_m2 = A * UNIT_CONVERSIONS.area[AUnit];
+            const deltaT_K = deltaT * UNIT_CONVERSIONS.tempDifference[deltaTUnit];
+            const L_m = L * UNIT_CONVERSIONS.length[LUnit];
+
+            // Q = k * A * (ΔT / L) (Watt)
+            const heatTransfer_W = k_WmK * A_m2 * (deltaT_K / L_m);
+
+            conductionResultDiv.innerHTML = `
+                <p>${currentTexts.resultPrefix} <span class="result-value">${heatTransfer_W.toFixed(3)}</span> ${currentTexts.unit_W}</p>
+            `;
+            conductionResultDiv.style.display = 'block';
+        });
+
+        // --- Konveksiyon (Convection) Hesaplama ---
+        const convectionForm = document.getElementById('convectionForm');
+        const convectionResultDiv = document.getElementById('convectionResult');
+
+        convectionForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const h = parseFloat(document.getElementById('convectionCoefficient').value);
+            const A = parseFloat(document.getElementById('area_convection').value);
+            const Ts = parseFloat(document.getElementById('surfaceTemp').value);
+            const Tinf = parseFloat(document.getElementById('fluidTemp').value);
+
+            const hUnit = document.getElementById('convectionCoefficientUnit').value;
+            const AUnit = document.getElementById('areaUnit_convection').value;
+            const TsUnit = document.getElementById('surfaceTempUnit').value;
+            const TinfUnit = document.getElementById('fluidTempUnit').value;
+
+            if (isNaN(h) || isNaN(A) || isNaN(Ts) || isNaN(Tinf) ||
+                h <= 0 || A <= 0) { // Ts and Tinf can lead to 0 difference
+                convectionResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                convectionResultDiv.style.display = 'block';
+                return;
+            }
+
+            // Birimleri SI'a dönüştür: W/(m² K), m², K
+            const h_Wm2K = h * UNIT_CONVERSIONS.convectionCoefficient[hUnit];
+            const A_m2 = A * UNIT_CONVERSIONS.area[AUnit];
+            const Ts_K = UNIT_CONVERSIONS.temperature[TsUnit](Ts);
+            const Tinf_K = UNIT_CONVERSIONS.temperature[TinfUnit](Tinf);
+
+            // Q = h * A * (Ts - Tinf) (Watt)
+            const heatTransfer_W = h_Wm2K * A_m2 * (Ts_K - Tinf_K);
+
+            convectionResultDiv.innerHTML = `
+                <p>${currentTexts.resultPrefix} <span class="result-value">${heatTransfer_W.toFixed(3)}</span> ${currentTexts.unit_W}</p>
+            `;
+            convectionResultDiv.style.display = 'block';
+        });
+
+        // --- Işınım (Radiation) Hesaplama ---
+        const radiationForm = document.getElementById('radiationForm');
+        const radiationResultDiv = document.getElementById('radiationResult');
+
+        radiationForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const epsilon = parseFloat(document.getElementById('emissivity').value);
+            const A = parseFloat(document.getElementById('area_radiation').value);
+            const Ts = parseFloat(document.getElementById('surfaceTemp_radiation').value);
+            const Tambient = parseFloat(document.getElementById('ambientTemp_radiation').value);
+
+            const AUnit = document.getElementById('areaUnit_radiation').value;
+            const TsUnit = document.getElementById('surfaceTempUnit_radiation').value;
+            const TambientUnit = document.getElementById('ambientTempUnit_radiation').value;
+
+            if (isNaN(epsilon) || isNaN(A) || isNaN(Ts) || isNaN(Tambient) ||
+                epsilon < 0 || epsilon > 1 || A <= 0 || Ts <= 0 || Tambient <= 0) { // Temperatures must be absolute (K)
+                radiationResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                radiationResultDiv.style.display = 'block';
+                return;
+            }
+
+            // Birimleri SI'a dönüştür: m², K
+            const A_m2 = A * UNIT_CONVERSIONS.area[AUnit];
+            const Ts_K = UNIT_CONVERSIONS.temperature[TsUnit](Ts);
+            const Tambient_K = UNIT_CONVERSIONS.temperature[TambientUnit](Tambient);
+
+            // Q = ε * σ * A * (Ts^4 - Tambient^4) (Watt)
+            const heatTransfer_W = epsilon * STEFAN_BOLTZMANN_CONSTANT * A_m2 * (Math.pow(Ts_K, 4) - Math.pow(Tambient_K, 4));
+
+            radiationResultDiv.innerHTML = `
+                <p>${currentTexts.resultPrefix} <span class="result-value">${heatTransfer_W.toFixed(3)}</span> ${currentTexts.unit_W}</p>
+            `;
+            radiationResultDiv.style.display = 'block';
+        });
+    });
+</script>
 </body>
 </html>

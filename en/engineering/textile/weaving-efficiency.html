@@ -266,5 +266,103 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    // Language detection: Assume English if URL starts with '/en/', otherwise Turkish
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+    // Text strings object for dynamic content
+    const texts = {
+        tr: {
+            calculateButtonText: 'Hesapla',
+            invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+            resultTitle: 'Sonuçlar:',
+            theoreticalProductionLabel: 'Teorik Üretim (metre):',
+            efficiencyPercentageLabel: 'Dokuma Makinesi Verimliliği (%):',
+            explanation: 'Verimlilik, gerçek üretimin teorik üretime oranıdır. %100\'den az olması normaldir.'
+        },
+        en: {
+            calculateButtonText: 'Calculate',
+            invalidInput: 'Please enter valid positive numbers for all fields.',
+            resultTitle: 'Results:',
+            theoreticalProductionLabel: 'Theoretical Production (meters):',
+            efficiencyPercentageLabel: 'Weaving Machine Efficiency (%):',
+            explanation: 'Productivity is the percentage of actual production to theoretical production. It is normal for it to be less than 100%.'
+        }
+    };
+
+    // Select active language texts
+    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+    // --- DOM Elements ---
+    const loomEfficiencyForm = document.getElementById('loomEfficiencyForm');
+    const machineRPMInput = document.getElementById('machineRPM');
+    const weftDensityInput = document.getElementById('weftDensity');
+    const workingHoursInput = document.getElementById('workingHours');
+    const actualProductionInput = document.getElementById('actualProduction');
+    const theoreticalProductionSpan = document.getElementById('theoreticalProduction');
+    const efficiencyPercentageSpan = document.getElementById('efficiencyPercentage');
+    const resultBox = document.getElementById('resultBox');
+    const calculateButton = loomEfficiencyForm.querySelector('button[type="button"]'); // Select the button within the form
+
+    // Update button text and explanation text based on language
+    if (calculateButton) {
+        calculateButton.textContent = currentTexts.calculateButtonText;
+    }
+
+    const explanationParagraph = resultBox.nextElementSibling; // The <p class="small-text"> after resultBox
+    if (explanationParagraph && explanationParagraph.className === 'small-text') {
+        explanationParagraph.textContent = currentTexts.explanation;
+    }
+
+    // --- Calculation Function ---
+    window.calculateLoomEfficiency = function() {
+        let machineRPM = parseFloat(machineRPMInput.value);
+        let weftDensity = parseFloat(weftDensityInput.value);
+        let workingHours = parseFloat(workingHoursInput.value);
+        let actualProduction = parseFloat(actualProductionInput.value);
+
+        // Clear previous results and hide result box initially
+        theoreticalProductionSpan.textContent = '';
+        efficiencyPercentageSpan.textContent = '';
+        resultBox.style.display = 'none';
+
+        // --- Input Validation ---
+        if (isNaN(machineRPM) || isNaN(weftDensity) || isNaN(workingHours) || isNaN(actualProduction) ||
+            machineRPM <= 0 || weftDensity <= 0 || workingHours <= 0 || actualProduction < 0) {
+            alert(currentTexts.invalidInput);
+            return;
+        }
+
+        // --- Perform Calculations ---
+        // Theoretical Production (m/hour) = (Machine Speed (weft/minute) * 60 (min/hour)) / (Weft Density (weft/cm) * 100 (cm/m))
+        const theoreticalProductionPerHour = (machineRPM * 60) / (weftDensity * 100);
+
+        // Theoretical Total Production (meters) = Theoretical Production (m/hour) * Working Time (hours)
+        const theoreticalTotalProduction = theoreticalProductionPerHour * workingHours;
+
+        // Efficiency (%) = (Actual Production (meters) / Theoretical Total Production (meters)) * 100
+        let efficiencyPercentage = (actualProduction / theoreticalTotalProduction) * 100;
+
+        // Handle cases where actual production is higher than theoretical (e.g., due to measurement errors or ideal conditions)
+        if (efficiencyPercentage > 100) {
+            efficiencyPercentage = 100; // Cap at 100% as efficiency cannot exceed 100%
+        }
+
+        // --- Display Results ---
+        theoreticalProductionSpan.textContent = theoreticalTotalProduction.toFixed(2) + ' ' + currentTexts.unit_meter; // Assuming 'unit_meter' exists or adding it directly
+        efficiencyPercentageSpan.textContent = efficiencyPercentage.toFixed(2) + ' %';
+        resultBox.style.display = 'block'; // Show the result box
+
+        // Update result box header and labels
+        const resultBoxHeader = resultBox.querySelector('h3');
+        if (resultBoxHeader) {
+            resultBoxHeader.textContent = currentTexts.resultTitle;
+        }
+        resultBox.querySelector('p:nth-of-type(1) strong').textContent = currentTexts.theoreticalProductionLabel;
+        resultBox.querySelector('p:nth-of-type(2) strong').textContent = currentTexts.efficiencyPercentageLabel;
+    };
+});
+  </script>
 </body>
 </html>

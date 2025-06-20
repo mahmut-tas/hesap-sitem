@@ -885,5 +885,313 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli değerler girin.',
+                errorZeroSpecificHeat: 'Özgül ısı kapasitesi sıfır olamaz.',
+                errorZeroTempChange: 'Sıcaklık değişimi sıfır olamaz.',
+                errorZeroLatentHeat: 'Gizli ısı sıfır olamaz.',
+                resultPrefix: 'Sonuç:',
+                // Isı Transferi
+                heatTransferTitle: 'Isı Transferi Hesapla',
+                massLabel: 'Akışkanın Kütlesi:',
+                specificHeatLabel: 'Özgül Isı Kapasitesi ($c_p$):',
+                tempChangeLabel: 'Sıcaklık Değişimi ($\\Delta T$):',
+                heatTransferResultLabel: 'Transfer Edilen Isı:',
+                // Sıcaklık Değişimi Hesaplama
+                calcTempChangeTitle: 'Sıcaklık Değişimini Hesapla ($\\Delta T$)',
+                heatTransferInputLabel: 'Transfer Edilen Isı (Q):',
+                tempChangeResultLabel: 'Sıcaklık Değişimi:',
+                // Gerekli Kütle Hesaplama
+                calcMassNeededTitle: 'Gerekli Kütleyi Hesapla ($m$)',
+                massResultLabel: 'Gerekli Kütle:',
+                // Faz Değişimi
+                phaseChangeTitle: 'Faz Değişimi Enerjisi Hesapla ($Q = m \\cdot L$)',
+                latentHeatLabel: 'Gizli Isı (L):',
+                phaseChangeTypeLabel: 'Faz Değişimi Tipi:',
+                fusion: 'Erime/Donma (Füzyon)',
+                vaporization: 'Buharlaşma/Yoğuşma (Buharlaşma)',
+                energyResultLabel: 'Transfer Edilen Enerji:'
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate',
+                invalidInput: 'Please enter valid values for all fields.',
+                errorZeroSpecificHeat: 'Specific heat capacity cannot be zero.',
+                errorZeroTempChange: 'Temperature change cannot be zero.',
+                errorZeroLatentHeat: 'Latent heat cannot be zero.',
+                resultPrefix: 'Result:',
+                // Heat Transfer
+                heatTransferTitle: 'Calculate Heat Transfer',
+                massLabel: 'Mass of Fluid:',
+                specificHeatLabel: 'Specific Heat Capacity ($c_p$):',
+                tempChangeLabel: 'Temperature Change ($\\Delta T$):',
+                heatTransferResultLabel: 'Heat Transferred:',
+                // Calculate Temperature Change
+                calcTempChangeTitle: 'Calculate Temperature Change ($\\Delta T$)',
+                heatTransferInputLabel: 'Heat Transferred (Q):',
+                tempChangeResultLabel: 'Temperature Change:',
+                // Calculate Mass Needed
+                calcMassNeededTitle: 'Calculate Mass Needed ($m$)',
+                massResultLabel: 'Mass Needed:',
+                // Phase Change
+                phaseChangeTitle: 'Calculate Phase Change Energy ($Q = m \\cdot L$)',
+                latentHeatLabel: 'Latent Heat (L):',
+                phaseChangeTypeLabel: 'Phase Change Type:',
+                fusion: 'Melting/Freezing (Fusion)',
+                vaporization: 'Vaporization/Condensation (Vaporization)',
+                energyResultLabel: 'Energy Transferred:'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // Hesaplayıcı butonları ve içerikleri
+        const calcButtons = document.querySelectorAll('.calc-type-button');
+        const calcWrappers = document.querySelectorAll('.calc-wrapper');
+
+        // Function to show/hide calculators
+        function showCalculator(calcType) {
+            calcWrappers.forEach(wrapper => {
+                if (wrapper.id === `calculator-${calcType}`) {
+                    wrapper.classList.remove('hidden-calc');
+                } else {
+                    wrapper.classList.add('hidden-calc');
+                }
+            });
+
+            calcButtons.forEach(button => {
+                if (button.dataset.calcType === calcType) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        // Add click event to buttons
+        calcButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const calcType = this.dataset.calcType;
+                showCalculator(calcType);
+                // MathJax'i güncelle (eğer formül görünür hale gelirse)
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            });
+        });
+
+        // Sayfa yüklendiğinde varsayılan olarak ilk hesaplayıcıyı göster
+        showCalculator('heatTransfer');
+
+        // MathJax yüklemesini de tetikle
+        if (typeof MathJax !== 'undefined') {
+            MathJax.typesetPromise().then(() => {
+                // MathJax yüklendikten sonra formülleri yeniden render et
+                console.log("MathJax typeset complete.");
+            }).catch((err) => console.error("MathJax typeset error:", err));
+        }
+
+        // --- Birim Dönüşüm Sabitleri ---
+        const UNIT_CONVERSIONS = {
+            // Kütle: kg'a dönüştürme faktörleri
+            mass: {
+                'kg': 1,
+                'g': 0.001,
+                'lb': 0.453592
+            },
+            // Enerji: kJ'a dönüştürme faktörleri
+            energy: {
+                'kJ': 1,
+                'J': 0.001,
+                'kcal': 4.184,
+                'Btu': 1.055056
+            },
+            // Sıcaklık Değişimi: °C'ye dönüştürme faktörleri (sıcaklık farkları için)
+            tempChange: {
+                'C': 1,
+                'K': 1, // ΔK = Δ°C
+                'F': 5/9 // Δ°F = Δ°C * 9/5 => Δ°C = Δ°F * 5/9
+            },
+            // Özgül Isı Kapasitesi: kJ/(kg·°C) birimine dönüştürme faktörleri
+            specificHeat: {
+                'kJ/kgC': 1, // Base unit
+                'J/gC': 1,   // J/gC = kJ/kgC (1 J/g = 1 kJ/kg)
+                'kcal/kgC': 4.184, // 1 kcal = 4.184 kJ
+                'Btu/lbF': 4.1868 // 1 Btu/lb°F ≈ 4.1868 kJ/kg°C (Çok yakın bir değerdir, yaklaşık 1 cal/gC)
+            },
+            // Gizli Isı: kJ/kg birimine dönüştürme faktörleri
+            latentHeat: {
+                'kJ/kg': 1, // Base unit
+                'J/g': 1,   // J/g = kJ/kg
+                'kcal/kg': 4.184, // 1 kcal = 4.184 kJ
+                'Btu/lb': 2.326 // 1 Btu/lb = 2.326 kJ/kg
+            }
+        };
+
+        // --- Isı Transferi Hesaplama (Q=mCpΔT) ---
+        const heatTransferForm = document.getElementById('heatTransferForm');
+        const heatTransferResultDiv = document.getElementById('heatTransferResult');
+
+        heatTransferForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const mass = parseFloat(document.getElementById('mass_ht').value);
+            const specificHeat = parseFloat(document.getElementById('specificHeat_ht').value);
+            const tempChange = parseFloat(document.getElementById('tempChange_ht').value);
+
+            const massUnit = document.getElementById('massUnit_ht').value;
+            const specificHeatUnit = document.getElementById('specificHeatUnit_ht').value;
+            const tempChangeUnit = document.getElementById('tempChangeUnit_ht').value;
+
+            if (isNaN(mass) || isNaN(specificHeat) || isNaN(tempChange) || mass <= 0 || specificHeat <= 0) {
+                heatTransferResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                heatTransferResultDiv.style.display = 'block';
+                return;
+            }
+
+            // Birimleri kJ, kg, °C cinsine dönüştür
+            const mass_kg = mass * UNIT_CONVERSIONS.mass[massUnit];
+            const specificHeat_kJ_kgC = specificHeat * UNIT_CONVERSIONS.specificHeat[specificHeatUnit];
+            const tempChange_C = tempChange * UNIT_CONVERSIONS.tempChange[tempChangeUnit];
+
+            // Q = m * Cp * ΔT (kJ)
+            const heatTransferred_kJ = mass_kg * specificHeat_kJ_kgC * tempChange_C;
+
+            heatTransferResultDiv.innerHTML = `
+                <p>${currentTexts.heatTransferResultLabel} <span class="result-value">${heatTransferred_kJ.toFixed(3)}</span> kJ</p>
+            `;
+            heatTransferResultDiv.style.display = 'block';
+        });
+
+        // --- Sıcaklık Değişimi Hesapla (ΔT) ---
+        const calcTempChangeForm = document.getElementById('calcTempChangeForm');
+        const calcTempChangeResultDiv = document.getElementById('calcTempChangeResult');
+
+        calcTempChangeForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const heatTransfer_dt = parseFloat(document.getElementById('heatTransfer_dt').value);
+            const mass_dt = parseFloat(document.getElementById('mass_dt').value);
+            const specificHeat_dt = parseFloat(document.getElementById('specificHeat_dt').value);
+
+            const heatTransferUnit_dt = document.getElementById('heatTransferUnit_dt').value;
+            const massUnit_dt = document.getElementById('massUnit_dt').value;
+            const specificHeatUnit_dt = document.getElementById('specificHeatUnit_dt').value;
+
+            if (isNaN(heatTransfer_dt) || isNaN(mass_dt) || isNaN(specificHeat_dt) || mass_dt <= 0 || specificHeat_dt <= 0) {
+                calcTempChangeResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                calcTempChangeResultDiv.style.display = 'block';
+                return;
+            }
+            if (specificHeat_dt === 0) { // Specific heat can't be 0
+                calcTempChangeResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroSpecificHeat}</p>`;
+                calcTempChangeResultDiv.style.display = 'block';
+                return;
+            }
+
+            // Birimleri kJ, kg, °C cinsine dönüştür
+            const heatTransfer_kJ = heatTransfer_dt * UNIT_CONVERSIONS.energy[heatTransferUnit_dt];
+            const mass_kg = mass_dt * UNIT_CONVERSIONS.mass[massUnit_dt];
+            const specificHeat_kJ_kgC = specificHeat_dt * UNIT_CONVERSIONS.specificHeat[specificHeatUnit_dt];
+
+            // ΔT = Q / (m * Cp) (°C)
+            const tempChange_C = heatTransfer_kJ / (mass_kg * specificHeat_kJ_kgC);
+
+            calcTempChangeResultDiv.innerHTML = `
+                <p>${currentTexts.tempChangeResultLabel} <span class="result-value">${tempChange_C.toFixed(3)}</span> °C</p>
+            `;
+            calcTempChangeResultDiv.style.display = 'block';
+        });
+
+        // --- Gerekli Kütleyi Hesapla (m) ---
+        const calcMassNeededForm = document.getElementById('calcMassNeededForm');
+        const calcMassNeededResultDiv = document.getElementById('calcMassNeededResult');
+
+        calcMassNeededForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const heatTransfer_m = parseFloat(document.getElementById('heatTransfer_m').value);
+            const specificHeat_m = parseFloat(document.getElementById('specificHeat_m').value);
+            const tempChange_m = parseFloat(document.getElementById('tempChange_m').value);
+
+            const heatTransferUnit_m = document.getElementById('heatTransferUnit_m').value;
+            const specificHeatUnit_m = document.getElementById('specificHeatUnit_m').value;
+            const tempChangeUnit_m = document.getElementById('tempChangeUnit_m').value;
+
+            if (isNaN(heatTransfer_m) || isNaN(specificHeat_m) || isNaN(tempChange_m) || specificHeat_m <= 0 || Math.abs(tempChange_m) <= 0.000001) { // Temp change can't be zero (or very close to zero)
+                calcMassNeededResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                calcMassNeededResultDiv.style.display = 'block';
+                return;
+            }
+            if (specificHeat_m === 0) {
+                calcMassNeededResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroSpecificHeat}</p>`;
+                calcMassNeededResultDiv.style.display = 'block';
+                return;
+            }
+            if (Math.abs(tempChange_m) < 0.000001) { // Prevent division by zero
+                 calcMassNeededResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroTempChange}</p>`;
+                 calcMassNeededResultDiv.style.display = 'block';
+                 return;
+            }
+
+
+            // Birimleri kJ, kg, °C cinsine dönüştür
+            const heatTransfer_kJ = heatTransfer_m * UNIT_CONVERSIONS.energy[heatTransferUnit_m];
+            const specificHeat_kJ_kgC = specificHeat_m * UNIT_CONVERSIONS.specificHeat[specificHeatUnit_m];
+            const tempChange_C = tempChange_m * UNIT_CONVERSIONS.tempChange[tempChangeUnit_m];
+
+            // m = Q / (Cp * ΔT) (kg)
+            const massNeeded_kg = heatTransfer_kJ / (specificHeat_kJ_kgC * tempChange_C);
+
+            calcMassNeededResultDiv.innerHTML = `
+                <p>${currentTexts.massResultLabel} <span class="result-value">${massNeeded_kg.toFixed(3)}</span> kg</p>
+            `;
+            calcMassNeededResultDiv.style.display = 'block';
+        });
+
+        // --- Faz Değişimi Enerjisi Hesapla (Q=mL) ---
+        const phaseChangeForm = document.getElementById('phaseChangeForm');
+        const phaseChangeResultDiv = document.getElementById('phaseChangeResult');
+
+        phaseChangeForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const mass_pc = parseFloat(document.getElementById('mass_pc').value);
+            const latentHeat = parseFloat(document.getElementById('latentHeat').value);
+
+            const massUnit_pc = document.getElementById('massUnit_pc').value;
+            const latentHeatUnit = document.getElementById('latentHeatUnit').value;
+            const phaseChangeType = document.getElementById('phaseChangeType').value; // Bu bilgi sadece açıklama için kullanılabilir
+
+            if (isNaN(mass_pc) || isNaN(latentHeat) || mass_pc <= 0 || latentHeat <= 0) {
+                phaseChangeResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                phaseChangeResultDiv.style.display = 'block';
+                return;
+            }
+
+            // Birimleri kJ, kg cinsine dönüştür
+            const mass_kg = mass_pc * UNIT_CONVERSIONS.mass[massUnit_pc];
+            const latentHeat_kJ_kg = latentHeat * UNIT_CONVERSIONS.latentHeat[latentHeatUnit];
+
+            // Q = m * L (kJ)
+            const energyTransferred_kJ = mass_kg * latentHeat_kJ_kg;
+
+            phaseChangeResultDiv.innerHTML = `
+                <p>${currentTexts.energyResultLabel} <span class="result-value">${energyTransferred_kJ.toFixed(3)}</span> kJ</p>
+            `;
+            phaseChangeResultDiv.style.display = 'block';
+        });
+    });
+</script>
 </body>
 </html>

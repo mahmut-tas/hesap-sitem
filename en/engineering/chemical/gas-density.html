@@ -792,5 +792,337 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli değerler girin.',
+                errorZeroValue: 'Değer sıfır veya negatif olamaz.',
+                errorEmptyField: 'Lütfen hesaplamak istediğiniz alanı boş bırakın ve diğer üç değeri girin.',
+                errorMultipleEmptyFields: 'Lütfen sadece bir alanı boş bırakın.',
+                resultPrefix: 'Sonuç:',
+                // Gaz Yoğunluğu Hesaplama
+                gasDensityTitle: 'Gaz Yoğunluğunu Hesapla (d=PM/RT)',
+                pressureLabel: 'Basınç (P):',
+                molarMassLabel: 'Mol Kütlesi (M):',
+                temperatureLabel: 'Sıcaklık (T):',
+                gasDensityResultLabel: 'Gaz Yoğunluğu:',
+                // İdeal Gaz Yasası Parametrelerini Hesapla
+                idealGasLawTitle: 'İdeal Gaz Yasası Parametrelerini Hesapla (PV=nRT)',
+                volumeLabel: 'Hacim (V):',
+                molesLabel: 'Mol Sayısı (n):',
+                calculatedPressure: 'Hesaplanan Basınç:',
+                calculatedVolume: 'Hesaplanan Hacim:',
+                calculatedMoles: 'Hesaplanan Mol Sayısı:',
+                calculatedTemperature: 'Hesaplanan Sıcaklık:',
+                // Birimler
+                unit_g_L: 'g/L',
+                unit_kg_m3: 'kg/m³',
+                unit_atm: 'atm',
+                unit_kPa: 'kPa',
+                unit_mmHg: 'mmHg',
+                unit_psi: 'psi',
+                unit_L: 'L',
+                unit_m3: 'm³',
+                unit_mL: 'mL',
+                unit_cm3: 'cm³',
+                unit_mol: 'mol',
+                unit_mmol: 'mmol',
+                unit_K: 'K',
+                unit_C: '°C',
+                unit_F: '°F',
+                unit_g_mol: 'g/mol',
+                unit_kg_mol: 'kg/mol'
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate',
+                invalidInput: 'Please enter valid values for all fields.',
+                errorZeroValue: 'Value cannot be zero or negative.',
+                errorEmptyField: 'Please leave only the field you want to calculate blank and enter the other three values.',
+                errorMultipleEmptyFields: 'Please leave only one field blank.',
+                resultPrefix: 'Result:',
+                // Gas Density Calculation
+                gasDensityTitle: 'Calculate Gas Density (d=PM/RT)',
+                pressureLabel: 'Pressure (P):',
+                molarMassLabel: 'Molar Mass (M):',
+                temperatureLabel: 'Temperature (T):',
+                gasDensityResultLabel: 'Gas Density:',
+                // Calculate Ideal Gas Law Parameters
+                idealGasLawTitle: 'Calculate Ideal Gas Law Parameters (PV=nRT)',
+                volumeLabel: 'Volume (V):',
+                molesLabel: 'Moles (n):',
+                calculatedPressure: 'Calculated Pressure:',
+                calculatedVolume: 'Calculated Volume:',
+                calculatedMoles: 'Calculated Moles:',
+                calculatedTemperature: 'Calculated Temperature:',
+                // Units
+                unit_g_L: 'g/L',
+                unit_kg_m3: 'kg/m³',
+                unit_atm: 'atm',
+                unit_kPa: 'kPa',
+                unit_mmHg: 'mmHg',
+                unit_psi: 'psi',
+                unit_L: 'L',
+                unit_m3: 'm³',
+                unit_mL: 'mL',
+                unit_cm3: 'cm³',
+                unit_mol: 'mol',
+                unit_mmol: 'mmol',
+                unit_K: 'K',
+                unit_C: '°C',
+                unit_F: '°F',
+                unit_g_mol: 'g/mol',
+                unit_kg_mol: 'kg/mol'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // Hesaplayıcı butonları ve içerikleri
+        const calcButtons = document.querySelectorAll('.calc-type-button');
+        const calcWrappers = document.querySelectorAll('.calc-wrapper');
+
+        // Function to show/hide calculators
+        function showCalculator(calcType) {
+            calcWrappers.forEach(wrapper => {
+                if (wrapper.id === `calculator-${calcType}`) {
+                    wrapper.classList.remove('hidden-calc');
+                } else {
+                    wrapper.classList.add('hidden-calc');
+                }
+            });
+
+            calcButtons.forEach(button => {
+                if (button.dataset.calcType === calcType) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        // Add click event to buttons
+        calcButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const calcType = this.dataset.calcType;
+                showCalculator(calcType);
+                // MathJax'i güncelle (eğer formül görünür hale gelirse)
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            });
+        });
+
+        // Sayfa yüklendiğinde varsayılan olarak ilk hesaplayıcıyı göster
+        showCalculator('gasDensity');
+
+        // MathJax yüklemesini de tetikle
+        if (typeof MathJax !== 'undefined') {
+            MathJax.typesetPromise().then(() => {
+                console.log("MathJax typeset complete for initial load.");
+            }).catch((err) => console.error("MathJax typeset error on initial load:", err));
+        }
+
+        // --- Birim Dönüşüm Sabitleri ---
+        // Kelvin'e dönüştürme
+        const TEMP_TO_K = {
+            'K': temp => temp,
+            'C': temp => temp + 273.15,
+            'F': temp => (temp - 32) * 5/9 + 273.15
+        };
+        // kg/mol'e dönüştürme
+        const MOLAR_MASS_TO_KG_MOL = {
+            'g/mol': molMass => molMass / 1000,
+            'kg/mol': molMass => molMass
+        };
+        // Basınç dönüştürme (kPa'ya)
+        const PRESSURE_TO_KPA = {
+            'atm': 101.325,
+            'kPa': 1,
+            'mmHg': 0.133322,
+            'psi': 6.89476
+        };
+        // Hacim dönüştürme (m³'e)
+        const VOLUME_TO_M3 = {
+            'L': 0.001,
+            'm3': 1,
+            'mL': 0.000001,
+            'cm3': 0.000001
+        };
+        // Mol dönüştürme (mol'e)
+        const MOLES_TO_MOL = {
+            'mol': 1,
+            'mmol': 0.001
+        };
+
+        // İdeal Gaz Sabitleri (R) - Hedef birimlere göre seçilecek
+        const R_VALUES = {
+            'atm_L_mol_K': 0.08206, // L·atm/(mol·K)
+            'kPa_m3_mol_K': 8.314,   // m³·kPa/(mol·K) (Joule/mol·K'ya eşdeğer)
+            'mmHg_L_mol_K': 62.36,   // L·mmHg/(mol·K)
+            'psi_L_mol_K': 0.001206 // Oran olarak R=0.08206 L*atm/mol*K => atm=14.6959 psi olduğunda R=0.08206 * 14.6959 = 1.206 L*psi/mol*K olur. Bu değerlerin birimleri tutarlı olmalı. (Burada psi için R değeri özel olarak belirtilirse daha doğru olur)
+                                    // Güncelleme: Genel olarak R = 8.314 J/(mol·K) kullanıp tüm birimleri SI'a çevirmek en güvenlisi.
+        };
+
+        // İdeal Gaz Sabiti (R) (J/(mol·K) olarak alınır ve birim dönüşümleri ona göre yapılır)
+        const R_SI = 8.314462618; // J/(mol·K) veya m³·Pa/(mol·K)
+
+        // --- Gaz Yoğunluğu Hesapla (d=PM/RT) ---
+        const gasDensityForm = document.getElementById('gasDensityForm');
+        const gasDensityResultDiv = document.getElementById('gasDensityResult');
+
+        gasDensityForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const pressure = parseFloat(document.getElementById('pressure_density').value);
+            const molarMass = parseFloat(document.getElementById('molarMass_density').value);
+            const temperature = parseFloat(document.getElementById('temperature_density').value);
+
+            const pressureUnit = document.getElementById('pressureUnit_density').value;
+            const molarMassUnit = document.getElementById('molarMassUnit_density').value;
+            const temperatureUnit = document.getElementById('temperatureUnit_density').value;
+
+            if (isNaN(pressure) || isNaN(molarMass) || isNaN(temperature) || pressure <= 0 || molarMass <= 0 || temperature <= 0) {
+                gasDensityResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                gasDensityResultDiv.style.display = 'block';
+                return;
+            }
+
+            // Birimleri SI'a dönüştür: Pa, kg/mol, K
+            const pressure_Pa = pressure * PRESSURE_TO_KPA[pressureUnit] * 1000; // kPa'dan Pa'ya
+            const molarMass_kg_mol = MOLAR_MASS_TO_KG_MOL[molarMassUnit](molarMass);
+            const temperature_K = TEMP_TO_K[temperatureUnit](temperature);
+
+            // Yoğunluk hesaplama: d = (P * M) / (R_SI * T)
+            const density_kg_m3 = (pressure_Pa * molarMass_kg_mol) / (R_SI * temperature_K);
+
+            // g/L birimine dönüştür (1 kg/m³ = 1 g/1000L = 1 g/m³) => 1 kg/m³ = 0.001 g/L
+            // Hata düzeltme: 1 kg/m³ = 1000 g / 1000 L = 1 g/L. Yani kg/m³ = g/L'dir.
+            const density_g_L = density_kg_m3; 
+
+            gasDensityResultDiv.innerHTML = `
+                <p>${currentTexts.gasDensityResultLabel} <span class="result-value">${density_g_L.toFixed(4)}</span> ${currentTexts.unit_g_L}</p>
+                <p>${currentTexts.gasDensityResultLabel} <span class="result-value">${density_kg_m3.toFixed(4)}</span> ${currentTexts.unit_kg_m3}</p>
+            `;
+            gasDensityResultDiv.style.display = 'block';
+        });
+
+        // --- İdeal Gaz Yasası Parametrelerini Hesapla (PV=nRT) ---
+        const idealGasLawForm = document.getElementById('idealGasLawForm');
+        const idealGasLawResultDiv = document.getElementById('idealGasLawResult');
+
+        idealGasLawForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let pressure = parseFloat(document.getElementById('pressure_ideal').value);
+            let volume = parseFloat(document.getElementById('volume_ideal').value);
+            let moles = parseFloat(document.getElementById('moles_ideal').value);
+            let temperature = parseFloat(document.getElementById('temperature_ideal').value);
+
+            const pressureUnit = document.getElementById('pressureUnit_ideal').value;
+            const volumeUnit = document.getElementById('volumeUnit_ideal').value;
+            const molesUnit = document.getElementById('molesUnit_ideal').value;
+            const temperatureUnit = document.getElementById('temperatureUnit_ideal').value;
+
+            // Boş bırakılan alanları kontrol et
+            let emptyCount = 0;
+            let missingField = '';
+
+            if (isNaN(pressure)) { emptyCount++; missingField = 'P'; } else if (pressure <= 0) { idealGasLawResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroValue}</p>`; idealGasLawResultDiv.style.display = 'block'; return; }
+            if (isNaN(volume)) { emptyCount++; missingField = 'V'; } else if (volume <= 0) { idealGasLawResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroValue}</p>`; idealGasLawResultDiv.style.display = 'block'; return; }
+            if (isNaN(moles)) { emptyCount++; missingField = 'n'; } else if (moles <= 0) { idealGasLawResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroValue}</p>`; idealGasLawResultDiv.style.display = 'block'; return; }
+            if (isNaN(temperature)) { emptyCount++; missingField = 'T'; } else if (temperature <= 0) { idealGasLawResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroValue}</p>`; idealGasLawResultDiv.style.display = 'block'; return; }
+
+            if (emptyCount === 0) {
+                idealGasLawResultDiv.innerHTML = `<p class="error">${currentTexts.errorEmptyField}</p>`;
+                idealGasLawResultDiv.style.display = 'block';
+                return;
+            }
+            if (emptyCount > 1) {
+                idealGasLawResultDiv.innerHTML = `<p class="error">${currentTexts.errorMultipleEmptyFields}</p>`;
+                idealGasLawResultDiv.style.display = 'block';
+                return;
+            }
+
+            // Birimleri SI'a dönüştür: Pa, m³, mol, K
+            pressure = isNaN(pressure) ? null : pressure * PRESSURE_TO_KPA[pressureUnit] * 1000; // kPa'dan Pa'ya
+            volume = isNaN(volume) ? null : volume * VOLUME_TO_M3[volumeUnit];
+            moles = isNaN(moles) ? null : moles * MOLES_TO_MOL[molesUnit];
+            temperature = isNaN(temperature) ? null : TEMP_TO_K[temperatureUnit](temperature);
+
+            let resultValue, resultUnit;
+
+            switch (missingField) {
+                case 'P':
+                    // P = nRT / V
+                    if (volume === 0) {
+                        idealGasLawResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroValue}</p>`;
+                        idealGasLawResultDiv.style.display = 'block';
+                        return;
+                    }
+                    resultValue = (moles * R_SI * temperature) / volume;
+                    // Sonucu orijinal basınç birimine dönüştür
+                    resultValue /= (PRESSURE_TO_KPA[pressureUnit] * 1000); // Pa'dan istenen birime
+                    resultUnit = currentTexts[`unit_${pressureUnit}`];
+                    idealGasLawResultDiv.innerHTML = `<p>${currentTexts.calculatedPressure} <span class="result-value">${resultValue.toFixed(4)}</span> ${resultUnit}</p>`;
+                    break;
+                case 'V':
+                    // V = nRT / P
+                    if (pressure === 0) {
+                        idealGasLawResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroValue}</p>`;
+                        idealGasLawResultDiv.style.display = 'block';
+                        return;
+                    }
+                    resultValue = (moles * R_SI * temperature) / pressure;
+                    // Sonucu orijinal hacim birimine dönüştür
+                    resultValue /= VOLUME_TO_M3[volumeUnit]; // m³'den istenen birime
+                    resultUnit = currentTexts[`unit_${volumeUnit}`];
+                    idealGasLawResultDiv.innerHTML = `<p>${currentTexts.calculatedVolume} <span class="result-value">${resultValue.toFixed(4)}</span> ${resultUnit}</p>`;
+                    break;
+                case 'n':
+                    // n = PV / RT
+                    if (temperature === 0) {
+                        idealGasLawResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroValue}</p>`;
+                        idealGasLawResultDiv.style.display = 'block';
+                        return;
+                    }
+                    resultValue = (pressure * volume) / (R_SI * temperature);
+                    // Sonucu orijinal mol birimine dönüştür
+                    resultValue /= MOLES_TO_MOL[molesUnit];
+                    resultUnit = currentTexts[`unit_${molesUnit}`];
+                    idealGasLawResultDiv.innerHTML = `<p>${currentTexts.calculatedMoles} <span class="result-value">${resultValue.toFixed(4)}</span> ${resultUnit}</p>`;
+                    break;
+                case 'T':
+                    // T = PV / nR
+                    if (moles === 0 || pressure === 0) { // Pressure check for specific R constant selection logic that might use it
+                        idealGasLawResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroValue}</p>`;
+                        idealGasLawResultDiv.style.display = 'block';
+                        return;
+                    }
+                    resultValue = (pressure * volume) / (moles * R_SI);
+                    // Sonucu orijinal sıcaklık birimine dönüştür
+                    // Not: Bu kısım biraz daha karmaşık, K olarak hesaplayıp sonra istenen birime çevirmeliyiz.
+                    let finalTempUnit = temperatureUnit;
+                    if (finalTempUnit === 'C') {
+                        resultValue = resultValue - 273.15;
+                    } else if (finalTempUnit === 'F') {
+                        resultValue = (resultValue - 273.15) * 9/5 + 32;
+                    }
+                    resultUnit = currentTexts[`unit_${finalTempUnit}`];
+                    idealGasLawResultDiv.innerHTML = `<p>${currentTexts.calculatedTemperature} <span class="result-value">${resultValue.toFixed(4)}</span> ${resultUnit}</p>`;
+                    break;
+            }
+            idealGasLawResultDiv.style.display = 'block';
+        });
+    });
+</script>
 </body>
 </html>

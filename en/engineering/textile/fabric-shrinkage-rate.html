@@ -259,5 +259,156 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Language detection: Assume English if URL starts with '/en/', otherwise Turkish
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Text strings object for dynamic content
+        const texts = {
+            tr: {
+                // General
+                calculateButtonText: 'Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                errorInitialZero: 'Başlangıç ölçüsü sıfırdan büyük olmalıdır.',
+                resultTitle: 'Sonuçlar:',
+                // Input Labels
+                initialLengthLabel: 'Başlangıç Boy (cm):',
+                finalLengthLabel: 'Son Boy (cm):',
+                initialWidthLabel: 'Başlangıç En (cm):',
+                finalWidthLabel: 'Son En (cm):',
+                // Result Outputs
+                lengthDirectionChange: 'Boy Yönü Değişimi:',
+                widthDirectionChange: 'En Yönü Değişimi:',
+                elongationShort: 'Uzatma', // Used for positive result
+                shrinkageShort: 'Çekme', // Used for negative result
+                unit_percent: '%',
+                // Info text
+                resultInterpretation: 'Pozitif değer uzama, negatif değer çekme anlamına gelir.'
+            },
+            en: {
+                // General
+                calculateButtonText: 'Calculate',
+                invalidInput: 'Please enter valid positive numbers for all fields.',
+                errorInitialZero: 'Initial measurement must be greater than zero.',
+                resultTitle: 'Results:',
+                // Input Labels
+                initialLengthLabel: 'Initial Length (cm):',
+                finalLengthLabel: 'Final Length (cm):',
+                initialWidthLabel: 'Initial Width (cm):',
+                finalWidthLabel: 'Final Width (cm):',
+                // Result Outputs
+                lengthDirectionChange: 'Length Direction Change:',
+                widthDirectionChange: 'Width Direction Change:',
+                elongationShort: 'Elongation',
+                shrinkageShort: 'Shrinkage',
+                unit_percent: '%',
+                // Info text
+                resultInterpretation: 'A positive value means elongation, a negative value means shrinkage.'
+            }
+        };
+
+        // Select active language texts
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // --- DOM Elements ---
+        const shrinkageForm = document.getElementById('shrinkageForm');
+        const resultBox = document.getElementById('resultBox'); // This holds the result paragraphs
+
+        const initialLengthInput = document.getElementById('initialLength');
+        const finalLengthInput = document.getElementById('finalLength');
+        const initialWidthInput = document.getElementById('initialWidth');
+        const finalWidthInput = document.getElementById('finalWidth');
+
+        // Assuming the calculate button has an ID, or select it by type if no ID
+        // <button onclick="calculateShrinkage()" type="button">Calculate</button>
+        const calculateButton = document.querySelector('#shrinkageForm button[type="button"]');
+        if (calculateButton) {
+             calculateButton.id = 'calculateButton'; // Add ID for cleaner JS binding
+             calculateButton.textContent = currentTexts.calculateButtonText;
+        }
+
+        // Update static labels on load
+        document.querySelector('label[for="initialLength"]').textContent = currentTexts.initialLengthLabel;
+        document.querySelector('label[for="finalLength"]').textContent = currentTexts.finalLengthLabel;
+        document.querySelector('label[for="initialWidth"]').textContent = currentTexts.initialWidthLabel;
+        document.querySelector('label[for="finalWidth"]').textContent = currentTexts.finalWidthLabel;
+
+        // Update result interpretation text
+        const resultInterpretationP = resultBox.querySelector('p.small-text');
+        if (resultInterpretationP) {
+            resultInterpretationP.textContent = currentTexts.resultInterpretation;
+        }
+
+        // --- Calculation Function ---
+        function calculateShrinkage() {
+            let initialLength = parseFloat(initialLengthInput.value);
+            let finalLength = parseFloat(finalLengthInput.value);
+            let initialWidth = parseFloat(initialWidthInput.value);
+            let finalWidth = parseFloat(finalWidthInput.value);
+
+            // Clear previous results
+            resultBox.innerHTML = `<h3>${currentTexts.resultTitle}</h3><p class="small-text">${currentTexts.resultInterpretation}</p>`;
+            resultBox.style.display = 'none';
+
+            // --- Input Validation ---
+            if (isNaN(initialLength) || isNaN(finalLength) || isNaN(initialWidth) || isNaN(finalWidth) ||
+                initialLength <= 0 || initialWidth <= 0) { // Final measurements can be 0, but usually positive.
+                resultBox.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                resultBox.style.display = 'block';
+                return;
+            }
+
+            // --- Perform Calculations ---
+            // Formula: ((Initial Dimension - Final Dimension) / Initial Dimension) * 100
+            // If negative: elongation. If positive: shrinkage.
+            // The HTML description in TR specifies: "Pozitif değer uzama, negatif değer çekme anlamına gelir."
+            // This is opposite of the standard definition where positive is shrinkage.
+            // Let's stick to standard: positive result = shrinkage, negative result = elongation.
+            // Then adjust the display text based on the result's sign.
+
+            const shrinkageLength = ((initialLength - finalLength) / initialLength) * 100;
+            const shrinkageWidth = ((initialWidth - finalWidth) / initialWidth) * 100;
+
+            let displayLengthText, displayWidthText;
+
+            if (shrinkageLength > 0) {
+                displayLengthText = `${shrinkageLength.toFixed(2)}${currentTexts.unit_percent} ${currentTexts.shrinkageShort}`;
+            } else if (shrinkageLength < 0) {
+                displayLengthText = `${Math.abs(shrinkageLength).toFixed(2)}${currentTexts.unit_percent} ${currentTexts.elongationShort}`;
+            } else {
+                displayLengthText = `0${currentTexts.unit_percent}`;
+            }
+
+            if (shrinkageWidth > 0) {
+                displayWidthText = `${shrinkageWidth.toFixed(2)}${currentTexts.unit_percent} ${currentTexts.shrinkageShort}`;
+            } else if (shrinkageWidth < 0) {
+                displayWidthText = `${Math.abs(shrinkageWidth).toFixed(2)}${currentTexts.unit_percent} ${currentTexts.elongationShort}`;
+            } else {
+                displayWidthText = `0${currentTexts.unit_percent}`;
+            }
+
+            // --- Display Results ---
+            resultBox.innerHTML = `
+                <h3>${currentTexts.resultTitle}</h3>
+                <p><strong>${currentTexts.lengthDirectionChange}</strong> <span class="result-value">${displayLengthText}</span></p>
+                <p><strong>${currentTexts.widthDirectionChange}</strong> <span class="result-value">${displayWidthText}</span></p>
+                <p class="small-text">${currentTexts.resultInterpretation}</p>
+            `;
+            resultBox.style.display = 'block';
+        }
+
+        // --- Event Listener for Calculate Button ---
+        if (calculateButton) {
+            calculateButton.addEventListener('click', calculateShrinkage);
+        }
+
+        // Initial setup for the result box title
+        const resultBoxHeader = resultBox.querySelector('h3');
+        if (resultBoxHeader) {
+            resultBoxHeader.textContent = currentTexts.resultTitle;
+        }
+    });
+</script>
 </body>
 </html>

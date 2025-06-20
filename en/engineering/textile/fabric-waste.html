@@ -243,5 +243,103 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    // Language detection: Assume English if URL starts with '/en/', otherwise Turkish
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+    // Text strings object for dynamic content
+    const texts = {
+        tr: {
+            calculateButtonText: 'Hesapla',
+            invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+            errorNetConsumedGreater: 'Net Kumaş Miktarı, Toplam Kullanılan Kumaş Miktarından büyük olamaz.',
+            resultTitle: 'Sonuç:',
+            wasteAmount: 'Kesim Fire Miktarı:',
+            wastePercentage: 'Kesim Fire Oranı (%):',
+            unit_percent: '%',
+            explanation: 'Fire oranı, kullanılan toplam kumaşın ne kadarının ürüne dönüşmediğini gösterir. Birimler (metre, kg vb.) aynı olmalıdır.'
+        },
+        en: {
+            calculateButtonText: 'Calculate',
+            invalidInput: 'Please enter valid positive numbers for all fields.',
+            errorNetConsumedGreater: 'Net Fabric Consumed cannot be greater than Total Fabric Used.',
+            resultTitle: 'Conclusion:',
+            wasteAmount: 'Cutting Waste Amount:',
+            wastePercentage: 'Cutting Waste Rate (%):',
+            unit_percent: '%',
+            explanation: 'The waste rate shows how much of the total fabric used is not converted into a product. The units (meter, kg, etc.) must be the same.'
+        }
+    };
+
+    // Select active language texts
+    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+    // --- DOM Elements ---
+    const fabricWasteForm = document.getElementById('fabricWasteForm');
+    const totalFabricUsedInput = document.getElementById('totalFabricUsed');
+    const netFabricConsumedInput = document.getElementById('netFabricConsumed');
+    const wasteAmountSpan = document.getElementById('wasteAmount');
+    const wastePercentageSpan = document.getElementById('wastePercentage');
+    const resultBox = document.getElementById('resultBox');
+    const calculateButton = fabricWasteForm.querySelector('button[type="button"]'); // Select the button within the form
+
+    // Update button text and explanation text based on language
+    if (calculateButton) {
+        calculateButton.textContent = currentTexts.calculateButtonText;
+    }
+
+    const explanationParagraph = resultBox.nextElementSibling; // The <p class="small-text"> after resultBox
+    if (explanationParagraph && explanationParagraph.className === 'small-text') {
+        explanationParagraph.textContent = currentTexts.explanation;
+    }
+
+    // --- Calculation Function ---
+    window.calculateFabricWaste = function() {
+        let totalFabricUsed = parseFloat(totalFabricUsedInput.value);
+        let netFabricConsumed = parseFloat(netFabricConsumedInput.value);
+
+        // Clear previous results and hide result box initially
+        wasteAmountSpan.textContent = '';
+        wastePercentageSpan.textContent = '';
+        resultBox.style.display = 'none';
+
+        // --- Input Validation ---
+        if (isNaN(totalFabricUsed) || isNaN(netFabricConsumed) || totalFabricUsed <= 0 || netFabricConsumed < 0) {
+            alert(currentTexts.invalidInput);
+            return;
+        }
+
+        if (netFabricConsumed > totalFabricUsed) {
+            alert(currentTexts.errorNetConsumedGreater);
+            return;
+        }
+
+        // --- Perform Calculations ---
+        const cuttingWasteAmount = totalFabricUsed - netFabricConsumed;
+        let cuttingWastePercentage = (cuttingWasteAmount / totalFabricUsed) * 100;
+
+        // Ensure percentage is not negative due to floating point inaccuracies with zero waste
+        if (cuttingWastePercentage < 0) {
+            cuttingWastePercentage = 0;
+        }
+
+        // --- Display Results ---
+        wasteAmountSpan.textContent = cuttingWasteAmount.toFixed(2);
+        wastePercentageSpan.textContent = cuttingWastePercentage.toFixed(2);
+        resultBox.style.display = 'block'; // Show the result box
+
+        // Update result box header text
+        const resultBoxHeader = resultBox.querySelector('h3');
+        if (resultBoxHeader) {
+            resultBoxHeader.textContent = currentTexts.resultTitle;
+        }
+
+        // Update strong tags for result labels
+        resultBox.querySelector('p:nth-of-type(1) strong').textContent = currentTexts.wasteAmount;
+        resultBox.querySelector('p:nth-of-type(2) strong').textContent = currentTexts.wastePercentage;
+    };
+});
+  </script>
 </body>
 </html>

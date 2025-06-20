@@ -586,5 +586,166 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Burulma Gerilmesini Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                errorZeroPolarMoment: 'Polar atalet momenti veya mesafe sıfır olamaz.',
+                resultPrefix: 'Burulma Gerilmesi (τ):',
+                // Birimler
+                unit_Nm: 'Newton-metre (N m)',
+                unit_kNm: 'Kilonewton-metre (kN m)',
+                unit_lbf_ft: 'Pound-kuvvet-feet (lbf ft)',
+                unit_lbf_in: 'Pound-kuvvet-inç (lbf in)',
+                unit_m: 'metre (m)',
+                unit_mm: 'milimetre (mm)',
+                unit_cm: 'santimetre (cm)',
+                unit_in: 'inç',
+                unit_m4: 'metre üzeri 4 (m⁴)',
+                unit_mm4: 'milimetre üzeri 4 (mm⁴)',
+                unit_cm4: 'santimetre üzeri 4 (cm⁴)',
+                unit_in4: 'inç üzeri 4 (in⁴)',
+                unit_Pa: 'Pascal (Pa)',
+                unit_kPa: 'Kilopaskal (kPa)',
+                unit_MPa: 'Megapascal (MPa)',
+                unit_GPa: 'Gigapascal (GPa)',
+                unit_psi: 'psi',
+                unit_ksi: 'ksi',
+                torqueLabel: 'Uygulanan Burulma Momenti (T):',
+                distanceToCenterLabel: 'Merkezden En Dış Lifin Uzaklığı (r):',
+                polarMomentOfInertiaLabel: 'Polar Atalet Momenti (J):'
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate Torsional Shear Stress',
+                invalidInput: 'Please enter valid positive numbers for all fields.',
+                errorZeroPolarMoment: 'Polar moment of inertia or distance cannot be zero.',
+                resultPrefix: 'Torsional Shear Stress (τ):',
+                // Units
+                unit_Nm: 'Newton-meter (N m)',
+                unit_kNm: 'Kilonewton-meter (kN m)',
+                unit_lbf_ft: 'Pound-force-feet (lbf ft)',
+                unit_lbf_in: 'Pound-force-inch (lbf in)',
+                unit_m: 'meter (m)',
+                unit_mm: 'millimeter (mm)',
+                unit_cm: 'centimeter (cm)',
+                unit_in: 'inch',
+                unit_m4: 'meter to the 4th (m⁴)',
+                unit_mm4: 'millimeter to the 4th (mm⁴)',
+                unit_cm4: 'centimeter to the 4th (cm⁴)',
+                unit_in4: 'inch to the 4th (in⁴)',
+                unit_Pa: 'Pascal (Pa)',
+                unit_kPa: 'Kilopascal (kPa)',
+                unit_MPa: 'Megapascal (MPa)',
+                unit_GPa: 'Gigapascal (GPa)',
+                unit_psi: 'psi',
+                unit_ksi: 'ksi',
+                torqueLabel: 'Applied Torsional Moment (T):',
+                distanceToCenterLabel: 'Distance from Center to Outermost Fiber (r):',
+                polarMomentOfInertiaLabel: 'Polar Moment of Inertia (J):'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // --- Helper Functions (Birim Dönüşüm Sabitleri) ---
+        // Tork/Moment dönüştürme faktörleri (N m'ye)
+        const TORQUE_TO_NM = {
+            'Nm': 1,
+            'kNm': 1000,
+            'lbf-ft': 1.35582, // 1 lbf·ft = 1.35582 N·m
+            'lbf-in': 0.112985 // 1 lbf·in = 0.112985 N·m
+        };
+
+        // Uzunluk dönüştürme faktörleri (m'ye)
+        const LENGTH_TO_M = {
+            'm': 1,
+            'mm': 0.001,
+            'cm': 0.01,
+            'in': 0.0254
+        };
+
+        // Polar Atalet Momenti dönüştürme faktörleri (m⁴'e)
+        const POLAR_MOMENT_OF_INERTIA_TO_M4 = {
+            'm4': 1,
+            'mm4': 1e-12, // (0.001 m)^4
+            'cm4': 1e-8,  // (0.01 m)^4
+            'in4': 4.162314e-7 // (0.0254 m)^4
+        };
+
+        // Gerilme birimlerini Pascal (Pa)'ya dönüştürme faktörleri (sadece bilgi amaçlı, ters dönüşüm için)
+        const STRESS_TO_PA = {
+            'Pa': 1,
+            'kPa': 1e3,
+            'MPa': 1e6,
+            'GPa': 1e9,
+            'psi': 6894.76,
+            'ksi': 6894757 // 1 ksi = 1000 psi = 6.89476 MPa
+        };
+
+        // --- DOM Elements ---
+        const torsionalStressForm = document.getElementById('torsionalStressForm'); // Form ID'si "torsionalStressForm" olarak düzeltildi
+        const torsionalStressResultDiv = document.getElementById('torsionalStressResult'); // Sonuç div ID'si "torsionalStressResult" olarak düzeltildi
+
+        // --- Main Form Submission ---
+        torsionalStressForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get values
+            const torque = parseFloat(document.getElementById('torque').value);
+            const distanceToCenter = parseFloat(document.getElementById('distanceToCenter').value);
+            const polarMomentOfInertia = parseFloat(document.getElementById('polarMomentOfInertia').value);
+
+            // Get units
+            const torqueUnit = document.getElementById('torqueUnit').value;
+            const distanceToCenterUnit = document.getElementById('distanceToCenterUnit').value;
+            const polarMomentOfInertiaUnit = document.getElementById('polarMomentOfInertiaUnit').value;
+
+            // --- Input Validation ---
+            if (isNaN(torque) || isNaN(distanceToCenter) || isNaN(polarMomentOfInertia) ||
+                torque <= 0) { // Tork sıfır olamaz
+                torsionalStressResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                torsionalStressResultDiv.style.display = 'block';
+                return;
+            }
+            // Özel durum: Polar atalet momenti veya r sıfır olamaz (bölme hatası)
+            if (polarMomentOfInertia <= 0 || distanceToCenter <= 0) {
+                torsionalStressResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroPolarMoment}</p>`;
+                torsionalStressResultDiv.style.display = 'block';
+                return;
+            }
+
+            // --- Convert to Base SI Units (N·m, m, m⁴) ---
+            const T_Nm = torque * TORQUE_TO_NM[torqueUnit];
+            const r_m = distanceToCenter * LENGTH_TO_M[distanceToCenterUnit];
+            const J_m4 = polarMomentOfInertia * POLAR_MOMENT_OF_INERTIA_TO_M4[polarMomentOfInertiaUnit];
+
+            // --- Calculate Torsional Shear Stress (τ = (T ⋅ r) / J) in Pascals (Pa) ---
+            const torsionalStress_Pa = (T_Nm * r_m) / J_m4;
+
+            // --- Display Results in common units ---
+            // 1 MPa = 10^6 Pa
+            const torsionalStress_MPa = torsionalStress_Pa / 1e6;
+            // 1 psi = 6894.76 Pa
+            const torsionalStress_psi = torsionalStress_Pa / STRESS_TO_PA['psi'];
+
+
+            torsionalStressResultDiv.innerHTML = `
+                <p>${currentTexts.resultPrefix} <span class="result-value">${torsionalStress_Pa.toExponential(3)}</span> ${currentTexts.unit_Pa}</p>
+                <p>${currentTexts.resultPrefix} <span class="result-value">${torsionalStress_MPa.toFixed(3)}</span> ${currentTexts.unit_MPa}</p>
+                <p>${currentTexts.resultPrefix} <span class="result-value">${torsionalStress_psi.toFixed(3)}</span> ${currentTexts.unit_psi}</p>
+            `;
+            torsionalStressResultDiv.style.display = 'block';
+        });
+    });
+</script>
 </body>
 </html>

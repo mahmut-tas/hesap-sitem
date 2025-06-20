@@ -233,5 +233,146 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>document.addEventListener('DOMContentLoaded', function() {
+    // Language detection: Assume English if URL starts with '/en/', otherwise Turkish
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+    // Text strings object for dynamic content
+    const texts = {
+        tr: {
+            calculateButtonText: 'Protein İhtiyacınızı Hesapla',
+            invalidInput: 'Lütfen tüm alanları doğru ve geçerli değerlerle doldurun.',
+            resultTitle: 'Günlük Protein İhtiyacınız:',
+            proteinAmount: 'Günde yaklaşık',
+            unitGram: 'gram',
+            explanation: 'Hesaplanan değer, kilonuza ve aktivite seviyenize göre tahmini günlük protein ihtiyacınızı gösterir. Kişisel sağlık durumunuz ve hedefleriniz için bir uzmana danışmanız önerilir.',
+            ageLabel: 'Yaşınız:',
+            genderLabel: 'Cinsiyet:',
+            heightLabel: 'Boy (cm):',
+            weightLabel: 'Kilo (kg):',
+            activityLabel: 'Aktivite Seviyesi:',
+            selectOption: 'Seçiniz',
+            genderMale: 'Erkek',
+            genderFemale: 'Kadın',
+            activitySedentary: 'Hareketsiz (Çok az egzersiz veya hiç yok)',
+            activityLightlyActive: 'Az Aktif (Haftada 1-3 gün hafif egzersiz)',
+            activityModeratelyActive: 'Orta Derece Aktif (Haftada 3-5 gün orta egzersiz)',
+            activityVeryActive: 'Çok Aktif (Haftada 6-7 gün yoğun egzersiz)',
+            activitySuperActive: 'Aşırı Aktif (Günde iki kez yoğun egzersiz, fiziksel iş)',
+            placeholderAge: 'Örn: 30',
+            placeholderHeight: 'Örn: 175',
+            placeholderWeight: 'Örn: 70'
+        },
+        en: {
+            calculateButtonText: 'Calculate Your Protein Needs',
+            invalidInput: 'Please fill in all fields with correct and valid values.',
+            resultTitle: 'Your Daily Protein Need:',
+            proteinAmount: 'Approximately',
+            unitGram: 'grams',
+            explanation: 'The calculated value shows your estimated daily protein need based on your weight and activity level. It is recommended to consult a specialist for your personal health status and goals.',
+            ageLabel: 'Your age:',
+            genderLabel: 'Gender:',
+            heightLabel: 'Height (cm):',
+            weightLabel: 'Weight (kg):',
+            activityLabel: 'Activity Level:',
+            selectOption: 'Select',
+            genderMale: 'Male',
+            genderFemale: 'Woman',
+            activitySedentary: 'Sedentary (Little or no exercise)',
+            activityLightlyActive: 'Lightly Active (Light exercise 1-3 days a week)',
+            activityModeratelyActive: 'Moderately Active (Moderate exercise 3-5 days a week)',
+            activityVeryActive: 'Very Active (Intense exercise 6-7 days a week)',
+            activitySuperActive: 'Overactive (Intense exercise twice a day, physical work)',
+            placeholderAge: 'e.g.: 30',
+            placeholderHeight: 'e.g.: 175',
+            placeholderWeight: 'e.g.: 70'
+        }
+    };
+
+    // Select active language texts
+    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+    // --- DOM Elements ---
+    const proteinForm = document.getElementById('proteinForm');
+    const ageInput = document.getElementById('protein_age');
+    const genderSelect = document.getElementById('protein_gender');
+    const heightInput = document.getElementById('protein_height');
+    const weightInput = document.getElementById('protein_weight');
+    const activitySelect = document.getElementById('protein_activity');
+    const proteinResultDiv = document.getElementById('proteinResult');
+    const proteinGoalDiv = document.getElementById('proteinGoal'); // This is for the explanation text below the result
+    const calculateButton = proteinForm.querySelector('button[type="submit"]');
+
+    // Update static labels and placeholders on load
+    document.querySelector('label[for="protein_age"]').textContent = currentTexts.ageLabel;
+    ageInput.placeholder = currentTexts.placeholderAge;
+    document.querySelector('label[for="protein_gender"]').textContent = currentTexts.genderLabel;
+    document.querySelector('#protein_gender option[value=""]').textContent = currentTexts.selectOption;
+    document.querySelector('#protein_gender option[value="male"]').textContent = currentTexts.genderMale;
+    document.querySelector('#protein_gender option[value="female"]').textContent = currentTexts.genderFemale;
+    document.querySelector('label[for="protein_height"]').textContent = currentTexts.heightLabel;
+    heightInput.placeholder = currentTexts.placeholderHeight;
+    document.querySelector('label[for="protein_weight"]').textContent = currentTexts.weightLabel;
+    weightInput.placeholder = currentTexts.placeholderWeight;
+    document.querySelector('label[for="protein_activity"]').textContent = currentTexts.activityLabel;
+    document.querySelector('#protein_activity option[value=""]').textContent = currentTexts.selectOption;
+    document.querySelector('#protein_activity option[value="sedentary"]').textContent = currentTexts.activitySedentary;
+    document.querySelector('#protein_activity option[value="lightly_active"]').textContent = currentTexts.activityLightlyActive;
+    document.querySelector('#protein_activity option[value="moderately_active"]').textContent = currentTexts.activityModeratelyActive;
+    document.querySelector('#protein_activity option[value="very_active"]').textContent = currentTexts.activityVeryActive;
+    document.querySelector('#protein_activity option[value="super_active"]').textContent = currentTexts.activitySuperActive;
+    calculateButton.textContent = currentTexts.calculateButtonText;
+
+    // Protein factors per kg of body weight (g/kg) based on activity level
+    const proteinFactors = {
+        sedentary: 0.8,
+        lightly_active: 1.0,
+        moderately_active: 1.2,
+        very_active: 1.5, // Averaging 1.2-1.7
+        super_active: 1.9  // Averaging 1.6-2.2
+    };
+
+    // --- Protein Calculation Function ---
+    function calculateProteinNeeds(event) {
+        event.preventDefault(); // Prevent form submission and page reload
+
+        let age = parseInt(ageInput.value);
+        let gender = genderSelect.value;
+        let heightCm = parseFloat(heightInput.value);
+        let weightKg = parseFloat(weightInput.value);
+        let activityLevel = activitySelect.value;
+
+        // Clear previous results
+        proteinResultDiv.innerHTML = '';
+        proteinGoalDiv.innerHTML = '';
+
+        // --- Input Validation ---
+        if (isNaN(age) || age <= 0 ||
+            isNaN(heightCm) || heightCm <= 0 ||
+            isNaN(weightKg) || weightKg <= 0 ||
+            gender === '' || activityLevel === '') {
+            proteinResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            return;
+        }
+
+        // Determine protein factor based on activity level
+        const proteinFactor = proteinFactors[activityLevel];
+
+        // Calculate daily protein need
+        const dailyProteinNeed = weightKg * proteinFactor;
+
+        // Display result
+        proteinResultDiv.innerHTML = `
+            <h3>${currentTexts.resultTitle}</h3>
+            <p><strong>${currentTexts.proteinAmount}</strong> <span class="result-value">${dailyProteinNeed.toFixed(1)} ${currentTexts.unitGram}</span></p>
+        `;
+
+        // Display explanation
+        proteinGoalDiv.innerHTML = `<p class="small-text">${currentTexts.explanation}</p>`;
+    }
+
+    // Add event listener to the form for submission
+    proteinForm.addEventListener('submit', calculateProteinNeeds);
+});</script>
 </body>
 </html>

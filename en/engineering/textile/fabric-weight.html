@@ -222,5 +222,100 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Language detection: Assume English if URL starts with '/en/', otherwise Turkish
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+    // Text strings object for dynamic content
+    const texts = {
+        tr: {
+            calculateButtonText: 'Hesapla',
+            invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+            resultTitle: 'Sonuçlar:',
+            grm2Label: 'Metrekare Gramajı (gr/m²):',
+            grmtLabel: 'Metre Gramajı (gr/m):',
+            explanation: 'Numune boyutlarını ve kumaş enini doğru girdiğinizden emin olun. Hesaplamalar numunenin homojen olduğunu varsayar.'
+        },
+        en: {
+            calculateButtonText: 'Calculate',
+            invalidInput: 'Please enter valid positive numbers for all fields.',
+            resultTitle: 'Results:',
+            grm2Label: 'Weight per square metre (gr/m²):',
+            grmtLabel: 'Weight per metre (gr/m):',
+            explanation: 'Make sure you enter the sample dimensions and fabric width correctly. The calculations assume that the sample is homogeneous.'
+        }
+    };
+
+    // Select active language texts
+    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+    // --- DOM Elements ---
+    const fabricGramageForm = document.getElementById('fabricGramageForm');
+    const sampleWeightInput = document.getElementById('sampleWeight');
+    const sampleLengthInput = document.getElementById('sampleLength');
+    const sampleWidthInput = document.getElementById('sampleWidth');
+    const fabricWidthInput = document.getElementById('fabricWidth');
+    const resultGrm2Span = document.getElementById('resultGrm2');
+    const resultGrmtSpan = document.getElementById('resultGrmt');
+    const resultBox = document.getElementById('resultBox');
+    const calculateButton = fabricGramageForm.querySelector('button[type="button"]'); // Select the button within the form
+
+    // Update button text and explanation text based on language
+    if (calculateButton) {
+        calculateButton.textContent = currentTexts.calculateButtonText;
+    }
+
+    const explanationParagraph = resultBox.nextElementSibling; // The <p class="small-text"> after resultBox
+    if (explanationParagraph && explanationParagraph.className === 'small-text') {
+        explanationParagraph.textContent = currentTexts.explanation;
+    }
+
+    // --- Calculation Function ---
+    window.hesaplaKumasGramaji = function() {
+        let sampleWeight = parseFloat(sampleWeightInput.value);
+        let sampleLength = parseFloat(sampleLengthInput.value);
+        let sampleWidth = parseFloat(sampleWidthInput.value);
+        let fabricWidth = parseFloat(fabricWidthInput.value);
+
+        // Clear previous results and hide result box initially
+        resultGrm2Span.textContent = '';
+        resultGrmtSpan.textContent = '';
+        resultBox.style.display = 'none';
+
+        // --- Input Validation ---
+        if (isNaN(sampleWeight) || isNaN(sampleLength) || isNaN(sampleWidth) || isNaN(fabricWidth) ||
+            sampleWeight <= 0 || sampleLength <= 0 || sampleWidth <= 0 || fabricWidth <= 0) {
+            alert(currentTexts.invalidInput);
+            return;
+        }
+
+        // --- Perform Calculations ---
+        // Sample area in cm²
+        const sampleAreaCm2 = sampleLength * sampleWidth;
+
+        // Grams per square meter (gr/m²)
+        // (Sample Weight (gr) / Sample Area (cm²)) * 10000 (to convert cm² to m²)
+        const grm2 = (sampleWeight / sampleAreaCm2) * 10000;
+
+        // Grams per meter (gr/m)
+        // (Grammage in gr/m² * Fabric Width (cm)) / 100 (to convert cm to m)
+        const grmt = grm2 * (fabricWidth / 100);
+
+        // --- Display Results ---
+        resultGrm2Span.textContent = grm2.toFixed(2);
+        resultGrmtSpan.textContent = grmt.toFixed(2);
+        resultBox.style.display = 'block'; // Show the result box
+
+        // Update result box header and labels
+        const resultBoxHeader = resultBox.querySelector('h3');
+        if (resultBoxHeader) {
+            resultBoxHeader.textContent = currentTexts.resultTitle;
+        }
+        resultBox.querySelector('p:nth-of-type(1) strong').textContent = currentTexts.grm2Label;
+        resultBox.querySelector('p:nth-of-type(2) strong').textContent = currentTexts.grmtLabel;
+    };
+});
+  </script>
 </body>
 </html>

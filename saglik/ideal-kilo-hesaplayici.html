@@ -224,5 +224,131 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Language detection: Assume English if URL starts with '/en/', otherwise Turkish
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+    // Text strings object for dynamic content
+    const texts = {
+        tr: {
+            calculateButtonText: 'İdeal Kilo Hesapla',
+            heightLabel: 'Boy (cm):',
+            genderLabel: 'Cinsiyet:',
+            selectOption: 'Seçiniz',
+            genderMale: 'Erkek',
+            genderFemale: 'Kadın',
+            invalidInput: 'Lütfen boyunuzu ve cinsiyetinizi doğru ve geçerli değerlerle girin.',
+            resultTitle: 'İdeal Kilonuz:',
+            idealWeightRange: 'Tavsiye Edilen İdeal Kilo Aralığı (Ortalama):',
+            commentRange: 'kg',
+            formulaNoteDisclaimer: 'Bu formüllerin ortalaması kullanılarak yaklaşık bir ideal kilo aralığı belirlenmiştir. Kişisel faktörler (kas kütlesi, vücut yapısı vb.) farklılık gösterebilir. En doğru değerlendirme için bir sağlık profesyoneline danışın.'
+        },
+        en: {
+            calculateButtonText: 'Calculate Ideal Weight',
+            heightLabel: 'Height (cm):',
+            genderLabel: 'Gender:',
+            selectOption: 'Select',
+            genderMale: 'Male',
+            genderFemale: 'Female',
+            invalidInput: 'Please enter valid values for your height and select your gender.',
+            resultTitle: 'Your Ideal Weight:',
+            idealWeightRange: 'Recommended Ideal Weight Range (Average):',
+            commentRange: 'kg',
+            formulaNoteDisclaimer: 'An approximate ideal weight range has been determined using the average of these formulas. Individual factors (muscle mass, body structure, etc.) may vary. Consult a healthcare professional for the most accurate assessment.'
+        }
+    };
+
+    // Select active language texts
+    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+    // --- DOM Elements ---
+    const idealWeightForm = document.getElementById('idealWeightForm');
+    const idealHeightInput = document.getElementById('ideal_height');
+    const idealGenderSelect = document.getElementById('ideal_gender');
+    const idealWeightResultDiv = document.getElementById('idealWeightResult');
+    const idealWeightCategoryDiv = document.getElementById('idealWeightCategory');
+    const calculateButton = idealWeightForm.querySelector('button[type="submit"]');
+
+    // Update static labels and placeholders on load
+    document.querySelector('label[for="ideal_height"]').textContent = currentTexts.heightLabel;
+    idealHeightInput.placeholder = isEnglishPage ? 'e.g.: 170' : 'Örn: 170';
+    document.querySelector('label[for="ideal_gender"]').textContent = currentTexts.genderLabel;
+    document.querySelector('#ideal_gender option[value=""]').textContent = currentTexts.selectOption;
+    document.querySelector('#ideal_gender option[value="male"]').textContent = currentTexts.genderMale;
+    document.querySelector('#ideal_gender option[value="female"]').textContent = currentTexts.genderFemale;
+    calculateButton.textContent = currentTexts.calculateButtonText;
+
+
+    // --- Ideal Weight Calculation Function ---
+    function calculateIdealWeight(event) {
+        event.preventDefault(); // Prevent form submission and page reload
+
+        let heightCm = parseFloat(idealHeightInput.value);
+        let gender = idealGenderSelect.value;
+
+        // Clear previous results
+        idealWeightResultDiv.innerHTML = '';
+        idealWeightCategoryDiv.innerHTML = '';
+
+        // --- Input Validation ---
+        if (isNaN(heightCm) || heightCm <= 0 || gender === '') {
+            idealWeightResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            return;
+        }
+
+        const heightInches = heightCm * 0.393701; // Convert cm to inches
+
+        let idealWeights = [];
+
+        // D.R. Miller Formula
+        if (gender === 'male') {
+            idealWeights.push(56.2 + 1.41 * (heightCm - 152.4));
+        } else { // female
+            idealWeights.push(53.1 + 1.36 * (heightCm - 152.4));
+        }
+
+        // Broca Formula (Simplified for general use, not always precise for shorter/taller people)
+        if (gender === 'male') {
+            idealWeights.push(heightCm - 100);
+        } else { // female
+            idealWeights.push(heightCm - 104);
+        }
+
+        // Robinson Formula (Requires height in inches)
+        if (gender === 'male') {
+            idealWeights.push(52 + 1.9 * (heightInches - 60));
+        } else { // female
+            idealWeights.push(49 + 1.7 * (heightInches - 60));
+        }
+
+        // Hamwi Formula (Requires height in inches)
+        if (gender === 'male') {
+            idealWeights.push(48 + 2.7 * (heightInches - 60));
+        } else { // female
+            idealWeights.push(45.5 + 2.2 * (heightInches - 60));
+        }
+
+        // Calculate average and a small range
+        const sumWeights = idealWeights.reduce((a, b) => a + b, 0);
+        const averageIdealWeight = sumWeights / idealWeights.length;
+
+        // Define a range (e.g., +/- 5% or fixed kg)
+        const rangeLower = averageIdealWeight * 0.95; // -5%
+        const rangeUpper = averageIdealWeight * 1.05; // +5%
+
+        // Display results
+        idealWeightResultDiv.innerHTML = `
+            <h3>${currentTexts.resultTitle}</h3>
+            <p><strong>${currentTexts.idealWeightRange}</strong> <span class="result-value">${rangeLower.toFixed(1)} - ${rangeUpper.toFixed(1)} ${currentTexts.commentRange}</span></p>
+        `;
+
+        idealWeightCategoryDiv.innerHTML = `<p class="small-text">${currentTexts.formulaNoteDisclaimer}</p>`;
+    }
+
+    // Add event listener to the form for submission
+    idealWeightForm.addEventListener('submit', calculateIdealWeight);
+});
+  </script>
  </body>
 </html>

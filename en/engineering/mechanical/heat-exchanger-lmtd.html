@@ -587,5 +587,172 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-3655KNY8CP');
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'LMTD Hesapla',
+                invalidInput: 'Lütfen tüm sıcaklık alanlarına geçerli sayılar girin.',
+                errorZeroDeltaT1: 'Delta T1 (T sıcak akışkan giriş - T soğuk akışkan çıkış) sıfır olamaz.',
+                errorZeroDeltaT2: 'Delta T2 (T sıcak akışkan çıkış - T soğuk akışkan giriş) sıfır olamaz.',
+                errorLogarithmNegative: 'Sıcaklık farkları sıfır veya farklı işaretli olamaz. Lütfen değerleri kontrol edin.',
+                resultPrefix: 'Logaritmik Ortalama Sıcaklık Farkı (LMTD):',
+                // Input Etiketleri
+                flowTypeLabel: 'Akış Tipi:',
+                hotInletTempLabel: 'Sıcak Akışkan Giriş Sıcaklığı (T_h,in):',
+                hotOutletTempLabel: 'Sıcak Akışkan Çıkış Sıcaklığı (T_h,out):',
+                coldInletTempLabel: 'Soğuk Akışkan Giriş Sıcaklığı (T_c,in):',
+                coldOutletTempLabel: 'Soğuk Akışkan Çıkış Sıcaklığı (T_c,out):',
+                // Akış Tipleri Seçenekleri
+                parallelFlow: 'Paralel Akışlı Eşanjör',
+                counterFlow: 'Zıt (Karşıt) Akışlı Eşanjör',
+                // Birimler
+                unit_C: '°C',
+                unit_K: 'K',
+                unit_F: '°F',
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate LMTD',
+                invalidInput: 'Please enter valid numbers for all temperature fields.',
+                errorZeroDeltaT1: 'Delta T1 (T hot in - T cold out) cannot be zero.',
+                errorZeroDeltaT2: 'Delta T2 (T hot out - T cold in) cannot be zero.',
+                errorLogarithmNegative: 'Temperature differences cannot be zero or have different signs. Please check the values.',
+                resultPrefix: 'Log Mean Temperature Difference (LMTD):',
+                // Input Labels
+                flowTypeLabel: 'Flow Type:',
+                hotInletTempLabel: 'Hot Fluid Inlet Temperature (T_h,in):',
+                hotOutletTempLabel: 'Hot Fluid Outlet Temperature (T_h,out):',
+                coldInletTempLabel: 'Cold Fluid Inlet Temperature (T_c,in):',
+                coldOutletTempLabel: 'Cold Fluid Outlet Temperature (T_c,out):',
+                // Flow Types Options
+                parallelFlow: 'Parallel Flow Heat Exchanger',
+                counterFlow: 'Counter-Flow Heat Exchanger',
+                // Units
+                unit_C: '°C',
+                unit_K: 'K',
+                unit_F: '°F',
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // --- Helper Functions ---
+        // Sıcaklık Farkı: °C veya K farkına dönüştürme faktörleri (sayısal olarak aynı)
+        const TEMP_DIFF_TO_C = {
+            'C': 1,
+            'K': 1, // ΔK = Δ°C
+            'F': 5 / 9 // Δ°F = Δ°C * 9/5 => Δ°C = Δ°F * 5/9
+        };
+
+        // --- DOM Elements ---
+        const lmtdForm = document.getElementById('lmtdForm');
+        const lmtdResultDiv = document.getElementById('lmtdResult');
+
+        const flowTypeSelect = document.getElementById('flowType');
+        const hotInletTempInput = document.getElementById('hotInletTemp');
+        const hotOutletTempInput = document.getElementById('hotOutletTemp');
+        const coldInletTempInput = document.getElementById('coldInletTemp');
+        const coldOutletTempInput = document.getElementById('coldOutletTemp');
+
+        const hotInletTempUnitSelect = document.getElementById('hotInletTempUnit');
+        const hotOutletTempUnitSelect = document.getElementById('hotOutletTempUnit');
+        const coldInletTempUnitSelect = document.getElementById('coldInletTempUnit');
+        const coldOutletTempUnitSelect = document.getElementById('coldOutletTempUnit');
+
+        // --- Main Form Submission ---
+        lmtdForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get values
+            const flowType = flowTypeSelect.value;
+            const Th_in = parseFloat(hotInletTempInput.value);
+            const Th_out = parseFloat(hotOutletTempInput.value);
+            const Tc_in = parseFloat(coldInletTempInput.value);
+            const Tc_out = parseFloat(coldOutletTempInput.value);
+
+            // Get units
+            const Th_inUnit = hotInletTempUnitSelect.value;
+            const Th_outUnit = hotOutletTempUnitSelect.value;
+            const Tc_inUnit = coldInletTempUnitSelect.value;
+            const Tc_outUnit = coldOutletTempUnitSelect.value;
+
+            // --- Input Validation ---
+            if (isNaN(Th_in) || isNaN(Th_out) || isNaN(Tc_in) || isNaN(Tc_out)) {
+                lmtdResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                lmtdResultDiv.style.display = 'block';
+                return;
+            }
+
+            // --- Convert all temperatures to a base unit for consistent deltaT calculation (e.g., Celsius) ---
+            const Th_in_C = Th_in * TEMP_DIFF_TO_C[Th_inUnit];
+            const Th_out_C = Th_out * TEMP_DIFF_TO_C[Th_outUnit];
+            const Tc_in_C = Tc_in * TEMP_DIFF_TO_C[Tc_inUnit];
+            const Tc_out_C = Tc_out * TEMP_DIFF_TO_C[Tc_outUnit];
+
+            let deltaT1, deltaT2;
+
+            if (flowType === 'parallelFlow') {
+                // Paralel akış: (Th,in - Tc,in) ve (Th,out - Tc,out)
+                deltaT1 = Th_in_C - Tc_in_C;
+                deltaT2 = Th_out_C - Tc_out_C;
+            } else { // counterFlow
+                // Zıt akış: (Th,in - Tc,out) ve (Th,out - Tc,in)
+                deltaT1 = Th_in_C - Tc_out_C;
+                deltaT2 = Th_out_C - Tc_in_C;
+            }
+
+            // --- Validation for LMTD Calculation ---
+            if (deltaT1 === 0 || deltaT2 === 0) {
+                lmtdResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroDeltaT1} ${currentTexts.errorZeroDeltaT2}</p>`;
+                lmtdResultDiv.style.display = 'block';
+                return;
+            }
+
+            // Logaritma içine negatif veya sıfır girmesini engelle (veya işaret farkını)
+            if ((deltaT1 < 0 && deltaT2 > 0) || (deltaT1 > 0 && deltaT2 < 0) || deltaT1 * deltaT2 <= 0) {
+                 lmtdResultDiv.innerHTML = `<p class="error">${currentTexts.errorLogarithmNegative}</p>`;
+                 lmtdResultDiv.style.display = 'block';
+                 return;
+            }
+
+            // --- Calculate LMTD ---
+            let LMTD;
+            if (deltaT1 === deltaT2) {
+                LMTD = deltaT1; // If deltaT1 = deltaT2, LMTD = deltaT1 (limit of ln(x)/x as x->0)
+            } else {
+                LMTD = (deltaT1 - deltaT2) / Math.log(deltaT1 / deltaT2);
+            }
+            
+            // LMTD'nin işaretini koru (ısıtma/soğutma yönüne göre)
+            if (LMTD < 0 && (deltaT1 > 0 || deltaT2 > 0)) { // Eğer girişler pozitifken sonuç negatifse, mutlak değer al
+                LMTD = Math.abs(LMTD);
+            }
+
+
+            // --- Display Results ---
+            // Sonuç birimini, kullanıcının seçtiği ilk sıcaklık birimiyle gösterelim
+            const finalUnit = currentTexts[`unit_${hotInletTempUnitSelect.value}`];
+
+            lmtdResultDiv.innerHTML = `
+                <p>${currentTexts.resultPrefix} <span class="result-value">${LMTD.toFixed(3)}</span> ${finalUnit}</p>
+            `;
+            lmtdResultDiv.style.display = 'block';
+        });
+    });
+</script>
 </body>
 </html>

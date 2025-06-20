@@ -655,5 +655,264 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Hesapla',
+                invalidInput: 'Lütfen geçerli bir değer girin.',
+                errorRange: 'pH ve pOH değerleri 0 ile 14 arasında olmalıdır.',
+                errorPositiveConcentration: 'Konsantrasyon sıfırdan büyük olmalıdır.',
+                errorKaKbZero: 'Ka/Kb değeri sıfırdan büyük olmalıdır.',
+                resultPrefix: 'Sonuçlar:',
+                // Hesaplama Çıktıları
+                calculatedpH: 'pH:',
+                calculatedpOH: 'pOH:',
+                calculatedHplus: '[H⁺] Konsantrasyonu:',
+                calculatedOHminus: '[OH⁻] Konsantrasyonu:',
+                unit_mol_L: 'mol/L',
+                // Giriş Alanları İçin Etiketler ve Seçenekler
+                selectKnownValue: 'Lütfen bilinen değeri seçin ve girin:',
+                calcFrompH: 'pH değerinden diğerlerini hesapla',
+                calcFrompOH: 'pOH değerinden diğerlerini hesapla',
+                calcFromHplus: '[H⁺] konsantrasyonundan hesapla',
+                calcFromOHminus: '[OH⁻] konsantrasyonundan hesapla',
+                calcFromAcidBase: 'Asit/Baz konsantrasyonundan hesapla',
+                pHValueLabel: 'pH Değeri:',
+                pOHValueLabel: 'pOH Değeri:',
+                HplusValueLabel: '[H⁺] Konsantrasyonu (mol/L):',
+                OHminusValueLabel: '[OH⁻] Konsantrasyonu (mol/L):',
+                acidBaseTypeLabel: 'Madde Tipi:',
+                strongAcid: 'Kuvvetli Asit',
+                strongBase: 'Kuvvetli Baz',
+                weakAcid: 'Zayıf Asit',
+                weakBase: 'Zayıf Baz',
+                concentrationValueLabel: 'Konsantrasyon (mol/L):',
+                kaKbValueLabel: 'Ka/Kb Değeri:',
+                infoFillOneField: 'Sadece seçtiğiniz giriş alanını doldurun, diğerlerini boş bırakın. Kuvvetli asit/bazlar için Ka/Kb değerleri gerekmez.'
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate',
+                invalidInput: 'Please enter a valid value.',
+                errorRange: 'pH and pOH values must be between 0 and 14.',
+                errorPositiveConcentration: 'Concentration must be greater than zero.',
+                errorKaKbZero: 'Ka/Kb value must be greater than zero.',
+                resultPrefix: 'Results:',
+                // Calculation Outputs
+                calculatedpH: 'pH:',
+                calculatedpOH: 'pOH:',
+                calculatedHplus: '[H⁺] Concentration:',
+                calculatedOHminus: '[OH⁻] Concentration:',
+                unit_mol_L: 'mol/L',
+                // Input Field Labels and Options
+                selectKnownValue: 'Please select and enter the known value you want to calculate:',
+                calcFrompH: 'Calculate others from pH value',
+                calcFrompOH: 'Calculate others from pOH value',
+                calcFromHplus: 'Calculate from [H⁺] concentration',
+                calcFromOHminus: 'Calculate from [OH⁻] concentration',
+                calcFromAcidBase: 'Calculate from Acid/Base concentration',
+                pHValueLabel: 'pH Value:',
+                pOHValueLabel: 'pOH Value:',
+                HplusValueLabel: '[H⁺] Concentration (mol/L):',
+                OHminusValueLabel: '[OH⁻] Concentration (mol/L):',
+                acidBaseTypeLabel: 'Substance Type:',
+                strongAcid: 'Strong Acid',
+                strongBase: 'Strong Base',
+                weakAcid: 'Weak Acid',
+                weakBase: 'Weak Base',
+                concentrationValueLabel: 'Concentration (mol/L):',
+                kaKbValueLabel: 'Ka/Kb Value:',
+                infoFillOneField: 'Fill in only the input field you selected, leave the others blank. Ka/Kb values are not required for strong acids/bases.'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // Hesaplayıcı butonları (bu sayfada tek bir ana buton var)
+        const calcButtons = document.querySelectorAll('.calc-type-button');
+        const calcWrapper = document.getElementById('calculator-pHCalculation'); // Tek ana hesaplayıcı div'i
+
+        // Radio butonları ve ilgili input alanları
+        const radioButtons = document.querySelectorAll('input[name="calcMethod"]');
+        const inputpH = document.getElementById('inputpH');
+        const inputpOH = document.getElementById('inputpOH');
+        const inputHplus = document.getElementById('inputHplus');
+        const inputOHminus = document.getElementById('inputOHminus');
+        const inputAcidBase = document.getElementById('inputAcidBase');
+        const kaKbInput = document.getElementById('kaKbInput');
+        const acidBaseTypeSelect = document.getElementById('acidBaseType');
+
+        const phCalculatorForm = document.getElementById('phCalculatorForm');
+        const phResultDiv = document.getElementById('phResult');
+
+        // Giriş alanlarının görünürlüğünü yönetme
+        function toggleInputVisibility() {
+            const selectedMethod = document.querySelector('input[name="calcMethod"]:checked').value;
+
+            // Tüm inputları gizle
+            inputpH.style.display = 'none';
+            inputpOH.style.display = 'none';
+            inputHplus.style.display = 'none';
+            inputOHminus.style.display = 'none';
+            inputAcidBase.style.display = 'none';
+            kaKbInput.style.display = 'none'; // Ka/Kb her zaman gizli başlar
+
+            // Sadece seçili inputu göster
+            if (selectedMethod === 'pH') {
+                inputpH.style.display = 'flex';
+            } else if (selectedMethod === 'pOH') {
+                inputpOH.style.display = 'flex';
+            } else if (selectedMethod === 'Hplus') {
+                inputHplus.style.display = 'flex';
+            } else if (selectedMethod === 'OHminus') {
+                inputOHminus.style.display = 'flex';
+            } else if (selectedMethod === 'acidBase') {
+                inputAcidBase.style.display = 'block'; // Block olarak ayarla
+                updateAcidBaseInputs(); // Asit/baz tipine göre alt inputları güncelle
+            }
+        }
+
+        // Asit/baz tipine göre Ka/Kb inputunu göster/gizle
+        function updateAcidBaseInputs() {
+            const acidBaseType = acidBaseTypeSelect.value;
+            if (acidBaseType === 'weakAcid' || acidBaseType === 'weakBase') {
+                kaKbInput.style.display = 'flex';
+            } else {
+                kaKbInput.style.display = 'none';
+            }
+        }
+
+        // Radyo butonlarına olay dinleyicileri ekle
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', toggleInputVisibility);
+        });
+
+        // Asit/baz tipi seçimi değiştiğinde
+        acidBaseTypeSelect.addEventListener('change', updateAcidBaseInputs);
+
+        // Sayfa yüklendiğinde varsayılan inputu göster
+        toggleInputVisibility();
+
+        // MathJax yüklemesini de tetikle
+        if (typeof MathJax !== 'undefined') {
+            MathJax.typesetPromise().then(() => {
+                console.log("MathJax typeset complete for initial load.");
+            }).catch((err) => console.error("MathJax typeset error on initial load:", err));
+        }
+
+        // --- pH Hesaplama Fonksiyonu ---
+        phCalculatorForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let pH, pOH, Hplus, OHminus;
+            const selectedMethod = document.querySelector('input[name="calcMethod"]:checked').value;
+
+            // Önceki sonuçları temizle
+            phResultDiv.innerHTML = '';
+            phResultDiv.style.display = 'none';
+
+            // Kw değeri (25°C için)
+            const Kw = 1.0e-14;
+
+            try {
+                if (selectedMethod === 'pH') {
+                    pH = parseFloat(document.getElementById('pHValue').value);
+                    if (isNaN(pH) || pH < 0 || pH > 14) throw new Error(currentTexts.errorRange);
+                    
+                    pOH = 14 - pH;
+                    Hplus = Math.pow(10, -pH);
+                    OHminus = Math.pow(10, -pOH);
+
+                } else if (selectedMethod === 'pOH') {
+                    pOH = parseFloat(document.getElementById('pOHValue').value);
+                    if (isNaN(pOH) || pOH < 0 || pOH > 14) throw new Error(currentTexts.errorRange);
+
+                    pH = 14 - pOH;
+                    OHminus = Math.pow(10, -pOH);
+                    Hplus = Math.pow(10, -pH);
+
+                } else if (selectedMethod === 'Hplus') {
+                    Hplus = parseFloat(document.getElementById('HplusValue').value);
+                    if (isNaN(Hplus) || Hplus <= 0) throw new Error(currentTexts.errorPositiveConcentration);
+                    if (Hplus > 1) { // 1 mol/L H+ üst limiti olarak kabul edilebilir (pH 0)
+                        if (Hplus > Math.pow(10,14)) { // Aşırı büyük değerler için uyarı
+                            Hplus = Math.pow(10,-14); // pH/pOH aralığını bozmamak için Kw üzeri değerleri kısıtlayalım
+                        }
+                    }
+
+                    pH = -Math.log10(Hplus);
+                    pOH = 14 - pH;
+                    OHminus = Kw / Hplus;
+
+                } else if (selectedMethod === 'OHminus') {
+                    OHminus = parseFloat(document.getElementById('OHminusValue').value);
+                    if (isNaN(OHminus) || OHminus <= 0) throw new Error(currentTexts.errorPositiveConcentration);
+                    if (OHminus > 1) { // 1 mol/L OH- üst limiti olarak kabul edilebilir (pOH 0)
+                        if (OHminus > Math.pow(10,14)) { // Aşırı büyük değerler için uyarı
+                            OHminus = Math.pow(10,-14); // pH/pOH aralığını bozmamak için Kw üzeri değerleri kısıtlayalım
+                        }
+                    }
+
+                    pOH = -Math.log10(OHminus);
+                    pH = 14 - pOH;
+                    Hplus = Kw / OHminus;
+
+                } else if (selectedMethod === 'acidBase') {
+                    const acidBaseType = acidBaseTypeSelect.value;
+                    const concentration = parseFloat(document.getElementById('concentrationValue').value);
+                    let kaKbValue = parseFloat(document.getElementById('kaKbValue').value); // Zayıf için
+
+                    if (isNaN(concentration) || concentration <= 0) throw new Error(currentTexts.errorPositiveConcentration);
+                    
+                    if (acidBaseType === 'strongAcid') {
+                        Hplus = concentration;
+                        pH = -Math.log10(Hplus);
+                        pOH = 14 - pH;
+                        OHminus = Kw / Hplus;
+                    } else if (acidBaseType === 'strongBase') {
+                        OHminus = concentration;
+                        pOH = -Math.log10(OHminus);
+                        pH = 14 - pOH;
+                        Hplus = Kw / OHminus;
+                    } else if (acidBaseType === 'weakAcid') {
+                        if (isNaN(kaKbValue) || kaKbValue <= 0) throw new Error(currentTexts.errorKaKbZero);
+                        // [H+] = sqrt(Ka * Ca) -- sadece %5 iyonlaşma kuralı için yaklaşık
+                        Hplus = Math.sqrt(kaKbValue * concentration);
+                        pH = -Math.log10(Hplus);
+                        pOH = 14 - pH;
+                        OHminus = Kw / Hplus;
+                    } else if (acidBaseType === 'weakBase') {
+                        if (isNaN(kaKbValue) || kaKbValue <= 0) throw new Error(currentTexts.errorKaKbZero);
+                        // [OH-] = sqrt(Kb * Cb) -- sadece %5 iyonlaşma kuralı için yaklaşık
+                        OHminus = Math.sqrt(kaKbValue * concentration);
+                        pOH = -Math.log10(OHminus);
+                        pH = 14 - pOH;
+                        Hplus = Kw / OHminus;
+                    }
+                }
+
+                // Sonuçları göster
+                phResultDiv.innerHTML = `
+                    <p>${currentTexts.calculatedpH} <span class="result-value">${pH.toFixed(4)}</span></p>
+                    <p>${currentTexts.calculatedpOH} <span class="result-value">${pOH.toFixed(4)}</span></p>
+                    <p>${currentTexts.calculatedHplus} <span class="result-value">${Hplus.toExponential(4)}</span> ${currentTexts.unit_mol_L}</p>
+                    <p>${currentTexts.calculatedOHminus} <span class="result-value">${OHminus.toExponential(4)}</span> ${currentTexts.unit_mol_L}</p>
+                `;
+                phResultDiv.style.display = 'block';
+
+            } catch (error) {
+                phResultDiv.innerHTML = `<p class="error">${error.message}</p>`;
+                phResultDiv.style.display = 'block';
+            }
+        });
+    });
+</script>
  </body>
 </html>

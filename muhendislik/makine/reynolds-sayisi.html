@@ -701,5 +701,161 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Reynolds Sayısını Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                errorZeroViscosity: 'Dinamik viskozite sıfır olamaz.',
+                resultPrefix: 'Reynolds Sayısı (Re):',
+                flowRegime: 'Akış Rejimi:',
+                laminarFlow: 'Laminer Akış (Düzgün, katmanlı akış)',
+                transitionalFlow: 'Geçiş Rejimi (Kararsız akış, laminerden türbülansa geçiş)',
+                turbulentFlow: 'Türbülanslı Akış (Düzensiz, girdaplı akış)',
+                // Birimler
+                unit_kg_m3: 'kg/m³',
+                unit_g_cm3: 'g/cm³',
+                unit_lb_ft3: 'lb/ft³',
+                unit_m_s: 'm/s',
+                unit_cm_s: 'cm/s',
+                unit_ft_s: 'ft/s',
+                unit_m: 'metre (m)',
+                unit_cm: 'santimetre (cm)',
+                unit_mm: 'milimetre (mm)',
+                unit_in: 'inç (in)',
+                unit_ft: 'fit (ft)',
+                unit_Pas: 'Pa·s',
+                unit_cP: 'cP (centipoise)',
+                unit_lbf_s_ft2: 'lbf·s/ft²'
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate Reynolds Number',
+                invalidInput: 'Please enter valid positive numbers for all fields.',
+                errorZeroViscosity: 'Dynamic viscosity cannot be zero.',
+                resultPrefix: 'Reynolds Number (Re):',
+                flowRegime: 'Flow Regime:',
+                laminarFlow: 'Laminar Flow (Smooth, layered flow)',
+                transitionalFlow: 'Transitional Flow (Unstable flow, transition from laminar to turbulent)',
+                turbulentFlow: 'Turbulent Flow (Irregular, chaotic flow)',
+                // Units
+                unit_kg_m3: 'kg/m³',
+                unit_g_cm3: 'g/cm³',
+                unit_lb_ft3: 'lb/ft³',
+                unit_m_s: 'm/s',
+                unit_cm_s: 'cm/s',
+                unit_ft_s: 'ft/s',
+                unit_m: 'meter (m)',
+                unit_cm: 'centimeter (cm)',
+                unit_mm: 'millimeter (mm)',
+                unit_in: 'inch (in)',
+                unit_ft: 'feet (ft)',
+                unit_Pas: 'Pa·s',
+                unit_cP: 'cP (centipoise)',
+                unit_lbf_s_ft2: 'lbf·s/ft²'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // --- Helper Functions (Birim Dönüşüm Sabitleri) ---
+        const UNIT_CONVERSIONS = {
+            // Yoğunluk: kg/m³'e dönüştürme faktörleri
+            density: {
+                'kg/m3': 1,
+                'g/cm3': 1000, // 1 g/cm³ = 1000 kg/m³
+                'lb/ft3': 16.0185 // 1 lb/ft³ = 16.0185 kg/m³
+            },
+            // Hız: m/s'ye dönüştürme faktörleri
+            velocity: {
+                'm/s': 1,
+                'cm/s': 0.01,
+                'ft/s': 0.3048
+            },
+            // Uzunluk: metreye dönüştürme faktörleri
+            length: {
+                'm': 1,
+                'cm': 0.01,
+                'mm': 0.001,
+                'in': 0.0254,
+                'ft': 0.3048
+            },
+            // Dinamik Viskozite: Pa·s'ye dönüştürme faktörleri
+            dynamicViscosity: {
+                'Pa-s': 1,
+                'cP': 0.001, // 1 cP = 0.001 Pa·s
+                'lbf-s/ft2': 47.88026 // 1 lbf·s/ft² = 47.88026 Pa·s
+            }
+        };
+
+        // --- DOM Elements ---
+        const reynoldsNumberForm = document.getElementById('reynoldsNumberForm');
+        const reynoldsNumberResultDiv = document.getElementById('reynoldsNumberResult');
+
+        // --- Main Form Submission ---
+        reynoldsNumberForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get values
+            const fluidDensity = parseFloat(document.getElementById('fluidDensity').value);
+            const fluidVelocity = parseFloat(document.getElementById('fluidVelocity').value);
+            const characteristicLength = parseFloat(document.getElementById('characteristicLength').value);
+            const dynamicViscosity = parseFloat(document.getElementById('dynamicViscosity').value);
+
+            // Get units
+            const fluidDensityUnit = document.getElementById('fluidDensityUnit').value;
+            const fluidVelocityUnit = document.getElementById('fluidVelocityUnit').value;
+            const characteristicLengthUnit = document.getElementById('characteristicLengthUnit').value;
+            const dynamicViscosityUnit = document.getElementById('dynamicViscosityUnit').value;
+
+            // --- Input Validation ---
+            if (isNaN(fluidDensity) || isNaN(fluidVelocity) || isNaN(characteristicLength) || isNaN(dynamicViscosity) ||
+                fluidDensity <= 0 || fluidVelocity <= 0 || characteristicLength <= 0 || dynamicViscosity <= 0) {
+                reynoldsNumberResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                reynoldsNumberResultDiv.style.display = 'block';
+                return;
+            }
+            // Özel durum: Dinamik viskozite sıfır olamaz (bölme hatası)
+            if (dynamicViscosity === 0) {
+                reynoldsNumberResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroViscosity}</p>`;
+                reynoldsNumberResultDiv.style.display = 'block';
+                return;
+            }
+
+            // --- Convert to Base SI Units (kg/m³, m/s, m, Pa·s) ---
+            const rho_kgm3 = fluidDensity * UNIT_CONVERSIONS.density[fluidDensityUnit];
+            const v_ms = fluidVelocity * UNIT_CONVERSIONS.velocity[fluidVelocityUnit];
+            const Dh_m = characteristicLength * UNIT_CONVERSIONS.length[characteristicLengthUnit];
+            const mu_Pas = dynamicViscosity * UNIT_CONVERSIONS.dynamicViscosity[dynamicViscosityUnit];
+
+            // --- Calculate Reynolds Number (Re = (ρ ⋅ v ⋅ Dh) / μ) ---
+            const reynoldsNumber = (rho_kgm3 * v_ms * Dh_m) / mu_Pas;
+
+            // --- Determine Flow Regime ---
+            let flowRegimeText;
+            if (reynoldsNumber < 2300) {
+                flowRegimeText = currentTexts.laminarFlow;
+            } else if (reynoldsNumber >= 2300 && reynoldsNumber <= 4000) {
+                flowRegimeText = currentTexts.transitionalFlow;
+            } else { // reynoldsNumber > 4000
+                flowRegimeText = currentTexts.turbulentFlow;
+            }
+
+            // --- Display Results ---
+            reynoldsNumberResultDiv.innerHTML = `
+                <p>${currentTexts.resultPrefix} <span class="result-value">${reynoldsNumber.toFixed(2)}</span></p>
+                <p>${currentTexts.flowRegime} <strong>${flowRegimeText}</strong></p>
+            `;
+            reynoldsNumberResultDiv.style.display = 'block';
+        });
+    });
+</script>
  </body>
 </html>

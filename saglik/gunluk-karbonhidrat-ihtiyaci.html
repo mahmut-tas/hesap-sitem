@@ -233,5 +233,166 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Language detection: Assume English if URL starts with '/en/', otherwise Turkish
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+    // Text strings object for dynamic content
+    const texts = {
+        tr: {
+            calculateButtonText: 'Karbonhidrat İhtiyacını Hesapla',
+            invalidInput: 'Lütfen tüm alanları doğru ve geçerli değerlerle doldurun.',
+            resultTitle: 'Günlük Karbonhidrat İhtiyacınız:',
+            carbAmountRange: 'Günde yaklaşık',
+            unitGram: 'gram',
+            explanation: 'Hesaplanan değer, genel kalori ihtiyacınızın %45 ile %65\'i arasından gelen tahmini günlük karbonhidrat ihtiyacınızı gösterir. Kişisel sağlık hedefleriniz için bir beslenme uzmanına danışmanız önerilir.',
+            ageLabel: 'Yaşınız:',
+            genderLabel: 'Cinsiyet:',
+            heightLabel: 'Boy (cm):',
+            weightLabel: 'Kilo (kg):',
+            activityLabel: 'Aktivite Seviyesi:',
+            selectOption: 'Seçiniz',
+            genderMale: 'Erkek',
+            genderFemale: 'Kadın',
+            activitySedentary: 'Hareketsiz (Çok az egzersiz veya hiç yok)',
+            activityLightlyActive: 'Az Aktif (Haftada 1-3 gün hafif egzersiz)',
+            activityModeratelyActive: 'Orta Derece Aktif (Haftada 3-5 gün orta egzersiz)',
+            activityVeryActive: 'Çok Aktif (Haftada 6-7 gün yoğun egzersiz)',
+            activitySuperActive: 'Aşırı Aktif (Günde iki kez yoğun egzersiz, fiziksel iş)',
+            placeholderAge: 'Örn: 30',
+            placeholderHeight: 'Örn: 175',
+            placeholderWeight: 'Örn: 70'
+        },
+        en: {
+            calculateButtonText: 'Calculate Carbohydrate Needs',
+            invalidInput: 'Please fill in all fields with correct and valid values.',
+            resultTitle: 'Your Daily Carbohydrate Need:',
+            carbAmountRange: 'Approximately',
+            unitGram: 'grams',
+            explanation: 'The calculated value shows your estimated daily carbohydrate need, deriving from 45% to 65% of your total calorie intake. For personalized health goals, it\'s recommended to consult a nutritionist.',
+            ageLabel: 'Your age:',
+            genderLabel: 'Gender:',
+            heightLabel: 'Height (cm):',
+            weightLabel: 'Weight (kg):',
+            activityLabel: 'Activity Level:',
+            selectOption: 'Select',
+            genderMale: 'Male',
+            genderFemale: 'Woman',
+            activitySedentary: 'Sedentary (Little or no exercise)',
+            activityLightlyActive: 'Lightly Active (Light exercise 1-3 days a week)',
+            activityModeratelyActive: 'Moderately Active (Moderate exercise 3-5 days a week)',
+            activityVeryActive: 'Very Active (Intense exercise 6-7 days a week)',
+            activitySuperActive: 'Overactive (Intense exercise twice a day, physical work)',
+            placeholderAge: 'e.g.: 30',
+            placeholderHeight: 'e.g.: 175',
+            placeholderWeight: 'e.g.: 70'
+        }
+    };
+
+    // Select active language texts
+    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+    // --- DOM Elements ---
+    const carbForm = document.getElementById('carbForm');
+    const ageInput = document.getElementById('carb_age');
+    const genderSelect = document.getElementById('carb_gender');
+    const heightInput = document.getElementById('carb_height');
+    const weightInput = document.getElementById('carb_weight');
+    const activitySelect = document.getElementById('carb_activity');
+    const carbResultDiv = document.getElementById('carbResult');
+    const carbGoalDiv = document.getElementById('carbGoal'); // For the explanation text
+    const calculateButton = carbForm.querySelector('button[type="submit"]');
+
+    // Update static labels and placeholders on load
+    document.querySelector('label[for="carb_age"]').textContent = currentTexts.ageLabel;
+    ageInput.placeholder = currentTexts.placeholderAge;
+    document.querySelector('label[for="carb_gender"]').textContent = currentTexts.genderLabel;
+    document.querySelector('#carb_gender option[value=""]').textContent = currentTexts.selectOption;
+    document.querySelector('#carb_gender option[value="male"]').textContent = currentTexts.genderMale;
+    document.querySelector('#carb_gender option[value="female"]').textContent = currentTexts.genderFemale;
+    document.querySelector('label[for="carb_height"]').textContent = currentTexts.heightLabel;
+    heightInput.placeholder = currentTexts.placeholderHeight;
+    document.querySelector('label[for="carb_weight"]').textContent = currentTexts.weightLabel;
+    weightInput.placeholder = currentTexts.placeholderWeight;
+    document.querySelector('label[for="carb_activity"]').textContent = currentTexts.activityLabel;
+    document.querySelector('#carb_activity option[value=""]').textContent = currentTexts.selectOption;
+    document.querySelector('#carb_activity option[value="sedentary"]').textContent = currentTexts.activitySedentary;
+    document.querySelector('#carb_activity option[value="lightly_active"]').textContent = currentTexts.activityLightlyActive;
+    document.querySelector('#carb_activity option[value="moderately_active"]').textContent = currentTexts.activityModeratelyActive;
+    document.querySelector('#carb_activity option[value="very_active"]').textContent = currentTexts.activityVeryActive;
+    document.querySelector('#carb_activity option[value="super_active"]').textContent = currentTexts.activitySuperActive;
+    calculateButton.textContent = currentTexts.calculateButtonText;
+
+    // Activity Multipliers (from Mifflin-St Jeor formula context)
+    const activityMultipliers = {
+        sedentary: 1.2,
+        lightly_active: 1.375,
+        moderately_active: 1.55,
+        very_active: 1.725,
+        super_active: 1.9
+    };
+
+    // --- Calorie Calculation (TDEE) Helper Function ---
+    function calculateTDEE(age, gender, heightCm, weightKg, activityLevel) {
+        let bmr = 0;
+        // Mifflin-St Jeor Formula for BMR
+        if (gender === 'male') {
+            bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) + 5;
+        } else { // female
+            bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) - 161;
+        }
+
+        const activityMultiplier = activityMultipliers[activityLevel];
+        return bmr * activityMultiplier; // Total Daily Energy Expenditure
+    }
+
+    // --- Carbohydrate Calculation Function ---
+    function calculateCarbNeeds(event) {
+        event.preventDefault(); // Prevent form submission and page reload
+
+        let age = parseInt(ageInput.value);
+        let gender = genderSelect.value;
+        let heightCm = parseFloat(heightInput.value);
+        let weightKg = parseFloat(weightInput.value);
+        let activityLevel = activitySelect.value;
+
+        // Clear previous results
+        carbResultDiv.innerHTML = '';
+        carbGoalDiv.innerHTML = '';
+
+        // --- Input Validation ---
+        if (isNaN(age) || age <= 0 ||
+            isNaN(heightCm) || heightCm <= 0 ||
+            isNaN(weightKg) || weightKg <= 0 ||
+            gender === '' || activityLevel === '') {
+            carbResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            return;
+        }
+
+        const tdee = calculateTDEE(age, gender, heightCm, weightKg, activityLevel);
+
+        // Recommended carbohydrate percentage range (45% to 65% of total calories)
+        const minCarbCalories = tdee * 0.45;
+        const maxCarbCalories = tdee * 0.65;
+
+        // Convert calories to grams (1 gram carbohydrate = 4 calories)
+        const minCarbGrams = minCarbCalories / 4;
+        const maxCarbGrams = maxCarbCalories / 4;
+
+        // Display results
+        carbResultDiv.innerHTML = `
+            <h3>${currentTexts.resultTitle}</h3>
+            <p><strong>${currentTexts.carbAmountRange}</strong> <span class="result-value">${minCarbGrams.toFixed(0)} - ${maxCarbGrams.toFixed(0)} ${currentTexts.unitGram}</span></p>
+        `;
+
+        // Display explanation
+        carbGoalDiv.innerHTML = `<p class="small-text">${currentTexts.explanation}</p>`;
+    }
+
+    // Add event listener to the form for submission
+    carbForm.addEventListener('submit', calculateCarbNeeds);
+});
+  </script>
  </body>
 </html>

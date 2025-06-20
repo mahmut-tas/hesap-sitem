@@ -789,5 +789,297 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli sayılar girin.',
+                errorZeroCredits: 'Ders kredileri sıfırdan büyük olmalıdır.',
+                errorGPARange: 'GPA 0 ile 4.00 arasında olmalıdır.',
+                errorNegativeCredits: 'Tamamlanan veya kalan krediler negatif olamaz.',
+                errorTargetGPAImpossible: 'Bu hedef GPA\'e ulaşmak mümkün değil. Kalan derslerinizden 4.00 almanız bile yeterli olmayabilir.',
+                errorTargetGPATooEasy: 'Mevcut derslerinizle zaten hedef GPA\'i aşıyorsunuz!',
+                resultPrefix: 'Sonuç:',
+                // Dönemlik/Yıllık GPA
+                currentGPATitle: 'Dönemlik / Yıllık Not Ortalaması (GPA) Hesaplama',
+                courseCreditsLabel: 'Ders Kredisi:',
+                letterGradeLabel: 'Harf Notu:',
+                addCourseButton: '<i class="fas fa-plus"></i> Ders Ekle',
+                deleteLastCourseButton: '<i class="fas fa-minus"></i> Son Dersi Sil',
+                calculatedGPA: 'Dönemlik / Yıllık Not Ortalaması (GPA):',
+                // Kümülatif GPA
+                cumulativeGPATitle: 'Kümülatif Not Ortalaması (CGPA) Hesaplama',
+                previousGPALabel: 'Önceki Dönemler Toplam GPA (CGPA):',
+                previousCreditsLabel: 'Önceki Dönemlerde Tamamlanan Toplam Kredi:',
+                newTermCourses: 'Yeni Dönem Dersleri:',
+                calculatedCGPA: 'Yeni Kümülatif Not Ortalaması (CGPA):',
+                // Hedef GPA
+                targetGPATitle: 'Hedef GPA\'e Ulaşma Hesaplayıcı',
+                currentCumulativeGPALabel: 'Mevcut Kümülatif GPA (CGPA):',
+                completedCreditsLabel: 'Tamamlanan Toplam Kredi:',
+                targetGPALabel: 'Ulaşmak İstediğiniz Hedef GPA:',
+                remainingCreditsLabel: 'Kalan Kredi Sayısı (Bu dönem ve gelecek dönemler):',
+                requiredAverage: 'Kalan Derslerden Almanız Gereken Ortalama:',
+                // Harf Notları
+                AA: 'AA', BA: 'BA', BB: 'BB', CB: 'CB', CC: 'CC', DC: 'DC', DD: 'DD', FD: 'FD', FF: 'FF',
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate',
+                invalidInput: 'Please enter valid numbers for all fields.',
+                errorZeroCredits: 'Course credits must be greater than zero.',
+                errorGPARange: 'GPA must be between 0 and 4.00.',
+                errorNegativeCredits: 'Completed or remaining credits cannot be negative.',
+                errorTargetGPAImpossible: 'It is impossible to reach this target GPA. Even getting 4.00 in all remaining courses might not be enough.',
+                errorTargetGPATooEasy: 'You are already exceeding your target GPA with your current courses!',
+                resultPrefix: 'Result:',
+                // Current/Semester GPA
+                currentGPATitle: 'Semester / Yearly GPA Calculation',
+                courseCreditsLabel: 'Course Credits:',
+                letterGradeLabel: 'Letter Grade:',
+                addCourseButton: '<i class="fas fa-plus"></i> Add a Course',
+                deleteLastCourseButton: '<i class="fas fa-minus"></i> Delete Last Course',
+                calculatedGPA: 'Semester / Yearly GPA:',
+                // Cumulative GPA
+                cumulativeGPATitle: 'Cumulative GPA (CGPA) Calculation',
+                previousGPALabel: 'Previous Semesters Total GPA (CGPA):',
+                previousCreditsLabel: 'Total Credits Completed in Previous Terms:',
+                newTermCourses: 'New Term Courses:',
+                calculatedCGPA: 'New Cumulative GPA (CGPA):',
+                // Target GPA
+                targetGPATitle: 'Target GPA Reaching Calculator',
+                currentCumulativeGPALabel: 'Current Cumulative GPA (CGPA):',
+                completedCreditsLabel: 'Total Credits Completed:',
+                targetGPALabel: 'Target GPA You Want to Achieve:',
+                remainingCreditsLabel: 'Number of Remaining Credits (This term and future terms):',
+                requiredAverage: 'Required Average from Remaining Courses:',
+                // Letter Grades
+                AA: 'AA', BA: 'BA', BB: 'BB', CB: 'CB', CC: 'CC', DC: 'DC', DD: 'DD', FD: 'FD', FF: 'FF',
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // --- Helper Functions ---
+        const GRADES = {
+            'AA': 4.00, 'BA': 3.70, 'BB': 3.30, 'CB': 3.00, 'CC': 2.70,
+            'DC': 2.30, 'DD': 2.00, 'FD': 1.70, 'FF': 1.00
+        };
+
+        function createGradeInputRow(lessonNumber, containerId) {
+            const rowDiv = document.createElement('div');
+            rowDiv.classList.add('grade-input-row');
+            rowDiv.innerHTML = `
+                <div class="input-group">
+                    <label for="${containerId === 'current-gpa-lessons-container' ? 'currentLessonCredit' : 'newLessonCredit'}${lessonNumber}">${currentTexts.courseCreditsLabel}</label>
+                    <input type="number" class="${containerId === 'current-gpa-lessons-container' ? 'current-lesson-credit' : 'new-lesson-credit'}" id="${containerId === 'current-gpa-lessons-container' ? 'currentLessonCredit' : 'newLessonCredit'}${lessonNumber}" min="1" step="0.5" required value="3">
+                </div>
+                <div class="input-group">
+                    <label for="${containerId === 'current-gpa-lessons-container' ? 'currentLessonGrade' : 'newLessonGrade'}${lessonNumber}">${currentTexts.letterGradeLabel}</label>
+                    <select class="${containerId === 'current-gpa-lessons-container' ? 'current-lesson-grade' : 'new-lesson-grade'}" id="${containerId === 'current-gpa-lessons-container' ? 'currentLessonGrade' : 'newLessonGrade'}${lessonNumber}" required>
+                        <option value="4.00">${currentTexts.AA}</option>
+                        <option value="3.70">${currentTexts.BA}</option>
+                        <option value="3.30">${currentTexts.BB}</option>
+                        <option value="3.00">${currentTexts.CB}</option>
+                        <option value="2.70">${currentTexts.CC}</option>
+                        <option value="2.30">${currentTexts.DC}</option>
+                        <option value="2.00">${currentTexts.DD}</option>
+                        <option value="1.70">${currentTexts.FD}</option>
+                        <option value="1.00">${currentTexts.FF}</option>
+                    </select>
+                </div>
+            `;
+            return rowDiv;
+        }
+
+        // --- DOM Elements ---
+        const calcButtons = document.querySelectorAll('.calc-type-button');
+        const calcWrappers = document.querySelectorAll('.calc-wrapper');
+
+        // Current GPA elements
+        const formCurrentGPA = document.getElementById('formCurrentGPA');
+        const currentGPALessonsContainer = document.getElementById('current-gpa-lessons-container');
+        const addCurrentGPALessonButton = document.getElementById('addCurrentGPALesson');
+        const removeCurrentGPALessonButton = document.getElementById('removeCurrentGPALesson');
+        const resultCurrentGPA = document.getElementById('resultCurrentGPA');
+        let currentLessonCount = 1; // Başlangıçta 1 ders var
+
+        // Cumulative GPA elements
+        const formCumulativeGPA = document.getElementById('formCumulativeGPA');
+        const newGPALessonsContainer = document.getElementById('new-gpa-lessons-container');
+        const addNewGPALessonButton = document.getElementById('addNewGPALesson');
+        const removeNewGPALessonButton = document.getElementById('removeNewGPALesson');
+        const resultCumulativeGPA = document.getElementById('resultCumulativeGPA');
+        let newLessonCount = 1; // Başlangıçta 1 ders var
+
+        // Target GPA elements
+        const formTargetGPA = document.getElementById('formTargetGPA');
+        const resultTargetGPA = document.getElementById('resultTargetGPA');
+
+        // --- Event Listeners ---
+
+        // Calculator type selection logic
+        calcButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const calcType = this.dataset.calcType;
+                calcWrappers.forEach(wrapper => {
+                    if (wrapper.id === `calculator-${calcType}`) {
+                        wrapper.classList.remove('hidden-calc');
+                    } else {
+                        wrapper.classList.add('hidden-calc');
+                    }
+                });
+                calcButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Add/Remove Lesson for Current GPA
+        addCurrentGPALessonButton.addEventListener('click', function() {
+            currentLessonCount++;
+            currentGPALessonsContainer.appendChild(createGradeInputRow(currentLessonCount, 'current-gpa-lessons-container'));
+        });
+        removeCurrentGPALessonButton.addEventListener('click', function() {
+            if (currentLessonCount > 1) {
+                currentGPALessonsContainer.removeChild(currentGPALessonsContainer.lastChild);
+                currentLessonCount--;
+            }
+        });
+
+        // Add/Remove Lesson for Cumulative GPA
+        addNewGPALessonButton.addEventListener('click', function() {
+            newLessonCount++;
+            newGPALessonsContainer.appendChild(createGradeInputRow(newLessonCount, 'new-gpa-lessons-container'));
+        });
+        removeNewGPALessonButton.addEventListener('click', function() {
+            if (newLessonCount > 1) {
+                newGPALessonsContainer.removeChild(newGPALessonsContainer.lastChild);
+                newLessonCount--;
+            }
+        });
+
+        // --- Current GPA Calculation ---
+        formCurrentGPA.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let totalCreditPoints = 0;
+            let totalCredits = 0;
+            let isValid = true;
+
+            const lessonCredits = currentGPALessonsContainer.querySelectorAll('.current-lesson-credit');
+            const lessonGrades = currentGPALessonsContainer.querySelectorAll('.current-lesson-grade');
+
+            for (let i = 0; i < lessonCredits.length; i++) {
+                const credit = parseFloat(lessonCredits[i].value);
+                const gradeValue = parseFloat(lessonGrades[i].value);
+
+                if (isNaN(credit) || isNaN(gradeValue) || credit < 0.5) { // Minimum kredi 0.5 kabul edilebilir
+                    isValid = false;
+                    break;
+                }
+                totalCreditPoints += (credit * gradeValue);
+                totalCredits += credit;
+            }
+
+            if (!isValid || totalCredits === 0) {
+                resultCurrentGPA.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                resultCurrentGPA.style.display = 'block';
+                return;
+            }
+
+            const gpa = totalCreditPoints / totalCredits;
+            resultCurrentGPA.innerHTML = `<p>${currentTexts.calculatedGPA} <span class="result-value">${gpa.toFixed(2)}</span></p>`;
+            resultCurrentGPA.style.display = 'block';
+        });
+
+        // --- Cumulative GPA Calculation ---
+        formCumulativeGPA.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const previousGPA = parseFloat(document.getElementById('previousGPA').value);
+            const previousCredits = parseFloat(document.getElementById('previousCredits').value);
+
+            let newTermCreditPoints = 0;
+            let newTermCredits = 0;
+            let isValid = true;
+
+            const newLessonCredits = newGPALessonsContainer.querySelectorAll('.new-lesson-credit');
+            const newLessonGrades = newGPALessonsContainer.querySelectorAll('.new-lesson-grade');
+
+            for (let i = 0; i < newLessonCredits.length; i++) {
+                const credit = parseFloat(newLessonCredits[i].value);
+                const gradeValue = parseFloat(newLessonGrades[i].value);
+
+                if (isNaN(credit) || isNaN(gradeValue) || credit < 0.5) {
+                    isValid = false;
+                    break;
+                }
+                newTermCreditPoints += (credit * gradeValue);
+                newTermCredits += credit;
+            }
+
+            if (!isValid || isNaN(previousGPA) || isNaN(previousCredits) || previousGPA < 0 || previousGPA > 4.00 || previousCredits < 0 || newTermCredits === 0) {
+                resultCumulativeGPA.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                resultCumulativeGPA.style.display = 'block';
+                return;
+            }
+
+            const currentTotalCreditPoints = (previousGPA * previousCredits) + newTermCreditPoints;
+            const currentTotalCredits = previousCredits + newTermCredits;
+
+            const newCGPA = currentTotalCreditPoints / currentTotalCredits;
+            resultCumulativeGPA.innerHTML = `<p>${currentTexts.calculatedCGPA} <span class="result-value">${newCGPA.toFixed(2)}</span></p>`;
+            resultCumulativeGPA.style.display = 'block';
+        });
+
+        // --- Target GPA Calculation ---
+        formTargetGPA.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const currentCumulativeGPA = parseFloat(document.getElementById('currentCumulativeGPA').value);
+            const completedCredits = parseFloat(document.getElementById('completedCredits').value);
+            const targetGPA = parseFloat(document.getElementById('targetGPA').value);
+            const remainingCredits = parseFloat(document.getElementById('remainingCredits').value);
+
+            if (isNaN(currentCumulativeGPA) || isNaN(completedCredits) || isNaN(targetGPA) || isNaN(remainingCredits) ||
+                currentCumulativeGPA < 0 || currentCumulativeGPA > 4.00 || targetGPA < 0 || targetGPA > 4.00 ||
+                completedCredits < 0 || remainingCredits <= 0) { // Remaining credits must be > 0
+                resultTargetGPA.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                resultTargetGPA.style.display = 'block';
+                return;
+            }
+
+            // Gerekli toplam kredi puanı
+            const requiredTotalCreditPoints = targetGPA * (completedCredits + remainingCredits);
+            // Mevcut kazanılan kredi puanı
+            const currentEarnedCreditPoints = currentCumulativeGPA * completedCredits;
+            
+            // Kalan derslerden kazanılması gereken toplam kredi puanı
+            const pointsNeededFromRemaining = requiredTotalCreditPoints - currentEarnedCreditPoints;
+
+            // Kalan derslerden alınması gereken ortalama
+            const requiredAverageFromRemaining = pointsNeededFromRemaining / remainingCredits;
+
+            if (requiredAverageFromRemaining > 4.00) {
+                resultTargetGPA.innerHTML = `<p class="error">${currentTexts.errorTargetGPAImpossible}</p>`;
+                resultTargetGPA.style.display = 'block';
+            } else if (requiredAverageFromRemaining < 0) { // Zaten hedefi aşıyor
+                 resultTargetGPA.innerHTML = `<p class="error">${currentTexts.errorTargetGPATooEasy}</p>`;
+                 resultTargetGPA.style.display = 'block';
+            }
+            else {
+                resultTargetGPA.innerHTML = `<p>${currentTexts.requiredAverage} <span class="result-value">${requiredAverageFromRemaining.toFixed(2)}</span></p>`;
+                resultTargetGPA.style.display = 'block';
+            }
+        });
+    });
+</script>
 </body>
 </html>

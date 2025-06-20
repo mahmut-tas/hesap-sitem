@@ -229,5 +229,127 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Language detection: Assume English if URL starts with '/en/', otherwise Turkish
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+    // Text strings object for dynamic content
+    const texts = {
+        tr: {
+            calculateButtonText: 'Hesapla',
+            addFiberButtonText: 'Yeni Elyaf Ekle',
+            fiberNameLabel: 'Elyaf Adı',
+            fiberWeightLabel: 'Miktar (gr/kg):',
+            invalidInput: 'Lütfen tüm elyaf miktarları için geçerli pozitif sayılar girin ve elyaf adlarını boş bırakmayın.',
+            totalWeightZero: 'Toplam elyaf miktarı sıfır olamaz. Lütfen en az bir elyaf için pozitif bir miktar girin.',
+            resultTitle: 'Sonuçlar:',
+            explanation: 'Miktarları aynı birimde (hepsi gram veya hepsi kilogram) girdiğinizden emin olun.'
+        },
+        en: {
+            calculateButtonText: 'Calculate',
+            addFiberButtonText: 'Add New Fiber',
+            fiberNameLabel: 'Fiber Name',
+            fiberWeightLabel: 'Amount (gr/kg):',
+            invalidInput: 'Please enter valid positive numbers for all fiber amounts and do not leave fiber names empty.',
+            totalWeightZero: 'Total fiber amount cannot be zero. Please enter a positive amount for at least one fiber.',
+            resultTitle: 'Results:',
+            explanation: 'Make sure you enter amounts in the same unit (all grams or all kilograms).'
+        }
+    };
+
+    // Select active language texts
+    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+    // --- DOM Elements ---
+    const fiberBlendForm = document.getElementById('fiberBlendForm');
+    const fiberInputsDiv = document.getElementById('fiberInputs');
+    const addFiberButton = document.querySelector('.add-fiber-button');
+    const calculateButton = fiberBlendForm.querySelector('button[onclick="calculateFiberBlend()"]');
+    const resultBox = document.getElementById('resultBox');
+    const explanationParagraph = resultBox.nextElementSibling; // The <p class="small-text"> after resultBox
+
+    let fiberCount = 2; // Starting with 2 fiber input rows
+
+    // Update button texts and initial explanation
+    if (addFiberButton) {
+        addFiberButton.textContent = currentTexts.addFiberButtonText;
+    }
+    if (calculateButton) {
+        calculateButton.textContent = currentTexts.calculateButtonText;
+    }
+    if (explanationParagraph) {
+        explanationParagraph.textContent = currentTexts.explanation;
+    }
+
+    // --- Add Fiber Input Function ---
+    window.addFiberInput = function() {
+        fiberCount++;
+        const newFiberRow = document.createElement('div');
+        newFiberRow.classList.add('input-with-unit', 'fiber-input-row');
+        newFiberRow.innerHTML = `
+            <label for="fiber${fiberCount}Name">${currentTexts.fiberNameLabel} ${fiberCount}:</label>
+            <input class="fiber-name" id="fiber${fiberCount}Name" placeholder="${isEnglishPage ? 'e.g.: Viscose' : 'Örn: Viskon'}" type="text"/>
+            <label for="fiber${fiberCount}Weight">${currentTexts.fiberWeightLabel}</label>
+            <input class="fiber-weight" id="fiber${fiberCount}Weight" min="0" placeholder="${isEnglishPage ? 'e.g.: 200' : 'Örn: 200'}" required step="0.01" type="number"/>
+            <button type="button" class="remove-fiber-button"><i class="fas fa-times-circle"></i></button>
+        `;
+        fiberInputsDiv.appendChild(newFiberRow);
+
+        // Add event listener for the new remove button
+        newFiberRow.querySelector('.remove-fiber-button').addEventListener('click', function() {
+            newFiberRow.remove();
+        });
+    };
+
+    // --- Calculate Fiber Blend Function ---
+    window.calculateFiberBlend = function() {
+        const fiberNames = document.querySelectorAll('.fiber-name');
+        const fiberWeights = document.querySelectorAll('.fiber-weight');
+        let totalWeight = 0;
+        let fiberData = [];
+
+        // Clear previous results
+        resultBox.innerHTML = `<h3>${currentTexts.resultTitle}</h3>`;
+        resultBox.style.display = 'none';
+
+        // Collect data and validate inputs
+        for (let i = 0; i < fiberNames.length; i++) {
+            const name = fiberNames[i].value.trim();
+            const weight = parseFloat(fiberWeights[i].value);
+
+            if (name === '' || isNaN(weight) || weight < 0) {
+                alert(currentTexts.invalidInput);
+                return;
+            }
+            if (weight > 0) { // Only consider fibers with positive weight for calculations
+                fiberData.push({ name: name, weight: weight });
+                totalWeight += weight;
+            }
+        }
+
+        if (totalWeight === 0) {
+            alert(currentTexts.totalWeightZero);
+            return;
+        }
+
+        // Calculate and display percentages
+        let resultsHtml = `<h3>${currentTexts.resultTitle}</h3>`;
+        fiberData.forEach(fiber => {
+            const percentage = (fiber.weight / totalWeight) * 100;
+            resultsHtml += `<p><strong>${fiber.name}:</strong> <span class="result-value">${percentage.toFixed(2)} %</span></p>`;
+        });
+
+        resultBox.innerHTML = resultsHtml;
+        resultBox.style.display = 'block'; // Show the result box
+    };
+
+    // Initial setup for the result box header (if hidden by default)
+    const resultBoxHeader = resultBox.querySelector('h3');
+    if (resultBoxHeader) {
+        resultBoxHeader.textContent = currentTexts.resultTitle;
+    }
+});
+  </script>
 </body>
 </html>

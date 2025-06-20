@@ -565,5 +565,161 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                batteryCapacityLabel: 'Araç Batarya Kapasitesi (kWh):',
+                electricityPriceLabel: 'Elektrik Birim Fiyatı (TL/kWh):',
+                chargedKwhLabel: 'Şarj Edilen Elektrik Miktarı (kWh):',
+                distanceTravelledLabel: 'Gidilecek Mesafe (KM):',
+                consumptionPer100kmLabel: 'Aracın 100 KM Başına Elektrik Tüketimi (kWh):',
+                calculateButton: 'Hesapla',
+                fullChargeCost: 'Tam Şarj Maliyeti:',
+                chargingCost: 'Şarj Maliyeti:',
+                estimatedCost: 'Tahmini Maliyet:',
+                estimatedEnergy: 'Tahmini Gerekli Enerji:',
+                invalidInput: 'Lütfen tüm alanlara geçerli değerler girin.',
+                tlUnit: 'TL',
+                kwhUnit: 'kWh'
+            },
+            en: {
+                batteryCapacityLabel: 'Vehicle Battery Capacity (kWh):',
+                electricityPriceLabel: 'Electricity Unit Price (TL/kWh):',
+                chargedKwhLabel: 'Amount of Electricity Charged (kWh):',
+                distanceTravelledLabel: 'Distance to Go (KM):',
+                consumptionPer100kmLabel: 'Electricity Consumption of the Vehicle per 100 KM (kWh):',
+                calculateButton: 'Calculate',
+                fullChargeCost: 'Full Charge Cost:',
+                chargingCost: 'Charging Cost:',
+                estimatedCost: 'Estimated Cost:',
+                estimatedEnergy: 'Estimated Required Energy:',
+                invalidInput: 'Please enter valid values for all fields.',
+                tlUnit: 'TL',
+                kwhUnit: 'kWh'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // Hesaplayıcı butonları ve içerikleri
+        const calcButtons = document.querySelectorAll('.calc-type-button');
+        const calcWrappers = document.querySelectorAll('.calc-wrapper');
+
+        // Hesaplayıcıları gizleme/gösterme işlevi
+        function showCalculator(calcType) {
+            calcWrappers.forEach(wrapper => {
+                if (wrapper.id === `calculator-${calcType}`) {
+                    wrapper.classList.remove('hidden-calc');
+                } else {
+                    wrapper.classList.add('hidden-calc');
+                }
+            });
+
+            calcButtons.forEach(button => {
+                if (button.dataset.calcType === calcType) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        // Butonlara click eventi ekleme
+        calcButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const calcType = this.dataset.calcType;
+                showCalculator(calcType);
+            });
+        });
+
+        // Sayfa yüklendiğinde varsayılan olarak ilk hesaplayıcıyı göster
+        showCalculator('type1');
+
+        // --- Tip 1: Batarya Kapasitesi ile Hesaplama ---
+        const formType1 = document.getElementById('formType1');
+        const resultType1 = document.getElementById('resultType1');
+
+        formType1.addEventListener('submit', function(event) {
+            event.preventDefault(); // Formun varsayılan submit davranışını engelle
+
+            const batteryCapacity = parseFloat(document.getElementById('batteryCapacity').value);
+            const electricityPrice1 = parseFloat(document.getElementById('electricityPrice1').value);
+
+            // Giriş doğrulaması
+            if (isNaN(batteryCapacity) || isNaN(electricityPrice1) || batteryCapacity <= 0 || electricityPrice1 <= 0) {
+                resultType1.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                resultType1.style.display = 'block';
+                return;
+            }
+
+            const cost = batteryCapacity * electricityPrice1;
+
+            resultType1.innerHTML = `
+                <p>${currentTexts.fullChargeCost} <span class="result-value">${cost.toFixed(2)} ${currentTexts.tlUnit}</span></p>
+            `;
+            resultType1.style.display = 'block';
+        });
+
+        // --- Tip 2: Şarj Edilen kWh Miktarı ile Hesaplama ---
+        const formType2 = document.getElementById('formType2');
+        const resultType2 = document.getElementById('resultType2');
+
+        formType2.addEventListener('submit', function(event) {
+            event.preventDefault(); // Formun varsayılan submit davranışını engelle
+
+            const chargedKwh = parseFloat(document.getElementById('chargedKwh').value);
+            const electricityPrice2 = parseFloat(document.getElementById('electricityPrice2').value);
+
+            // Giriş doğrulaması
+            if (isNaN(chargedKwh) || isNaN(electricityPrice2) || chargedKwh <= 0 || electricityPrice2 <= 0) {
+                resultType2.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                resultType2.style.display = 'block';
+                return;
+            }
+
+            const cost = chargedKwh * electricityPrice2;
+
+            resultType2.innerHTML = `
+                <p>${currentTexts.chargingCost} <span class="result-value">${cost.toFixed(2)} ${currentTexts.tlUnit}</span></p>
+            `;
+            resultType2.style.display = 'block';
+        });
+
+        // --- Tip 3: Gidilen Mesafe Bazında Tahmini Maliyet Hesaplama ---
+        const formType3 = document.getElementById('formType3');
+        const resultType3 = document.getElementById('resultType3');
+
+        formType3.addEventListener('submit', function(event) {
+            event.preventDefault(); // Formun varsayılan submit davranışını engelle
+
+            const distanceTravelledEv = parseFloat(document.getElementById('distanceTravelledEv').value);
+            const consumptionPer100kmEv = parseFloat(document.getElementById('consumptionPer100kmEv').value);
+            const electricityPrice3 = parseFloat(document.getElementById('electricityPrice3').value);
+
+            // Giriş doğrulaması
+            if (isNaN(distanceTravelledEv) || isNaN(consumptionPer100kmEv) || isNaN(electricityPrice3) ||
+                distanceTravelledEv <= 0 || consumptionPer100kmEv <= 0 || electricityPrice3 <= 0) {
+                resultType3.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                resultType3.style.display = 'block';
+                return;
+            }
+
+            const estimatedEnergy = (distanceTravelledEv / 100) * consumptionPer100kmEv;
+            const estimatedCost = estimatedEnergy * electricityPrice3;
+
+            resultType3.innerHTML = `
+                <p>${currentTexts.estimatedEnergy} <span class="result-value">${estimatedEnergy.toFixed(2)} ${currentTexts.kwhUnit}</span></p>
+                <p>${currentTexts.estimatedCost} <span class="result-value">${estimatedCost.toFixed(2)} ${currentTexts.tlUnit}</span></p>
+            `;
+            resultType3.style.display = 'block';
+        });
+    });
+</script>
  </body>
 </html>

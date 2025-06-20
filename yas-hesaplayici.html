@@ -611,5 +611,891 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+    const texts = {
+        tr: {
+            mainTitle: 'Yaş Hesaplayıcı',
+            mainInstruction: 'Yapmak istediğiniz yaş hesaplama türünü seçin:',
+            categoryButton_basicAge: 'Doğum Tarihinize Göre Yaşım',
+            categoryButton_dateDiff: 'İki Tarih Arası Fark',
+            categoryButton_specificDateAge: 'Belirli Bir Tarihte Yaşım',
+            categoryButton_funFacts: 'İlginç Yaş Bilgileri',
+            defaultMessage: 'Yukarıdaki kategorilerden birini seçerek yaş hesaplamalarına başlayın.',
+            backToCategories: 'Geri (Kategorilere Dön)',
+            invalidDateInput: 'Lütfen geçerli bir doğum tarihi girin.',
+            invalidDateRange: 'Başlangıç tarihi bitiş tarihinden önce olmalıdır.',
+            resultPrefix: 'Sonuç:',
+            birthDateLabel: 'Doğum Tarihiniz:',
+            calculateButtonText: 'Hesapla',
+            targetDateLabel: 'Hedef Tarih:',
+            genderLabel: 'Cinsiyet:',
+            countryLabel: 'Ülke (Ortalama Yaşam Süresi İçin):',
+
+            // Sub-category: Basic Age
+            basicAge_title: 'Doğum Tarihinize Göre Yaşım',
+            basicAge_info: 'Doğum tarihinizi girerek tam yaşınızı, burcunuzu ve bir sonraki doğum gününüze kalan süreyi öğrenin.',
+            subButton_fullAge: 'Tam Yaş ve Doğum Günü',
+            subButton_zodiacSigns: 'Burç Bilgileri',
+            fullAge_calcTitle: 'Tam Yaş ve Doğum Gününe Kalan Süre',
+            yourAge: 'Yaşınız:',
+            nextBirthdayIn: 'Sonraki Doğum Gününüze Kalan Süre:',
+            zodiac_calcTitle: 'Astrolojik ve Çin Burcu',
+            yourAstrologyZodiac: 'Astrolojik Burcunuz:',
+            yourChineseZodiac: 'Çin Burcunuz:',
+
+            // Sub-category: Date Difference
+            dateDiff_title: 'İki Tarih Arası Fark',
+            dateDiff_info: 'İki seçtiğiniz tarih arasındaki süreyi yıl, ay, gün, saat ve dakika cinsinden hesaplayın.',
+            subButton_dateDiffYMD: 'Yıl, Ay, Gün Farkı',
+            subButton_dateDiffTotalDays: 'Toplam Gün/Saat/Dakika Farkı',
+            startDateLabel: 'Başlangıç Tarihi:',
+            endDateLabel: 'Bitiş Tarihi:',
+            dateDiffYMD_calcTitle: 'Yıl, Ay, Gün Farkı',
+            differenceIs: 'Fark:',
+            dateDiffTotalDays_calcTitle: 'Toplam Gün/Saat/Dakika Farkı',
+            totalDays: 'Toplam Gün:',
+            totalHours: 'Toplam Saat:',
+            totalMinutes: 'Toplam Dakika:',
+
+            // Sub-category: Age at Specific Date
+            specificDateAge_title: 'Belirli Bir Tarihte Yaşım',
+            specificDateAge_info: 'Doğum tarihinizi ve belirlediğiniz bir tarihi girerek o tarihteki yaşınızı öğrenin.',
+            subButton_ageAtFutureDate: 'Gelecekteki Bir Tarihte Yaşım',
+            subButton_ageAtPastDate: 'Geçmişteki Bir Tarihte Yaşım',
+            ageAtFutureDate_calcTitle: 'Gelecekteki Bir Tarihte Yaşım',
+            targetDateFutureLabel: 'Hedef Tarih (Gelecek):',
+            ageAtPastDate_calcTitle: 'Geçmişteki Bir Tarihte Yaşım',
+            targetDatePastLabel: 'Hedef Tarih (Geçmiş):',
+            yourAgeAtTargetDate: 'Hedef Tarihteki Yaşınız:',
+
+            // Sub-category: Fun Facts
+            funFacts_title: 'İlginç Yaş Bilgileri ve İstatistikler',
+            funFacts_info: 'Doğum tarihinizi girerek kaç gün yaşadığınızı, kalp atış sayınızı ve diğer ilginç istatistikleri öğrenin.',
+            subButton_lifeStatistics: 'Yaşam Döngüsü İstatistikleri',
+            subButton_milestones: 'Yaşamdaki Kilometre Taşları',
+            subButton_remainingLife: 'Ortalama Yaşam Süresine Göre Tahmini Kalan Süre',
+            lifeStatistics_calcTitle: 'Yaşam Döngüsü İstatistikleri',
+            totalDaysLived: 'Yaşadığınız Toplam Gün:',
+            totalHoursLived: 'Yaşadığınız Toplam Saat:',
+            totalMinutesLived: 'Yaşadığınız Toplam Dakika:',
+            totalHeartbeats: 'Tahmini Toplam Kalp Atışı Sayısı (Ortalama 72/dk):',
+            totalBreaths: 'Tahmini Toplam Nefes Sayısı (Ortalama 12/dk):',
+            milestones_calcTitle: 'Yaşamdaki Kilometre Taşları',
+            milestone_10000days: '10.000 Günlük Yaşam Yıl Dönümü:',
+            milestone_20000days: '20.000 Günlük Yaşam Yıl Dönümü:',
+            milestone_30000days: '30.000 Günlük Yaşam Yıl Dönümü:',
+            milestone_50Years: '50. Yaş Gününe Kalan Süre:',
+            milestone_100Years: '100. Yaş Gününe Kalan Süre:',
+            remainingLife_calcTitle: 'Ortalama Yaşam Süresine Göre Tahmini Kalan Süre',
+            remainingLife_info: 'Bu hesaplama istatistiksel verilere dayanır ve bireysel bir garanti sunmaz. Ortalama yaşam süresi ülkelere ve cinsiyete göre değişiklik gösterir.',
+            estimatedRemainingLife: 'Tahmini Kalan Yaşam Süresi:',
+            notApplicable: 'Uygulanamaz (Ortalama yaşam süresini aştınız)',
+
+            // Zodiac Signs (for Astro and Chinese)
+            astrologyZodiacs: [
+                { name: 'Oğlak', startDate: '01-20', endDate: '02-18' },
+                { name: 'Kova', startDate: '02-19', endDate: '03-20' },
+                { name: 'Balık', startDate: '03-21', endDate: '04-19' },
+                { name: 'Koç', startDate: '04-20', endDate: '05-20' },
+                { name: 'Boğa', startDate: '05-21', endDate: '06-21' },
+                { name: 'İkizler', startDate: '06-22', endDate: '07-22' },
+                { name: 'Yengeç', startDate: '07-23', endDate: '08-22' },
+                { name: 'Aslan', startDate: '08-23', endDate: '09-22' },
+                { name: 'Başak', startDate: '09-23', endDate: '10-22' },
+                { name: 'Terazi', startDate: '10-23', endDate: '11-21' },
+                { name: 'Akrep', startDate: '11-22', endDate: '12-21' },
+                { name: 'Yay', startDate: '12-22', endDate: '01-19' } // Special handling for Capricorn (ends in next year)
+            ],
+            chineseZodiacs: [
+                { year: 1924, name: 'Fare' }, { year: 1925, name: 'Öküz' }, { year: 1926, name: 'Kaplan' }, { year: 1927, name: 'Tavşan' },
+                { year: 1928, name: 'Ejderha' }, { year: 1929, name: 'Yılan' }, { year: 1930, name: 'At' }, { year: 1931, name: 'Keçi' },
+                { year: 1932, name: 'Maymun' }, { year: 1933, name: 'Horoz' }, { year: 1934, name: 'Köpek' }, { year: 1935, name: 'Domuz' }
+                // Continues every 12 years. This is a base year list.
+            ],
+            // Average Life Expectancy Data (simplified for demo)
+            lifeExpectancyData: {
+                'TR': { male: 75.3, female: 81.7 }, // 2022
+                'US': { male: 73.5, female: 79.3 }, // 2022
+                'DE': { male: 78.4, female: 83.4 }, // 2022
+                'JP': { male: 81.0, female: 87.1 }  // 2022
+            }
+        },
+        en: {
+            mainTitle: 'Age Calculator',
+            mainInstruction: 'Select the type of age calculation you want to perform:',
+            categoryButton_basicAge: 'My Age by Birth Date',
+            categoryButton_dateDiff: 'Difference Between Two Dates',
+            categoryButton_specificDateAge: 'My Age on a Specific Date',
+            categoryButton_funFacts: 'Interesting Age Facts',
+            defaultMessage: 'Select a category above to start age calculations.',
+            backToCategories: 'Back to Categories',
+            invalidDateInput: 'Please enter a valid birth date.',
+            invalidDateRange: 'Start date must be before end date.',
+            resultPrefix: 'Result:',
+            birthDateLabel: 'Your Birth Date:',
+            calculateButtonText: 'Calculate',
+            targetDateLabel: 'Target Date:',
+            genderLabel: 'Gender:',
+            countryLabel: 'Country (For Average Life Expectancy):',
+
+            // Sub-category: Basic Age
+            basicAge_title: 'My Age by Birth Date',
+            basicAge_info: 'Enter your birth date to find your exact age, zodiac sign, and time remaining until your next birthday.',
+            subButton_fullAge: 'Exact Age & Next Birthday',
+            subButton_zodiacSigns: 'Zodiac Information',
+            fullAge_calcTitle: 'Exact Age and Time Until Next Birthday',
+            yourAge: 'Your Age:',
+            nextBirthdayIn: 'Time Until Next Birthday:',
+            zodiac_calcTitle: 'Astrological and Chinese Zodiac',
+            yourAstrologyZodiac: 'Your Astrological Zodiac:',
+            yourChineseZodiac: 'Your Chinese Zodiac:',
+
+            // Sub-category: Date Difference
+            dateDiff_title: 'Difference Between Two Dates',
+            dateDiff_info: 'Calculate the duration between two selected dates in years, months, days, hours, and minutes.',
+            subButton_dateDiffYMD: 'Years, Months, Days Difference',
+            subButton_dateDiffTotalDays: 'Total Days/Hours/Minutes Difference',
+            startDateLabel: 'Start Date:',
+            endDateLabel: 'End Date:',
+            dateDiffYMD_calcTitle: 'Years, Months, Days Difference',
+            differenceIs: 'Difference Is:',
+            dateDiffTotalDays_calcTitle: 'Total Days/Hours/Minutes Difference',
+            totalDays: 'Total Days:',
+            totalHours: 'Total Hours:',
+            totalMinutes: 'Total Minutes:',
+
+            // Sub-category: Age at Specific Date
+            specificDateAge_title: 'My Age on a Specific Date',
+            specificDateAge_info: 'Enter your birth date and a specific date to find your age on that date.',
+            subButton_ageAtFutureDate: 'My Age on a Future Date',
+            subButton_ageAtPastDate: 'My Age on a Past Date',
+            ageAtFutureDate_calcTitle: 'My Age on a Future Date',
+            targetDateFutureLabel: 'Target Date (Future):',
+            ageAtPastDate_calcTitle: 'My Age on a Past Date',
+            targetDatePastLabel: 'Target Date (Past):',
+            yourAgeAtTargetDate: 'Your Age on Target Date:',
+
+            // Sub-category: Fun Facts
+            funFacts_title: 'Interesting Age Facts and Statistics',
+            funFacts_info: 'Enter your birth date to find out how many days you\'ve lived, your estimated heartbeats, and other interesting statistics.',
+            subButton_lifeStatistics: 'Life Cycle Statistics',
+            subButton_milestones: 'Life Milestones',
+            subButton_remainingLife: 'Estimated Remaining Life Based on Average Life Expectancy',
+            lifeStatistics_calcTitle: 'Life Cycle Statistics',
+            totalDaysLived: 'Total Days Lived:',
+            totalHoursLived: 'Total Hours Lived:',
+            totalMinutesLived: 'Total Minutes Lived:',
+            totalHeartbeats: 'Estimated Total Heartbeats (Avg 72/min):',
+            totalBreaths: 'Estimated Total Breaths (Avg 12/min):',
+            milestones_calcTitle: 'Life Milestones',
+            milestone_10000days: '10,000 Days Lived Anniversary:',
+            milestone_20000days: '20,000 Days Lived Anniversary:',
+            milestone_30000days: '30,000 Days Lived Anniversary:',
+            milestone_50Years: 'Time Until 50th Birthday:',
+            milestone_100Years: 'Time Until 100th Birthday:',
+            remainingLife_calcTitle: 'Estimated Remaining Life Based on Average Life Expectancy',
+            remainingLife_info: 'This calculation is based on statistical data and does not offer an individual guarantee. Average life expectancy varies by country and gender.',
+            estimatedRemainingLife: 'Estimated Remaining Life:',
+            notApplicable: 'Not Applicable (Exceeded average life expectancy)',
+
+            // Zodiac Signs (for Astro and Chinese)
+            astrologyZodiacs: [
+                { name: 'Capricorn', startDate: '01-20', endDate: '02-18' },
+                { name: 'Aquarius', startDate: '02-19', endDate: '03-20' },
+                { name: 'Pisces', startDate: '03-21', endDate: '04-19' },
+                { name: 'Aries', startDate: '04-20', endDate: '05-20' },
+                { name: 'Taurus', startDate: '05-21', endDate: '06-21' },
+                { name: 'Gemini', startDate: '06-22', endDate: '07-22' },
+                { name: 'Cancer', startDate: '07-23', endDate: '08-22' },
+                { name: 'Leo', startDate: '08-23', endDate: '09-22' },
+                { name: 'Virgo', startDate: '09-23', endDate: '10-22' },
+                { name: 'Libra', startDate: '10-23', endDate: '11-21' },
+                { name: 'Scorpio', startDate: '11-22', endDate: '12-21' },
+                { name: 'Sagittarius', startDate: '12-22', endDate: '01-19' }
+            ],
+            chineseZodiacs: [
+                { year: 1924, name: 'Rat' }, { year: 1925, name: 'Ox' }, { year: 1926, name: 'Tiger' }, { year: 1927, name: 'Rabbit' },
+                { year: 1928, name: 'Dragon' }, { year: 1929, name: 'Snake' }, { year: 1930, name: 'Horse' }, { year: 1931, name: 'Goat' },
+                { year: 1932, name: 'Monkey' }, { year: 1933, name: 'Rooster' }, { year: 1934, name: 'Dog' }, { year: 1935, name: 'Pig' }
+            ],
+            lifeExpectancyData: {
+                'TR': { male: 75.3, female: 81.7 },
+                'US': { male: 73.5, female: 79.3 },
+                'DE': { male: 78.4, female: 83.4 },
+                'JP': { male: 81.0, female: 87.1 }
+            }
+        }
+    };
+
+    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+    // --- DOM Elements ---
+    const mainCategoryButtons = document.getElementById('main-category-buttons');
+    const mainInstruction = document.getElementById('main-instruction');
+    const calculatorContentArea = document.getElementById('calculator-content-area');
+    const defaultMessageDiv = document.getElementById('default-message');
+    const backToCategoriesButton = document.getElementById('backToCategories');
+
+    const categoryContents = {
+        'basic-age': document.getElementById('basic-age-content'),
+        'date-diff': document.getElementById('date-diff-content'),
+        'specific-date-age': document.getElementById('specific-date-age-content'),
+        'fun-facts': document.getElementById('fun-facts-content')
+    };
+
+    const calculationSections = {
+        'fullAge': document.getElementById('fullAge-calc'),
+        'zodiacSigns': document.getElementById('zodiacSigns-calc'),
+        'dateDiffYMD': document.getElementById('dateDiffYMD-calc'),
+        'dateDiffTotalDays': document.getElementById('dateDiffTotalDays-calc'),
+        'ageAtFutureDate': document.getElementById('ageAtFutureDate-calc'),
+        'ageAtPastDate': document.getElementById('ageAtPastDate-calc'),
+        'lifeStatistics': document.getElementById('lifeStatistics-calc'),
+        'milestones': document.getElementById('milestones-calc'),
+        'remainingLife': document.getElementById('remainingLife-calc')
+    };
+
+    // --- Update Initial Static Content ---
+    document.querySelector('.main-title').textContent = currentTexts.mainTitle;
+    mainInstruction.textContent = currentTexts.mainInstruction;
+    defaultMessageDiv.querySelector('.info-text').textContent = currentTexts.defaultMessage;
+    backToCategoriesButton.textContent = currentTexts.backToCategories;
+
+    // Update category button texts
+    document.querySelector('.category-button[data-category="basic-age"]').textContent = currentTexts.categoryButton_basicAge;
+    document.querySelector('.category-button[data-category="date-diff"]').textContent = currentTexts.categoryButton_dateDiff;
+    document.querySelector('.category-button[data-category="specific-date-age"]').textContent = currentTexts.categoryButton_specificDateAge;
+    document.querySelector('.category-button[data-category="fun-facts"]').textContent = currentTexts.categoryButton_funFacts;
+
+    // Update category content headers and info texts
+    categoryContents['basic-age'].querySelector('h3').textContent = currentTexts.basicAge_title;
+    categoryContents['basic-age'].querySelector('.info-text').textContent = currentTexts.basicAge_info;
+    categoryContents['basic-age'].querySelector('.sub-category-button[data-calc="fullAge"]').textContent = currentTexts.subButton_fullAge;
+    categoryContents['basic-age'].querySelector('.sub-category-button[data-calc="zodiacSigns"]').textContent = currentTexts.subButton_zodiacSigns;
+
+    categoryContents['date-diff'].querySelector('h3').textContent = currentTexts.dateDiff_title;
+    categoryContents['date-diff'].querySelector('.info-text').textContent = currentTexts.dateDiff_info;
+    categoryContents['date-diff'].querySelector('.sub-category-button[data-calc="dateDiffYMD"]').textContent = currentTexts.subButton_dateDiffYMD;
+    categoryContents['date-diff'].querySelector('.sub-category-button[data-calc="dateDiffTotalDays"]').textContent = currentTexts.subButton_dateDiffTotalDays;
+
+    categoryContents['specific-date-age'].querySelector('h3').textContent = currentTexts.specificDateAge_title;
+    categoryContents['specific-date-age'].querySelector('.info-text').textContent = currentTexts.specificDateAge_info;
+    categoryContents['specific-date-age'].querySelector('.sub-category-button[data-calc="ageAtFutureDate"]').textContent = currentTexts.subButton_ageAtFutureDate;
+    categoryContents['specific-date-age'].querySelector('.sub-category-button[data-calc="ageAtPastDate"]').textContent = currentTexts.subButton_ageAtPastDate;
+
+    categoryContents['fun-facts'].querySelector('h3').textContent = currentTexts.funFacts_title;
+    categoryContents['fun-facts'].querySelector('.info-text').textContent = currentTexts.funFacts_info;
+    categoryContents['fun-facts'].querySelector('.sub-category-button[data-calc="lifeStatistics"]').textContent = currentTexts.subButton_lifeStatistics;
+    categoryContents['fun-facts'].querySelector('.sub-category-button[data-calc="milestones"]').textContent = currentTexts.subButton_milestones;
+    categoryContents['fun-facts'].querySelector('.sub-category-button[data-calc="remainingLife"]').textContent = currentTexts.subButton_remainingLife;
+
+    // Update individual calculation section titles and labels
+    // Full Age
+    document.getElementById('fullAge-calc').querySelector('h4').textContent = currentTexts.fullAge_calcTitle;
+    document.getElementById('fullAge-calc').querySelector('label[for="birthDateFull"]').textContent = currentTexts.birthDateLabel;
+    document.getElementById('fullAge-calc').querySelector('button').textContent = currentTexts.calculateButtonText;
+
+    // Zodiac Signs
+    document.getElementById('zodiacSigns-calc').querySelector('h4').textContent = currentTexts.zodiac_calcTitle;
+    document.getElementById('zodiacSigns-calc').querySelector('label[for="birthDateZodiac"]').textContent = currentTexts.birthDateLabel;
+    document.getElementById('zodiacSigns-calc').querySelector('button').textContent = currentTexts.calculateButtonText;
+
+    // Date Diff YMD
+    document.getElementById('dateDiffYMD-calc').querySelector('h4').textContent = currentTexts.dateDiffYMD_calcTitle;
+    document.getElementById('dateDiffYMD-calc').querySelector('label[for="startDateYMD"]').textContent = currentTexts.startDateLabel;
+    document.getElementById('dateDiffYMD-calc').querySelector('label[for="endDateYMD"]').textContent = currentTexts.endDateLabel;
+    document.getElementById('dateDiffYMD-calc').querySelector('button').textContent = currentTexts.calculateButtonText;
+
+    // Date Diff Total Days
+    document.getElementById('dateDiffTotalDays-calc').querySelector('h4').textContent = currentTexts.dateDiffTotalDays_calcTitle;
+    document.getElementById('dateDiffTotalDays-calc').querySelector('label[for="startDateTotal"]').textContent = currentTexts.startDateLabel;
+    document.getElementById('dateDiffTotalDays-calc').querySelector('label[for="endDateTotal"]').textContent = currentTexts.endDateLabel;
+    document.getElementById('dateDiffTotalDays-calc').querySelector('button').textContent = currentTexts.calculateButtonText;
+
+    // Age at Future Date
+    document.getElementById('ageAtFutureDate-calc').querySelector('h4').textContent = currentTexts.ageAtFutureDate_calcTitle;
+    document.getElementById('ageAtFutureDate-calc').querySelector('label[for="birthDateFuture"]').textContent = currentTexts.birthDateLabel;
+    document.getElementById('ageAtFutureDate-calc').querySelector('label[for="targetDateFuture"]').textContent = currentTexts.targetDateFutureLabel;
+    document.getElementById('ageAtFutureDate-calc').querySelector('button').textContent = currentTexts.calculateButtonText;
+
+    // Age at Past Date
+    document.getElementById('ageAtPastDate-calc').querySelector('h4').textContent = currentTexts.ageAtPastDate_calcTitle;
+    document.getElementById('ageAtPastDate-calc').querySelector('label[for="birthDatePast"]').textContent = currentTexts.birthDateLabel;
+    document.getElementById('ageAtPastDate-calc').querySelector('label[for="targetDatePast"]').textContent = currentTexts.targetDatePastLabel;
+    document.getElementById('ageAtPastDate-calc').querySelector('button').textContent = currentTexts.calculateButtonText;
+
+    // Life Statistics
+    document.getElementById('lifeStatistics-calc').querySelector('h4').textContent = currentTexts.lifeStatistics_calcTitle;
+    document.getElementById('lifeStatistics-calc').querySelector('label[for="birthDateStats"]').textContent = currentTexts.birthDateLabel;
+    document.getElementById('lifeStatistics-calc').querySelector('button').textContent = currentTexts.calculateButtonText;
+
+    // Milestones
+    document.getElementById('milestones-calc').querySelector('h4').textContent = currentTexts.milestones_calcTitle;
+    document.getElementById('milestones-calc').querySelector('label[for="birthDateMilestones"]').textContent = currentTexts.birthDateLabel;
+    document.getElementById('milestones-calc').querySelector('button').textContent = currentTexts.calculateButtonText;
+
+    // Remaining Life
+    document.getElementById('remainingLife-calc').querySelector('h4').textContent = currentTexts.remainingLife_calcTitle;
+    document.getElementById('remainingLife-calc').querySelector('.info-text small').textContent = currentTexts.remainingLife_info;
+    document.getElementById('remainingLife-calc').querySelector('label[for="birthDateRemaining"]').textContent = currentTexts.birthDateLabel;
+    document.getElementById('remainingLife-calc').querySelector('label[for="gender"]').textContent = currentTexts.genderLabel;
+    document.getElementById('remainingLife-calc').querySelector('select#gender option[value="male"]').textContent = currentTexts.genderMale || 'Erkek'; // Fallback
+    document.getElementById('remainingLife-calc').querySelector('select#gender option[value="female"]').textContent = currentTexts.genderFemale || 'Kadın'; // Fallback
+    document.getElementById('remainingLife-calc').querySelector('label[for="country"]').textContent = currentTexts.countryLabel;
+    document.getElementById('remainingLife-calc').querySelector('button').textContent = currentTexts.calculateButtonText;
+    
+    // Update country options with translated names/values
+    const countrySelect = document.getElementById('country');
+    countrySelect.querySelectorAll('option').forEach(option => {
+        const value = option.value;
+        const data = currentTexts.lifeExpectancyData[value];
+        if (data) {
+            option.textContent = isEnglishPage ? 
+                (value === 'TR' ? 'Turkey' : value === 'US' ? 'USA' : value === 'DE' ? 'Germany' : value === 'JP' ? 'Japan' : value) + ` (${data.male}/${data.female})` :
+                (value === 'TR' ? 'Türkiye' : value === 'US' ? 'ABD' : value === 'DE' ? 'Almanya' : value === 'JP' ? 'Japonya' : value) + ` (${data.male}/${data.female})`;
+        }
+    });
+
+    // --- Navigation Functions ---
+    let currentCategory = null;
+    let currentCalc = null;
+
+    function showCategoryContent(category) {
+        // Hide all calculator sections
+        Object.values(calculationSections).forEach(section => section.classList.remove('active'));
+        // Hide all category content sections
+        Object.values(categoryContents).forEach(content => content.classList.remove('active'));
+        defaultMessageDiv.classList.remove('active');
+        mainCategoryButtons.style.display = 'flex';
+        backToCategoriesButton.style.display = 'none';
+
+        if (category === 'default') {
+            defaultMessageDiv.classList.add('active');
+            mainCategoryButtons.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
+            mainInstruction.style.display = 'block';
+        } else {
+            categoryContents[category].classList.add('active');
+            mainCategoryButtons.querySelectorAll('.category-button').forEach(btn => {
+                if (btn.dataset.category === category) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            mainInstruction.style.display = 'none'; // Hide main instruction when a category is selected
+        }
+        currentCategory = category;
+        currentCalc = null; // Reset sub-calculation when returning to category view
+        // Clear all results when switching views
+        document.querySelectorAll('.result-output').forEach(output => output.style.display = 'none');
+        document.querySelectorAll('.calculation-steps-section').forEach(steps => steps.style.display = 'none');
+    }
+
+    function showCalculationSection(calcType) {
+        // Hide all category content sections
+        Object.values(categoryContents).forEach(content => content.classList.remove('active'));
+        // Hide all other calculation sections
+        Object.values(calculationSections).forEach(section => section.classList.remove('active'));
+        defaultMessageDiv.classList.remove('active');
+        mainCategoryButtons.style.display = 'none'; // Hide main category buttons
+        mainInstruction.style.display = 'none'; // Hide main instruction
+        backToCategoriesButton.style.display = 'block'; // Show back button
+
+        calculationSections[calcType].classList.add('active');
+        currentCalc = calcType;
+        // Clear previous results on sub-calc switch
+        document.querySelectorAll('.result-output').forEach(output => output.style.display = 'none');
+        document.querySelectorAll('.calculation-steps-section').forEach(steps => steps.style.display = 'none');
+    }
+
+    // Main category button clicks
+    document.querySelectorAll('.category-button').forEach(button => {
+        button.addEventListener('click', () => {
+            showCategoryContent(button.dataset.category);
+        });
+    });
+
+    // Sub-category button clicks
+    document.querySelectorAll('.sub-category-button').forEach(button => {
+        button.addEventListener('click', () => {
+            showCalculationSection(button.dataset.calc);
+        });
+    });
+
+    // Back to Categories button
+    backToCategoriesButton.addEventListener('click', () => {
+        showCategoryContent(currentCategory || 'default'); // Go back to current category or default
+    });
+
+    // Initial load: show default message
+    showCategoryContent('default');
+
+    // --- Helper Functions for Date Calculations ---
+    function isValidDate(dateStr) {
+        const d = new Date(dateStr);
+        return !isNaN(d.getTime());
+    }
+
+    function calculateAge(birthDate, targetDate) {
+        let ageYears = targetDate.getFullYear() - birthDate.getFullYear();
+        let ageMonths = targetDate.getMonth() - birthDate.getMonth();
+        let ageDays = targetDate.getDate() - birthDate.getDate();
+
+        if (ageDays < 0) {
+            ageMonths--;
+            ageDays += new Date(targetDate.getFullYear(), targetDate.getMonth(), 0).getDate(); // Days in previous month
+        }
+        if (ageMonths < 0) {
+            ageYears--;
+            ageMonths += 12;
+        }
+        return { years: ageYears, months: ageMonths, days: ageDays };
+    }
+
+    function getDaysUntilNextBirthday(birthDate) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Normalize to start of day
+
+        let nextBirthday = new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+        if (nextBirthday < today) {
+            nextBirthday.setFullYear(nextBirthday.getFullYear() + 1);
+        }
+
+        const diffTime = Math.abs(nextBirthday.getTime() - today.getTime());
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    }
+
+    function getAstrologyZodiac(date) {
+        const day = date.getDate();
+        const month = date.getMonth() + 1; // 1-indexed for comparison
+
+        for (const zodiac of currentTexts.astrologyZodiacs) {
+            const startMonth = parseInt(zodiac.startDate.substring(0, 2));
+            const startDay = parseInt(zodiac.startDate.substring(3, 5));
+            const endMonth = parseInt(zodiac.endDate.substring(0, 2));
+            const endDay = parseInt(zodiac.endDate.substring(3, 5));
+
+            if (startMonth === 12 && endMonth === 1) { // Capricorn/Sagittarius crosses year boundary
+                if ((month === 12 && day >= startDay) || (month === 1 && day <= endDay)) {
+                    return isEnglishPage ? zodiac.name : zodiac.name; // Name already in tr/en based on texts obj.
+                }
+            } else {
+                if ((month === startMonth && day >= startDay) || (month === endMonth && day <= endDay)) {
+                    return isEnglishPage ? zodiac.name : zodiac.name;
+                }
+            }
+        }
+        return 'Bilinmiyor'; // Should not happen
+    }
+
+    function getChineseZodiac(birthYear) {
+        const startYear = 1924; // Year of Rat in the 12-year cycle
+        const index = (birthYear - startYear) % 12;
+        const actualIndex = index < 0 ? index + 12 : index; // Handle negative results for years before 1924
+        return isEnglishPage ? currentTexts.chineseZodiacs[actualIndex].enName || currentTexts.chineseZodiacs[actualIndex].name : currentTexts.chineseZodiacs[actualIndex].name;
+    }
+
+    // --- Calculation Functions ---
+
+    // Full Age Calculation
+    window.calculateFullAge = function() {
+        const birthDateStr = document.getElementById('birthDateFull').value;
+        const resultDiv = document.getElementById('fullAgeResult');
+        const stepsDiv = document.getElementById('fullAgeSteps');
+        resultDiv.style.display = 'none';
+        stepsDiv.style.display = 'none';
+        stepsDiv.innerHTML = '';
+
+        if (!isValidDate(birthDateStr)) {
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `<p class="error">${currentTexts.invalidDateInput}</p>`;
+            return;
+        }
+
+        const birthDate = new Date(birthDateStr);
+        const today = new Date();
+        const age = calculateAge(birthDate, today);
+        const daysUntilNextBirthday = getDaysUntilNextBirthday(birthDate);
+
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `
+            <p><strong>${currentTexts.yourAge}</strong> ${age.years} ${isEnglishPage ? 'years' : 'yıl'}, ${age.months} ${isEnglishPage ? 'months' : 'ay'}, ${age.days} ${isEnglishPage ? 'days' : 'gün'}</p>
+            <p><strong>${currentTexts.nextBirthdayIn}</strong> ${daysUntilNextBirthday} ${isEnglishPage ? 'days' : 'gün'}</p>
+        `;
+
+        stepsDiv.style.display = 'block';
+        stepsDiv.innerHTML = `
+            <h3>${isEnglishPage ? 'How It\'s Calculated?' : 'Nasıl Hesaplandı?'}</h3>
+            <ul>
+                <li>${isEnglishPage ? '<strong>Step 1:</strong> Your birth date is used as the starting point.' : '<strong>Adım 1:</strong> Doğum tarihiniz başlangıç noktası olarak alınır.'}</li>
+                <li>${isEnglishPage ? '<strong>Step 2:</strong> The difference between your birth date and today\'s date is calculated in years, months, and days.' : '<strong>Adım 2:</strong> Doğum tarihiniz ile bugünün tarihi arasındaki fark yıl, ay ve gün cinsinden hesaplanır.'}</li>
+                <li>${isEnglishPage ? '<strong>Step 3:</strong> Your next birthday is determined, and the remaining days until that date are calculated.' : '<strong>Adım 3:</strong> Bir sonraki doğum gününüz belirlenir ve o tarihe kadar kalan gün sayısı hesaplanır.'}</li>
+            </ul>
+        `;
+    };
+
+    // Zodiac Signs Calculation
+    window.calculateZodiacSigns = function() {
+        const birthDateStr = document.getElementById('birthDateZodiac').value;
+        const resultDiv = document.getElementById('zodiacSignsResult');
+        const stepsDiv = document.getElementById('zodiacSignsSteps');
+        resultDiv.style.display = 'none';
+        stepsDiv.style.display = 'none';
+        stepsDiv.innerHTML = '';
+
+        if (!isValidDate(birthDateStr)) {
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `<p class="error">${currentTexts.invalidDateInput}</p>`;
+            return;
+        }
+
+        const birthDate = new Date(birthDateStr);
+        const astrologyZodiac = getAstrologyZodiac(birthDate);
+        const chineseZodiac = getChineseZodiac(birthDate.getFullYear());
+
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `
+            <p><strong>${currentTexts.yourAstrologyZodiac}</strong> ${astrologyZodiac}</p>
+            <p><strong>${currentTexts.yourChineseZodiac}</strong> ${chineseZodiac}</p>
+        `;
+
+        stepsDiv.style.display = 'block';
+        stepsDiv.innerHTML = `
+            <h3>${isEnglishPage ? 'How It\'s Calculated?' : 'Nasıl Hesaplandı?'}</h3>
+            <ul>
+                <li>${isEnglishPage ? '<strong>Astrological Zodiac:</strong> Your astrological sign is determined based on your birth month and day, according to Western astrology traditions.' : '<strong>Astrolojik Burç:</strong> Doğum ayınız ve gününüz esas alınarak Batı astrolojisi geleneklerine göre burcunuz belirlenir.'}</li>
+                <li>${isEnglishPage ? '<strong>Chinese Zodiac:</strong> Your Chinese zodiac sign is determined based on your birth year, following the 12-year animal cycle of the Chinese calendar.' : '<strong>Çin Burcu:</strong> Doğum yılınız esas alınarak Çin takviminin 12 yıllık hayvan döngüsüne göre Çin burcunuz belirlenir.'}</li>
+            </ul>
+        `;
+    };
+
+    // Date Difference YMD Calculation
+    window.calculateDateDiffYMD = function() {
+        const startDateStr = document.getElementById('startDateYMD').value;
+        const endDateStr = document.getElementById('endDateYMD').value;
+        const resultDiv = document.getElementById('dateDiffYMDResult');
+        const stepsDiv = document.getElementById('dateDiffYMDSteps');
+        resultDiv.style.display = 'none';
+        stepsDiv.style.display = 'none';
+        stepsDiv.innerHTML = '';
+
+        if (!isValidDate(startDateStr) || !isValidDate(endDateStr)) {
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `<p class="error">${currentTexts.invalidDateInput}</p>`;
+            return;
+        }
+
+        const startDate = new Date(startDateStr);
+        const endDate = new Date(endDateStr);
+
+        if (startDate > endDate) {
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `<p class="error">${currentTexts.invalidDateRange}</p>`;
+            return;
+        }
+
+        const diff = calculateAge(startDate, endDate); // Re-use age calculator logic for difference
+
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `
+            <p><strong>${currentTexts.differenceIs}</strong> ${diff.years} ${isEnglishPage ? 'years' : 'yıl'}, ${diff.months} ${isEnglishPage ? 'months' : 'ay'}, ${diff.days} ${isEnglishPage ? 'days' : 'gün'}</p>
+        `;
+
+        stepsDiv.style.display = 'block';
+        stepsDiv.innerHTML = `
+            <h3>${isEnglishPage ? 'How It\'s Calculated?' : 'Nasıl Hesaplandı?'}</h3>
+            <ul>
+                <li>${isEnglishPage ? '<strong>Step 1:</strong> The start and end dates are taken.' : '<strong>Adım 1:</strong> Başlangıç ve bitiş tarihleri alınır.'}</li>
+                <li>${isEnglishPage ? '<strong>Step 2:</strong> The difference is calculated by subtracting the start date from the end date, first in years, then months, then days, adjusting for overflows.' : '<strong>Adım 2:</strong> Fark, bitiş tarihinden başlangıç tarihi çıkarılarak yıl, ay ve gün cinsinden, taşmalar ayarlanarak hesaplanır.'}</li>
+            </ul>
+        `;
+    };
+
+    // Date Difference Total Days/Hours/Minutes Calculation
+    window.calculateDateDiffTotal = function() {
+        const startDateStr = document.getElementById('startDateTotal').value;
+        const endDateStr = document.getElementById('endDateTotal').value;
+        const resultDiv = document.getElementById('dateDiffTotalDaysResult');
+        const stepsDiv = document.getElementById('dateDiffTotalDaysSteps');
+        resultDiv.style.display = 'none';
+        stepsDiv.style.display = 'none';
+        stepsDiv.innerHTML = '';
+
+        if (!isValidDate(startDateStr) || !isValidDate(endDateStr)) {
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `<p class="error">${currentTexts.invalidDateInput}</p>`;
+            return;
+        }
+
+        const startDate = new Date(startDateStr);
+        const endDate = new Date(endDateStr);
+
+        if (startDate > endDate) {
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `<p class="error">${currentTexts.invalidDateRange}</p>`;
+            return;
+        }
+
+        const diffTimeMs = endDate.getTime() - startDate.getTime();
+        const totalDays = diffTimeMs / (1000 * 60 * 60 * 24);
+        const totalHours = totalDays * 24;
+        const totalMinutes = totalHours * 60;
+
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `
+            <p><strong>${currentTexts.totalDays}</strong> ${totalDays.toFixed(0)} ${isEnglishPage ? 'days' : 'gün'}</p>
+            <p><strong>${currentTexts.totalHours}</strong> ${totalHours.toFixed(0)} ${isEnglishPage ? 'hours' : 'saat'}</p>
+            <p><strong>${currentTexts.totalMinutes}</strong> ${totalMinutes.toFixed(0)} ${isEnglishPage ? 'minutes' : 'dakika'}</p>
+        `;
+
+        stepsDiv.style.display = 'block';
+        stepsDiv.innerHTML = `
+            <h3>${isEnglishPage ? 'How It\'s Calculated?' : 'Nasıl Hesaplandı?'}</h3>
+            <ul>
+                <li>${isEnglishPage ? '<strong>Step 1:</strong> The difference between the start and end dates is found in milliseconds.' : '<strong>Adım 1:</strong> Başlangıç ve bitiş tarihleri arasındaki fark milisaniye cinsinden bulunur.'}</li>
+                <li>${isEnglishPage ? '<strong>Step 2:</strong> This millisecond difference is converted to total days, hours, and minutes.' : '<strong>Adım 2:</strong> Bu milisaniye farkı, toplam gün, saat ve dakika cinsine çevrilir.'}</li>
+            </ul>
+        `;
+    };
+
+    // Age at Specific Date Calculation (Future/Past)
+    window.calculateAgeAtSpecificDate = function(type) {
+        const birthDateInput = type === 'future' ? document.getElementById('birthDateFuture') : document.getElementById('birthDatePast');
+        const targetDateInput = type === 'future' ? document.getElementById('targetDateFuture') : document.getElementById('targetDatePast');
+        const resultDiv = type === 'future' ? document.getElementById('ageAtFutureDateResult') : document.getElementById('ageAtPastDateResult');
+        const stepsDiv = type === 'future' ? document.getElementById('ageAtFutureDateSteps') : document.getElementById('ageAtPastDateSteps');
+        resultDiv.style.display = 'none';
+        stepsDiv.style.display = 'none';
+        stepsDiv.innerHTML = '';
+
+        const birthDateStr = birthDateInput.value;
+        const targetDateStr = targetDateInput.value;
+
+        if (!isValidDate(birthDateStr) || !isValidDate(targetDateStr)) {
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `<p class="error">${currentTexts.invalidDateInput}</p>`;
+            return;
+        }
+
+        const birthDate = new Date(birthDateStr);
+        const targetDate = new Date(targetDateStr);
+
+        if (type === 'future' && birthDate > targetDate) {
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `<p class="error">${isEnglishPage ? 'Target date must be after birth date.' : 'Hedef tarih doğum tarihinden sonra olmalıdır.'}</p>`;
+            return;
+        } else if (type === 'past' && birthDate > targetDate) { // If birthdate is in future of target date for 'past' calc
+             resultDiv.style.display = 'block';
+             resultDiv.innerHTML = `<p class="error">${isEnglishPage ? 'Birth date cannot be after the target past date.' : 'Doğum tarihi hedef geçmiş tarihten sonra olamaz.'}</p>`;
+             return;
+        }
+
+
+        const age = calculateAge(birthDate, targetDate);
+
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `
+            <p><strong>${currentTexts.yourAgeAtTargetDate}</strong> ${age.years} ${isEnglishPage ? 'years' : 'yıl'}, ${age.months} ${isEnglishPage ? 'months' : 'ay'}, ${age.days} ${isEnglishPage ? 'days' : 'gün'}</p>
+        `;
+
+        stepsDiv.style.display = 'block';
+        stepsDiv.innerHTML = `
+            <h3>${isEnglishPage ? 'How It\'s Calculated?' : 'Nasıl Hesaplandı?'}</h3>
+            <ul>
+                <li>${isEnglishPage ? '<strong>Step 1:</strong> Your birth date and the specified target date are taken.' : '<strong>Adım 1:</strong> Doğum tarihiniz ve belirtilen hedef tarih alınır.'}</li>
+                <li>${isEnglishPage ? '<strong>Step 2:</strong> The age at the target date is calculated by finding the difference in years, months, and days.' : '<strong>Adım 2:</strong> Hedef tarihteki yaş, yıl, ay ve gün farkları bulunarak hesaplanır.'}</li>
+            </ul>
+        `;
+    };
+
+    // Life Statistics Calculation
+    window.calculateLifeStatistics = function() {
+        const birthDateStr = document.getElementById('birthDateStats').value;
+        const resultDiv = document.getElementById('lifeStatisticsResult');
+        const stepsDiv = document.getElementById('lifeStatisticsSteps');
+        resultDiv.style.display = 'none';
+        stepsDiv.style.display = 'none';
+        stepsDiv.innerHTML = '';
+
+        if (!isValidDate(birthDateStr)) {
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `<p class="error">${currentTexts.invalidDateInput}</p>`;
+            return;
+        }
+
+        const birthDate = new Date(birthDateStr);
+        const today = new Date();
+
+        const diffTimeMs = today.getTime() - birthDate.getTime();
+        if (diffTimeMs < 0) { // Future date
+             resultDiv.style.display = 'block';
+             resultDiv.innerHTML = `<p class="error">${isEnglishPage ? 'Birth date cannot be in the future.' : 'Doğum tarihi gelecekte olamaz.'}</p>`;
+             return;
+        }
+        
+        const totalDays = diffTimeMs / (1000 * 60 * 60 * 24);
+        const totalHours = totalDays * 24;
+        const totalMinutes = totalHours * 60;
+        
+        // Estimated heartbeats (Avg 72 bpm) and breaths (Avg 12 bpm)
+        const totalHeartbeats = totalMinutes * 72;
+        const totalBreaths = totalMinutes * 12;
+
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `
+            <p><strong>${currentTexts.totalDaysLived}</strong> ${totalDays.toFixed(0)}</p>
+            <p><strong>${currentTexts.totalHoursLived}</strong> ${totalHours.toFixed(0)}</p>
+            <p><strong>${currentTexts.totalMinutesLived}</strong> ${totalMinutes.toFixed(0)}</p>
+            <p><strong>${currentTexts.totalHeartbeats}</strong> ${totalHeartbeats.toLocaleString()}</p>
+            <p><strong>${currentTexts.totalBreaths}</strong> ${totalBreaths.toLocaleString()}</p>
+        `;
+
+        stepsDiv.style.display = 'block';
+        stepsDiv.innerHTML = `
+            <h3>${isEnglishPage ? 'How It\'s Calculated?' : 'Nasıl Hesaplandı?'}</h3>
+            <ul>
+                <li>${isEnglishPage ? '<strong>Total Days/Hours/Minutes:</strong> The time difference from your birth date to today is converted into these units.' : '<strong>Toplam Gün/Saat/Dakika:</strong> Doğum tarihinizden bugüne kadar geçen süre bu birimlere çevrilir.'}</li>
+                <li>${isEnglishPage ? '<strong>Total Heartbeats:</strong> Calculated by multiplying total minutes lived by an average of 72 heartbeats per minute.' : '<strong>Toplam Kalp Atışı:</strong> Yaşanılan toplam dakika sayısı, dakikadaki ortalama 72 kalp atışı ile çarpılarak tahmin edilir.'}</li>
+                <li>${isEnglishPage ? '<strong>Total Breaths:</strong> Calculated by multiplying total minutes lived by an average of 12 breaths per minute.' : '<strong>Toplam Nefes:</strong> Yaşanılan toplam dakika sayısı, dakikadaki ortalama 12 nefes ile çarpılarak tahmin edilir.'}</li>
+            </ul>
+        `;
+    };
+
+    // Milestones Calculation
+    window.calculateMilestones = function() {
+        const birthDateStr = document.getElementById('birthDateMilestones').value;
+        const resultDiv = document.getElementById('milestonesResult');
+        const stepsDiv = document.getElementById('milestonesSteps');
+        resultDiv.style.display = 'none';
+        stepsDiv.style.display = 'none';
+        stepsDiv.innerHTML = '';
+
+        if (!isValidDate(birthDateStr)) {
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `<p class="error">${currentTexts.invalidDateInput}</p>`;
+            return;
+        }
+
+        const birthDate = new Date(birthDateStr);
+        const today = new Date();
+        today.setHours(0,0,0,0); // Normalize today for accurate day diff
+
+        const diffDaysSinceBirth = Math.floor((today.getTime() - birthDate.getTime()) / (1000 * 60 * 60 * 24));
+        
+        let milestonesHtml = `<h3>${currentTexts.resultTitle}</h3>`;
+
+        // 10,000 Days
+        const tenKDaysDate = new Date(birthDate);
+        tenKDaysDate.setDate(birthDate.getDate() + 10000);
+        milestonesHtml += `<p><strong>${currentTexts.milestone_10000days}</strong> ${formatDateRelative(tenKDaysDate, today)}</p>`;
+
+        // 20,000 Days
+        const twentyKDaysDate = new Date(birthDate);
+        twentyKDaysDate.setDate(birthDate.getDate() + 20000);
+        milestonesHtml += `<p><strong>${currentTexts.milestone_20000days}</strong> ${formatDateRelative(twentyKDaysDate, today)}</p>`;
+
+        // 30,000 Days
+        const thirtyKDaysDate = new Date(birthDate);
+        thirtyKDaysDate.setDate(birthDate.getDate() + 30000);
+        milestonesHtml += `<p><strong>${currentTexts.milestone_30000days}</strong> ${formatDateRelative(thirtyKDaysDate, today)}</p>`;
+
+        // 50th Birthday
+        const fiftyYearsDate = new Date(birthDate);
+        fiftyYearsDate.setFullYear(birthDate.getFullYear() + 50);
+        milestonesHtml += `<p><strong>${currentTexts.milestone_50Years}</strong> ${formatDateRelative(fiftyYearsDate, today)}</p>`;
+        
+        // 100th Birthday
+        const hundredYearsDate = new Date(birthDate);
+        hundredYearsDate.setFullYear(birthDate.getFullYear() + 100);
+        milestonesHtml += `<p><strong>${currentTexts.milestone_100Years}</strong> ${formatDateRelative(hundredYearsDate, today)}</p>`;
+
+
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = milestonesHtml;
+
+        stepsDiv.style.display = 'block';
+        stepsDiv.innerHTML = `
+            <h3>${isEnglishPage ? 'How It\'s Calculated?' : 'Nasıl Hesaplandı?'}</h3>
+            <ul>
+                <li>${isEnglishPage ? '<strong>Milestone Dates:</strong> Specific dates (e.g., 10,000 days from birth, 50th birthday) are calculated based on your birth date.' : '<strong>Kilometre Taşı Tarihleri:</strong> Doğum tarihinize göre belirli tarihler (örn. doğumdan sonraki 10.000. gün, 50. yaş günü) hesaplanır.'}</li>
+                <li>${isEnglishPage ? '<strong>Time Remaining/Passed:</strong> For each milestone, it is indicated whether the date has passed or how many days/years are remaining until it.' : '<strong>Kalan/Geçen Süre:</strong> Her bir kilometre taşı için, o tarihin geçip geçmediği veya o tarihe kadar kaç gün/yıl kaldığı belirtilir.'}</li>
+            </ul>
+        `;
+    };
+
+    function formatDateRelative(targetDate, todayDate) {
+        if (targetDate < todayDate) {
+            const diffMs = todayDate.getTime() - targetDate.getTime();
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            return isEnglishPage ? `${targetDate.toLocaleDateString()} (Passed ${diffDays} days ago)` : `${targetDate.toLocaleDateString()} (${diffDays} gün önce geçti)`;
+        } else {
+            const diffMs = targetDate.getTime() - todayDate.getTime();
+            const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+            if (diffDays <= 365) {
+                return isEnglishPage ? `${targetDate.toLocaleDateString()} (In ${diffDays} days)` : `${targetDate.toLocaleDateString()} (${diffDays} gün içinde)`;
+            } else {
+                const diffYears = Math.ceil(diffDays / 365.25);
+                return isEnglishPage ? `${targetDate.toLocaleDateString()} (In about ${diffYears} years)` : `${targetDate.toLocaleDateString()} (Yaklaşık ${diffYears} yıl içinde)`;
+            }
+        }
+    }
+
+
+    // Remaining Life Calculation
+    window.calculateRemainingLife = function() {
+        const birthDateStr = document.getElementById('birthDateRemaining').value;
+        const gender = document.getElementById('gender').value;
+        const country = document.getElementById('country').value;
+        const resultDiv = document.getElementById('remainingLifeResult');
+        const stepsDiv = document.getElementById('remainingLifeSteps');
+        resultDiv.style.display = 'none';
+        stepsDiv.style.display = 'none';
+        stepsDiv.innerHTML = '';
+
+        if (!isValidDate(birthDateStr)) {
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `<p class="error">${currentTexts.invalidDateInput}</p>`;
+            return;
+        }
+
+        const birthDate = new Date(birthDateStr);
+        const today = new Date();
+
+        const ageAtPresent = calculateAge(birthDate, today);
+        const currentAgeYears = ageAtPresent.years + (ageAtPresent.months / 12) + (ageAtPresent.days / 365.25);
+
+        const avgLifeExpectancy = currentTexts.lifeExpectancyData[country][gender];
+
+        if (currentAgeYears >= avgLifeExpectancy) {
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `<p><strong>${currentTexts.estimatedRemainingLife}</strong> <span style="color: green;">${currentTexts.notApplicable}</span></p>`;
+            return;
+        }
+
+        const remainingYears = avgLifeExpectancy - currentAgeYears;
+        const remainingMonths = (remainingYears - Math.floor(remainingYears)) * 12;
+        const remainingDays = (remainingMonths - Math.floor(remainingMonths)) * 30.4375; // Average days in a month
+
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `
+            <p><strong>${currentTexts.estimatedRemainingLife}</strong> ${Math.floor(remainingYears)} ${isEnglishPage ? 'years' : 'yıl'}, ${Math.floor(remainingMonths)} ${isEnglishPage ? 'months' : 'ay'}, ${Math.floor(remainingDays)} ${isEnglishPage ? 'days' : 'gün'}</p>
+        `;
+
+        stepsDiv.style.display = 'block';
+        stepsDiv.innerHTML = `
+            <h3>${isEnglishPage ? 'How It\'s Calculated?' : 'Nasıl Hesaplandı?'}</h3>
+            <ul>
+                <li>${isEnglishPage ? '<strong>Current Age:</strong> Your current age is calculated in years, including fractions for months and days.' : '<strong>Mevcut Yaş:</strong> Mevcut yaşınız, ay ve günler de dahil olmak üzere yıl cinsinden hesaplanır.'}</li>
+                <li>${isEnglishPage ? '<strong>Average Life Expectancy:</strong> The average life expectancy for your selected country and gender is used.' : '<strong>Ortalama Yaşam Süresi:</strong> Seçtiğiniz ülke ve cinsiyete ait ortalama yaşam süresi kullanılır.'}</li>
+                <li>${isEnglishPage ? '<strong>Remaining Life:</strong> The remaining life is estimated by subtracting your current age from the average life expectancy.' : '<strong>Kalan Yaşam Süresi:</strong> Kalan yaşam süresi, mevcut yaşınızın ortalama yaşam süresinden çıkarılmasıyla tahmin edilir.'}</li>
+            </ul>
+            <p>${currentTexts.remainingLife_info}</p>
+        `;
+    };
+});
+  </script>
  </body>
 </html>
