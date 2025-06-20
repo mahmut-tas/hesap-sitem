@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Fayans/Seramik Miktarı Hesaplayıcısı - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <meta content="Belirli bir zemin veya duvar alanı için gerekli fayans/seramik sayısını, fayans yapıştırıcısı ve derz dolgusu miktarını detaylı olarak hesaplayın. Derz boşluğu, fire oranı ve farklı uygulama türleri için destek. İnşaat ve tadilat projeleriniz için kapsamlı bir araç." name="description"/>
+  <meta content="fayans hesaplama, seramik hesaplama, fayans miktarı, seramik miktarı, zemin, duvar, harç, fayans yapıştırıcısı, derz dolgusu, fire oranı, döşeme, tadilat, inşaat, hesapkolik fayans" name="keywords"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <link href="../../css/style.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <style>
+   /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        /* Header ve footer stilleri artık harici CSS dosyalarında veya ana style.css'te olmalı */
+        /* Ancak yine de, genel stil tanımlamaları için aşağıdaki blok kullanılabilir */
+
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Bölümü Stilleri */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        /* Hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 750px; /* Daha geniş bir alan için artırıldı */
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.1em; 
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: left; 
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.2em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* header nav ul ve li stillerini doğrudan main style.css'e aktardığınızı varsayıyorum */
+        }
+        
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin {
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+        }
+        .input-with-unit label {
+            flex-basis: 100%; /* Label her zaman üstte veya solda */
+            margin-bottom: 5px;
+            text-align: left;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input alanı boşluğu doldurur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .input-with-unit select {
+            flex-shrink: 0; /* Select kutusu sabit kalır */
+            width: auto; /* Select kutusu kendi genişliğinde olur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+
+        /* Gelişmiş seçenekler için gizle/göster */
+        .advanced-options {
+            border-top: 1px dashed #eee;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+        .advanced-options h4 {
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .toggle-button {
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+        .toggle-button:hover {
+            background-color: #e0e0e0;
+        }
+        .toggle-button.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        .hidden-section {
+            display: none;
+        }
+
+        /* Sonuç satırları için hizalama */
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+            padding-bottom: 5px;
+            border-bottom: 1px dotted #e0e0e0;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .result-item strong {
+            flex-shrink: 0;
+            margin-right: 10px;
+        }
+        .result-item .result-value {
+            flex-grow: 1;
+            text-align: right;
+        }
+        
+        .multi-column-input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .multi-column-input-group > .input-with-unit {
+            flex: 1 1 calc(50% - 15px); /* İki sütun */
+            min-width: 250px;
+        }
+        @media (max-width: 600px) {
+            .multi-column-input-group > .input-with-unit {
+                flex: 1 1 100%; /* Tek sütun */
+            }
+        }
+  </style>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+ </head>
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="hero-section">
+    <div class="container">
+     <h1>
+      Fayans/Seramik Miktarı Hesaplayıcısı
+     </h1>
+     <p>
+      Belirli bir alan için gereken fayans/seramik sayısını, fayans yapıştırıcısı ve derz dolgusu miktarını detaylı olarak hesaplayın.
+     </p>
+    </div>
+   </section>
+   <section class="calculator-section">
+    <div class="container">
+     <h2>
+      Fayans ve Malzeme İhtiyaçlarınızı Belirleyin
+     </h2>
+     <div class="calc-wrapper" id="calculator-tileAmount">
+      <h3>
+       <i class="fas fa-th-large icon-small">
+       </i>
+       Fayans/Seramik Miktarı Hesaplayıcısı
+      </h3>
+      <div class="calculator-form-container">
+       <form id="tileAmountForm">
+        <h4>
+         Döşenecek Alanın Boyutları
+        </h4>
+        <p class="small-text">
+         Fayans/seramik döşenecek alanın (örneğin oda, banyo duvarı) uzunluk ve genişliğini giriniz.
+        </p>
+        <div class="multi-column-input-group">
+         <div class="input-with-unit">
+          <label for="areaLength">
+           Alan Uzunluğu:
+          </label>
+          <input id="areaLength" min="0.01" placeholder="Örn: 4" required="" step="any" type="number"/>
+          <select id="areaLengthUnit">
+           <option value="m">
+            metre (m)
+           </option>
+           <option value="cm">
+            santimetre (cm)
+           </option>
+           <option value="mm">
+            milimetre (mm)
+           </option>
+          </select>
+         </div>
+         <div class="input-with-unit">
+          <label for="areaWidth">
+           Alan Genişliği/Yüksekliği:
+          </label>
+          <input id="areaWidth" min="0.01" placeholder="Örn: 3" required="" step="any" type="number"/>
+          <select id="areaWidthUnit">
+           <option value="m">
+            metre (m)
+           </option>
+           <option value="cm">
+            santimetre (cm)
+           </option>
+           <option value="mm">
+            milimetre (mm)
+           </option>
+          </select>
+         </div>
+        </div>
+        <hr class="form-divider"/>
+        <h4>
+         Fayans/Seramik Bilgileri
+        </h4>
+        <p class="small-text">
+         Kullanılacak fayans veya seramiklerin boyutlarını ve döşeme yönünü giriniz.
+        </p>
+        <div class="multi-column-input-group">
+         <div class="input-with-unit">
+          <label for="tileLength">
+           Fayans/Seramik Uzunluğu:
+          </label>
+          <input id="tileLength" min="0.01" placeholder="Örn: 60" required="" step="any" type="number"/>
+          <select id="tileLengthUnit">
+           <option value="cm">
+            santimetre (cm)
+           </option>
+           <option value="mm">
+            milimetre (mm)
+           </option>
+           <option value="m">
+            metre (m)
+           </option>
+          </select>
+         </div>
+         <div class="input-with-unit">
+          <label for="tileWidth">
+           Fayans/Seramik Genişliği:
+          </label>
+          <input id="tileWidth" min="0.01" placeholder="Örn: 60" required="" step="any" type="number"/>
+          <select id="tileWidthUnit">
+           <option value="cm">
+            santimetre (cm)
+           </option>
+           <option value="mm">
+            milimetre (mm)
+           </option>
+           <option value="m">
+            metre (m)
+           </option>
+          </select>
+         </div>
+        </div>
+        <div class="input-with-unit">
+         <label for="jointWidth">
+          Derz Boşluğu Kalınlığı:
+         </label>
+         <input id="jointWidth" min="0" placeholder="Örn: 0.3 (cm)" required="" step="0.1" type="number" value="0.3"/>
+         <span class="unit">
+          cm
+         </span>
+        </div>
+        <p class="small-text">
+         Fayanslar arasındaki boşluk miktarı (derz). Genellikle 0.2 cm - 0.5 cm arası kullanılır.
+        </p>
+        <div class="advanced-options">
+         <button class="toggle-button" id="toggleAdvancedOptions" type="button">
+          <i class="fas fa-cogs">
+          </i>
+          Gelişmiş Ayarlar (Yapıştırıcı, Derz Dolgusu ve Fire)
+         </button>
+         <div class="hidden-section" id="advancedOptionsContent">
+          <h4>
+           Fayans Yapıştırıcısı
+          </h4>
+          <div class="input-with-unit">
+           <label for="adhesiveCoverage">
+            Yapıştırıcı Kaplama Oranı (kg/m²):
+           </label>
+           <input id="adhesiveCoverage" min="0.1" placeholder="Örn: 5" step="0.1" type="number" value="5"/>
+           <span class="unit">
+            kg/m²
+           </span>
+          </div>
+          <p class="small-text">
+           1 metrekare alana ne kadar yapıştırıcı gerektiği. Ambalajında belirtilir.
+          </p>
+          <h4>
+           Derz Dolgusu
+          </h4>
+          <div class="input-with-unit">
+           <label for="groutDensity">
+            Derz Dolgusu Yoğunluğu (kg/m³):
+           </label>
+           <input id="groutDensity" min="1" placeholder="Örn: 1500" step="1" type="number" value="1500"/>
+           <span class="unit">
+            kg/m³
+           </span>
+          </div>
+          <p class="small-text">
+           Derz dolgusunun özgül ağırlığı. Genellikle 1500-1800 kg/m³ arasıdır.
+          </p>
+          <h4>
+           Fire Oranları
+          </h4>
+          <div class="input-with-unit">
+           <label for="tileWastageFactor">
+            Fayans/Seramik Fire Oranı (%):
+           </label>
+           <input id="tileWastageFactor" max="100" min="0" step="0.1" type="number" value="10"/>
+           <span class="unit">
+            %
+           </span>
+          </div>
+          <p class="small-text">
+           Kesme, kırılma veya hatalı döşeme için eklenen yüzde. Genellikle %10 önerilir.
+          </p>
+          <div class="input-with-unit">
+           <label for="adhesiveWastageFactor">
+            Yapıştırıcı Fire Oranı (%):
+           </label>
+           <input id="adhesiveWastageFactor" max="100" min="0" step="0.1" type="number" value="5"/>
+           <span class="unit">
+            %
+           </span>
+          </div>
+          <div class="input-with-unit">
+           <label for="groutWastageFactor">
+            Derz Dolgusu Fire Oranı (%):
+           </label>
+           <input id="groutWastageFactor" max="100" min="0" step="0.1" type="number" value="5"/>
+           <span class="unit">
+            %
+           </span>
+          </div>
+         </div>
+        </div>
+        <button type="submit">
+         Malzemeleri Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="tileAmountResult" style="display:none;">
+       </div>
+       <div class="calc-explanation">
+        <p>
+         Bu hesaplayıcı, belirli bir zemin veya duvar alanını kaplamak için gerekli fayans/seramik adedini ve döşeme için gereken fayans yapıştırıcısı ve derz dolgusu miktarlarını tahmin eder. Döşenecek alanın boyutları, fayans/seramik ebatları, derz boşluğu ve fire oranları gibi faktörler hesaplamaya dahil edilir.
+        </p>
+        <p class="formula-text small-margin">
+         Toplam Alan = Alan Uzunluğu × Alan Genişliği
+        </p>
+        <p class="formula-text small-margin">
+         Bir Fayansın Derz Dahil Alanı = (Fayans Uzunluğu + Derz) × (Fayans Genişliği + Derz)
+        </p>
+        <p class="formula-text small-margin">
+         Gerekli Fayans Adedi = (Toplam Alan / Bir Fayansın Derz Dahil Alanı) × (1 + Fayans Fire Oranı / 100)
+        </p>
+        <p class="formula-text small-margin">
+         Gerekli Yapıştırıcı = (Toplam Alan × Yapıştırıcı Kaplama Oranı) × (1 + Yapıştırıcı Fire Oranı / 100)
+        </p>
+        <p class="formula-text small-margin">
+         Gerekli Derz Dolgusu (kg) = ( (Fayans Uzunluğu(m) + Fayans Genişliği(m)) / (Fayans Uzunluğu(m) × Fayans Genişliği(m)) ) × Derz Kalınlığı(m) × Fayans Kalınlığı(m) × Derz Yoğunluğu(kg/m³) × Toplam Alan(m²) × (1 + Derz Fire Oranı / 100)
+        </p>
+        <ul>
+         <li>
+          <strong>
+           Toplam Alan:
+          </strong>
+          Fayans/seramik döşenecek toplam yüzey alanı (m²).
+         </li>
+         <li>
+          <strong>
+           Fayans/Seramik Adedi:
+          </strong>
+          Gerekli toplam fayans/seramik sayısı (adet).
+         </li>
+         <li>
+          <strong>
+           Fayans Yapıştırıcısı:
+          </strong>
+          Gerekli yapıştırıcı miktarı (kg).
+         </li>
+         <li>
+          <strong>
+           Derz Dolgusu:
+          </strong>
+          Gerekli derz dolgusu miktarı (kg).
+         </li>
+         <li>
+          <strong>
+           Derz Boşluğu:
+          </strong>
+          Fayanslar arasındaki mesafe (cm).
+         </li>
+         <li>
+          <strong>
+           Fire Oranı:
+          </strong>
+          Kesme, kırılma veya hatalı döşeme için eklenen yüzde (%).
+         </li>
+        </ul>
+        <p>
+         <strong>
+          Önemli Not:
+         </strong>
+         Fayans/seramik ölçüleri, derz kalınlıkları, yapıştırıcı ve derz dolgusu kaplama oranları, projenin özelliklerine, fayansın tipine (yer/duvar), yüzeyin düzgünlüğüne ve uygulama yöntemine göre değişiklik gösterebilir. Bu hesaplayıcıdaki varsayılan değerler genel kabullerdir. Gerçek projelerde kullanılacak kesin miktarlar için her zaman bir uzmana (fayansçı, inşaat mühendisi) veya malzeme tedarikçisine danışılmalıdır.
+        </p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="info-section container">
+    <h3>
+     Fayans/Seramik Miktarı Hesaplama Neden Önemlidir?
+    </h3>
+    <p>
+     Fayans veya seramik döşemek, bir mekanın görünümünü önemli ölçüde değiştiren, ancak doğru planlama gerektiren bir iştir. Gerekli malzeme miktarını doğru bir şekilde hesaplamak, projenin **maliyetini, süresini ve kalitesini** doğrudan etkiler:
+    </p>
+    <ul>
+     <li>
+      <strong>
+       Maliyet Kontrolü:
+      </strong>
+      Doğru miktarda malzeme sipariş etmek, hem fazla malzeme alımından kaynaklanan israfı hem de eksik malzeme nedeniyle ortaya çıkabilecek ek nakliye ve işçilik maliyetlerini önler.
+     </li>
+     <li>
+      <strong>
+       Zaman Tasarrufu:
+      </strong>
+      Malzeme eksikliği, işin durmasına ve gecikmelere neden olabilir. Doğru hesaplama, projenin aksamadan ilerlemesini sağlar.
+     </li>
+     <li>
+      <strong>
+       Uyumlu Sonuç:
+      </strong>
+      Özellikle özel üretim veya belirli serilere ait fayanslarda, farklı partiler arasında renk veya doku farklılıkları olabilir. Tek seferde yeterli sipariş, bu tür uyumsuzluk riskini azaltır.
+     </li>
+     <li>
+      <strong>
+       Profesyonel Planlama:
+      </strong>
+      Hassas bir hesaplama, projenize profesyonel bir yaklaşım sergilediğinizi gösterir.
+     </li>
+    </ul>
+    <h4>
+     Fayans ve Derz Boşluğu Hesaplaması:
+    </h4>
+    <p>
+     Fayans sayısını hesaplarken, sadece alanın büyüklüğü değil, aynı zamanda **fayansın kendi boyutu ve derz boşluğu** da önemlidir. Fayanslar arasında bırakılan derz boşlukları, hem estetik bir görünüm sağlar hem de sıcaklık değişimleri veya zemin hareketleri nedeniyle fayansların çatlamasını engeller.
+    </p>
+    <ul>
+     <li>
+      <strong>
+       Derz Boşluğu (Derz Kalınlığı):
+      </strong>
+      Genellikle 0.2 cm ile 0.5 cm arasında değişir. Büyük fayanslar için daha geniş, küçük fayanslar için daha dar derzler tercih edilebilir. Uygulama alanına (iç mekan, dış mekan) ve fayansın türüne göre standartlar farklılık gösterebilir.
+     </li>
+     <li>
+      Derz boşluğu, fayans adedini ve özellikle derz dolgusu miktarını doğrudan etkiler.
+     </li>
+    </ul>
+    <h4>
+     Yapıştırıcı ve Derz Dolgusu Miktarları:
+    </h4>
+    <p>
+     Fayans döşeme işlemi, fayansların kendisi kadar **fayans yapıştırıcısı** ve **derz dolgusu** gibi yan malzemeler de gerektirir.
+    </p>
+    <ul>
+     <li>
+      <strong>
+       Fayans Yapıştırıcısı:
+      </strong>
+      Fayansların zemine veya duvara sabitlenmesi için kullanılır. Gerekli miktar, yapıştırıcının kaplama oranına (genellikle kg/m² olarak belirtilir), yüzeyin düzgünlüğüne, fayansın arkasındaki desene ve tarak boyutuna bağlıdır.
+     </li>
+     <li>
+      <strong>
+       Derz Dolgusu:
+      </strong>
+      Fayanslar arasındaki boşlukları doldurarak hem estetik bir bütünlük sağlar hem de su sızıntılarını ve kir birikimini önler. Gerekli miktar, derz boşluğunun kalınlığına, fayansın boyutlarına ve derz dolgusunun yoğunluğuna bağlıdır.
+     </li>
+    </ul>
+    <h4>
+     Fire Oranının Önemi:
+    </h4>
+    <p>
+     Fayans ve seramik döşeme sırasında **fire (zayiat)** kaçınılmazdır. Bu, kesimler, kırılmalar, hatalı uygulamalar veya hasarlı ürünler nedeniyle ortaya çıkan malzeme kaybıdır.
+    </p>
+    <ul>
+     <li>
+      **Fayans Fire Oranı:** Genellikle döşenecek alanın şekline, fayansın boyutuna ve döşeme desenine göre değişir. Düz ve dikdörtgen bir alan için %5-10, karmaşık şekilli veya çapraz döşenecek alanlar için %15-20 veya daha fazla fire payı bırakmak önerilir.
+     </li>
+     <li>
+      **Yapıştırıcı ve Derz Dolgusu Fire Oranları:** Uygulama sırasında dökülme, israf veya fırça/tarak üzerinde kalan artıklar nedeniyle %5-10 civarında fire yaşanabilir.
+     </li>
+    </ul>
+    <h4>
+     Uygulama Alanları:
+    </h4>
+    <ul>
+     <li>
+      <strong>
+       Banyo ve Mutfak Tadilatları:
+      </strong>
+      Zemin ve duvar fayansları için hassas malzeme hesaplaması.
+     </li>
+     <li>
+      <strong>
+       Salon ve Oda Zeminleri:
+      </strong>
+      Geniş alanlı fayans döşeme projeleri.
+     </li>
+     <li>
+      <strong>
+       Dış Mekan Alanları:
+      </strong>
+      Teraslar, balkonlar ve havuz kenarları gibi dış mekan fayans uygulamaları.
+     </li>
+     <li>
+      <strong>
+       Ticari Alanlar:
+      </strong>
+      Mağazalar, ofis ve restoran gibi mekanların fayans döşeme planlaması.
+     </li>
+    </ul>
+    <p class="disclaimer-text">
+     Bu hesaplayıcı tarafından sağlanan bilgiler, genel planlama ve tahmin amaçlıdır. Fayansın veya seramiğin tipi (kalınlığı, dokusu), yüzeyin düzgünlüğü, uygulama koşulları (sıcaklık, nem), işçilik kalitesi ve spesifik ürün özellikleri gibi değişkenler, gerçek malzeme ihtiyaçlarını önemli ölçüde etkileyebilir. Büyük veya kritik projeler için, daima bir fayans ustasına, malzeme tedarikçisine veya yetkili bir inşaat mühendisine danışarak kesin oranların ve miktarların belirlenmesi hayati önem taşımaktadır. Hesapkolik, bu hesaplayıcının kullanımından kaynaklanabilecek herhangi bir yanlışlık veya hatadan sorumlu değildir.
+    </p>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

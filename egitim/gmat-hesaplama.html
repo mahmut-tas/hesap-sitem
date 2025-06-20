@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   GMAT Focus Puan Hesaplayıcı - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <meta content="En güncel GMAT Focus Edition puanınızı kolayca hesaplayın. Quantitative, Verbal ve Data Insights bölümleri için tahmini puan aralıklarınızı ve toplam puanınızı öğrenin." name="description"/>
+  <meta content="GMAT Focus puan hesaplama, GMAT Focus skoru, GMAT Focus Quantitative, GMAT Focus Verbal, GMAT Focus Data Insights, GMAT Focus Edition, MBA, lisansüstü sınav, hesapkolik GMAT" name="keywords"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <link href="../css/style.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <style>
+   /* Sadece bu sayfaya özel stil eklemeleri - Genel style.css'ten sonra yüklenir */
+        .calculator-form-container .input-group {
+            margin-bottom: 20px;
+        }
+        .calculator-form-container .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calculator-form-container .input-group input[type="number"],
+        .calculator-form-container .input-group select {
+            width: 100%;
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calculator-form-container .input-group input[type="number"]:focus,
+        .calculator-form-container .input-group select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        /* Result display specific styles */
+        .result-display strong {
+            color: #e74c3c;
+        }
+        .result-display p {
+            margin: 5px 0;
+        }
+        .result-display p:last-child {
+            margin-bottom: 0;
+        }
+        .result-display .error {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        /* Calculator explanation styles */
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+        .calc-explanation h4 {
+            color: #34495e;
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .calc-explanation ul {
+            list-style-type: disc;
+            margin: 10px 0 15px 20px;
+            padding: 0;
+        }
+        .calc-explanation ul li {
+            margin-bottom: 5px;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+            overflow-x: auto; /* Küçük ekranlarda formül taşmasını önler */
+        }
+
+        /* Gizli ve Aktif Hesaplayıcı Stilleri */
+        .hidden-calc {
+            display: none;
+        }
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+        /* Hero Section için header ile aynı arka plan */
+        .hero-section {
+            background-color: #34495e; 
+            color: white; 
+            padding: 80px 0; 
+            text-align: center; 
+        }
+        .hero-section h1 {
+            font-size: 3em; 
+            margin-bottom: 20px; 
+        }
+        .hero-section p {
+            font-size: 1.2em; 
+            opacity: 0.9; 
+        }
+        /* Calculator Selection Section */
+        .calculator-selection-section { 
+            padding: 50px 0; 
+            text-align: center; 
+            background-color: #eaf0f0; 
+            border-bottom: 1px solid #dee7e7; 
+        } 
+        .calculator-selection-section h2 { 
+            margin-bottom: 30px; 
+            color: #2c3e50; 
+            font-size: 2.2em; 
+        } 
+        .calc-buttons-container { 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            gap: 15px; 
+            margin-bottom: 40px; 
+        } 
+        .calc-type-button { 
+            background-color: #3498db; 
+            color: white; 
+            padding: 15px 25px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 1.1em; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease, transform 0.2s ease; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+            flex: 1 1 auto; /* Esnek buton genişliği */
+            max-width: 320px; /* Butonların maksimum genişliği */
+            text-align: center; 
+        } 
+        .calc-type-button:hover { 
+            background-color: #2980b9; 
+            transform: translateY(-3px); 
+        } 
+        .calc-wrapper { 
+            background-color: #ffffff; 
+            padding: 40px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); 
+            max-width: 800px; /* Kapsamlı hesaplayıcı için genişlik artırıldı */
+            margin: 30px auto; 
+            text-align: left; 
+        } 
+        .calc-wrapper h3 { 
+            font-size: 2em; 
+            color: #e74c3c; 
+            margin-bottom: 25px; 
+            text-align: center; 
+        } 
+        .calculator-form-container button[type="submit"] { 
+            background-color: #28a745; 
+            color: white; 
+            padding: 12px 20px; 
+            border: none; 
+            border-radius: 5px; 
+            font-size: 1.1em; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease, transform 0.2s ease; 
+            width: 100%; 
+            box-sizing: border-box; 
+            margin-top: 10px; 
+        } 
+        .calculator-form-container button[type="submit"]:hover { 
+            background-color: #218838; 
+            transform: translateY(-2px); 
+        } 
+        .result-display { 
+            margin-top: 25px; 
+            font-size: 1.1em; 
+            font-weight: 600; 
+            color: #2c3e50; 
+            text-align: center; 
+            min-height: 1.8em; 
+            background-color: #ecf0f1; 
+            padding: 15px 20px; 
+            border-radius: 8px; 
+            border: 1px solid #dcdfe4; 
+        } 
+        .result-display .result-value { 
+            color: #e74c3c; 
+            font-weight: 700; 
+            font-size: 1.3em; 
+        } 
+        .info-section { 
+            padding: 40px 0; 
+            background-color: #ffffff; 
+            margin-top: 40px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            border-radius: 8px; 
+        } 
+        .info-section h3 { 
+            color: #e74c3c; 
+            font-size: 1.8em; 
+            margin-bottom: 20px; 
+            text-align: center; 
+        } 
+        .info-section p { 
+            color: #666; 
+            line-height: 1.6; 
+            margin-bottom: 15px; 
+            padding: 0 20px; 
+            text-align: justify; 
+        } 
+        .info-section ul { 
+            list-style-type: disc; 
+            margin: 0 20px 20px 40px; 
+            color: #666; 
+        } 
+        .info-section ul li { 
+            margin-bottom: 10px; 
+            line-height: 1.5; 
+        } 
+        .info-section strong { 
+            color: #333; 
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1em; /* Daha küçük ekranda daha küçük font */
+            }
+        }
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            /* Dinamik yüklenen header ve footer için de responsive düzen gerekebilir, 
+               ancak bu zaten header.css ve style.css içinde yönetilmelidir. */
+        }
+  </style>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+ </head>
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="hero-section">
+    <div class="container">
+     <h1>
+      GMAT Focus Edition Puan Hesaplayıcı
+     </h1>
+     <p>
+      En güncel GMAT Focus Edition puanlarınızı tahmin edin ve işletme okulu başvurularınız için güçlü bir başlangıç yapın.
+     </p>
+    </div>
+   </section>
+   <section class="calculator-selection-section">
+    <div class="container">
+     <h2>
+      GMAT Focus Hesaplama Yöntemi Seçin:
+     </h2>
+     <div class="calc-buttons-container">
+      <button class="calc-type-button active" data-calc-type="gmat-focus-general-score">
+       Genel Puan Hesaplama
+      </button>
+      <button class="calc-type-button" data-calc-type="gmat-focus-percentile">
+       Yüzdelik Dilim Hesaplama
+      </button>
+      <button class="calc-type-button" data-calc-type="gmat-focus-info">
+       GMAT Focus Hakkında Bilgi
+      </button>
+     </div>
+     <div class="calc-wrapper" id="calculator-gmat-focus-general-score">
+      <h3>
+       <i class="fas fa-chart-bar icon-small">
+       </i>
+       GMAT Focus Genel Puan Hesaplama
+      </h3>
+      <div class="calculator-form-container">
+       <form id="formGmatFocusGeneralScore">
+        <div class="input-group">
+         <label for="quantCorrect">
+          Quantitative Reasoning Doğru Cevap Sayısı (Max 21):
+         </label>
+         <input id="quantCorrect" max="21" min="0" placeholder="Örn: 15" required="" step="1" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="verbalCorrect">
+          Verbal Reasoning Doğru Cevap Sayısı (Max 23):
+         </label>
+         <input id="verbalCorrect" max="23" min="0" placeholder="Örn: 18" required="" step="1" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="dataInsightsCorrect">
+          Data Insights Doğru Cevap Sayısı (Max 20):
+         </label>
+         <input id="dataInsightsCorrect" max="20" min="0" placeholder="Örn: 12" required="" step="1" type="number"/>
+        </div>
+        <button type="submit">
+         Puanımı Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="resultGmatFocusGeneralScore" style="display: none;">
+       </div>
+       <div class="calc-explanation">
+        <h4>
+         Nasıl Hesaplanır?
+        </h4>
+        <p>
+         GMAT Focus Edition'ın her bölümü (Quantitative Reasoning, Verbal Reasoning, Data Insights) 60-90 puan aralığında puanlanır. Toplam puan ise 205-805 puan aralığındadır ve her üç bölümün puanının birleşiminden oluşur.
+        </p>
+        <p>
+         Bu hesaplayıcı, girdiğiniz doğru cevap sayılarına göre tahmini bir puan aralığı sunar. GMAT Focus, bilgisayar adaptif bir sınav olduğu için, puanınız sadece doğru cevap sayısına değil, aynı zamanda cevapladığınız soruların zorluk derecesine ve sınavın genel algoritmasına da bağlıdır. Bu nedenle verilen sonuçlar sadece bir tahmindir.
+        </p>
+        <ul>
+         <li>
+          **Quantitative Reasoning:** Toplam 21 sorudan oluşur.
+         </li>
+         <li>
+          **Verbal Reasoning:** Toplam 23 sorudan oluşur.
+         </li>
+         <li>
+          **Data Insights:** Toplam 20 sorudan oluşur.
+         </li>
+        </ul>
+        <p class="disclaimer-text">
+         Bu hesaplayıcı tahmini değerler sunar ve resmi GMAC GMAT Focus puanlamasının yerini tutmaz. Gerçek puanınız sınavdaki performansınıza ve GMAC'ın puanlama metodolojisine bağlıdır. Unutmayın, bu bir doğru-yanlış eşleştirme tablosu değildir; puanlar adaptif algoritmalarla belirlenir.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-gmat-focus-percentile">
+      <h3>
+       <i class="fas fa-chart-pie icon-small">
+       </i>
+       GMAT Focus Yüzdelik Dilim Hesaplama
+      </h3>
+      <div class="calculator-form-container">
+       <form id="formGmatFocusPercentile">
+        <div class="input-group">
+         <label for="totalFocusScore">
+          Toplam GMAT Focus Puanınız (205-805):
+         </label>
+         <input id="totalFocusScore" max="805" min="205" placeholder="Örn: 655" required="" step="10" type="number"/>
+        </div>
+        <button type="submit">
+         Yüzdelik Dilimi Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="resultGmatFocusPercentile" style="display: none;">
+       </div>
+       <div class="calc-explanation">
+        <h4>
+         Yüzdelik Dilim Nedir ve Nasıl Hesaplanır?
+        </h4>
+        <p>
+         Yüzdelik dilim, aldığınız toplam puanın sınava giren kişilerin yüzde kaçından daha iyi olduğunu gösterir. GMAT Focus Edition yüzdelik dilimleri GMAC tarafından yayınlanan verilere dayanır ve sınava giren kitlenin zamanla değişen performansına göre güncellenir. Bu hesaplayıcı, genel kabul görmüş ortalamalar üzerinden tahmini bir yüzdelik dilim aralığı sunar.
+        </p>
+        <ul>
+         <li>
+          **Yüksek Yüzdelik Dilimler:** Genellikle en rekabetçi MBA ve diğer işletme programları için istenir.
+         </li>
+         <li>
+          **GMAC Verileri:** En doğru ve güncel yüzdelik dilim bilgisi için GMAC'ın resmi raporlarına başvurulmalıdır.
+         </li>
+        </ul>
+        <p class="disclaimer-text">
+         Bu yüzdelik dilim tahmini, geçmiş GMAC verilerine ve genel eğilimlere dayanır. Gerçek yüzdelik diliminiz, sınavın yapıldığı döneme ve sınava giren genel kitlenin performansına göre farklılık gösterebilir. Lütfen resmi ve güncel GMAC yüzdelik dilim tablolarını kontrol ediniz.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-gmat-focus-info">
+      <h3>
+       <i class="fas fa-info-circle icon-small">
+       </i>
+       GMAT Focus Edition Hakkında
+      </h3>
+      <div class="calculator-form-container">
+       <p>
+        **GMAT Focus Edition**, iş okullarına başvuruda kullanılan GMAT sınavının 2023 yılında tanıtılan yeni, daha kısa ve daha esnek bir versiyonudur. GMAT Focus, analitik, sözel ve sayısal becerilerinizi daha odaklanmış bir şekilde ölçmeyi hedefler.
+       </p>
+       <h4>
+        Ana Değişiklikler:
+       </h4>
+       <ul>
+        <li>
+         **Kısa Süre:** Sınav süresi yaklaşık 2 saat 15 dakikadır (eski versiyona göre 1 saatten fazla daha kısa).
+        </li>
+        <li>
+         **Bölüm Sayısı:** Toplam 3 bölümden oluşur: Quantitative Reasoning, Verbal Reasoning ve Data Insights. (Analytical Writing Assessment kaldırılmıştır).
+        </li>
+        <li>
+         **Puanlama:** Her bölüm 60-90 puan aralığında puanlanır. Toplam puan 205-805 aralığında olup, 10 puanlık artışlarla verilir ve üç bölümün performansına da eşit ağırlıkta katkıda bulunur.
+        </li>
+        <li>
+         **Soru Navigasyonu:** Her bölüm içinde soruları işaretleyebilir, gözden geçirebilir ve cevaplarınızı değiştirebilirsiniz (eski GMAT'te bu kısıtlıydı).
+        </li>
+       </ul>
+       <p>
+        GMAT Focus Edition, adaylara daha esnek bir test deneyimi sunarken, iş okullarının ihtiyaç duyduğu temel becerileri ölçmeye devam etmektedir. Hangi sınav formatının size uygun olduğunu belirlemek için başvurduğunuz programların gereksinimlerini kontrol etmeniz önemlidir.
+       </p>
+       <p class="disclaimer-text">
+        Bu bilgiler GMAC'ın yayınladığı genel bilgilere dayanmaktadır ve güncel test politikaları veya küçük değişiklikler için resmi GMAC web sitesi her zaman birincil kaynak olmalıdır.
+       </p>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="info-section container">
+    <h3>
+     GMAT Focus Edition Nedir ve Neden Önemlidir?
+    </h3>
+    <p>
+     **GMAT Focus Edition**, dünyanın önde gelen işletme okullarına (MBA, Master in Management vb.) başvurular için tasarlanmış standart bir sınavdır. GMAT Focus, adayların kritik düşünme, problem çözme ve veri analizi becerilerini ölçerek, iş dünyasında ve lisansüstü eğitimde başarılı olma potansiyellerini değerlendirir.
+    </p>
+    <p>
+     GMAT Focus puanı, başvurduğunuz programın kabul komiteleri tarafından not ortalaması, iş deneyimi, referanslar ve niyet mektubu gibi diğer başvuru materyalleriyle birlikte bütünsel bir değerlendirmenin parçası olarak kullanılır. İyi bir GMAT Focus puanı, özellikle rekabetçi programlara başvurularda diğer adaylardan sıyrılmanıza yardımcı olabilir.
+    </p>
+    <h4>
+     GMAT Focus Puanlama Skalası:
+    </h4>
+    <ul>
+     <li>
+      **Quantitative Reasoning:** 60-90 puan arası
+     </li>
+     <li>
+      **Verbal Reasoning:** 60-90 puan arası
+     </li>
+     <li>
+      **Data Insights:** 60-90 puan arası
+     </li>
+     <li>
+      **Toplam Puan:** 205-805 puan arası (10 puanlık artışlarla)
+     </li>
+    </ul>
+    <h4>
+     GMAT Focus'a Nasıl Hazırlanılır?
+    </h4>
+    <ul>
+     <li>
+      **Resmi Materyaller:** GMAC'ın resmi GMAT Focus hazırlık materyallerini ve deneme sınavlarını kullanın.
+     </li>
+     <li>
+      **Pratik Odaklanma:** Özellikle Data Insights bölümüne yeni olduğu için bu alana özel pratik yapın.
+     </li>
+     <li>
+      **Strateji Geliştirme:** Sınavın adaptif yapısı nedeniyle, zaman yönetimi ve soru işaretleme/gözden geçirme stratejileri geliştirin.
+     </li>
+     <li>
+      **Zayıf Yönleri Güçlendirme:** Deneme sınavı sonuçlarınızı analiz ederek zayıf olduğunuz alanları belirleyin ve bu konularda ek çalışma yapın.
+     </li>
+    </ul>
+    <p class="disclaimer-text">
+     Bu sayfadaki GMAT Focus puan hesaplayıcıları ve yüzdelik dilim tahminleri, piyasadaki genel kabul görmüş metodolojilere ve mevcut verilere dayanmaktadır. GMAC (Graduate Management Admission Council) tarafından uygulanan resmi GMAT Focus testi, adaptif bir yapıya sahip olduğundan ve puanlama algoritmaları karmaşık olduğundan, bu hesaplayıcılar kesin sonuçlar vermemektedir. En doğru ve resmi GMAT Focus puanınız ve yüzdelik diliminiz için her zaman GMAC'ın resmi sınav sonuçlarını ve güncel puanlama tablolarını referans alınız.
+    </p>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

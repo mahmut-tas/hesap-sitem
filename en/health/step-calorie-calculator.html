@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Step Calorie Calculator - Calculator</title>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/footer.css" rel="stylesheet"/>
+<link href="/css/header.css" rel="stylesheet"/>
+<meta content="Calculate the number of calories you burn based on your steps, weight, and stride length/speed. Ideal for healthy living and exercise tracking." name="description"/>
+<meta content="step calories, calorie calculation, walking calories, exercise calories, burning calories with steps, healthy living, weight loss, activity tracking, hesapkolik health" name="keywords"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+<link href="../css/style.css" rel="stylesheet"/>
+<script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+</script>
+<style>
+   /* Bu sayfaya özel stil eklemeleri */
+        .calculator-form-container .input-group {
+            margin-bottom: 20px;
+        }
+        .calculator-form-container .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calculator-form-container .input-group input[type="number"] {
+            width: 100%;
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calculator-form-container .input-group input[type="number"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .calculator-form-container .input-group select {
+            width: auto;
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        /* Radio button ve seçenek grupları için stil */
+        .radio-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+            font-weight: normal;
+        }
+        .radio-group label input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2); /* Daha büyük radyo butonu */
+        }
+        .option-content {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #eee;
+        }
+
+        /* Result display specific styles */
+        .result-display strong {
+            color: #e74c3c;
+        }
+        .result-display p {
+            margin: 5px 0;
+        }
+        .result-display p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Calculator explanation styles */
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+        .calc-explanation h4 {
+            color: #34495e;
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .calc-explanation ul {
+            list-style-type: disc;
+            margin: 10px 0 15px 20px;
+            padding: 0;
+        }
+        .calc-explanation ul li {
+            margin-bottom: 5px;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+
+        /* Gizli ve Aktif Hesaplayıcı Stilleri */
+        .hidden-calc {
+            display: none;
+        }
+        .calc-type-button.active {
+            background-color: #e74c3c;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+        /* Hero Section için header ile aynı arka plan */
+        .hero-section {
+            background-color: #34495e; 
+            color: white; 
+            padding: 80px 0; 
+            text-align: center; 
+        }
+        .hero-section h1 {
+            font-size: 3em; 
+            margin-bottom: 20px; 
+        }
+        .hero-section p {
+            font-size: 1.2em; 
+            opacity: 0.9; 
+        }
+        /* Calculator Selection Section */
+        .calculator-selection-section { 
+            padding: 50px 0; 
+            text-align: center; 
+            background-color: #eaf0f0; 
+            border-bottom: 1px solid #dee7e7; 
+        } 
+        .calculator-selection-section h2 { 
+            margin-bottom: 30px; 
+            color: #2c3e50; 
+            font-size: 2.2em; 
+        } 
+        .calc-buttons-container { 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            gap: 15px; 
+            margin-bottom: 40px; 
+        } 
+        .calc-type-button { 
+            background-color: #3498db; 
+            color: white; 
+            padding: 15px 25px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 1.1em; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease, transform 0.2s ease; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+            flex: 1 1 auto; 
+            max-width: 320px; 
+            text-align: center; 
+        } 
+        .calc-type-button:hover { 
+            background-color: #2980b9; 
+            transform: translateY(-3px); 
+        } 
+        .calc-wrapper { 
+            background-color: #ffffff; 
+            padding: 40px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); 
+            max-width: 650px; 
+            margin: 30px auto; 
+            text-align: left; 
+        } 
+        .calc-wrapper h3 { 
+            font-size: 2em; 
+            color: #e74c3c; 
+            margin-bottom: 25px; 
+            text-align: center; 
+        } 
+        .calculator-form-container button { 
+            background-color: #28a745; 
+            color: white; 
+            padding: 12px 20px; 
+            border: none; 
+            border-radius: 5px; 
+            font-size: 1.1em; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease, transform 0.2s ease; 
+            width: 100%; 
+            box-sizing: border-box; 
+            margin-top: 10px; 
+        } 
+        .calculator-form-container button:hover { 
+            background-color: #218838; 
+            transform: translateY(-2px); 
+        } 
+        .result-display { 
+            margin-top: 25px; 
+            font-size: 1.1em; 
+            font-weight: 600; 
+            color: #2c3e50; 
+            text-align: center; 
+            min-height: 1.8em; 
+            background-color: #ecf0f1; 
+            padding: 15px 20px; 
+            border-radius: 8px; 
+            border: 1px solid #dcdfe4; 
+        } 
+        .result-display .result-value { 
+            color: #e74c3c; 
+            font-weight: 700; 
+            font-size: 1.3em; 
+        } 
+        .info-section { 
+            padding: 40px 0; 
+            background-color: #ffffff; 
+            margin-top: 40px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            border-radius: 8px; 
+        } 
+        .info-section h3 { 
+            color: #e74c3c; 
+            font-size: 1.8em; 
+            margin-bottom: 20px; 
+            text-align: center; 
+        } 
+        .info-section p { 
+            color: #666; 
+            line-height: 1.6; 
+            margin-bottom: 15px; 
+            padding: 0 20px; 
+            text-align: justify; 
+        } 
+        .info-section ul { 
+            list-style-type: disc; 
+            margin: 0 20px 20px 40px; 
+            color: #666; 
+        } 
+        .info-section ul li { 
+            margin-bottom: 10px; 
+            line-height: 1.5; 
+        } 
+        .info-section strong { 
+            color: #333; 
+        }
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+        }
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+            }
+        }
+  </style>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+</script>
+<script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+<link href="https://hesapkolik.net/saglik/adim-kalori-hesaplayici.html" hreflang="tr" rel="alternate"/>
+<link href="https://hesapkolik.net/en/saglik/adim-kalori-hesaplayici.html" hreflang="en" rel="alternate"/>
+<link href="https://hesapkolik.net/saglik/adim-kalori-hesaplayici.html" hreflang="x-default" rel="alternate"/>
+</head>
+<body>
+<div id="header-placeholder">
+</div>
+<main>
+<section class="hero-section">
+<div class="container">
+<h1>
+      Step Calorie Calculator
+     </h1>
+<p>
+      Calculate the estimated number of calories you burn based on the number of steps you take, your body weight and your activity.
+     </p>
+</div>
+</section>
+<section class="calculator-selection-section">
+<div class="container">
+<h2>
+      Select Calorie Calculation Method:
+     </h2>
+<div class="calc-buttons-container">
+<button class="calc-type-button active" data-calc-type="type1">
+       Calculate with Step Length
+      </button>
+<button class="calc-type-button" data-calc-type="type2">
+       Calculate with Walking Speed
+      </button>
+<button class="calc-type-button" data-calc-type="type3">
+       Estimated with Average Values
+      </button>
+</div>
+<div class="calc-wrapper" id="calculator-type1">
+<h3>
+<i class="fas fa-shoe-prints icon-small">
+</i>
+       Calorie Calculation with Step Length
+      </h3>
+<div class="calculator-form-container">
+<form id="formType1">
+<div class="input-group">
+<label for="weight1">
+          Your Body Weight (KG):
+         </label>
+<input id="weight1" min="20" placeholder="Örn: 70" required="" step="any" type="number"/>
+</div>
+<div class="input-group">
+<label for="steps1">
+          Number of Steps Taken:
+         </label>
+<input id="steps1" min="1" placeholder="Örn: 10000" required="" step="1" type="number"/>
+</div>
+<div class="input-group">
+<label for="strideLength1">
+          Your Average Stride Length (CM):
+         </label>
+<input id="strideLength1" min="30" placeholder="Örn: 75" required="" step="any" type="number"/>
+<small>
+<em>
+           (It can be about 40-45% of your height)
+          </em>
+</small>
+</div>
+<div class="input-group">
+<label for="activityLevel1">
+          Activity Level:
+         </label>
+<select id="activityLevel1" required="">
+<option value="light">
+           Slow Walking (Light)
+          </option>
+<option selected="" value="moderate">
+           Moderate Walking (Normal)
+          </option>
+<option value="brisk">
+           Fast Walking (Brisk)
+          </option>
+<option value="running">
+           Running
+          </option>
+</select>
+</div>
+<button type="submit">
+         Calculate
+        </button>
+</form>
+<div class="result-display" id="resultType1" style="display: none;">
+</div>
+<div class="calc-explanation">
+<h4>
+         How to Calculate?
+        </h4>
+<p>
+         This method uses your steps taken and average stride length to calculate your distance, then estimates calories burned based on your body weight and activity level.
+        </p>
+<p class="formula-text">
+         Distance Traveled (KM) = (Number of Steps * Step Length (CM)) / 100000
+         <br/>
+         Calories Burned = Body Weight (KG) * Distance Covered (KM) * MET Value
+        </p>
+<ul>
+<li>
+<strong>
+           MET Value (Metabolic Equivalent):
+          </strong>
+<ul>
+<li>
+            Slow Walking: ~2.0 - 3.0 METs
+           </li>
+<li>
+            Moderate Walking: ~3.5 - 4.5 METs
+           </li>
+<li>
+            Fast Walking: ~5.0 - 6.0 METs
+           </li>
+<li>
+            Running: ~8.0 - 10.0+ METs
+           </li>
+</ul>
+</li>
+<li>
+<strong>
+           Example:
+          </strong>
+          70 kg, 10,000 steps, 75 cm stride length, moderate walking (4.0 METs)
+          <ul>
+<li>
+            Distance = (10000 * 75) / 100000 = 7.5 KM
+           </li>
+<li>
+            Calories Burned = 70 kg * 7.5 KM * 4.0 METs = 2100 Calories (This value is an example for the formula and the actual calculation may differ)
+           </li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="calc-wrapper hidden-calc" id="calculator-type2">
+<h3>
+<i class="fas fa-running icon-small">
+</i>
+       Calorie Calculation with Walking Speed
+      </h3>
+<div class="calculator-form-container">
+<form id="formType2">
+<div class="input-group">
+<label for="weight2">
+          Your Body Weight (KG):
+         </label>
+<input id="weight2" min="20" placeholder="Örn: 70" required="" step="any" type="number"/>
+</div>
+<div class="input-group">
+<label for="steps2">
+          Number of Steps Taken:
+         </label>
+<input id="steps2" min="1" placeholder="Örn: 10000" required="" step="1" type="number"/>
+</div>
+<div class="input-group">
+<label for="paceUnit">
+          Step Rate Unit:
+         </label>
+<select id="paceUnit" required="">
+<option value="km_per_hour">
+           Kilometer/Hour (km/h)
+          </option>
+<option value="min_per_km">
+           Minute/Kilometer (min/km)
+          </option>
+</select>
+</div>
+<div class="input-group" id="paceInputGroup">
+<label for="pace2">
+          Average Walking Speed (Ex: 5 km/h or 12 min/km):
+         </label>
+<input id="pace2" min="0.1" placeholder="Örn: 5" required="" step="any" type="number"/>
+</div>
+<div class="input-group">
+<label for="activityDuration2">
+          Activity Duration (Minutes):
+         </label>
+<input id="activityDuration2" min="1" placeholder="Örn: 60" required="" step="any" type="number"/>
+</div>
+<button type="submit">
+         Calculate
+        </button>
+</form>
+<div class="result-display" id="resultType2" style="display: none;">
+</div>
+<div class="calc-explanation">
+<h4>
+         How to Calculate?
+        </h4>
+<p>
+         This method calculates the estimated distance traveled based on your walking speed and time, and then the calories burned based on your body weight. The step count is used to verify the speed.
+        </p>
+<p class="formula-text">
+         Distance (KM) = Speed (KM/h) * Time (hour)
+         <br/>
+         Calories Burned = Body Weight (KG) * MET Value * Time (in hours)
+        </p>
+<ul>
+<li>
+<strong>
+           Relationship Between Speed and MET Value:
+          </strong>
+          As speed increases, MET value also increases.
+         </li>
+<li>
+<strong>
+           Example:
+          </strong>
+          70 kg, 60 minutes of walking at 5 km/h. (Approximately 3.5 METs)
+          <ul>
+<li>
+            Distance = 5 km/h * 1 hour = 5 KM
+           </li>
+<li>
+            Calories Burned = 70 kg * 3.5 METs * 1 hour = 245 Calories (This value is an example for the formula and the actual calculation may differ)
+           </li>
+</ul>
+</li>
+</ul>
+<p>
+<small>
+          Note: The number of steps should coincide with the walking pace. For example, 10,000 steps corresponds to approximately 7-8 km at an average pace.
+         </small>
+</p>
+</div>
+</div>
+</div>
+<div class="calc-wrapper hidden-calc" id="calculator-type3">
+<h3>
+<i class="fas fa-walking icon-small">
+</i>
+       Calorie Estimation with Average Values
+      </h3>
+<div class="calculator-form-container">
+<form id="formType3">
+<div class="input-group">
+<label for="weight3">
+          Your Body Weight (KG):
+         </label>
+<input id="weight3" min="20" placeholder="Örn: 70" required="" step="any" type="number"/>
+</div>
+<div class="input-group">
+<label for="steps3">
+          Number of Steps Taken:
+         </label>
+<input id="steps3" min="1" placeholder="Örn: 10000" required="" step="1" type="number"/>
+</div>
+<button type="submit">
+         Calculate
+        </button>
+</form>
+<div class="result-display" id="resultType3" style="display: none;">
+</div>
+<div class="calc-explanation">
+<h4>
+         How to Calculate?
+        </h4>
+<p>
+         This simple method uses your body weight and the number of steps you take to give a general calorie estimate. This calculation assumes an average stride length and a moderate-intensity walking activity.
+        </p>
+<p class="formula-text">
+         Calories Burned = (Number of Steps / Average Calories per Step)
+        </p>
+<ul>
+<li>
+<strong>
+           Average:
+          </strong>
+          In general, a person burns about 100 calories for every 2,000 steps they take. This translates to an average of 0.05 calories per step. However, this value varies greatly depending on a person&amp;#39;s weight, speed, and stride length.
+         </li>
+<li>
+<strong>
+           General Rule:
+          </strong>
+          Walking 1 km can cause you to burn approximately 0.7 times your body weight in calories (e.g. 70 kg person 49 calories per 1 km). These values vary according to the intensity of the activity.
+         </li>
+<li>
+<strong>
+           Example:
+          </strong>
+          70 kg, 10,000 steps
+          <ul>
+<li>
+            Estimated Calories Burned = 10000 steps * 0.05 Calories/Step = 500 Calories (This is a very simplified approach.)
+           </li>
+</ul>
+</li>
+</ul>
+<p>
+<small>
+          This method is mostly used to get a general idea. For more precise results, it is recommended to use other methods or smart devices.
+         </small>
+</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="info-section container">
+<h3>
+     The Importance of Taking Steps and Burning Calories
+    </h3>
+<p>
+     Taking steps is one of the simplest and most effective forms of daily physical activity. Regular walking not only helps burn calories, but also improves heart health, regulates blood sugar, improves mood, and increases bone density.
+    </p>
+<p>
+     Knowing your calorie burn is critical to your **weight management** goals. If you want to lose or maintain weight, you need to keep the energy you expend (calorie burn) greater than the energy you take in (nutrient intake). This calculator will give you a valuable estimate of how many calories you burn from your daily exercise, helping you reach your goals.
+    </p>
+<h4>
+     Major Factors Affecting Calorie Burning:
+    </h4>
+<ul>
+<li>
+      **Body Weight:** Heavier people burn more calories when walking the same distance or taking the same number of steps.
+     </li>
+<li>
+      **Step Count and Distance:** More steps and longer distance means more calories burned.
+     </li>
+<li>
+      **Activity Intensity (Speed/Pace):** Brisk walking or jogging burns more calories than slow walking.
+     </li>
+<li>
+      **Ground Slope and Type:** Walking uphill or on uneven terrain consumes more energy.
+     </li>
+<li>
+      **Metabolism Rate:** Each individual&amp;#39;s metabolism is different, which affects the rate of calorie burning.
+     </li>
+<li>
+      **Age and Gender:** Younger and male individuals generally have higher metabolic rates.
+     </li>
+</ul>
+<p class="disclaimer-text">
+     These calculators provide estimated calorie burn values. Many variables, including individual physiological differences, metabolic rate, health status, and environmental factors, can affect actual calorie burn. For the most accurate and personalized information, it is recommended that you consult a healthcare professional or dietitian.
+    </p>
+</section>
+</main>
+<div id="footer-placeholder">
+</div>
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+</body>
+</html>

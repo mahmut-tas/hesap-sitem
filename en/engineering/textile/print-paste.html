@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Printing Paste Calculation - Calculator</title>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/footer.css" rel="stylesheet"/>
+<link href="/css/header.css" rel="stylesheet"/>
+<meta content="Calculate the quantities of dyes and chemicals based on the total weight of the paste to be used in textile printing and the percentage of each component. Practical tool for precise printing paste formulation." name="description"/>
+<meta content="printing paste, printing dye, pigment printing, chemical amount, thickener, binder, fixer, textile printing, textile engineering calculations, calculator textile" name="keywords"/>
+<link href="../../css/style.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+<link href="css/style.css" rel="stylesheet"/>
+<script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+</script>
+<script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+<link href="https://hesapkolik.net/muhendislik/tekstil/baski-pati.html" hreflang="tr" rel="alternate"/>
+<link href="https://hesapkolik.net/en/muhendislik/tekstil/baski-pati.html" hreflang="en" rel="alternate"/>
+<link href="https://hesapkolik.net/muhendislik/tekstil/baski-pati.html" hreflang="x-default" rel="alternate"/>
+</head>
+<!-- Google tag (gtag.js) -->
+<body>
+<div id="header-placeholder">
+</div>
+<main>
+<section class="health-calculators-section">
+<div class="container">
+<h1 class="main-title">
+      Printing Paste Calculator
+     </h1>
+<p class="section-description">
+      The key to colour and quality in textile printing is a correctly formulated printing paste. This calculator helps you easily determine the required quantities of dyes, thickeners, binders and other additives based on the total amount of paste you will prepare and the percentage of each ingredient.
+     </p>
+<div class="calculator-group">
+<div class="calculator-card-wrapper">
+<div class="calculator-header">
+<i class="fas fa-spray-can icon-small">
+</i>
+<h2>
+         Calculate Printing Paste Quantities
+        </h2>
+</div>
+<div class="calculator-form-container">
+<form id="printingPasteForm">
+<p class="small-text">
+          Please enter the total amount of printing paste you will prepare and the percentage of each component. Percentages are given based on the total paste weight (%).
+         </p>
+<div class="input-with-unit">
+<label for="totalPasteWeight">
+           Total Printing Paste Quantity (kg):
+          </label>
+<input id="totalPasteWeight" min="0.01" placeholder="Örn: 100" required="" step="0.01" type="number"/>
+</div>
+<div class="form-divider">
+</div>
+<h4>
+          Ingredient Information (Dye, Thickener etc.)
+         </h4>
+<div id="componentInputs">
+<div class="input-with-unit component-input-row">
+<label for="component1Name">
+            Component Name 1:
+           </label>
+<input class="component-name" id="component1Name" placeholder="Örn: Pigment Boya" type="text"/>
+<label for="component1Percentage">
+            Percentage (%):
+           </label>
+<input class="component-percentage" id="component1Percentage" min="0" placeholder="Örn: 3" required="" step="0.01" type="number"/>
+</div>
+<div class="input-with-unit component-input-row">
+<label for="component2Name">
+            Component Name 2:
+           </label>
+<input class="component-name" id="component2Name" placeholder="Örn: Kıvamlaştırıcı" type="text"/>
+<label for="component2Percentage">
+            Percentage (%):
+           </label>
+<input class="component-percentage" id="component2Percentage" min="0" placeholder="Örn: 20" required="" step="0.01" type="number"/>
+</div>
+<div class="input-with-unit component-input-row">
+<label for="component3Name">
+            Component Name 3:
+           </label>
+<input class="component-name" id="component3Name" placeholder="Örn: Binder (Bağlayıcı)" type="text"/>
+<label for="component3Percentage">
+            Percentage (%):
+           </label>
+<input class="component-percentage" id="component3Percentage" min="0" placeholder="Örn: 15" required="" step="0.01" type="number"/>
+</div>
+</div>
+<button class="add-fiber-button" onclick="addComponentInput()" type="button">
+          Add New Component
+         </button>
+<button onclick="calculatePrintingPaste()" type="button">
+          Calculate
+         </button>
+</form>
+<div class="result-display" id="resultBox">
+<h3>
+          Results (Quantities Required):
+         </h3>
+</div>
+<p class="small-text">
+         The calculated quantities are in kilograms. The sum of the ingredient percentages should be close to 100%; the remainder is usually water or release agent.
+        </p>
+</div>
+</div>
+<section class="info-section">
+<h3>
+        What is Printing Paste?
+       </h3>
+<p>
+        **Printing paste** is a viscous mixture consisting of dyes (such as pigments or reactive dyes), thickeners, binders, fixers and other auxiliary chemicals used to apply a print pattern to a textile surface. Printing paste ensures that the pattern remains on the fabric with clear and sharp lines, that the dye adheres to the fiber and that it gains the desired fastness properties.
+       </p>
+<p>
+        The consistency of the paste is adjusted according to the application method (screen printing, rotary printing, etc.) and the type of fabric. Correct formulation of the paste is critical for print quality, color yield and production efficiency.
+       </p>
+<h4>
+        Printing Paste Components and Their Functions:
+       </h4>
+<ul>
+<li>
+<strong>
+          Dyestuff:
+         </strong>
+         Pigments or dyes that give the pattern color.
+        </li>
+<li>
+<strong>
+          Thickener:
+         </strong>
+         It prevents the dye from spreading on the fabric and ensures pattern clarity by adjusting the viscosity (consistency) of the paste (e.g. alginate, synthetic polymers).
+        </li>
+<li>
+<strong>
+          Binder:
+         </strong>
+         Polymeric substances that enable pigment dyes to adhere permanently to the fabric surface.
+        </li>
+<li>
+<strong>
+          Fixative (Catalyst):
+         </strong>
+         A substance that accelerates the reaction of the dye with the fiber or the hardening of the binder.
+        </li>
+<li>
+<strong>
+          Plasticizer:
+         </strong>
+         A substance that improves the touch of the fabric by preventing it from hardening after printing.
+        </li>
+<li>
+<strong>
+          Antipilling Agent:
+         </strong>
+         A substance that prevents or reduces pilling.
+        </li>
+<li>
+<strong>
+          Defoamer:
+         </strong>
+         A substance that removes foam formed during paste preparation.
+        </li>
+<li>
+<strong>
+          Urea:
+         </strong>
+         Thanks to its hygroscopic properties, it increases the solubility of the paint and absorbs moisture during steaming.
+        </li>
+<li>
+<strong>
+          This:
+         </strong>
+         It is the main solvent and filler of the paste.
+        </li>
+</ul>
+<h4>
+        How to Calculate Printing Paste Quantities?
+       </h4>
+<p>
+        The amount of each ingredient is usually given as a percentage (%) of the total printing paste weight. The calculation is quite simple:
+       </p>
+<p class="formula-text">
+        Component Amount (kg) = (Total Printing Paste Weight (kg) * Percentage of Component (%)) / 100
+       </p>
+<p>
+        This calculator determines the quantities needed based on the total amount of paste you enter and the percentage of each ingredient separately.
+       </p>
+<h4>
+        Application Areas:
+       </h4>
+<ul>
+<li>
+         Textile printing houses (pigment printing, reactive printing, etc.).
+        </li>
+<li>
+         Paint and chemical manufacturers.
+        </li>
+<li>
+         Fabric design and prototyping laboratories.
+        </li>
+<li>
+         Quality control and R&amp;amp;D departments.
+        </li>
+</ul>
+<p class="disclaimer-text">
+        This calculator is for general information purposes only and provides theoretical calculations. Actual printing paste formulations vary depending on many factors such as fabric type, printing method, dye type, desired fastnesses, environmental conditions and cost targets. Laboratory trials and expert experience are essential to create the most accurate recipe. If you have any problems with your calculations, please contact us
+        <a href="../../contact.html">
+         communication
+        </a>
+        reach us from our page.
+       </p>
+</section>
+</div>
+</div>
+</section>
+</main>
+<div id="footer-placeholder">
+</div>
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+</body>
+</html>

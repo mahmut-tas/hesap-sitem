@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Kumaş Gramajı Hesaplama - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="Kumaşın metrekare (gr/m²) ve metretül (gr/mt) gramajını hesaplayın. Dokuma, örme ve nonwoven kumaşlar için pratik gramaj hesaplama aracı ve sistem bilgileri." name="description"/>
+  <meta content="kumaş gramajı, metrekare gramaj, metretül gramaj, gr/m2, gr/mt, kumaş ağırlığı, kumaş yoğunluğu, tekstil mühendisliği hesaplamaları, hesapkolik tekstil" name="keywords"/>
+  <link href="../../css/style.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+ </head>
+ <!-- Google tag (gtag.js) -->
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="health-calculators-section">
+    <div class="container">
+     <h1 class="main-title">
+      Kumaş Gramajı Hesaplayıcı
+     </h1>
+     <p class="section-description">
+      Kumaşın birim alan ağırlığı (gramaj), tekstil endüstrisinde kumaşın maliyetini, tuşesini ve kullanım alanını belirleyen kritik bir faktördür. Bu hesaplayıcı ile kumaş numunesi ölçülerine göre metrekare (gr/m²) ve metretül (gr/mt) gramajını kolayca hesaplayabilirsiniz.
+     </p>
+     <div class="calculator-group">
+      <div class="calculator-card-wrapper">
+       <div class="calculator-header">
+        <i class="fas fa-weight-hanging icon-small">
+        </i>
+        <h2>
+         Kumaş Gramajını Hesapla
+        </h2>
+       </div>
+       <div class="calculator-form-container">
+        <form id="fabricGramageForm">
+         <div class="input-with-unit">
+          <label for="sampleWeight">
+           Numune Ağırlığı (gram):
+          </label>
+          <input id="sampleWeight" min="0" placeholder="Örn: 5.25" required="" step="0.001" type="number"/>
+         </div>
+         <div class="input-with-unit">
+          <label for="sampleLength">
+           Numune Uzunluğu (cm):
+          </label>
+          <input id="sampleLength" min="0" placeholder="Örn: 20" required="" step="0.1" type="number"/>
+         </div>
+         <div class="input-with-unit">
+          <label for="sampleWidth">
+           Numune Genişliği (cm):
+          </label>
+          <input id="sampleWidth" min="0" placeholder="Örn: 20" required="" step="0.1" type="number"/>
+         </div>
+         <div class="input-with-unit">
+          <label for="fabricWidth">
+           Kumaş Eni (cm):
+          </label>
+          <input id="fabricWidth" min="0" placeholder="Örn: 150" required="" step="0.1" type="number"/>
+         </div>
+         <button onclick="hesaplaKumasGramaji()" type="button">
+          Hesapla
+         </button>
+        </form>
+        <div class="result-display" id="resultBox">
+         <h3>
+          Sonuçlar:
+         </h3>
+         <p>
+          <strong>
+           Metrekare Gramaj (gr/m²):
+          </strong>
+          <span class="result-value" id="resultGrm2">
+          </span>
+         </p>
+         <p>
+          <strong>
+           Metretül Gramaj (gr/mt):
+          </strong>
+          <span class="result-value" id="resultGrmt">
+          </span>
+         </p>
+        </div>
+        <p class="small-text">
+         Numune boyutlarını ve kumaş enini doğru girdiğinizden emin olun. Hesaplamalar numunenin homojen olduğunu varsayar.
+        </p>
+       </div>
+      </div>
+      <section class="info-section">
+       <h3>
+        Kumaş Gramajı Nedir?
+       </h3>
+       <p>
+        Kumaş gramajı, bir kumaşın birim alanındaki ağırlığını ifade eder ve genellikle gram/metrekare (gr/m² veya GSM - Grams per Square Meter) cinsinden belirtilir. Metretül (gr/mt) gramajı ise kumaşın standart eni üzerinden 1 metre uzunluğunun ağırlığını gösterir. Bu değer, kumaşın doku yoğunluğu, kullanılan ipliklerin cinsi ve numarası gibi faktörlere bağlı olarak değişir.
+       </p>
+       <p>
+        Gramaj, tekstil ürünlerinin maliyet, performans ve kullanım alanlarını doğrudan etkileyen önemli bir kalite parametresidir. Örneğin, daha yüksek gramaja sahip kumaşlar genellikle daha kalın, daha dayanıklı ve daha tok bir yapıya sahipken, düşük gramajlı kumaşlar daha hafif ve incedir.
+       </p>
+       <h4>
+        Kumaş Gramajı Nasıl Hesaplanır?
+       </h4>
+       <p>
+        Temel olarak, kumaş gramajı bilinen bir alan veya uzunluktaki kumaş numunesinin ağırlığı ölçülerek hesaplanır.
+       </p>
+       <p class="formula-text">
+        Metrekare Gramaj (gr/m²) = (Numune Ağırlığı (gr) / (Numune Uzunluğu (cm) * Numune Genişliği (cm))) * 10000
+       </p>
+       <p class="formula-text">
+        Metretül Gramaj (gr/mt) = Metrekare Gramaj (gr/m²) * (Kumaş Eni (cm) / 100)
+       </p>
+       <p>
+        Kumaş eni (genişliği) metretül gramajı hesaplamasında kritik öneme sahiptir çünkü metretül, kumaşın o standart endeki 1 metrelik uzunluğunun ağırlığını ifade eder.
+       </p>
+       <h4>
+        Uygulama Alanları:
+       </h4>
+       <ul>
+        <li>
+         **Maliyet Hesaplaması:** Kumaşın metrekare veya metretül bazında maliyetinin belirlenmesi.
+        </li>
+        <li>
+         **Üretim Planlaması:** Belirli bir ürün için ne kadar kumaş gerekeceğinin tahmin edilmesi.
+        </li>
+        <li>
+         **Kalite Kontrol:** Üretilen kumaşın belirlenen standartlara uygun olup olmadığının denetlenmesi.
+        </li>
+        <li>
+         **Ürün Tasarımı:** Giysi veya ev tekstili gibi ürünlerin ağırlık ve tuşe özelliklerinin ayarlanması.
+        </li>
+        <li>
+         **İthalat/İhracat:** Ticari işlemlerde kumaşın standart ağırlık birimleriyle belirtilmesi.
+        </li>
+       </ul>
+       <p class="disclaimer-text">
+        Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Gerçek üretimde ve ticarette, numune alma yöntemleri, nem oranları ve test standartları gibi faktörler sonuçları etkileyebilir. Hassas ticari veya endüstriyel uygulamalar için sertifikalı laboratuvar testleri ve uluslararası standartlar esas alınmalıdır. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize
+        <a href="../../iletisim.html">
+         iletişim
+        </a>
+        sayfamızdan ulaşın.
+       </p>
+      </section>
+     </div>
+    </div>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

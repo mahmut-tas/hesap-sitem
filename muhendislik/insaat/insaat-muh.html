@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   İnşaat Mühendisliği Hesaplamaları - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <meta content="İnşaat Mühendisliği alanına özel hesaplama araçları: Yapısal analiz, geoteknik, hidrolik, ulaştırma, malzeme miktarı ve daha fazlası. Projelerinizi verimli yönetin." name="description"/>
+  <meta content="inşaat mühendisliği hesaplamaları, yapı mühendisliği, geoteknik, hidrolik, ulaştırma, malzeme miktarı, kiriş, kolon, temel, zemin, boru, yol, beton, tuğla, hesapkolik inşaat" name="keywords"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <link href="../../css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+  </script>
+  <style>
+   body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+
+        .health-calculator-landing-section { /* Genel bir kategori sayfası bölümü adı */
+            padding: 50px 0;
+            text-align: center;
+        }
+        .health-calculator-landing-section .main-title {
+            font-size: 2.8em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .health-calculator-landing-section .section-description {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .category-section {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-bottom: 40px; /* Kategoriler arasında boşluk */
+        }
+
+        .category-section h3 {
+            font-size: 2em;
+            color: #e74c3c; /* Kategori başlık rengi */
+            margin-bottom: 25px;
+            text-align: center;
+            border-bottom: 2px solid #eee; /* Alt çizgi */
+            padding-bottom: 10px;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            justify-content: center;
+            align-items: stretch; /* Kartların yüksekliklerini eşitlemek için */
+        }
+
+        .calculator-card {
+            background-color: #f9f9f9; /* Kart arka planı */
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Hafif gölge */
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-height: 200px; /* Kartların minimum yüksekliği */
+        }
+
+        .calculator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .calculator-card .icon-big {
+            font-size: 3em; /* İkon boyutu */
+            color: #3498db; /* İkon rengi */
+            margin-bottom: 15px;
+        }
+
+        .calculator-card h3 {
+            font-size: 1.4em; /* Kart başlığı */
+            color: #2c3e50;
+            margin-bottom: 10px;
+            flex-grow: 1; 
+            font-weight: 600;
+        }
+
+        .calculator-card p {
+            font-size: 0.9em;
+            color: #777;
+            margin-bottom: 20px;
+            flex-grow: 1; 
+        }
+
+        .calculator-card .card-button {
+            display: inline-block;
+            background-color: #e74c3c; /* Buton rengi */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 80%; /* Buton genişliği */
+            max-width: 180px;
+        }
+
+        .calculator-card .card-button:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .card-button.disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .card-button.disabled:hover {
+            background-color: #cccccc;
+            transform: none;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .health-calculator-landing-section .main-title {
+                font-size: 2.2em;
+            }
+            .category-section h3 {
+                font-size: 1.8em;
+            }
+            .calculator-grid {
+                grid-template-columns: 1fr; /* Tek sütun */
+            }
+            .calculator-card {
+                min-height: auto; 
+                padding: 20px;
+            }
+            .calculator-card h3 {
+                font-size: 1.3em;
+            }
+            .calculator-card .icon-big {
+                font-size: 2.5em;
+            }
+        }
+  </style>
+ </head>
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="health-calculator-landing-section">
+    <div class="container">
+     <h1 class="main-title">
+      İnşaat Mühendisliği Hesaplamaları
+     </h1>
+     <p class="section-description">
+      İnşaat mühendisliği projelerinizde ve öğreniminizde ihtiyaç duyacağınız temel ve ileri seviye hesaplama araçları:
+     </p>
+     <div class="category-section">
+      <h3>
+       <i class="fas fa-boxes-stacked">
+       </i>
+       Malzeme Miktarı Hesaplamaları
+      </h3>
+      <div class="calculator-grid">
+       <div class="calculator-card">
+        <i class="fas fa-hard-hat icon-big">
+        </i>
+        <h3>
+         Beton Hacmi ve Malzeme
+        </h3>
+        <p>
+         Belirli bir yapı elemanı için gerekli beton hacmini ve çimento, kum, çakıl miktarını bulur.
+        </p>
+        <a class="card-button" href="beton-hacmi-malzeme.html">
+         Hesapla
+        </a>
+       </div>
+       <div class="calculator-card">
+        <i class="fa-solid fa-trowel-bricks">
+        </i>
+        <h3>
+         Tuğla/Blok Duvar Malzemesi
+        </h3>
+        <p>
+         Duvar alanı için gerekli tuğla/blok sayısı ve harç malzemelerini hesaplar.
+        </p>
+        <a class="card-button" href="tugla-blok-duvar.html">
+         Hesapla
+        </a>
+       </div>
+       <div class="calculator-card">
+        <i class="fas fa-paint-roller icon-big">
+        </i>
+        <h3>
+         Boya Miktarı Hesaplama
+        </h3>
+        <p>
+         Belirli bir yüzey alanını boyamak için gereken boya miktarını tahmin eder.
+        </p>
+        <a class="card-button" href="boya-miktari-hesaplayici.html">
+         Hesapla
+        </a>
+       </div>
+       <div class="calculator-card">
+        <i class="fas fa-th-large icon-big">
+        </i>
+        <h3>
+         Fayans/Seramik Miktarı
+        </h3>
+        <p>
+         Belirli bir alan için gerekli fayans/seramik sayısını ve harç malzemelerini hesaplar.
+        </p>
+        <a class="card-button" href="fayans-seramik.html">
+         Hesapla
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="category-section">
+      <h3>
+       <i class="fas fa-building">
+       </i>
+       Yapı Mühendisliği Hesaplamaları
+      </h3>
+      <div class="calculator-grid">
+       <div class="calculator-card">
+        <i class="fas fa-ruler-combined icon-big">
+        </i>
+        <h3>
+         Kiriş Eğilme Momenti ve Kesme Kuvveti
+        </h3>
+        <p>
+         Farklı yükleme durumlarındaki kirişlerin maksimum eğilme momenti ve kesme kuvvetini hesaplar.
+        </p>
+        <a class="card-button" href="insaat/yapi/kiris-egilme-kesme.html">
+         Hesapla
+        </a>
+       </div>
+       <div class="calculator-card">
+        <i class="fas fa-arrows-alt-v icon-big">
+        </i>
+        <h3>
+         Kiriş Sehim (Deformasyon) Hesaplama
+        </h3>
+        <p>
+         Belirli bir yük altındaki kirişin maksimum sehimini (çökmesini) bulur.
+        </p>
+        <a class="card-button" href="insaat/yapi/kiris-sehim.html">
+         Hesapla
+        </a>
+       </div>
+       <div class="calculator-card">
+        <i class="fas fa-ruler-horizontal icon-big">
+        </i>
+        <h3>
+         Kiriş/Kolon Atalet Momenti Hesaplama
+        </h3>
+        <p>
+         Farklı kesit alanları (dikdörtgen, daire, I-kiriş) için atalet momentlerini hesaplar.
+        </p>
+        <a class="card-button" href="insaat/yapi/atalet-momenti.html">
+         Hesapla
+        </a>
+       </div>
+       <div class="calculator-card">
+        <i class="fas fa-compress-alt icon-big">
+        </i>
+        <h3>
+         Kısa Kolon Taşıma Kapasitesi
+        </h3>
+        <p>
+         Betonarme veya çelik kısa kolonların eksenel yük taşıma kapasitesini bulur.
+        </p>
+        <a class="card-button" href="insaat/yapi/kisa-kolon-kapasitesi.html">
+         Hesapla
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="category-section">
+      <h3>
+       <i class="fas fa-mountain">
+       </i>
+       Geoteknik Mühendisliği Hesaplamaları
+      </h3>
+      <div class="calculator-grid">
+       <div class="calculator-card">
+        <i class="fas fa-hand-holding-box icon-big">
+        </i>
+        <h3>
+         Zemin Taşıma Kapasitesi
+        </h3>
+        <p>
+         Yüzeysel temeller için zeminin güvenli taşıma kapasitesini tahmin eder.
+        </p>
+        <a class="card-button" href="insaat/geoteknik/zemin-tasima-kapasitesi.html">
+         Hesapla
+        </a>
+       </div>
+       <div class="calculator-card">
+        <i class="fas fa-house-damage icon-big">
+        </i>
+        <h3>
+         Zemin Oturması Hesaplama
+        </h3>
+        <p>
+         Yumuşak killerde konsolidasyon nedeniyle beklenen oturma miktarını tahmin eder.
+        </p>
+        <a class="card-button" href="insaat/geoteknik/zemin-oturmasi.html">
+         Hesapla
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="category-section">
+      <h3>
+       <i class="fas fa-water">
+       </i>
+       Su Kaynakları ve Hidrolik Mühendisliği Hesaplamaları
+      </h3>
+      <div class="calculator-grid">
+       <div class="calculator-card">
+        <i class="fas fa-faucet-drip icon-big">
+        </i>
+        <h3>
+         Boru Basınç Düşüşü
+        </h3>
+        <p>
+         Basınçlı boru hatlarında sürtünme kaynaklı enerji kaybını hesaplar.
+        </p>
+        <a class="card-button" href="insaat/hidrolik/boru-basinc-dususu.html">
+         Hesapla
+        </a>
+       </div>
+       <div class="calculator-card">
+        <i class="fas fa-stream icon-big">
+        </i>
+        <h3>
+         Açık Kanal Akışı (Manning Formülü)
+        </h3>
+        <p>
+         Kanalların (dikdörtgen, üçgen, trapez) kesit, eğim ve pürüzlülüğüne göre debi/hız bulur.
+        </p>
+        <a class="card-button" href="insaat/hidrolik/acik-kanal-akisi.html">
+         Hesapla
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="category-section">
+      <h3>
+       <i class="fas fa-road">
+       </i>
+       Ulaştırma Mühendisliği Hesaplamaları
+      </h3>
+      <div class="calculator-grid">
+       <div class="calculator-card">
+        <i class="fas fa-road-circle-check icon-big">
+        </i>
+        <h3>
+         Yatay Kurp Minimum Yarıçapı
+        </h3>
+        <p>
+         Yol tasarımında güvenli minimum yatay kurp yarıçapını hesaplar.
+        </p>
+        <a class="card-button" href="insaat/ulastirma/yatay-kurp.html">
+         Hesapla
+        </a>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

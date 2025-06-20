@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   pH Hesaplayıcı - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="Çözeltilerin pH, pOH, H+ iyonu ve OH- iyonu konsantrasyonlarını hesaplayın. Zayıf ve kuvvetli asit/bazlar için hesaplama desteği." name="description"/>
+  <meta content="pH hesaplama, pOH hesaplama, hidrojen iyonu konsantrasyonu, hidroksit iyonu konsantrasyonu, asit baz, kimya, denge, kimya mühendisliği, hesapkolik pH" name="keywords"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <script async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <link href="css/style.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <style>
+   /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Seçim Bölümü Stilleri */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .calc-type-button {
+            background-color: #3498db; /* Mavi ton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
+            max-width: 250px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper { /* Adını calc-wrapper olarak değiştirdim, daha genel */
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section { /* explanation-section yerine info-section olarak değiştirildi */
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        .hidden-calc {
+            display: none;
+        }
+
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin { /* Zayıf asit/baz formülleri için boşluk */
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .radio-group {
+            text-align: left;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        .radio-group label {
+            display: inline-block; /* Radio butonlarını yan yana getir */
+            margin-bottom: 10px;
+            font-weight: normal;
+            cursor: pointer;
+            width: calc(50% - 10px); /* İki sütunlu düzen */
+            box-sizing: border-box;
+            padding: 5px;
+        }
+        .radio-group input[type="radio"] {
+            width: auto; /* Checkbox'ın genişliğini otomatik yap */
+            margin-right: 5px;
+            margin-bottom: 0; /* Eklenen boşluğu kaldır */
+            vertical-align: middle;
+        }
+        .radio-group br {
+            display: none; /* Otomatik satır sonlarını gizle */
+        }
+
+        /* Daha küçük ekranlarda tek sütunlu radyo butonları */
+        @media (max-width: 600px) {
+            .radio-group label {
+                width: 100%; /* Tek sütunlu düzen */
+            }
+        }
+        
+        .form-divider {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 20px 0;
+        }
+        .input-with-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+  </style>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+ </head>
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="hero-section">
+    <div class="container">
+     <h1>
+      pH Hesaplayıcı
+     </h1>
+     <p>
+      Çözeltilerin pH, pOH, H⁺ iyonu ve OH⁻ iyonu konsantrasyonlarını kolayca hesaplayın. Zayıf ve kuvvetli asit/bazlar için de desteklenmektedir.
+     </p>
+    </div>
+   </section>
+   <section class="calculator-selection-section">
+    <div class="container">
+     <h2>
+      Hesaplama Yöntemini Seçin
+     </h2>
+     <div class="calc-buttons-container">
+      <button class="calc-type-button active" data-calc-type="pHCalculation">
+       pH/pOH Hesapla
+      </button>
+     </div>
+     <div class="calc-wrapper active-calc" id="calculator-pHCalculation">
+      <h3>
+       <i class="fas fa-balance-scale-left icon-small">
+       </i>
+       pH/pOH Hesapla
+      </h3>
+      <div class="calculator-form-container">
+       <form id="phCalculatorForm">
+        <p>
+         Lütfen hesaplama yapmak istediğiniz bilinen değeri seçip girin:
+        </p>
+        <div class="radio-group">
+         <input checked="" id="calcFrompH" name="calcMethod" type="radio" value="pH"/>
+         <label for="calcFrompH">
+          pH değerinden diğerlerini hesapla
+         </label>
+         <input id="calcFrompOH" name="calcMethod" type="radio" value="pOH"/>
+         <label for="calcFrompOH">
+          pOH değerinden diğerlerini hesapla
+         </label>
+         <input id="calcFromHplus" name="calcMethod" type="radio" value="Hplus"/>
+         <label for="calcFromHplus">
+          [H⁺] konsantrasyonundan hesapla
+         </label>
+         <input id="calcFromOHminus" name="calcMethod" type="radio" value="OHminus"/>
+         <label for="calcFromOHminus">
+          [OH⁻] konsantrasyonundan hesapla
+         </label>
+         <input id="calcFromAcidBase" name="calcMethod" type="radio" value="acidBase"/>
+         <label for="calcFromAcidBase">
+          Asit/Baz konsantrasyonundan hesapla
+         </label>
+        </div>
+        <hr class="form-divider"/>
+        <div class="input-with-unit" id="inputpH">
+         <label for="pHValue">
+          pH Değeri:
+         </label>
+         <input id="pHValue" max="14" min="0" name="pHValue" placeholder="Örn: 7.0" step="0.01" type="number"/>
+        </div>
+        <div class="input-with-unit" id="inputpOH" style="display: none;">
+         <label for="pOHValue">
+          pOH Değeri:
+         </label>
+         <input id="pOHValue" max="14" min="0" name="pOHValue" placeholder="Örn: 7.0" step="0.01" type="number"/>
+        </div>
+        <div class="input-with-unit" id="inputHplus" style="display: none;">
+         <label for="HplusValue">
+          [H⁺] Konsantrasyonu (mol/L):
+         </label>
+         <input id="HplusValue" min="0" name="HplusValue" placeholder="Örn: 1.0e-7" step="any" type="number"/>
+        </div>
+        <div class="input-with-unit" id="inputOHminus" style="display: none;">
+         <label for="OHminusValue">
+          [OH⁻] Konsantrasyonu (mol/L):
+         </label>
+         <input id="OHminusValue" min="0" name="OHminusValue" placeholder="Örn: 1.0e-7" step="any" type="number"/>
+        </div>
+        <div id="inputAcidBase" style="display: none;">
+         <div class="input-with-unit">
+          <label for="acidBaseType">
+           Madde Tipi:
+          </label>
+          <select id="acidBaseType">
+           <option value="strongAcid">
+            Kuvvetli Asit
+           </option>
+           <option value="strongBase">
+            Kuvvetli Baz
+           </option>
+           <option value="weakAcid">
+            Zayıf Asit
+           </option>
+           <option value="weakBase">
+            Zayıf Baz
+           </option>
+          </select>
+         </div>
+         <div class="input-with-unit" id="concentrationInput">
+          <label for="concentrationValue">
+           Konsantrasyon (mol/L):
+          </label>
+          <input id="concentrationValue" min="0.000000001" name="concentrationValue" placeholder="Örn: 0.1" step="any" type="number"/>
+         </div>
+         <div class="input-with-unit" id="kaKbInput" style="display: none;">
+          <label for="kaKbValue">
+           Ka/Kb Değeri:
+          </label>
+          <input id="kaKbValue" min="0" name="kaKbValue" placeholder="Örn: 1.8e-5" step="any" type="number"/>
+         </div>
+        </div>
+        <button type="submit">
+         Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="phResult">
+       </div>
+       <p class="small-text">
+        Sadece seçtiğiniz giriş alanını doldurun, diğerlerini boş bırakın. Kuvvetli asit/bazlar için Ka/Kb değeri gerekli değildir.
+       </p>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="info-section container">
+    <h3>
+     pH Nedir?
+    </h3>
+    <p>
+     **pH**, bir çözeltinin asitliğini veya bazlığını (alkaliliğini) ifade eden bir ölçektir. Sudaki hidrojen iyonu ($ H^+ $) konsantrasyonunu logaritmik olarak belirtir.
+    </p>
+    <p>
+     pH ölçeği genellikle 0 ile 14 arasında değişir:
+    </p>
+    <ul>
+     <li>
+      **pH &lt; 7:** Asidik çözelti
+     </li>
+     <li>
+      **pH = 7:** Nötr çözelti (saf su)
+     </li>
+     <li>
+      **pH &gt; 7:** Bazik (alkali) çözelti
+     </li>
+    </ul>
+    <p>
+     pH'ın formülü aşağıdaki gibidir:
+    </p>
+    <p class="formula-text">
+     $ pH = -\log_{10}[H^+] $
+    </p>
+    <p>
+     Burada, $ [H^+] $ çözeltideki hidrojen iyonu konsantrasyonunu (mol/L cinsinden) ifade eder.
+    </p>
+    <h4>
+     pOH Nedir?
+    </h4>
+    <p>
+     **pOH**, bir çözeltinin bazlığını gösteren bir ölçektir ve hidroksit iyonu ($ OH^- $) konsantrasyonuna bağlıdır:
+    </p>
+    <p class="formula-text">
+     $ pOH = -\log_{10}[OH^-] $
+    </p>
+    <p>
+     25°C'de, pH ve pOH arasındaki ilişki şöyledir:
+    </p>
+    <p class="formula-text">
+     $ pH + pOH = 14 $
+    </p>
+    <h4>
+     İyon Konsantrasyonları ve pH İlişkisi:
+    </h4>
+    <p>
+     Hidrojen ve hidroksit iyonu konsantrasyonları (mol/L) ile pH/pOH arasında karşılıklı dönüşümler yapılabilir:
+    </p>
+    <ul>
+     <li>
+      $ [H^+] = 10^{-pH} $
+     </li>
+     <li>
+      $ [OH^-] = 10^{-pOH} $
+     </li>
+     <li>
+      25°C'de suyun iyon çarpımı sabiti ($ K_w $): $ [H^+][OH^-] = 1.0 \times 10^{-14} $
+     </li>
+    </ul>
+    <h4>
+     Kuvvetli ve Zayıf Asit/Bazlar
+    </h4>
+    <ul>
+     <li>
+      **Kuvvetli Asitler/Bazlar:** Suda tamamen iyonlaşırlar. Bu nedenle, çözeltinin H⁺ veya OH⁻ konsantrasyonu, asit/bazın başlangıç konsantrasyonuna eşittir (monoprotik ise).
+     </li>
+     <li>
+      **Zayıf Asitler/Bazlar:** Suda kısmen iyonlaşırlar ve dengeye ulaşırlar. Bu durum için asit ayrışma sabiti ($ K_a $) veya baz ayrışma sabiti ($ K_b $) değerleri kullanılır.
+      <p class="formula-text small-margin">
+       Zayıf Asitler için: $ K_a = \frac{[H^+][A^-]}{[HA]} $
+      </p>
+      <p class="formula-text small-margin">
+       Zayıf Bazlar için: $ K_b = \frac{[BH^+][OH^-]}{[B]} $
+      </p>
+      <p class="formula-text small-margin">
+       Zayıf Asit pH (Yaklaşık): $ [H^+] \approx \sqrt{K_a \cdot C_a} $
+      </p>
+      <p class="formula-text small-margin">
+       Zayıf Baz pOH (Yaklaşık): $ [OH^-] \approx \sqrt{K_b \cdot C_b} $
+      </p>
+     </li>
+    </ul>
+    <h4>
+     Uygulama Alanları:
+    </h4>
+    <ul>
+     <li>
+      **Sağlık ve Tıp:** Vücut sıvılarının (kan, idrar) pH dengesi hayati öneme sahiptir.
+     </li>
+     <li>
+      **Gıda Endüstrisi:** Gıdaların kalitesi, güvenliği ve raf ömrü pH'a bağlıdır.
+     </li>
+     <li>
+      **Çevre Bilimi:** Toprak ve suyun pH'ı, ekosistem sağlığını ve kirleticilerin davranışını etkiler.
+     </li>
+     <li>
+      **Tarım:** Toprak pH'ı, bitki büyümesi ve besin alımı için kritiktir.
+     </li>
+     <li>
+      **Kimya Sanayi:** Birçok kimyasal reaksiyonun hızı ve verimi pH'a bağlıdır.
+     </li>
+    </ul>
+    <p class="disclaimer-text">
+     Bu hesaplayıcı, 25°C sıcaklıkta ideal çözeltiler için temel pH/pOH ve iyon konsantrasyonu hesaplamaları yapar. Zayıf asit/baz hesaplamalarında denge sabiti (Ka/Kb) gereklidir ve genellikle basit bir yaklaşım kullanılır (kare alma). Gerçek dünya uygulamalarında sıcaklık, iyonik kuvvet ve diğer kimyasal etkileşimler pH'ı etkileyebilir. Daha karmaşık senaryolar için ileri düzey kimyasal modelleme ve deneyler gereklidir.
+    </p>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

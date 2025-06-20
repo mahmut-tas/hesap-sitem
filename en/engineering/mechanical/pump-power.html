@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pump Power Calculator - Calculator</title>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/footer.css" rel="stylesheet"/>
+<link href="/css/header.css" rel="stylesheet"/>
+<meta content="Easily calculate the required pump power (hydraulic power, shaft power, motor power) for a given flow rate and head (or pressure difference). An essential tool for fluid mechanics, hydraulic systems and engineering design." name="description"/>
+<meta content="pump power, pump calculation, hydraulic power, shaft power, motor power, flow rate, head, pressure difference, efficiency, fluid mechanics, engineering calculations, calculator pump" name="keywords"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+<script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+</script>
+<style>
+   /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+       
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Seçim Bölümü Stilleri */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .calc-type-button {
+            background-color: #3498db; /* Mavi ton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
+            max-width: 250px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        .hidden-calc {
+            display: none;
+        }
+
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin {
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+        }
+        .input-with-unit label {
+            flex-basis: 100%; /* Label her zaman üstte veya solda */
+            margin-bottom: 5px;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input alanı boşluğu doldurur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .input-with-unit select {
+            flex-shrink: 0; /* Select kutusu sabit kalır */
+            width: auto; /* Select kutusu kendi genişliğinde olur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+  </style>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+</script>
+<link href="https://hesapkolik.net/muhendislik/makine/pompa-gucu.html" hreflang="tr" rel="alternate"/>
+<link href="https://hesapkolik.net/en/muhendislik/makine/pompa-gucu.html" hreflang="en" rel="alternate"/>
+<link href="https://hesapkolik.net/muhendislik/makine/pompa-gucu.html" hreflang="x-default" rel="alternate"/>
+</head>
+<body>
+<div id="header-placeholder">
+</div>
+<main>
+<section class="hero-section">
+<div class="container">
+<h1>
+      Pump Power Calculator
+     </h1>
+<p>
+      Calculate the required pump power for a given flow rate and head (or pressure difference).
+     </p>
+</div>
+</section>
+<section class="calculator-selection-section">
+<div class="container">
+<h2>
+      Calculate Pump Power
+     </h2>
+<div class="calc-buttons-container">
+<button class="calc-type-button active" data-calc-type="pumpPower">
+       Calculate Pump Power
+      </button>
+</div>
+<div class="calc-wrapper active-calc" id="calculator-pumpPower">
+<h3>
+<i class="fas fa-water icon-small">
+</i>
+       Calculate Pump Power (P = (ρ ⋅ g ⋅ Q ⋅ H) / η)
+      </h3>
+<div class="calculator-form-container">
+<form id="pumpPowerForm">
+<div class="input-with-unit">
+<label for="fluidDensity_pp">
+          Fluid Density (ρ):
+         </label>
+<input id="fluidDensity_pp" min="0.000001" placeholder="Örn: 1000 (Su için)" required="" step="any" type="number"/>
+<select id="fluidDensityUnit_pp">
+<option value="kg/m3">
+           kg/m³
+          </option>
+<option value="g/cm3">
+           g/cm³
+          </option>
+<option value="lb/ft3">
+           lb/ft³
+          </option>
+</select>
+</div>
+<hr class="form-divider"/>
+<div class="input-with-unit">
+<label for="flowRate_pp">
+          Volumetric Flow (Q):
+         </label>
+<input id="flowRate_pp" min="0.000001" placeholder="Örn: 0.01 (m³/s)" required="" step="any" type="number"/>
+<select id="flowRateUnit_pp">
+<option value="m3/s">
+           m³/s
+          </option>
+<option value="L/s">
+           L/s
+          </option>
+<option value="m3/h">
+           m³/hour
+          </option>
+<option value="gpm">
+           gallons per minute (gpm)
+          </option>
+<option value="ft3/s">
+           ft³/s
+          </option>
+</select>
+</div>
+<hr class="form-divider"/>
+<div class="input-with-unit">
+<label for="totalHead_pp">
+          Total Head (H) or Pressure Difference (ΔP):
+         </label>
+<input id="totalHead_pp" min="0" placeholder="Örn: 10 (m)" required="" step="any" type="number"/>
+<select id="totalHeadUnit_pp">
+<option value="m">
+           meter (m)
+          </option>
+<option value="ft">
+           feet (ft)
+          </option>
+<option value="psi">
+           psi
+          </option>
+<option value="kPa">
+           kPa
+          </option>
+<option value="bar">
+           bar
+          </option>
+</select>
+</div>
+<hr class="form-divider"/>
+<div class="input-with-unit">
+<label for="pumpEfficiency_pp">
+          Pump Efficiency (η) (%):
+         </label>
+<input id="pumpEfficiency_pp" max="100" min="1" placeholder="Örn: 75" required="" step="0.1" type="number"/>
+</div>
+<button type="submit">
+         Calculate Pump Power
+        </button>
+</form>
+<div class="result-display" id="pumpPowerResult">
+</div>
+<div class="calc-explanation">
+<p>
+         Pump power represents the energy required to move a fluid at a given flow rate and head (or pressure difference). The calculation can be made at different levels as hydraulic power, shaft power and motor power.
+        </p>
+<h4>
+         Hydraulic Power (Power Transferred to Fluid):
+        </h4>
+<p class="formula-text">
+         P_hydraulic = ρ ⋅ g ⋅ Q ⋅ H
+        </p>
+<p class="formula-text small-margin">
+         P_hydraulic = Q ⋅ ΔP
+        </p>
+<ul>
+<li>
+          **ρ:** Fluid density (kg/m³)
+         </li>
+<li>
+          **g:** Gravitational acceleration (9.81 m/s²)
+         </li>
+<li>
+          **Q:** Volumetric flow rate (m³/s)
+         </li>
+<li>
+          **H:** Total head (m)
+         </li>
+<li>
+          **ΔP:** Pressure difference (Pa)
+         </li>
+</ul>
+<h4>
+         Shaft Power (Pump Input Power):
+        </h4>
+<p class="formula-text small-margin">
+         P_shaft = P_hydraulic / η_pump
+        </p>
+<ul>
+<li>
+          **η_pump:** Pump efficiency (in decimal, for example 0.75 for 75%)
+         </li>
+</ul>
+<h4>
+         Engine Power (Including Pump and Engine Efficiency):
+        </h4>
+<p class="formula-text small-margin">
+         P_motor = P_shaft / η_motor
+        </p>
+<ul>
+<li>
+          **η_motor:** Motor efficiency (usually between 85-95%)
+         </li>
+</ul>
+<p>
+         This calculator gives the hydraulic power and pump shaft power in Watts as a base. If necessary, you can perform an additional efficiency calculation for the motor power.
+        </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="info-section container">
+<h3>
+     What are Pump Power Calculations?
+    </h3>
+<p>
+     **Pump power calculations** are performed to determine how much energy (power) a pump needs to move a given fluid at a desired flow rate and head (or pressure difference). These calculations are critical in pump selection, system design, and energy consumption analysis.
+    </p>
+<h4>
+     Basic Types of Power:
+    </h4>
+<ul>
+<li>
+      **Hydraulic Power (Fluid Power, Water Horsepower):** It is the net power transferred by the pump to the fluid. It is the minimum power theoretically required to move the fluid, excluding friction losses and other inefficiencies.
+      <p class="formula-text small-margin">
+       P_hydraulic = ρ ⋅ g ⋅ Q ⋅ H (In terms of Head)
+      </p>
+<p class="formula-text small-margin">
+       P_hydraulic = Q ⋅ ΔP (In terms of pressure difference)
+      </p>
+<ul>
+<li>
+        **ρ:** Fluid density
+       </li>
+<li>
+        **g:** Gravitational acceleration (approximately 9.81 m/s²)
+       </li>
+<li>
+        **Q:** Volumetric flow rate
+       </li>
+<li>
+        **H:** Total discharge head (equivalent height of total pressure energy provided by the pump)
+       </li>
+<li>
+        **ΔP:** Pressure difference between the inlet and outlet of the pump
+       </li>
+</ul>
+</li>
+<li>
+      **Shaft Power (Input Power):** The power applied to the shaft to turn the pump impeller. It is greater than hydraulic power because the pump has its own internal friction and mechanical losses. Pump efficiency takes these losses into account.
+      <p class="formula-text small-margin">
+       P_shaft = P_hydraulic / η_pump
+      </p>
+<ul>
+<li>
+        **η_pump:** The efficiency of the pump (usually a decimal value between 0.5 and 0.9).
+       </li>
+</ul>
+</li>
+<li>
+      **Motor Power (Electrical Input Power):** The electrical power drawn by the motor that powers the pump. It is greater than the shaft power because the motor has its own electrical and mechanical inefficiencies.
+      <p class="formula-text small-margin">
+       P_motor = P_shaft / η_motor
+      </p>
+<ul>
+<li>
+        **η_motor:** The efficiency of the motor (usually a decimal value between 0.85 and 0.95).
+       </li>
+</ul>
+</li>
+</ul>
+<h4>
+     Application Areas:
+    </h4>
+<ul>
+<li>
+<strong>
+       Liquid Transfer Systems:
+      </strong>
+      Water supply, wastewater treatment, chemical processes and oil/gas pipelines.
+     </li>
+<li>
+<strong>
+       HVAC Systems:
+      </strong>
+      Water circulation pumps in cooling and heating systems.
+     </li>
+<li>
+<strong>
+       Construction Industry:
+      </strong>
+      Site drainage, concrete pumps.
+     </li>
+<li>
+<strong>
+       Agriculture:
+      </strong>
+      Irrigation systems.
+     </li>
+<li>
+<strong>
+       Marine:
+      </strong>
+      Ship engine cooling systems, ballast pumps.
+     </li>
+</ul>
+<p class="disclaimer-text">
+     This calculator is based on the basic hydraulic principles of pump power and includes the concept of efficiency. In real world applications, additional factors such as pipeline friction losses, static head, velocity head, cavitation risk (NPSH), fluid viscosity and temperature can affect the total head of the system and pump performance. Detailed engineering analysis, pump characteristic curves and expert knowledge are required for precise pump selection and system design.
+    </p>
+</section>
+</main>
+<div id="footer-placeholder">
+</div>
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+</body>
+</html>

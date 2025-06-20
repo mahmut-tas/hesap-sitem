@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Kumaş Çekme Oranı Hesaplama - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="Kumaşların yıkama, kurutma veya terbiye işlemleri sonrası en ve boy yönündeki çekme/uzama oranlarını yüzde olarak hesaplayın. Tekstil ürünlerinde boyutsal stabilite kontrolü için pratik araç." name="description"/>
+  <meta content="kumaş çekme, kumaş uzama, çekme oranı, boyutsal stabilite, yıkama sonrası çekme, terbiye, tekstil mühendisliği hesaplamaları, hesapkolik tekstil" name="keywords"/>
+  <link href="../../css/style.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+ </head>
+ <!-- Google tag (gtag.js) -->
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="health-calculators-section">
+    <div class="container">
+     <h1 class="main-title">
+      Kumaş Çekme Oranı Hesaplayıcı
+     </h1>
+     <p class="section-description">
+      Kumaşlar, yıkama, kurutma, buharlama gibi terbiye işlemleri sonrasında boyutsal olarak değişiklik gösterebilir. Bu hesaplayıcı ile kumaşın en ve boy yönündeki başlangıç ve bitiş ölçülerini girerek çekme veya uzama oranını yüzde olarak hesaplayabilirsiniz.
+     </p>
+     <div class="calculator-group">
+      <div class="calculator-card-wrapper">
+       <div class="calculator-header">
+        <i class="fas fa-expand-arrows-alt icon-small">
+        </i>
+        <h2>
+         Kumaş Çekme/Uzama Oranını Hesapla
+        </h2>
+       </div>
+       <div class="calculator-form-container">
+        <form id="shrinkageForm">
+         <p class="small-text">
+          Lütfen kumaş numunesinin işlem öncesi ve sonrası ölçülerini (cm) girin.
+         </p>
+         <h4>
+          Boy Yönü (Uzunluk)
+         </h4>
+         <div class="input-with-unit">
+          <label for="initialLength">
+           Başlangıç Boyu (cm):
+          </label>
+          <input id="initialLength" min="0.1" placeholder="Örn: 50" required="" step="0.1" type="number"/>
+         </div>
+         <div class="input-with-unit">
+          <label for="finalLength">
+           Bitiş Boyu (cm):
+          </label>
+          <input id="finalLength" min="0.1" placeholder="Örn: 48" required="" step="0.1" type="number"/>
+         </div>
+         <div class="form-divider">
+         </div>
+         <h4>
+          En Yönü (Genişlik)
+         </h4>
+         <div class="input-with-unit">
+          <label for="initialWidth">
+           Başlangıç Eni (cm):
+          </label>
+          <input id="initialWidth" min="0.1" placeholder="Örn: 50" required="" step="0.1" type="number"/>
+         </div>
+         <div class="input-with-unit">
+          <label for="finalWidth">
+           Bitiş Eni (cm):
+          </label>
+          <input id="finalWidth" min="0.1" placeholder="Örn: 51" required="" step="0.1" type="number"/>
+         </div>
+         <button onclick="calculateShrinkage()" type="button">
+          Hesapla
+         </button>
+        </form>
+        <div class="result-display" id="resultBox">
+         <h3>
+          Sonuçlar:
+         </h3>
+         <p>
+          <strong>
+           Boy Yönü Değişimi:
+          </strong>
+          <span class="result-value" id="resultLength">
+          </span>
+         </p>
+         <p>
+          <strong>
+           En Yönü Değişimi:
+          </strong>
+          <span class="result-value" id="resultWidth">
+          </span>
+         </p>
+         <p class="small-text">
+          Pozitif değer uzama, negatif değer çekme anlamına gelir.
+         </p>
+        </div>
+        <p class="small-text">
+         Ölçümleri milimetre (mm) hassasiyetinde yapmanız, daha doğru sonuçlar almanızı sağlar. Numune boyutlarının uluslararası standartlara (örneğin AATCC, ISO) uygun olmasına dikkat edin.
+        </p>
+       </div>
+      </div>
+      <section class="info-section">
+       <h3>
+        Kumaş Çekme Oranı Nedir?
+       </h3>
+       <p>
+        **Kumaş çekme oranı**, bir tekstil materyalinin (kumaş, iplik vb.) belirli bir işlem (yıkama, kurutma, buharlama, ütüleme, kimyasal terbiye) sonrasında boyutlarında meydana gelen kalıcı değişikliği yüzde (%) cinsinden ifade eder. Eğer kumaşın boyutu küçülürse buna "çekme" (shrinkage), büyürse "uzama" (growth) denir.
+       </p>
+       <p>
+        Bu durum, kumaşın lif yapısı (doğal, sentetik, karışım), iplik ve kumaş üretim yöntemleri (dokuma, örme), terbiye işlemleri ve kullanılan kimyasallar gibi birçok faktöre bağlıdır. Özellikle pamuk gibi doğal lifler, su emme ve kuruma özelliklerinden dolayı çekmeye daha eğilimlidir.
+       </p>
+       <h4>
+        Kumaş Çekme Oranı Neden Önemlidir?
+       </h4>
+       <ul>
+        <li>
+         **Kalıp ve Kesim Optimizasyonu:** Konfeksiyon üretiminde, giysilerin yıkama sonrası doğru beden ölçülerini koruması için kumaşın çekme veya uzama payının doğru hesaplanması gerekir.
+        </li>
+        <li>
+         **Kalite Kontrol:** Üretilen ürünlerin boyut standartlarına uygunluğunu sağlamak.
+        </li>
+        <li>
+         **Müşteri Memnuniyeti:** Tüketicilerin ürünlerini yıkadıktan sonra boyut değişimi nedeniyle hayal kırıklığına uğramasını önlemek.
+        </li>
+        <li>
+         **Ürün Geliştirme:** Yeni kumaşların boyutsal stabilitesini test etmek ve geliştirmek.
+        </li>
+       </ul>
+       <h4>
+        Kumaş Çekme Oranı Nasıl Hesaplanır?
+       </h4>
+       <p>
+        Çekme veya uzama oranı, başlangıç ve bitiş ölçüleri arasındaki farkın başlangıç ölçüsüne oranlanıp 100 ile çarpılmasıyla yüzde cinsinden bulunur:
+       </p>
+       <p class="formula-text">
+        Çekme/Uzama Oranı (%) = ((Başlangıç Ölçüsü - Bitiş Ölçüsü) / Başlangıç Ölçüsü) * 100
+       </p>
+       <p>
+        Bu formülde:
+        <ul>
+         <li>
+          Eğer sonuç **pozitif** ise, kumaş **çekmiş** demektir. (Örn: %-2.5, %2.5 çekme)
+         </li>
+         <li>
+          Eğer sonuç **negatif** ise, kumaş **uzamış** demektir. (Örn: %2.5, %2.5 uzama)
+         </li>
+        </ul>
+        Bizim hesaplayıcımızda kolaylık sağlamak için, eğer sonuç negatifse "uzama", pozitifse "çekme" olarak belirteceğiz. Pozitif değer uzama, negatif değer çekme anlamına gelir. Örneğin, -2.5% çekme, +2.5% uzama şeklinde gösterilecektir. Bu hesaplayıcıda pozitif sonuç uzama, negatif sonuç çekme olarak belirtilmiştir.
+       </p>
+       <h4>
+        Uygulama Alanları:
+       </h4>
+       <ul>
+        <li>
+         Hazır giyim ve konfeksiyon sanayii.
+        </li>
+        <li>
+         Ev tekstili üretimi (nevresim, perde, havlu vb.).
+        </li>
+        <li>
+         Teknik tekstillerin performansı ve kullanım ömrü.
+        </li>
+        <li>
+         Tekstil ürünlerinin bakım talimatlarının belirlenmesi.
+        </li>
+        <li>
+         Kumaş kalite güvence laboratuvarları.
+        </li>
+       </ul>
+       <p class="disclaimer-text">
+        Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Gerçek endüstriyel testlerde, numunelerin hazırlanması (markalama), iklimlendirme koşulları, yıkama ve kurutma standartları (örneğin ISO 6330, AATCC 135) gibi faktörler sonuçları önemli ölçüde etkiler. Hassas ticari veya sertifikasyon amaçlı uygulamalar için uluslararası test standartlarına ve uzman laboratuvarlara başvurulmalıdır. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize
+        <a href="../../iletisim.html">
+         iletişim
+        </a>
+        sayfamızdan ulaşın.
+       </p>
+      </section>
+     </div>
+    </div>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

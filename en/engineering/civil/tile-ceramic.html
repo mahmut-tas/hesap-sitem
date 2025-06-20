@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>
+   Tile/Ceramic Quantity Calculator - Hesapkolik
+  </title>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/footer.css" rel="stylesheet"/>
+<meta content="Calculate in detail the number of tiles/ceramic tiles, the amount of tile adhesive and grout required for a given floor or wall area. Support for joint spacing, waste ratio and different application types. A comprehensive tool for your construction and renovation projects." name="description"/>
+<meta content="tile calculation, ceramic calculation, tile amount, ceramic amount, floor, wall, mortar, tile adhesive, grout, waste rate, flooring, renovation, construction, hesapkolik tiles" name="keywords"/>
+<link href="/css/header.css" rel="stylesheet"/>
+<link href="../../css/style.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+<script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+</script>
+<style>
+   /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        /* Header ve footer stilleri artık harici CSS dosyalarında veya ana style.css'te olmalı */
+        /* Ancak yine de, genel stil tanımlamaları için aşağıdaki blok kullanılabilir */
+
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Bölümü Stilleri */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        /* Hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 750px; /* Daha geniş bir alan için artırıldı */
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.1em; 
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: left; 
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.2em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* header nav ul ve li stillerini doğrudan main style.css'e aktardığınızı varsayıyorum */
+        }
+        
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin {
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+        }
+        .input-with-unit label {
+            flex-basis: 100%; /* Label her zaman üstte veya solda */
+            margin-bottom: 5px;
+            text-align: left;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input alanı boşluğu doldurur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .input-with-unit select {
+            flex-shrink: 0; /* Select kutusu sabit kalır */
+            width: auto; /* Select kutusu kendi genişliğinde olur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+
+        /* Gelişmiş seçenekler için gizle/göster */
+        .advanced-options {
+            border-top: 1px dashed #eee;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+        .advanced-options h4 {
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .toggle-button {
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+        .toggle-button:hover {
+            background-color: #e0e0e0;
+        }
+        .toggle-button.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        .hidden-section {
+            display: none;
+        }
+
+        /* Sonuç satırları için hizalama */
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+            padding-bottom: 5px;
+            border-bottom: 1px dotted #e0e0e0;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .result-item strong {
+            flex-shrink: 0;
+            margin-right: 10px;
+        }
+        .result-item .result-value {
+            flex-grow: 1;
+            text-align: right;
+        }
+        
+        .multi-column-input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .multi-column-input-group > .input-with-unit {
+            flex: 1 1 calc(50% - 15px); /* İki sütun */
+            min-width: 250px;
+        }
+        @media (max-width: 600px) {
+            .multi-column-input-group > .input-with-unit {
+                flex: 1 1 100%; /* Tek sütun */
+            }
+        }
+  </style>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+</script>
+<link href="https://hesapkolik.net/muhendislik/insaat/fayans-seramik.html" hreflang="tr" rel="alternate"/>
+<link href="https://hesapkolik.net/en/muhendislik/insaat/fayans-seramik.html" hreflang="en" rel="alternate"/>
+<link href="https://hesapkolik.net/muhendislik/insaat/fayans-seramik.html" hreflang="x-default" rel="alternate"/>
+</head>
+<body>
+<div id="header-placeholder">
+</div>
+<main>
+<section class="hero-section">
+<div class="container">
+<h1>
+      Tile/Ceramic Quantity Calculator
+     </h1>
+<p>
+      Calculate in detail the number of tiles/ceramic tiles, amount of tile adhesive and grout required for a given area.
+     </p>
+</div>
+</section>
+<section class="calculator-section">
+<div class="container">
+<h2>
+      Determine Your Tile and Material Needs
+     </h2>
+<div class="calc-wrapper" id="calculator-tileAmount">
+<h3>
+<i class="fas fa-th-large icon-small">
+</i>
+       Tile/Ceramic Quantity Calculator
+      </h3>
+<div class="calculator-form-container">
+<form id="tileAmountForm">
+<h4>
+         Dimensions of the Area to be Tiled
+        </h4>
+<p class="small-text">
+         Enter the length and width of the area where tiles/ceramic will be laid (e.g. room, bathroom wall).
+        </p>
+<div class="multi-column-input-group">
+<div class="input-with-unit">
+<label for="areaLength">
+           Field Length:
+          </label>
+<input id="areaLength" min="0.01" placeholder="Örn: 4" required="" step="any" type="number"/>
+<select id="areaLengthUnit">
+<option value="m">
+            meter (m)
+           </option>
+<option value="cm">
+            centimeter (cm)
+           </option>
+<option value="mm">
+            millimeter (mm)
+           </option>
+</select>
+</div>
+<div class="input-with-unit">
+<label for="areaWidth">
+           Field Width/Height:
+          </label>
+<input id="areaWidth" min="0.01" placeholder="Örn: 3" required="" step="any" type="number"/>
+<select id="areaWidthUnit">
+<option value="m">
+            meter (m)
+           </option>
+<option value="cm">
+            centimeter (cm)
+           </option>
+<option value="mm">
+            millimeter (mm)
+           </option>
+</select>
+</div>
+</div>
+<hr class="form-divider"/>
+<h4>
+         Tile/Ceramic Information
+        </h4>
+<p class="small-text">
+         Enter the dimensions and laying direction of the tiles or ceramics to be used.
+        </p>
+<div class="multi-column-input-group">
+<div class="input-with-unit">
+<label for="tileLength">
+           Tile/Ceramic Length:
+          </label>
+<input id="tileLength" min="0.01" placeholder="Örn: 60" required="" step="any" type="number"/>
+<select id="tileLengthUnit">
+<option value="cm">
+            centimeter (cm)
+           </option>
+<option value="mm">
+            millimeter (mm)
+           </option>
+<option value="m">
+            meter (m)
+           </option>
+</select>
+</div>
+<div class="input-with-unit">
+<label for="tileWidth">
+           Tile/Ceramic Width:
+          </label>
+<input id="tileWidth" min="0.01" placeholder="Örn: 60" required="" step="any" type="number"/>
+<select id="tileWidthUnit">
+<option value="cm">
+            centimeter (cm)
+           </option>
+<option value="mm">
+            millimeter (mm)
+           </option>
+<option value="m">
+            meter (m)
+           </option>
+</select>
+</div>
+</div>
+<div class="input-with-unit">
+<label for="jointWidth">
+          Joint Gap Thickness:
+         </label>
+<input id="jointWidth" min="0" placeholder="Örn: 0.3 (cm)" required="" step="0.1" type="number" value="0.3"/>
+<span class="unit">
+          cm
+         </span>
+</div>
+<p class="small-text">
+         The amount of space between tiles (joint). Usually 0.2 cm - 0.5 cm is used.
+        </p>
+<div class="advanced-options">
+<button class="toggle-button" id="toggleAdvancedOptions" type="button">
+<i class="fas fa-cogs">
+</i>
+          Advanced Settings (Adhesive, Grout and Waste)
+         </button>
+<div class="hidden-section" id="advancedOptionsContent">
+<h4>
+           Tile Adhesive
+          </h4>
+<div class="input-with-unit">
+<label for="adhesiveCoverage">
+            Adhesive Coating Rate (kg/m²):
+           </label>
+<input id="adhesiveCoverage" min="0.1" placeholder="Örn: 5" step="0.1" type="number" value="5"/>
+<span class="unit">
+            kg/m²
+           </span>
+</div>
+<p class="small-text">
+           How much adhesive is required for 1 square meter of area. It is stated on the packaging.
+          </p>
+<h4>
+           Grouting
+          </h4>
+<div class="input-with-unit">
+<label for="groutDensity">
+            Grout Density (kg/m³):
+           </label>
+<input id="groutDensity" min="1" placeholder="Örn: 1500" step="1" type="number" value="1500"/>
+<span class="unit">
+            kg/m³
+           </span>
+</div>
+<p class="small-text">
+           Specific gravity of the grout. It is usually between 1500-1800 kg/m³.
+          </p>
+<h4>
+           Waste Rates
+          </h4>
+<div class="input-with-unit">
+<label for="tileWastageFactor">
+            Tile/Ceramic Waste Rate (%):
+           </label>
+<input id="tileWastageFactor" max="100" min="0" step="0.1" type="number" value="10"/>
+<span class="unit">
+            %
+           </span>
+</div>
+<p class="small-text">
+           Percentage added for cutting, breaking or faulty installation. 10% is generally recommended.
+          </p>
+<div class="input-with-unit">
+<label for="adhesiveWastageFactor">
+            Adhesive Waste Rate (%):
+           </label>
+<input id="adhesiveWastageFactor" max="100" min="0" step="0.1" type="number" value="5"/>
+<span class="unit">
+            %
+           </span>
+</div>
+<div class="input-with-unit">
+<label for="groutWastageFactor">
+            Grout Waste Rate (%):
+           </label>
+<input id="groutWastageFactor" max="100" min="0" step="0.1" type="number" value="5"/>
+<span class="unit">
+            %
+           </span>
+</div>
+</div>
+</div>
+<button type="submit">
+         Calculate Ingredients
+        </button>
+</form>
+<div class="result-display" id="tileAmountResult" style="display:none;">
+</div>
+<div class="calc-explanation">
+<p>
+         This calculator estimates the number of tiles/ceramic tiles required to cover a given floor or wall area, as well as the amounts of tile adhesive and grout required for tiling. Factors such as the dimensions of the area to be tiled, tile/ceramic dimensions, joint spacing and wastage rates are included in the calculation.
+        </p>
+<p class="formula-text small-margin">
+         Total Area = Area Length × Area Width
+        </p>
+<p class="formula-text small-margin">
+         Area of a Tile Including Joint = (Tile Length + Joint) × (Tile Width + Joint)
+        </p>
+<p class="formula-text small-margin">
+         Number of Tiles Required = (Total Area / Area of a Tile Including Joint) × (1 + Tile Waste Rate / 100)
+        </p>
+<p class="formula-text small-margin">
+         Required Adhesive = (Total Area × Adhesive Coverage Rate) × (1 + Adhesive Waste Rate / 100)
+        </p>
+<p class="formula-text small-margin">
+         Required Grout (kg) = ( (Tile Length (m) + Tile Width (m)) / (Tile Length (m) × Tile Width (m)) ) × Grout Thickness (m) × Tile Thickness (m) × Grout Density (kg/m³) × Total Area (m²) × (1 + Grout Waste Rate / 100)
+        </p>
+<ul>
+<li>
+<strong>
+           Total Area:
+          </strong>
+          Total surface area to be tiled (m²).
+         </li>
+<li>
+<strong>
+           Number of Tiles/Ceramics:
+          </strong>
+          Total number of tiles/ceramics required (pieces).
+         </li>
+<li>
+<strong>
+           Tile Adhesive:
+          </strong>
+          Amount of adhesive required (kg).
+         </li>
+<li>
+<strong>
+           Grout:
+          </strong>
+          Amount of grout required (kg).
+         </li>
+<li>
+<strong>
+           Joint Gap:
+          </strong>
+          Distance between tiles (cm).
+         </li>
+<li>
+<strong>
+           Waste Rate:
+          </strong>
+          Percentage (%) added for cutting, breaking or faulty laying.
+         </li>
+</ul>
+<p>
+<strong>
+          Important Note:
+         </strong>
+         Tile/ceramic dimensions, joint thicknesses, adhesive and grout coating rates may vary depending on the project characteristics, tile type (floor/wall), surface smoothness and application method. The default values in this calculator are general assumptions. For exact quantities to be used in real projects, an expert (tiler, civil engineer) or material supplier should always be consulted.
+        </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="info-section container">
+<h3>
+     Why is Calculating Tile/Ceramic Quantity Important?
+    </h3>
+<p>
+     Installing tiles or ceramics is a job that can significantly change the appearance of a space, but requires proper planning. Correctly calculating the amount of materials required directly affects the **cost, duration and quality** of the project:
+    </p>
+<ul>
+<li>
+<strong>
+       Cost Control:
+      </strong>
+      Ordering the correct amount of materials prevents both waste from purchasing excess materials and additional shipping and labor costs that may arise from missing materials.
+     </li>
+<li>
+<strong>
+       Time Saving:
+      </strong>
+      Shortages of materials can cause work stoppages and delays. Accurate calculations will ensure the project progresses without delay.
+     </li>
+<li>
+<strong>
+       Compatible Result:
+      </strong>
+      Especially for special production or tiles belonging to certain series, there may be differences in colour or texture between different batches. Ordering enough at once reduces the risk of such incompatibilities.
+     </li>
+<li>
+<strong>
+       Professional Planning:
+      </strong>
+      An accurate calculation shows that you have taken a professional approach to your project.
+     </li>
+</ul>
+<h4>
+     Tile and Joint Spacing Calculation:
+    </h4>
+<p>
+     When calculating the number of tiles, not only the size of the area but also the size of the tile itself and the joint gap are important. The joint gaps left between the tiles provide an aesthetic appearance and prevent the tiles from cracking due to temperature changes or ground movements.
+    </p>
+<ul>
+<li>
+<strong>
+       Joint Spacing (Joint Thickness):
+      </strong>
+      It usually varies between 0.2 cm and 0.5 cm. Wider joints may be preferred for large tiles and narrower joints for small tiles. Standards may vary depending on the application area (indoor, outdoor) and the type of tile.
+     </li>
+<li>
+      The joint gap directly affects the number of tiles and especially the amount of grout.
+     </li>
+</ul>
+<h4>
+     Adhesive and Grout Quantities:
+    </h4>
+<p>
+     Tile installation requires auxiliary materials such as **tile adhesive** and **grout** as well as the tiles themselves.
+    </p>
+<ul>
+<li>
+<strong>
+       Tile Adhesive:
+      </strong>
+      It is used to fix tiles to the floor or wall. The amount required depends on the coverage rate of the adhesive (usually stated in kg/m²), the smoothness of the surface, the pattern on the back of the tile and the comb size.
+     </li>
+<li>
+<strong>
+       Grout:
+      </strong>
+      It fills the gaps between tiles, providing aesthetic integrity and preventing water leaks and dirt accumulation. The required amount depends on the thickness of the joint gap, the dimensions of the tile and the density of the joint filler.
+     </li>
+</ul>
+<h4>
+     Importance of Fire Rate:
+    </h4>
+<p>
+     **Waste** is inevitable during tile and ceramic installation. This is the loss of material due to cuts, breakages, incorrect applications or damaged products.
+    </p>
+<ul>
+<li>
+      **Tile Waste Rate:** It usually varies according to the shape of the area to be laid, the size of the tile and the laying pattern. It is recommended to leave a 5-10% waste margin for a flat and rectangular area, and 15-20% or more for complex shaped or diagonally laid areas.
+     </li>
+<li>
+      **Adhesive and Grout Waste Rates:** During application, around 5-10% waste may occur due to spillage, waste or residue left on the brush/comb.
+     </li>
+</ul>
+<h4>
+     Application Areas:
+    </h4>
+<ul>
+<li>
+<strong>
+       Bathroom and Kitchen Renovations:
+      </strong>
+      Precise material calculation for floor and wall tiles.
+     </li>
+<li>
+<strong>
+       Living Room and Room Floors:
+      </strong>
+      Large area tiling projects.
+     </li>
+<li>
+<strong>
+       Outdoor Areas:
+      </strong>
+      Outdoor tile applications such as terraces, balconies and poolsides.
+     </li>
+<li>
+<strong>
+       Commercial Areas:
+      </strong>
+      Tile flooring planning for spaces such as shops, offices and restaurants.
+     </li>
+</ul>
+<p class="disclaimer-text">
+     The information provided by this calculator is for general planning and estimating purposes. Variables such as the type of tile or ceramic (thickness, texture), surface smoothness, application conditions (temperature, humidity), quality of workmanship and specific product features can significantly affect actual material requirements. For large or critical projects, it is vital to always consult a tiler, material supplier or a qualified structural engineer to determine exact proportions and quantities. Hesapkolik is not responsible for any inaccuracies or errors that may occur as a result of using this calculator.
+    </p>
+</section>
+</main>
+<div id="footer-placeholder">
+</div>
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+</body>
+</html>

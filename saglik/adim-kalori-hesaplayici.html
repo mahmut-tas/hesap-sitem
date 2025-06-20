@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Adım Kalori Hesaplayıcı - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="Attığınız adım sayısına, ağırlığınıza ve adım uzunluğunuza/hızınıza göre yaktığınız kalori miktarını hesaplayın. Sağlıklı yaşam ve egzersiz takibi için ideal." name="description"/>
+  <meta content="adım kalori, kalori hesaplama, yürüyüş kalori, egzersiz kalori, adımla kalori yakma, sağlıklı yaşam, kilo verme, aktivite takibi, hesapkolik sağlık" name="keywords"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <link href="../css/style.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <style>
+   /* Bu sayfaya özel stil eklemeleri */
+        .calculator-form-container .input-group {
+            margin-bottom: 20px;
+        }
+        .calculator-form-container .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calculator-form-container .input-group input[type="number"] {
+            width: 100%;
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calculator-form-container .input-group input[type="number"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .calculator-form-container .input-group select {
+            width: auto;
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        /* Radio button ve seçenek grupları için stil */
+        .radio-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+            font-weight: normal;
+        }
+        .radio-group label input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2); /* Daha büyük radyo butonu */
+        }
+        .option-content {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #eee;
+        }
+
+        /* Result display specific styles */
+        .result-display strong {
+            color: #e74c3c;
+        }
+        .result-display p {
+            margin: 5px 0;
+        }
+        .result-display p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Calculator explanation styles */
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+        .calc-explanation h4 {
+            color: #34495e;
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .calc-explanation ul {
+            list-style-type: disc;
+            margin: 10px 0 15px 20px;
+            padding: 0;
+        }
+        .calc-explanation ul li {
+            margin-bottom: 5px;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+
+        /* Gizli ve Aktif Hesaplayıcı Stilleri */
+        .hidden-calc {
+            display: none;
+        }
+        .calc-type-button.active {
+            background-color: #e74c3c;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+        /* Hero Section için header ile aynı arka plan */
+        .hero-section {
+            background-color: #34495e; 
+            color: white; 
+            padding: 80px 0; 
+            text-align: center; 
+        }
+        .hero-section h1 {
+            font-size: 3em; 
+            margin-bottom: 20px; 
+        }
+        .hero-section p {
+            font-size: 1.2em; 
+            opacity: 0.9; 
+        }
+        /* Calculator Selection Section */
+        .calculator-selection-section { 
+            padding: 50px 0; 
+            text-align: center; 
+            background-color: #eaf0f0; 
+            border-bottom: 1px solid #dee7e7; 
+        } 
+        .calculator-selection-section h2 { 
+            margin-bottom: 30px; 
+            color: #2c3e50; 
+            font-size: 2.2em; 
+        } 
+        .calc-buttons-container { 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            gap: 15px; 
+            margin-bottom: 40px; 
+        } 
+        .calc-type-button { 
+            background-color: #3498db; 
+            color: white; 
+            padding: 15px 25px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 1.1em; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease, transform 0.2s ease; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+            flex: 1 1 auto; 
+            max-width: 320px; 
+            text-align: center; 
+        } 
+        .calc-type-button:hover { 
+            background-color: #2980b9; 
+            transform: translateY(-3px); 
+        } 
+        .calc-wrapper { 
+            background-color: #ffffff; 
+            padding: 40px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); 
+            max-width: 650px; 
+            margin: 30px auto; 
+            text-align: left; 
+        } 
+        .calc-wrapper h3 { 
+            font-size: 2em; 
+            color: #e74c3c; 
+            margin-bottom: 25px; 
+            text-align: center; 
+        } 
+        .calculator-form-container button { 
+            background-color: #28a745; 
+            color: white; 
+            padding: 12px 20px; 
+            border: none; 
+            border-radius: 5px; 
+            font-size: 1.1em; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease, transform 0.2s ease; 
+            width: 100%; 
+            box-sizing: border-box; 
+            margin-top: 10px; 
+        } 
+        .calculator-form-container button:hover { 
+            background-color: #218838; 
+            transform: translateY(-2px); 
+        } 
+        .result-display { 
+            margin-top: 25px; 
+            font-size: 1.1em; 
+            font-weight: 600; 
+            color: #2c3e50; 
+            text-align: center; 
+            min-height: 1.8em; 
+            background-color: #ecf0f1; 
+            padding: 15px 20px; 
+            border-radius: 8px; 
+            border: 1px solid #dcdfe4; 
+        } 
+        .result-display .result-value { 
+            color: #e74c3c; 
+            font-weight: 700; 
+            font-size: 1.3em; 
+        } 
+        .info-section { 
+            padding: 40px 0; 
+            background-color: #ffffff; 
+            margin-top: 40px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            border-radius: 8px; 
+        } 
+        .info-section h3 { 
+            color: #e74c3c; 
+            font-size: 1.8em; 
+            margin-bottom: 20px; 
+            text-align: center; 
+        } 
+        .info-section p { 
+            color: #666; 
+            line-height: 1.6; 
+            margin-bottom: 15px; 
+            padding: 0 20px; 
+            text-align: justify; 
+        } 
+        .info-section ul { 
+            list-style-type: disc; 
+            margin: 0 20px 20px 40px; 
+            color: #666; 
+        } 
+        .info-section ul li { 
+            margin-bottom: 10px; 
+            line-height: 1.5; 
+        } 
+        .info-section strong { 
+            color: #333; 
+        }
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+        }
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+            }
+        }
+  </style>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+ </head>
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="hero-section">
+    <div class="container">
+     <h1>
+      Adım Kalori Hesaplayıcı
+     </h1>
+     <p>
+      Attığınız adım sayısına, vücut ağırlığınıza ve aktivitenize göre yaktığınız tahmini kalori miktarını hesaplayın.
+     </p>
+    </div>
+   </section>
+   <section class="calculator-selection-section">
+    <div class="container">
+     <h2>
+      Kalori Hesaplama Yöntemi Seçin:
+     </h2>
+     <div class="calc-buttons-container">
+      <button class="calc-type-button active" data-calc-type="type1">
+       Adım Uzunluğu ile Hesapla
+      </button>
+      <button class="calc-type-button" data-calc-type="type2">
+       Yürüme Hızı ile Hesapla
+      </button>
+      <button class="calc-type-button" data-calc-type="type3">
+       Ortalama Değerlerle Tahmini
+      </button>
+     </div>
+     <div class="calc-wrapper" id="calculator-type1">
+      <h3>
+       <i class="fas fa-shoe-prints icon-small">
+       </i>
+       Adım Uzunluğu ile Kalori Hesaplama
+      </h3>
+      <div class="calculator-form-container">
+       <form id="formType1">
+        <div class="input-group">
+         <label for="weight1">
+          Vücut Ağırlığınız (KG):
+         </label>
+         <input id="weight1" min="20" placeholder="Örn: 70" required="" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="steps1">
+          Atılan Adım Sayısı:
+         </label>
+         <input id="steps1" min="1" placeholder="Örn: 10000" required="" step="1" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="strideLength1">
+          Ortalama Adım Uzunluğunuz (CM):
+         </label>
+         <input id="strideLength1" min="30" placeholder="Örn: 75" required="" step="any" type="number"/>
+         <small>
+          <em>
+           (Boyunuzun yaklaşık %40-45'i olabilir)
+          </em>
+         </small>
+        </div>
+        <div class="input-group">
+         <label for="activityLevel1">
+          Aktivite Seviyesi:
+         </label>
+         <select id="activityLevel1" required="">
+          <option value="light">
+           Yavaş Yürüyüş (Hafif)
+          </option>
+          <option selected="" value="moderate">
+           Orta Tempolu Yürüyüş (Normal)
+          </option>
+          <option value="brisk">
+           Hızlı Yürüyüş (Tempolu)
+          </option>
+          <option value="running">
+           Koşu
+          </option>
+         </select>
+        </div>
+        <button type="submit">
+         Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="resultType1" style="display: none;">
+       </div>
+       <div class="calc-explanation">
+        <h4>
+         Nasıl Hesaplanır?
+        </h4>
+        <p>
+         Bu yöntem, attığınız adım sayısı ve ortalama adım uzunluğunuzu kullanarak katettiğiniz mesafeyi bulur, ardından vücut ağırlığınız ve aktivite seviyenize göre yakılan kaloriyi tahmin eder.
+        </p>
+        <p class="formula-text">
+         Kat Edilen Mesafe (KM) = (Adım Sayısı * Adım Uzunluğu (CM)) / 100000
+         <br/>
+         Yakılan Kalori = Vücut Ağırlığı (KG) * Kat Edilen Mesafe (KM) * MET Değeri
+        </p>
+        <ul>
+         <li>
+          <strong>
+           MET Değeri (Metabolik Eşdeğer):
+          </strong>
+          <ul>
+           <li>
+            Yavaş Yürüyüş: ~2.0 - 3.0 METs
+           </li>
+           <li>
+            Orta Tempolu Yürüyüş: ~3.5 - 4.5 METs
+           </li>
+           <li>
+            Hızlı Yürüyüş: ~5.0 - 6.0 METs
+           </li>
+           <li>
+            Koşu: ~8.0 - 10.0+ METs
+           </li>
+          </ul>
+         </li>
+         <li>
+          <strong>
+           Örnek:
+          </strong>
+          70 kg, 10.000 adım, 75 cm adım uzunluğu, orta tempolu yürüyüş (4.0 METs)
+          <ul>
+           <li>
+            Mesafe = (10000 * 75) / 100000 = 7.5 KM
+           </li>
+           <li>
+            Yakılan Kalori = 70 kg * 7.5 KM * 4.0 METs = 2100 Kalori (Bu değer formül için örnek olup gerçek hesaplama farklılaşabilir)
+           </li>
+          </ul>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-type2">
+      <h3>
+       <i class="fas fa-running icon-small">
+       </i>
+       Yürüme Hızı ile Kalori Hesaplama
+      </h3>
+      <div class="calculator-form-container">
+       <form id="formType2">
+        <div class="input-group">
+         <label for="weight2">
+          Vücut Ağırlığınız (KG):
+         </label>
+         <input id="weight2" min="20" placeholder="Örn: 70" required="" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="steps2">
+          Atılan Adım Sayısı:
+         </label>
+         <input id="steps2" min="1" placeholder="Örn: 10000" required="" step="1" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="paceUnit">
+          Adım Hızı Birimi:
+         </label>
+         <select id="paceUnit" required="">
+          <option value="km_per_hour">
+           Kilometre/Saat (km/sa)
+          </option>
+          <option value="min_per_km">
+           Dakika/Kilometre (dk/km)
+          </option>
+         </select>
+        </div>
+        <div class="input-group" id="paceInputGroup">
+         <label for="pace2">
+          Ortalama Yürüme Hızı (Örn: 5 km/sa veya 12 dk/km):
+         </label>
+         <input id="pace2" min="0.1" placeholder="Örn: 5" required="" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="activityDuration2">
+          Aktivite Süresi (Dakika):
+         </label>
+         <input id="activityDuration2" min="1" placeholder="Örn: 60" required="" step="any" type="number"/>
+        </div>
+        <button type="submit">
+         Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="resultType2" style="display: none;">
+       </div>
+       <div class="calc-explanation">
+        <h4>
+         Nasıl Hesaplanır?
+        </h4>
+        <p>
+         Bu yöntem, yürüme hızınız ve süreniz üzerinden tahmini kat edilen mesafeyi ve ardından vücut ağırlığınıza göre yakılan kaloriyi hesaplar. Adım sayısı, hızı doğrulamak için kullanılır.
+        </p>
+        <p class="formula-text">
+         Mesafe (KM) = Hız (KM/sa) * Süre (saat)
+         <br/>
+         Yakılan Kalori = Vücut Ağırlığı (KG) * MET Değeri * Süre (saat cinsinden)
+        </p>
+        <ul>
+         <li>
+          <strong>
+           Hız ve MET Değeri İlişkisi:
+          </strong>
+          Hız arttıkça MET değeri de artar.
+         </li>
+         <li>
+          <strong>
+           Örnek:
+          </strong>
+          70 kg, 5 km/sa hızda 60 dakika yürüyüş. (Yaklaşık 3.5 METs)
+          <ul>
+           <li>
+            Mesafe = 5 km/sa * 1 saat = 5 KM
+           </li>
+           <li>
+            Yakılan Kalori = 70 kg * 3.5 METs * 1 saat = 245 Kalori (Bu değer formül için örnek olup gerçek hesaplama farklılaşabilir)
+           </li>
+          </ul>
+         </li>
+        </ul>
+        <p>
+         <small>
+          Not: Adım sayısı, yürüme hızı ile örtüşmelidir. Örneğin, 10.000 adım, ortalama bir hızda yaklaşık 7-8 km'ye denk gelir.
+         </small>
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="calc-wrapper hidden-calc" id="calculator-type3">
+      <h3>
+       <i class="fas fa-walking icon-small">
+       </i>
+       Ortalama Değerlerle Tahmini Kalori Hesaplama
+      </h3>
+      <div class="calculator-form-container">
+       <form id="formType3">
+        <div class="input-group">
+         <label for="weight3">
+          Vücut Ağırlığınız (KG):
+         </label>
+         <input id="weight3" min="20" placeholder="Örn: 70" required="" step="any" type="number"/>
+        </div>
+        <div class="input-group">
+         <label for="steps3">
+          Atılan Adım Sayısı:
+         </label>
+         <input id="steps3" min="1" placeholder="Örn: 10000" required="" step="1" type="number"/>
+        </div>
+        <button type="submit">
+         Hesapla
+        </button>
+       </form>
+       <div class="result-display" id="resultType3" style="display: none;">
+       </div>
+       <div class="calc-explanation">
+        <h4>
+         Nasıl Hesaplanır?
+        </h4>
+        <p>
+         Bu basit yöntem, vücut ağırlığınızı ve attığınız adım sayısını kullanarak genel bir kalori tahmini yapar. Bu hesaplama, ortalama bir adım uzunluğu ve orta yoğunlukta bir yürüyüş aktivitesi varsayımıyla çalışır.
+        </p>
+        <p class="formula-text">
+         Yakılan Kalori = (Adım Sayısı / Ortalama Adım Başına Kalori)
+        </p>
+        <ul>
+         <li>
+          <strong>
+           Ortalama:
+          </strong>
+          Genel olarak, bir kişi attığı her 2000 adımda yaklaşık 100 kalori yakar. Bu, her adımda ortalama 0.05 kalori anlamına gelir. Ancak bu değer, kişinin ağırlığına, hızına ve adım uzunluğuna göre büyük ölçüde değişir.
+         </li>
+         <li>
+          <strong>
+           Genel Kural:
+          </strong>
+          1 km yürüyüş, vücut ağırlığınızın yaklaşık 0.7 katı kalori yakmanıza neden olabilir (örn. 70 kg kişi 1 km'de 49 kalori). Bu değerler aktivite yoğunluğuna göre değişir.
+         </li>
+         <li>
+          <strong>
+           Örnek:
+          </strong>
+          70 kg, 10.000 adım
+          <ul>
+           <li>
+            Tahmini Yakılan Kalori = 10000 adım * 0.05 Kalori/Adım = 500 Kalori (Bu, oldukça basitleştirilmiş bir yaklaşımdır.)
+           </li>
+          </ul>
+         </li>
+        </ul>
+        <p>
+         <small>
+          Bu yöntem, daha çok genel bir fikir edinmek için kullanılır. Daha kesin sonuçlar için diğer yöntemleri veya akıllı cihazları tercih etmeniz önerilir.
+         </small>
+        </p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="info-section container">
+    <h3>
+     Adım Atmanın ve Kalori Yakmanın Önemi
+    </h3>
+    <p>
+     Adım atmak, günlük fiziksel aktivitenin en basit ve en etkili yollarından biridir. Düzenli yürüyüş, sadece kalori yakımına yardımcı olmakla kalmaz, aynı zamanda kalp sağlığını iyileştirir, kan şekerini düzenler, ruh halini iyileştirir ve kemik yoğunluğunu artırır.
+    </p>
+    <p>
+     Yakılan kalori miktarını bilmek, **kilo yönetimi** hedefleriniz için kritik öneme sahiptir. Kilo vermek veya kilonuzu korumak istiyorsanız, harcadığınız enerjiyi (kalori yakımı) aldığınız enerjiden (besinlerden) daha fazla tutmanız gerekir. Bu hesaplayıcı, günlük egzersizlerinizde ne kadar kalori yaktığınıza dair size değerli bir tahmin sunarak, hedeflerinize ulaşmanızda rehberlik eder.
+    </p>
+    <h4>
+     Kalori Yakımını Etkileyen Başlıca Faktörler:
+    </h4>
+    <ul>
+     <li>
+      **Vücut Ağırlığı:** Daha ağır kişiler, aynı mesafeyi kat ederken veya aynı adımı atarken daha fazla kalori yakar.
+     </li>
+     <li>
+      **Adım Sayısı ve Mesafesi:** Daha fazla adım ve daha uzun mesafe, daha fazla kalori yakımı anlamına gelir.
+     </li>
+     <li>
+      **Aktivite Yoğunluğu (Hız/Tempo):** Hızlı yürüyüş veya koşu, yavaş yürüyüşe göre daha fazla kalori yaktırır.
+     </li>
+     <li>
+      **Zemin Eğim ve Tipi:** Yokuş yukarı yürümek veya engebeli arazide yürümek daha fazla enerji harcatır.
+     </li>
+     <li>
+      **Metabolizma Hızı:** Her bireyin metabolizması farklıdır, bu da kalori yakım hızını etkiler.
+     </li>
+     <li>
+      **Yaş ve Cinsiyet:** Genç ve erkek bireylerin genellikle daha yüksek metabolizma hızları vardır.
+     </li>
+    </ul>
+    <p class="disclaimer-text">
+     Bu hesaplayıcılar, tahmini kalori yakım değerleri sunar. Bireysel fizyolojik farklılıklar, metabolizma hızı, sağlık durumu ve çevresel faktörler gibi pek çok değişken, gerçek kalori yakım miktarını etkileyebilir. En doğru ve kişiselleştirilmiş bilgiler için bir sağlık uzmanına veya diyetisyene danışmanız önerilir.
+    </p>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

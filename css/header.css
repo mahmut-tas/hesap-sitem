@@ -1,0 +1,200 @@
+/* --- Header --- */
+header {
+  background: #fff;
+  color: #333;
+  padding: 1rem 0;
+  border-bottom: 1px solid #ddd;
+  position: sticky; /* Header'ı üstte sabitler */
+  top: 0; /* Sayfanın en üstünde sabitlenir */
+  z-index: 1000; /* Diğer öğelerin üzerinde görünmesini sağlar */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Hafif bir gölge ekler */
+}
+
+header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px; /* İçeriğin maksimum genişliği */
+  margin: 0 auto; /* İçeriği yatayda ortalar */
+  padding: 0 20px; /* Yanlardan iç boşluk */
+}
+
+header .logo .site-logo {
+  height: 100px; /* Logonun yüksekliği */
+  width: auto; /* Genişliği otomatik ayarlar */
+  display: block;
+  padding: 5px 0;
+}
+
+/* Erişilebilirlik için gizli element */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+header nav ul {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+header nav ul li {
+  position: relative; /* Dropdownlar için gerekli */
+  margin-left: 25px; /* Menü öğeleri arası boşluk */
+}
+
+header nav ul li a {
+  color: #555;
+  font-weight: 600;
+  transition: color 0.3s ease;
+  padding: 10px 0;
+  display: block;
+  white-space: nowrap; /* Metnin tek satırda kalmasını sağlar */
+  text-decoration: none;
+}
+
+header nav ul li a:hover {
+  color: #3498db; /* Hover rengi */
+}
+
+/* Dropdown Ana Menü */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropbtn {
+  /* Dropdown butonu için ek stil tanımlayabilirsiniz, genel link stiline uyumlu */
+  padding: 10px;
+  text-decoration: none;
+  color: #333;
+}
+
+.dropdown-content {
+  display: none; /* Varsayılan olarak gizle */
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 220px; /* Dropdown genişliği */
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 100; /* Diğer içeriklerin üzerinde görünmesini sağlar */
+  left: 0;
+  border-radius: 5px; /* Köşeleri yuvarlar */
+  overflow: hidden; /* İçeriğin border-radius'a uymasını sağlar */
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  white-space: nowrap;
+  font-size: 0.95em;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+  color: #000;
+}
+
+/* Fare üzerine gelindiğinde dropdown'ı göster */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Submenu (Alt Menü) */
+.dropdown-submenu {
+  position: relative;
+}
+
+.submenu-content {
+  display: none; /* Varsayılan olarak gizle */
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 220px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 110; /* Üst menüden daha yüksek z-index */
+  left: 100%; /* Ana menü öğesinin sağına konumlandır */
+  top: 0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+/* Fare üzerine gelindiğinde submenu'yü göster */
+.dropdown-submenu:hover .submenu-content {
+  display: block;
+}
+
+/* Submenu linklerinin sonuna ok simgesi ekleme */
+.dropdown-submenu > a::after {
+  content: " \25B6"; /* Sağ ok unicode karakteri */
+  font-size: 0.8em;
+  vertical-align: middle;
+  margin-left: 8px;
+  float: right; /* Oku sağa hizala */
+}
+
+/* --- Yeni Dil Seçici Stilleri --- */
+.language-switcher {
+    display: flex;
+    align-items: center;
+    font-size: 0.9em;
+    font-weight: 600;
+    margin-left: 20px; /* Navigasyon ile arasında boşluk */
+    /* Mobil görünümde center hizalaması için justify-content: center; eklenebilir */
+}
+
+.language-switcher a {
+    color: #555; /* Normal link rengi */
+    text-decoration: none;
+    padding: 5px 8px;
+    transition: color 0.3s ease, font-weight 0.3s ease; /* transition'a font-weight de eklendi */
+    white-space: nowrap; /* Metnin tek satırda kalmasını sağlar */
+}
+
+.language-switcher a:hover {
+    color: #3498db; /* Hover rengi */
+}
+
+.language-switcher .separator {
+    color: #ccc;
+    margin: 0 5px;
+}
+
+/* Aktif dilin vurgulanması için (JS ile yönetilir) */
+.language-switcher a.active-lang {
+    color: #3498db; /* Aktif dil rengi */
+    font-weight: bold;
+    cursor: default; /* Aktif dilde tıklanabilir imleç olmasın */
+}
+
+.language-switcher a.active-lang:hover {
+    color: #3498db; /* Aktif dilde hover rengi değişmesin */
+    text-decoration: none;
+}
+
+/* Responsive ayarlamalar (Eğer header'daki nav da column oluyorsa) */
+@media (max-width: 480px) {
+    header .container {
+        flex-direction: column;
+        align-items: center;
+    }
+    header nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+    header nav ul li {
+        margin: 10px 0; /* Mobil menüde dikey boşluk */
+    }
+    .language-switcher {
+        margin-top: 15px; /* Mobil görünümde dil seçicinin üstünde boşluk */
+        margin-left: 0; /* Mobil görünümde sola hizalamayı kaldır */
+    }
+}

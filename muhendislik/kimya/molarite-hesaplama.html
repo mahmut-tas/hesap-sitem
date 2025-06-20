@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Molarite ve Çözelti Hazırlama Hesaplayıcı - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="Çözeltilerin molar konsantrasyonunu hesaplayın ve belirli molaritede çözelti hazırlamak için gerekli madde miktarını bulun. Kimya dersleri, laboratuvar çalışmaları ve endüstriyel uygulamalar için kapsamlı araç." name="description"/>
+  <meta content="molarite, molar konsantrasyon, mol, çözelti, kimya hesaplama, kimya mühendisliği, mol kütlesi, hacim, çözelti hazırlama, asetik asit, seyreltme, stok çözelti, hesapkolik molarite" name="keywords"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <link href="css/style.css" rel="stylesheet"/>
+  <style>
+   /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Yeni Hesaplayıcı Bölümü Stilleri */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .calc-type-button {
+            background-color: #3498db; /* Mavi ton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
+            max-width: 250px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .percent-calculator-wrapper { /* Adını calc-wrapper olarak değiştirdim, daha genel */
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .percent-calculator-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .percent-calculator-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .percent-calculator-wrapper input[type="number"] {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .percent-calculator-wrapper input[type="number"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .percent-calculator-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .explanation-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .explanation-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .explanation-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .explanation-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .explanation-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .explanation-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .percent-calculator-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .percent-calculator-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        .hidden-calc {
+            display: none;
+        }
+
+        /* Yeni eklenen form buton stili */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Result ve small-text için ek stil */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+  </style>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+ </head>
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="hero-section">
+    <div class="container">
+     <h1>
+      Molarite ve Çözelti Hazırlama Hesaplayıcı
+     </h1>
+     <p>
+      Çözeltilerin molar konsantrasyonunu kolayca hesaplayın veya belirli molaritede çözelti hazırlamak için gerekli madde miktarını bulun.
+     </p>
+    </div>
+   </section>
+   <section class="calculator-selection-section">
+    <div class="container">
+     <h2>
+      Yapmak İstediğiniz Hesaplama Türünü Seçin
+     </h2>
+     <div class="calc-buttons-container">
+      <button class="calc-type-button active" data-calc-type="calculateMolarity">
+       Molariteyi Hesapla
+      </button>
+      <button class="calc-type-button" data-calc-type="prepareSolution">
+       Hedef Molaritede Çözelti Hazırla
+      </button>
+     </div>
+     <div class="percent-calculator-wrapper active-calc" id="calculator-calculateMolarity">
+      <h3>
+       <i class="fas fa-vial icon-small">
+       </i>
+       Molariteyi Hesapla
+      </h3>
+      <form id="molarityForm">
+       <label for="soluteMass">
+        Çözünen Kütlesi (gram):
+       </label>
+       <input id="soluteMass" min="0" name="soluteMass" placeholder="Örn: 58.44 (NaCl için)" required="" step="0.01" type="number"/>
+       <label for="molarMass">
+        Çözünen Mol Kütlesi (g/mol):
+       </label>
+       <input id="molarMass" min="0.001" name="molarMass" placeholder="Örn: 58.44" required="" step="0.01" type="number"/>
+       <label for="solutionVolume">
+        Çözelti Hacmi (Litre):
+       </label>
+       <input id="solutionVolume" min="0.001" name="solutionVolume" placeholder="Örn: 1" required="" step="0.001" type="number"/>
+       <button type="submit">
+        Molariteyi Hesapla
+       </button>
+      </form>
+      <div class="result-display" id="molarityResult">
+      </div>
+      <div class="calc-explanation">
+       <p>
+        Bu hesaplayıcı, çözeltinin bir litre hacmindeki çözünen madde miktarını (mol) ifade eden **molariteyi** hesaplar. Kimyasal reaksiyonları ve çözelti hazırlama süreçlerini anlamak için temel bir kavramdır.
+       </p>
+       <p>
+        <strong>
+         Formül:
+        </strong>
+       </p>
+       <p class="formula-text">
+        Mol Sayısı (mol) = Çözünen Kütlesi (gram) / Çözünenin Mol Kütlesi (g/mol)
+        <br/>
+        Molarite (M) = Mol Sayısı (mol) / Çözelti Hacmi (Litre)
+       </p>
+       <p>
+        Örnek: 58.44 gram NaCl (Mol kütlesi 58.44 g/mol) 1 litre suda çözündüğünde molarite: Mol = 58.44 / 58.44 = 1 mol. Molarite = 1 mol / 1 L = 1 M.
+       </p>
+      </div>
+     </div>
+     <div class="percent-calculator-wrapper hidden-calc" id="calculator-prepareSolution">
+      <h3>
+       <i class="fas fa-flask-acid icon-small">
+       </i>
+       Hedef Molaritede Çözelti Hazırla
+      </h3>
+      <form id="dilutionForm">
+       <label for="targetMolarity_mM">
+        Hedef Molarite (mM):
+       </label>
+       <input id="targetMolarity_mM" min="0.001" name="targetMolarity_mM" placeholder="Örn: 10" required="" step="0.001" type="number"/>
+       <label for="targetVolume_mL">
+        Hedef Çözelti Hacmi (mL):
+       </label>
+       <input id="targetVolume_mL" min="0.001" name="targetVolume_mL" placeholder="Örn: 1000" required="" step="0.001" type="number"/>
+       <label for="concPurity">
+        Konsantre Asit Saflığı (% w/w):
+       </label>
+       <input id="concPurity" max="100" min="0.1" name="concPurity" placeholder="Örn: 90" required="" step="0.1" type="number"/>
+       <label for="concDensity">
+        Konsantre Asit Yoğunluğu (g/mL):
+       </label>
+       <input id="concDensity" min="0.5" name="concDensity" placeholder="Örn: 1.049 (90% Asetik Asit için)" required="" step="0.001" type="number"/>
+       <button type="submit">
+        Hesapla
+       </button>
+      </form>
+      <div class="result-display" id="dilutionResult">
+      </div>
+      <div class="calc-explanation">
+       <p>
+        Bu hesaplayıcı, konsantre bir asit çözeltisinden (örneğin %90'lık asetik asit) belirli bir molaritede ve hacimde yeni bir çözelti hazırlamak için ne kadar orijinal maddeye ihtiyacınız olduğunu bulmanıza yardımcı olur. Özellikle laboratuvarlarda ve endüstriyel uygulamalarda hassas çözelti hazırlama süreçleri için kritik öneme sahiptir.
+       </p>
+       <p>
+        <strong>
+         Kullanılan Formüllerin Basitleştirilmiş Hali:
+        </strong>
+       </p>
+       <p class="formula-text">
+        Gerekli Mol = Hedef Molarite (M) × Hedef Hacim (L)
+        <br/>
+        Gerekli Saf Madde Kütlesi (g) = Gerekli Mol × Mol Kütlesi (g/mol)
+        <br/>
+        Gerekli Konsantre Çözelti Kütlesi (g) = Gerekli Saf Madde Kütlesi / (Saflık Yüzdesi / 100)
+        <br/>
+        Gerekli Konsantre Çözelti Hacmi (mL) = Gerekli Konsantre Çözelti Kütlesi (g) / Konsantre Çözelti Yoğunluğu (g/mL)
+       </p>
+       <p class="small-text">
+        Unutmayın, hesaplanan konsantre çözelti hacmi, belirtilen hedef çözelti hacmine ulaşmak için yeterli solvent (genellikle su) eklenerek seyreltilmelidir. Örneğin, 10 mL konsantre asit ve 1000 mL hedef hacminiz varsa, konsantre asidi ekledikten sonra toplam hacmi 1000 mL'ye tamamlayacak kadar su eklemelisiniz.
+       </p>
+       <p class="disclaimer-text">
+        Bu hesaplayıcı, temel molarite ve çözelti hazırlama prensiplerini uygulamak için tasarlanmıştır. Gerçek laboratuvar ve endüstriyel uygulamalarda sıcaklık, basınç, asidin suda çözünürlüğü ve diğer fiziksel özellikler konsantrasyonu etkileyebilir. Hassas uygulamalar için standart laboratuvar prosedürleri ve ekipmanları kullanılması tavsiye edilir. Mol kütlesi olarak **Asetik Asit (CH₃COOH) için 60.052 g/mol** kabul edilmiştir.
+       </p>
+      </div>
+     </div>
+    </div>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

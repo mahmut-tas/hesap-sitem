@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>
+   Percentage Concentration and Dilution Calculator - Hesapkolik
+  </title>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/footer.css" rel="stylesheet"/>
+<link href="/css/header.css" rel="stylesheet"/>
+<meta content="Calculate mass/mass (%w/w), mass/volume (%w/v) percentage concentrations and easily perform solution preparation and dilution (C1V1=C2V2). A practical tool for chemical solutions and mixtures." name="description"/>
+<meta content="percent concentration, percent by mass, percent by volume, percent w/w, percent w/v, solution preparation, chemistry calculations, concentration, calculus concentration, dilution calculation, C1V1=C2V2, dilution calculator" name="keywords"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+<link href="css/style.css" rel="stylesheet"/>
+<script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+</script>
+<style>
+   /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+        
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Seçim Bölümü Stilleri */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .calc-type-button {
+            background-color: #3498db; /* Mavi ton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
+            max-width: 250px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        .hidden-calc {
+            display: none;
+        }
+
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin {
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+        }
+        .input-with-unit label {
+            flex-basis: 100%; /* Label her zaman üstte veya solda */
+            margin-bottom: 5px;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input alanı boşluğu doldurur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .input-with-unit select {
+            flex-shrink: 0; /* Select kutusu sabit kalır */
+            width: auto; /* Select kutusu kendi genişliğinde olur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+  </style>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+</script>
+<link href="https://hesapkolik.net/muhendislik/kimya/yuzde-kutle-hesaplama.html" hreflang="tr" rel="alternate"/>
+<link href="https://hesapkolik.net/en/muhendislik/kimya/yuzde-kutle-hesaplama.html" hreflang="en" rel="alternate"/>
+<link href="https://hesapkolik.net/muhendislik/kimya/yuzde-kutle-hesaplama.html" hreflang="x-default" rel="alternate"/>
+</head>
+<body>
+<div id="header-placeholder">
+</div>
+<main>
+<section class="hero-section">
+<div class="container">
+<h1>
+      Percent Concentration and Dilution Calculator
+     </h1>
+<p>
+      Calculate the percent mass/mass (%w/w) or percent mass/volume (%w/v) concentration of your solutions. Find the amount of substance needed to achieve the desired concentration or perform dilution calculations (C1V1=C2V2).
+     </p>
+</div>
+</section>
+<section class="calculator-selection-section">
+<div class="container">
+<h2>
+      Select the Type of Calculation You Want to Perform
+     </h2>
+<div class="calc-buttons-container">
+<button class="calc-type-button active" data-calc-type="calcPercent">
+       Calculate Percent Concentration
+      </button>
+<button class="calc-type-button" data-calc-type="calcSolute">
+       Calculate the Amount of Solute Required
+      </button>
+<button class="calc-type-button" data-calc-type="calcSolution">
+       Calculate the Total Amount of Solution Required
+      </button>
+<button class="calc-type-button" data-calc-type="dilution">
+       Dilution Calculator (C1V1=C2V2)
+      </button>
+</div>
+<div class="calc-wrapper active-calc" id="calculator-calcPercent">
+<h3>
+<i class="fas fa-percent icon-small">
+</i>
+       Calculate Percent Concentration
+      </h3>
+<div class="calculator-form-container">
+<form id="concentrationForm_calcPercent">
+<div class="input-with-unit">
+<label for="concentrationType_percent">
+          Concentration Type:
+         </label>
+<select id="concentrationType_percent">
+<option value="ww">
+           Mass/Mass (%w/w)
+          </option>
+<option value="wv">
+           Mass/Volume (%w/v)
+          </option>
+</select>
+</div>
+<hr class="form-divider"/>
+<div class="input-with-unit">
+<label for="soluteMass_percent">
+          Mass of Solute:
+         </label>
+<input id="soluteMass_percent" min="0.000001" placeholder="Örn: 10" step="any" type="number"/>
+<select id="soluteMassUnit_percent">
+<option value="g">
+           grams (g)
+          </option>
+<option value="mg">
+           milligram (mg)
+          </option>
+<option value="kg">
+           kilogram (kg)
+          </option>
+</select>
+</div>
+<hr class="form-divider"/>
+<div class="input-with-unit">
+<label for="solutionAmount_percent">
+          Total Solution Amount:
+         </label>
+<input id="solutionAmount_percent" min="0.000001" placeholder="Örn: 100" step="any" type="number"/>
+<select id="solutionUnit_percent">
+<option value="g">
+           grams (g) - for %w/w
+          </option>
+<option value="ml">
+           milliliter (mL) - for %w/v
+          </option>
+<option value="kg">
+           kilogram (kg) - for %w/w
+          </option>
+<option value="L">
+           liter (L) - for %w/v
+          </option>
+</select>
+</div>
+<button type="submit">
+         Calculate Percent Concentration
+        </button>
+</form>
+<div class="result-display" id="concentrationResult_calcPercent">
+</div>
+<p class="small-text">
+        Calculate the percent concentration by entering the mass of solute and the total amount of solution. Make sure to select the correct units for the concentration type (w/w or w/v).
+       </p>
+</div>
+</div>
+<div class="calc-wrapper hidden-calc" id="calculator-calcSolute">
+<h3>
+<i class="fas fa-balance-scale-left icon-small">
+</i>
+       Calculate the Amount of Solute Required
+      </h3>
+<div class="calculator-form-container">
+<form id="concentrationForm_calcSolute">
+<div class="input-with-unit">
+<label for="concentrationType_solute">
+          Concentration Type:
+         </label>
+<select id="concentrationType_solute">
+<option value="ww">
+           Mass/Mass (%w/w)
+          </option>
+<option value="wv">
+           Mass/Volume (%w/v)
+          </option>
+</select>
+</div>
+<hr class="form-divider"/>
+<div class="input-with-unit">
+<label for="solutionAmount_solute">
+          Total Solution Amount:
+         </label>
+<input id="solutionAmount_solute" min="0.000001" placeholder="Örn: 100" step="any" type="number"/>
+<select id="solutionUnit_solute">
+<option value="g">
+           grams (g) - for %w/w
+          </option>
+<option value="ml">
+           milliliter (mL) - for %w/v
+          </option>
+<option value="kg">
+           kilogram (kg) - for %w/w
+          </option>
+<option value="L">
+           liter (L) - for %w/v
+          </option>
+</select>
+</div>
+<hr class="form-divider"/>
+<div class="input-with-unit">
+<label for="desiredConcentration_solute">
+          Desired Percentage Concentration (%):
+         </label>
+<input id="desiredConcentration_solute" max="100" min="0.000001" placeholder="Örn: 5" step="any" type="number"/>
+</div>
+<button type="submit">
+         Calculate Solute
+        </button>
+</form>
+<div class="result-display" id="concentrationResult_calcSolute">
+</div>
+<p class="small-text">
+        Calculate how much solute you need by entering the desired concentration and total amount of solution.
+       </p>
+</div>
+</div>
+<div class="calc-wrapper hidden-calc" id="calculator-calcSolution">
+<h3>
+<i class="fas fa-cube icon-small">
+</i>
+       Calculate the Total Amount of Solution Required
+      </h3>
+<div class="calculator-form-container">
+<form id="concentrationForm_calcSolution">
+<div class="input-with-unit">
+<label for="concentrationType_solution">
+          Concentration Type:
+         </label>
+<select id="concentrationType_solution">
+<option value="ww">
+           Mass/Mass (%w/w)
+          </option>
+<option value="wv">
+           Mass/Volume (%w/v)
+          </option>
+</select>
+</div>
+<hr class="form-divider"/>
+<div class="input-with-unit">
+<label for="soluteMass_solution">
+          Mass of Solute:
+         </label>
+<input id="soluteMass_solution" min="0.000001" placeholder="Örn: 10" step="any" type="number"/>
+<select id="soluteMassUnit_solution">
+<option value="g">
+           grams (g)
+          </option>
+<option value="mg">
+           milligram (mg)
+          </option>
+<option value="kg">
+           kilogram (kg)
+          </option>
+</select>
+</div>
+<hr class="form-divider"/>
+<div class="input-with-unit">
+<label for="desiredConcentration_solution">
+          Desired Percentage Concentration (%):
+         </label>
+<input id="desiredConcentration_solution" max="100" min="0.000001" placeholder="Örn: 5" step="any" type="number"/>
+</div>
+<button type="submit">
+         Calculate the Solution
+        </button>
+</form>
+<div class="result-display" id="concentrationResult_calcSolution">
+</div>
+<p class="small-text">
+        Calculate the total amount of solution you need to achieve by entering the mass of solute and the desired concentration.
+       </p>
+</div>
+</div>
+<div class="calc-wrapper hidden-calc" id="calculator-dilution">
+<h3>
+<i class="fas fa-flask icon-small">
+</i>
+       Dilution Calculator (C1V1=C2V2)
+      </h3>
+<div class="calculator-form-container">
+<form id="dilutionForm">
+<p>
+         Enter the three known values and leave the field you want to calculate blank.
+        </p>
+<div class="input-with-unit">
+<label for="c1">
+          Initial Concentration (C1):
+         </label>
+<input id="c1" min="0" placeholder="Örn: 50" step="any" type="number"/>
+<select id="c1Unit">
+<option value="percent">
+           %
+          </option>
+<option value="molar">
+           Molar (M)
+          </option>
+<option value="ppm">
+           ppm
+          </option>
+</select>
+</div>
+<div class="input-with-unit">
+<label for="v1">
+          Initial Volume (V1):
+         </label>
+<input id="v1" min="0" placeholder="Örn: 10" step="any" type="number"/>
+<select id="v1Unit">
+<option value="mL">
+           ml
+          </option>
+<option value="L">
+           L
+          </option>
+<option value="µL">
+           µL
+          </option>
+</select>
+</div>
+<div class="input-with-unit">
+<label for="c2">
+          Target Concentration (C2):
+         </label>
+<input id="c2" min="0" placeholder="Örn: 10" step="any" type="number"/>
+<select id="c2Unit">
+<option value="percent">
+           %
+          </option>
+<option value="molar">
+           Molar (M)
+          </option>
+<option value="ppm">
+           ppm
+          </option>
+</select>
+</div>
+<div class="input-with-unit">
+<label for="v2">
+          Target Volume (V2):
+         </label>
+<input id="v2" min="0" placeholder="Örn: 50" step="any" type="number"/>
+<select id="v2Unit">
+<option value="mL">
+           ml
+          </option>
+<option value="L">
+           L
+          </option>
+<option value="µL">
+           µL
+          </option>
+</select>
+</div>
+<button type="submit">
+         Calculate
+        </button>
+</form>
+<div class="result-display" id="dilutionResult">
+</div>
+<p class="small-text">
+        Perform dilution calculations using the formula C1V1 = C2V2. Leave the only unknown field blank.
+       </p>
+</div>
+</div>
+</div>
+</section>
+<section class="info-section container">
+<h3>
+     What is Percent Concentration?
+    </h3>
+<p>
+     **Percentage concentration** is a common unit of concentration that expresses the ratio of solute in a solution to the total solution as a percentage. It is often used in chemical, biological, and pharmaceutical applications.
+    </p>
+<p>
+     There are basically two main types:
+    </p>
+<h4>
+     1. Mass/Mass Percent Concentration (%w/w)
+    </h4>
+<p>
+     The mass/mass percent concentration of a solution is found by multiplying the ratio of the mass of the solute to the mass of the total solution by 100. Both the solute and the solvent can be solid, liquid, or gas.
+    </p>
+<p class="formula-text">
+     %w/w = (Solute Mass / Total Solution Mass) × 100
+    </p>
+<ul>
+<li>
+<strong>
+       Solution Mass = Solute Mass + Solvent Mass
+      </strong>
+</li>
+<li>
+      Units are usually in grams (g) or kilograms (kg).
+     </li>
+</ul>
+<p>
+     **Example:** Solution prepared by dissolving 10 g of salt in 90 g of water:
+     <br/>
+     Solution Mass = 10 g (salt) + 90 g (water) = 100 g
+     <br/>
+     %w/w = (10 g / 100 g) × 100 = 10% w/w salt solution
+    </p>
+<h4>
+     2. Mass/Volume Percent Concentration (%w/v)
+    </h4>
+<p>
+     The mass/volume percent concentration of a solution is found by multiplying the ratio of the mass of the solute to the volume of the total solution by 100. Usually, the solute is a solid and the solvent is a liquid.
+    </p>
+<p class="formula-text">
+     %w/v = (Solute Mass / Total Solution Volume) × 100
+    </p>
+<ul>
+<li>
+      The solute is usually measured in grams (g) and the solution volume is measured in milliliters (mL).
+     </li>
+</ul>
+<p>
+     **Example:** Solution prepared by dissolving 5 g of sugar in a solution with a total volume of 250 mL:
+     <br/>
+     %w/v = (5 g / 250 mL) × 100 = 2% w/v sugar solution
+    </p>
+<h4>
+     What is the Dilution Calculator (C1V1=C2V2)?
+    </h4>
+<p>
+     The dilution calculator is based on the principle of **C1V1 = C2V2**, a basic formula used to change the concentration of a solution. This formula helps you find the values needed to prepare a solution with a lower concentration (C2) and/or a different volume (V2) from a known stock solution (concentration C1, volume V1).
+    </p>
+<ul>
+<li>
+      **C1:** Initial (Stock) Solution Concentration
+     </li>
+<li>
+      **V1:** Initial (Stock) Solution Volume
+     </li>
+<li>
+      **C2:** Target (Diluted) Solution Concentration
+     </li>
+<li>
+      **V2:** Target (Diluted) Solution Volume
+     </li>
+</ul>
+<p>
+     This calculator automatically finds the fourth by entering three known values. As long as the concentration units (e.g. percent, molarity, ppm) and volume units (e.g. mL, L) are consistent on both sides, the formula is valid.
+    </p>
+<h4>
+     Application Areas:
+    </h4>
+<ul>
+<li>
+      **Pharmacy and Medicine:** Determination of drug dosages and serum concentrations.
+     </li>
+<li>
+      **Food Science:** Control of the proportions of ingredients (sugar, salt, etc.) in food products.
+     </li>
+<li>
+      **Industrial Chemistry:** Preparation and quality control of chemical mixtures in production processes.
+     </li>
+<li>
+      **Environmental Engineering:** Monitoring of pollutant concentrations in water and wastewater analysis.
+     </li>
+<li>
+      **Laboratory Studies:** Preparation of standard solutions in biology, chemistry and medical laboratories.
+     </li>
+</ul>
+<p class="disclaimer-text">
+     These calculators are a tool for basic percent concentration and dilution calculations. In real world applications, factors such as temperature, density (especially when determining the volume of the solvent in %w/v calculations), volume changes of the solute in the solvent, and chemical reactions can affect the results. For precise applications, laboratory measurements and additional chemical principles should be considered. The formula C1V1=C2V2 provides the most accurate results, especially when working with ideal solutions and the same concentration units.
+    </p>
+</section>
+</main>
+<div id="footer-placeholder">
+</div>
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+</body>
+</html>

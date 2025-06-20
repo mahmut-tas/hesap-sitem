@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<link href="/css/header.css" rel="stylesheet"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GRE Score Calculator - Calculator</title>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/footer.css" rel="stylesheet"/>
+<meta content="Easily calculate your current GRE General Test score (Verbal and Quantitative 27 questions). Learn your estimated score range and percentile for each section. Detailed information about Analytical Writing." name="description"/>
+<meta content="GRE score calculation, GRE score, GRE Verbal, GRE Quantitative, GRE AWA, Graduate Record Examinations, new GRE format, 27 question GRE, overseas graduate, graduate exam, hesapkolik GRE" name="keywords"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+<link href="../css/style.css" rel="stylesheet"/>
+<script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+</script>
+<style>
+   /* Sadece bu sayfaya özel stil eklemeleri - Genel style.css'ten sonra yüklenir */
+        .calculator-form-container .input-group {
+            margin-bottom: 20px;
+        }
+        .calculator-form-container .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calculator-form-container .input-group input[type="number"],
+        .calculator-form-container .input-group select {
+            width: 100%;
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calculator-form-container .input-group input[type="number"]:focus,
+        .calculator-form-container .input-group select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        /* Result display specific styles */
+        .result-display strong {
+            color: #e74c3c;
+        }
+        .result-display p {
+            margin: 5px 0;
+        }
+        .result-display p:last-child {
+            margin-bottom: 0;
+        }
+        .result-display .error {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        /* Calculator explanation styles */
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+        .calc-explanation h4 {
+            color: #34495e;
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .calc-explanation ul {
+            list-style-type: disc;
+            margin: 10px 0 15px 20px;
+            padding: 0;
+        }
+        .calc-explanation ul li {
+            margin-bottom: 5px;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+            overflow-x: auto; /* Küçük ekranlarda formül taşmasını önler */
+        }
+
+        /* Gizli ve Aktif Hesaplayıcı Stilleri */
+        .hidden-calc {
+            display: none;
+        }
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+        /* Hero Section için header ile aynı arka plan */
+        .hero-section {
+            background-color: #34495e; 
+            color: white; 
+            padding: 80px 0; 
+            text-align: center; 
+        }
+        .hero-section h1 {
+            font-size: 3em; 
+            margin-bottom: 20px; 
+        }
+        .hero-section p {
+            font-size: 1.2em; 
+            opacity: 0.9; 
+        }
+        /* Calculator Selection Section */
+        .calculator-selection-section { 
+            padding: 50px 0; 
+            text-align: center; 
+            background-color: #eaf0f0; 
+            border-bottom: 1px solid #dee7e7; 
+        } 
+        .calculator-selection-section h2 { 
+            margin-bottom: 30px; 
+            color: #2c3e50; 
+            font-size: 2.2em; 
+        } 
+        .calc-buttons-container { 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            gap: 15px; 
+            margin-bottom: 40px; 
+        } 
+        .calc-type-button { 
+            background-color: #3498db; 
+            color: white; 
+            padding: 15px 25px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 1.1em; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease, transform 0.2s ease; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+            flex: 1 1 auto; /* Esnek buton genişliği */
+            max-width: 320px; /* Butonların maksimum genişliği */
+            text-align: center; 
+        } 
+        .calc-type-button:hover { 
+            background-color: #2980b9; 
+            transform: translateY(-3px); 
+        } 
+        .calc-wrapper { 
+            background-color: #ffffff; 
+            padding: 40px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); 
+            max-width: 800px; /* Kapsamlı hesaplayıcı için genişlik artırıldı */
+            margin: 30px auto; 
+            text-align: left; 
+        } 
+        .calc-wrapper h3 { 
+            font-size: 2em; 
+            color: #e74c3c; 
+            margin-bottom: 25px; 
+            text-align: center; 
+        } 
+        .calculator-form-container button[type="submit"] { 
+            background-color: #28a745; 
+            color: white; 
+            padding: 12px 20px; 
+            border: none; 
+            border-radius: 5px; 
+            font-size: 1.1em; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease, transform 0.2s ease; 
+            width: 100%; 
+            box-sizing: border-box; 
+            margin-top: 10px; 
+        } 
+        .calculator-form-container button[type="submit"]:hover { 
+            background-color: #218838; 
+            transform: translateY(-2px); 
+        } 
+        .result-display { 
+            margin-top: 25px; 
+            font-size: 1.1em; 
+            font-weight: 600; 
+            color: #2c3e50; 
+            text-align: center; 
+            min-height: 1.8em; 
+            background-color: #ecf0f1; 
+            padding: 15px 20px; 
+            border-radius: 8px; 
+            border: 1px solid #dcdfe4; 
+        } 
+        .result-display .result-value { 
+            color: #e74c3c; 
+            font-weight: 700; 
+            font-size: 1.3em; 
+        } 
+        .info-section { 
+            padding: 40px 0; 
+            background-color: #ffffff; 
+            margin-top: 40px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            border-radius: 8px; 
+        } 
+        .info-section h3 { 
+            color: #e74c3c; 
+            font-size: 1.8em; 
+            margin-bottom: 20px; 
+            text-align: center; 
+        } 
+        .info-section p { 
+            color: #666; 
+            line-height: 1.6; 
+            margin-bottom: 15px; 
+            padding: 0 20px; 
+            text-align: justify; 
+        } 
+        .info-section ul { 
+            list-style-type: disc; 
+            margin: 0 20px 20px 40px; 
+            color: #666; 
+        } 
+        .info-section ul li { 
+            margin-bottom: 10px; 
+            line-height: 1.5; 
+        } 
+        .info-section strong { 
+            color: #333; 
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1em; /* Daha küçük ekranda daha küçük font */
+            }
+        }
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+        }
+  </style>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+</script>
+<script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+<link href="https://hesapkolik.net/egitim/gre-hesaplama.html" hreflang="tr" rel="alternate"/>
+<link href="https://hesapkolik.net/en/egitim/gre-hesaplama.html" hreflang="en" rel="alternate"/>
+<link href="https://hesapkolik.net/egitim/gre-hesaplama.html" hreflang="x-default" rel="alternate"/>
+</head>
+<body>
+<div id="header-placeholder">
+</div>
+<main>
+<section class="hero-section">
+<div class="container">
+<h1>
+      GRE Score Calculator
+     </h1>
+<p>
+      Estimate your GRE General Test scores and map out your roadmap for graduate program applications.
+     </p>
+</div>
+</section>
+<section class="calculator-selection-section">
+<div class="container">
+<h2>
+      Select GRE Calculation Method:
+     </h2>
+<div class="calc-buttons-container">
+<button class="calc-type-button active" data-calc-type="gre-general-score">
+       General Score Calculation
+      </button>
+<button class="calc-type-button" data-calc-type="gre-percentile">
+       Percentile Calculation
+      </button>
+<button class="calc-type-button" data-calc-type="gre-awa">
+       About Analytical Writing (AWA)
+      </button>
+</div>
+<div class="calc-wrapper" id="calculator-gre-general-score">
+<h3>
+<i class="fas fa-brain icon-small">
+</i>
+       GRE General Score Calculation (Verbal &amp;amp; Quantitative)
+      </h3>
+<div class="calculator-form-container">
+<form id="formGreGeneralScore">
+<div class="input-group">
+<label for="verbalCorrect">
+          Verbal Reasoning Number of Correct Answers (Max 27):
+         </label>
+<input id="verbalCorrect" max="27" min="0" placeholder="Örn: 18" required="" step="1" type="number"/>
+</div>
+<div class="input-group">
+<label for="quantitativeCorrect">
+          Quantitative Reasoning Number of Correct Answers (Max 27):
+         </label>
+<input id="quantitativeCorrect" max="27" min="0" placeholder="Örn: 22" required="" step="1" type="number"/>
+</div>
+<button type="submit">
+         Calculate My Score
+        </button>
+</form>
+<div class="result-display" id="resultGreGeneralScore" style="display: none;">
+</div>
+<div class="calc-explanation">
+<h4>
+         How to Calculate?
+        </h4>
+<p>
+         The Verbal Reasoning and Quantitative Reasoning sections of the GRE General Test are scored in 1-point increments, with a score range of 130-170 points each. This calculator provides an estimated score range based on the number of correct answers you enter. In the current GRE format (as of September 2023), each section consists of **27 questions**. Actual GRE scores may not match exactly due to the adaptive nature of the exam and ETS&amp;#39;s complex algorithms, but it gives you a good idea.
+        </p>
+<ul>
+<li>
+          **Verbal Reasoning:** It consists of 27 questions in total. Depending on the number of correct answers, you will receive an estimated score between 130-170.
+         </li>
+<li>
+          **Quantitative Reasoning:** It consists of 27 questions in total. You will receive an estimated score between 130-170 depending on the number of correct answers.
+         </li>
+<li>
+          **Total Score:** The sum of Verbal and Quantitative scores is between 260-340.
+         </li>
+</ul>
+<p class="disclaimer-text">
+         This calculator provides estimates and is not a substitute for the official ETS GRE score. Your actual score will depend on your performance on the test and ETS&amp;#39;s scoring methodology.
+        </p>
+</div>
+</div>
+</div>
+<div class="calc-wrapper hidden-calc" id="calculator-gre-percentile">
+<h3>
+<i class="fas fa-chart-pie icon-small">
+</i>
+       GRE Percentile Calculation
+      </h3>
+<div class="calculator-form-container">
+<form id="formGrePercentile">
+<div class="input-group">
+<label for="verbalScore">
+          Your Verbal Reasoning Score (130-170):
+         </label>
+<input id="verbalScore" max="170" min="130" placeholder="Örn: 155" required="" step="1" type="number"/>
+</div>
+<div class="input-group">
+<label for="quantitativeScore">
+          Your Quantitative Reasoning Score (130-170):
+         </label>
+<input id="quantitativeScore" max="170" min="130" placeholder="Örn: 160" required="" step="1" type="number"/>
+</div>
+<button type="submit">
+         Calculate Percentile
+        </button>
+</form>
+<div class="result-display" id="resultGrePercentile" style="display: none;">
+</div>
+<div class="calc-explanation">
+<h4>
+         What is a Percentile and How is it Calculated?
+        </h4>
+<p>
+         The percentile tells you what percentage of test takers your score is better than. For example, if you&amp;#39;re in the 75th percentile, you scored better than 75% of test takers. GRE percentiles are based on data published by ETS and can change over time. This calculator provides an estimated percentile range based on generally accepted averages.
+        </p>
+<ul>
+<li>
+          **Higher Percentiles:** Typically required for more competitive programs.
+         </li>
+<li>
+          **ETS Data:** For the most accurate percentile information, official ETS reports should be consulted.
+         </li>
+</ul>
+<p class="disclaimer-text">
+         This percentile estimate is based on historical ETS data and overall trends. Your actual percentile may vary depending on the time of year the test was administered and the performance of the overall test taker population. Please check the official and current ETS percentile tables.
+        </p>
+</div>
+</div>
+</div>
+<div class="calc-wrapper hidden-calc" id="calculator-gre-awa">
+<h3>
+<i class="fas fa-pen-nib icon-small">
+</i>
+       About Analytical Writing Assessment (AWA)
+      </h3>
+<div class="calculator-form-container">
+<p>
+        The Analytical Writing Assessment (AWA) section of the GRE General Test is a separate section scored in half-point increments from 0 to 6. This section evaluates your ability to think logically and construct written arguments and does not require multiple-choice calculations.
+       </p>
+<p>
+        The AWA section consists of two separate writing tasks:
+       </p>
+<ul>
+<li>
+         **Analyze an Issue&amp;quot; task:** Asks you to critically analyse a complex argument on a given topic and develop your own perspective.
+        </li>
+<li>
+         **Analyze an Argument&amp;quot; task:** Asks you to evaluate the logic and persuasiveness of a given argument and find its shortcomings and assumptions.
+        </li>
+</ul>
+<p>
+        Both tasks are scored by two independent readers, and these scores are averaged to determine your final AWA score. A high AWA score indicates strong analytical and written communication skills.
+       </p>
+<p class="disclaimer-text">
+        Your AWA score is not directly dependent on the number of correct answers and is a personal assessment process. It is important to practice for this section, review sample essays and get feedback.
+       </p>
+</div>
+</div>
+</div>
+</section>
+<section class="info-section container">
+<h3>
+     What is the GRE and Why is it Important?
+    </h3>
+<p>
+<strong>
+      GRE (Graduate Record Examinations) General Test
+     </strong>
+     , is a standardized exam that is often required for applications to graduate programs (masters, doctorate) in many countries, especially the United States and Canada. This exam measures the basic verbal, numerical and analytical writing skills that a candidate is expected to have as a university graduate.
+    </p>
+<p>
+     The GRE score is used as an important criterion by university admissions committees in evaluating applications. In particular, it creates a general profile of the candidate and shows their academic potential together with other application elements such as GPA (Grade Point Average), reference letters and letter of intent. A good GRE score can increase the competitiveness of your application.
+    </p>
+<h4>
+     GRE Scoring Scale:
+    </h4>
+<ul>
+<li>
+      **Verbal Reasoning:** 130-170 points (in 1 point increments)
+     </li>
+<li>
+      **Quantitative Reasoning:** 130-170 points (in 1 point increments)
+     </li>
+<li>
+      **Analytical Writing Assessment (AWA):** 0-6 points (in half-point increments)
+     </li>
+</ul>
+<h4>
+     How to Prepare for the GRE?
+    </h4>
+<ul>
+<li>
+      **Official Materials:** Practice with ETS&amp;#39;s PowerPrep software and official guidebooks.
+     </li>
+<li>
+      **Vocabulary:** Build a comprehensive vocabulary for Verbal Reasoning.
+     </li>
+<li>
+      **Mathematics Foundation:** Review basic math concepts (algebra, geometry, statistics) for Quantitative Reasoning.
+     </li>
+<li>
+      **Mock Tests:** Solve lots of mock tests to improve your time management skills.
+     </li>
+<li>
+      **Analytical Writing Practice:** Get plenty of essay writing practice and feedback for the AWA section.
+     </li>
+</ul>
+<p class="disclaimer-text">
+     The GRE score calculators and percentile estimates on this page are based on generally accepted methodologies and historical data. Because the official GRE test administered by ETS (Educational Testing Service) is adaptive and has complex scoring algorithms, these calculators are not accurate. Always reference the official ETS test results and current scoring tables for your most accurate and official GRE score and percentile.
+    </p>
+</section>
+</main>
+<div id="footer-placeholder">
+</div>
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+</body>
+</html>

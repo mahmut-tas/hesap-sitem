@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<link href="/css/header.css" rel="stylesheet"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>
+   Electric Vehicle Charging Cost Calculator - Hesapkolik
+  </title>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/footer.css" rel="stylesheet"/>
+<meta content="Easily calculate the cost of charging your electric vehicle at home or at charging stations. Manage your budget with different charging scenarios and detailed explanations." name="description"/>
+<meta content="electric vehicle charging, charging cost, kWh price, electric car, home charging, station charging, electricity consumption, hesapkolik electric vehicle" name="keywords"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+<link href="../css/style.css" rel="stylesheet"/>
+<script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+</script>
+<style>
+   /* Bu sayfaya özel stil eklemeleri - Genel style.css dosyasından gelmiyorsa buraya ekleyin */
+        /* Eğer bu stiller zaten '../../css/style.css' içinde varsa, bu <style> bloğunu silebilirsiniz. */
+        .calculator-form-container .input-group {
+            margin-bottom: 20px;
+        }
+        .calculator-form-container .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calculator-form-container .input-group input[type="number"] {
+            width: 100%;
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calculator-form-container .input-group input[type="number"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .calculator-form-container .input-group select {
+            width: auto;
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
+        /* Result display specific styles */
+        .result-display strong {
+            color: #e74c3c;
+        }
+        .result-display p {
+            margin: 5px 0;
+        }
+        .result-display p:last-child {
+            margin-bottom: 0;
+        }
+        .result-display .error {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        /* Calculator explanation styles */
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+        .calc-explanation h4 {
+            color: #34495e;
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .calc-explanation ul {
+            list-style-type: disc;
+            margin: 10px 0 15px 20px;
+            padding: 0;
+        }
+        .calc-explanation ul li {
+            margin-bottom: 5px;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+
+        /* Gizli ve Aktif Hesaplayıcı Stilleri */
+        .hidden-calc {
+            display: none;
+        }
+        .calc-type-button.active {
+            background-color: #e74c3c;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+        /* Hero Section için header ile aynı arka plan */
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        /* Calculator Selection Section */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        .calc-type-button {
+            background-color: #3498db;
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 auto;
+            max-width: 320px;
+            text-align: center;
+        }
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .calculator-form-container button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+        }
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+            }
+        }
+  </style>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+</script>
+<script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+<link href="https://hesapkolik.net/gunluk hayat hesaplamalari/elektrikli-arac-sarj-maliyeti.html" hreflang="tr" rel="alternate"/>
+<link href="https://hesapkolik.net/en/gunluk hayat hesaplamalari/elektrikli-arac-sarj-maliyeti.html" hreflang="en" rel="alternate"/>
+<link href="https://hesapkolik.net/gunluk hayat hesaplamalari/elektrikli-arac-sarj-maliyeti.html" hreflang="x-default" rel="alternate"/>
+</head>
+<body>
+<div id="header-placeholder">
+</div>
+<main>
+<section class="hero-section">
+<div class="container">
+<h1>
+      Electric Vehicle Charging Cost Calculator
+     </h1>
+<p>
+      Easily learn the cost of charging your electric vehicle according to different scenarios and manage your budget.
+     </p>
+</div>
+</section>
+<section class="calculator-selection-section">
+<div class="container">
+<h2>
+      How to Calculate Charging Cost? Select Calculation Method:
+     </h2>
+<div class="calc-buttons-container">
+<button class="calc-type-button active" data-calc-type="type1">
+       Calculate with Battery Capacity
+      </button>
+<button class="calc-type-button" data-calc-type="type2">
+       Calculate with the amount of kWh charged
+      </button>
+<button class="calc-type-button" data-calc-type="type3">
+       Calculate Estimate Based on Travelled Route
+      </button>
+</div>
+<div class="calc-wrapper" id="calculator-type1">
+<h3>
+<i class="fas fa-car-battery icon-small">
+</i>
+       Calculation with Battery Capacity and Unit Price
+      </h3>
+<div class="calculator-form-container">
+<form id="formType1">
+<div class="input-group">
+<label for="batteryCapacity">
+          Vehicle Battery Capacity (kWh):
+         </label>
+<input id="batteryCapacity" min="1" placeholder="Örn: 60" required="" step="any" type="number"/>
+</div>
+<div class="input-group">
+<label for="electricityPrice1">
+          Electricity Unit Price (TL/kWh):
+         </label>
+<input id="electricityPrice1" min="0.01" placeholder="Örn: 2.50" required="" step="any" type="number"/>
+</div>
+<button type="submit">
+         Calculate
+        </button>
+</form>
+<div class="result-display" id="resultType1" style="display: none;">
+</div>
+<div class="calc-explanation">
+<h4>
+         How to Calculate?
+        </h4>
+<p>
+         This method calculates your full charging cost by knowing the battery capacity of your electric vehicle and the unit price of electricity (at home or at the station).
+        </p>
+<p class="formula-text">
+         Full Charge Cost (TL) = Battery Capacity (kWh) * Electricity Unit Price (TL/kWh)
+        </p>
+<ul>
+<li>
+<strong>
+           Example:
+          </strong>
+          Your vehicle&amp;#39;s battery capacity is 60 kWh, the electricity unit price is 2.50 TL/kWh.
+          <ul>
+<li>
+            Full Charge Cost = 60 kWh * 2.50 TL/kWh = 150 TL
+           </li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="calc-wrapper hidden-calc" id="calculator-type2">
+<h3>
+<i class="fas fa-plug icon-small">
+</i>
+       Calculation with Filled kWh Amount and Unit Price
+      </h3>
+<div class="calculator-form-container">
+<form id="formType2">
+<div class="input-group">
+<label for="chargedKwh">
+          Amount of Electricity Charged (kWh):
+         </label>
+<input id="chargedKwh" min="0.1" placeholder="Örn: 45" required="" step="any" type="number"/>
+</div>
+<div class="input-group">
+<label for="electricityPrice2">
+          Electricity Unit Price (TL/kWh):
+         </label>
+<input id="electricityPrice2" min="0.01" placeholder="Örn: 2.50" required="" step="any" type="number"/>
+</div>
+<button type="submit">
+         Calculate
+        </button>
+</form>
+<div class="result-display" id="resultType2" style="display: none;">
+</div>
+<div class="calc-explanation">
+<h4>
+         How to Calculate?
+        </h4>
+<p>
+         This is especially useful when you see how many kWh of electricity you have used at charging stations or smart home chargers. It determines your costs directly based on the amount you fill up.
+        </p>
+<p class="formula-text">
+         Charging Cost (TL) = Amount of Electricity Charged (kWh) * Electricity Unit Price (TL/kWh)
+        </p>
+<ul>
+<li>
+<strong>
+           Example:
+          </strong>
+          You filled 45 kWh of electricity, the unit price of electricity is 2.50 TL/kWh.
+          <ul>
+<li>
+            Charging Cost = 45 kWh * 2.50 TL/kWh = 112.50 TL
+           </li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="calc-wrapper hidden-calc" id="calculator-type3">
+<h3>
+<i class="fas fa-map-marked-alt icon-small">
+</i>
+       Estimated Cost Calculation Based on the Route Traveled
+      </h3>
+<div class="calculator-form-container">
+<form id="formType3">
+<div class="input-group">
+<label for="distanceTravelledEv">
+          Distance to Go (KM):
+         </label>
+<input id="distanceTravelledEv" min="1" placeholder="Örn: 400" required="" step="any" type="number"/>
+</div>
+<div class="input-group">
+<label for="consumptionPer100kmEv">
+          Electricity Consumption of the Vehicle per 100 KM (kWh):
+         </label>
+<input id="consumptionPer100kmEv" min="0.1" placeholder="Örn: 15" required="" step="any" type="number"/>
+</div>
+<div class="input-group">
+<label for="electricityPrice3">
+          Electricity Unit Price (TL/kWh):
+         </label>
+<input id="electricityPrice3" min="0.01" placeholder="Örn: 2.50" required="" step="any" type="number"/>
+</div>
+<button type="submit">
+         Calculate
+        </button>
+</form>
+<div class="result-display" id="resultType3" style="display: none;">
+</div>
+<div class="calc-explanation">
+<h4>
+         How to Calculate?
+        </h4>
+<p>
+         Ideal for calculating your estimated monthly charging costs or before a long trip. It calculates the estimated cost using your car&amp;#39;s average electricity consumption per 100 km and the distance you will travel.
+        </p>
+<p class="formula-text">
+         Estimated Required Energy (kWh) = (Distance to be Traveled / 100) * Consumption per 100 KM
+         <br/>
+         Estimated Cost (TL) = Estimated Required Energy (kWh) * Electricity Unit Price (TL/kWh)
+        </p>
+<ul>
+<li>
+<strong>
+           Example:
+          </strong>
+          You will travel 400 km. Your vehicle consumes 15 kWh per 100 km. The unit price of electricity is 2.50 TL/kWh.
+          <ul>
+<li>
+            Estimated Required Energy = (400 / 100) * 15 = 4 * 15 = 60 kWh
+           </li>
+<li>
+            Estimated Cost = 60 kWh * 2.50 TL/kWh = 150 TL
+           </li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="info-section container">
+<h3>
+     Why is it important to know the electric vehicle charging cost?
+    </h3>
+<p>
+     One of the biggest advantages of owning an electric vehicle is that fuel costs are generally lower than those of a petrol/diesel vehicle, but understanding and managing these costs correctly will help you optimise your budget in the long run.
+    </p>
+<p>
+     Tracking your charging costs allows you to see the impact of your home electricity bill and compare the price differences between different charging stations (fast charging, slow charging, special stations). This way, you can choose the most economical charging options, avoid unexpected expenses, and have a clear idea of the total operating costs of your electric vehicle. It also helps you understand your carbon footprint and measure your environmental contribution.
+    </p>
+<h4>
+     Factors Affecting Charging Cost:
+    </h4>
+<ul>
+<li>
+      **Electricity Unit Price:** The price per kWh determined by the tariff you use at home (day/night) or the charging station.
+     </li>
+<li>
+      **Battery Size:** The larger the vehicle&amp;#39;s battery capacity, the more kWh is required for a full charge.
+     </li>
+<li>
+      **Charge Level:** How long you charge the battery from empty.
+     </li>
+<li>
+      **Charge Loss:** Energy loss (conversion efficiency) during charging, which can vary between 10-20%.
+     </li>
+<li>
+      **Weather Conditions:** Very cold or very hot weather can reduce charging efficiency and consume additional energy for battery heating/cooling.
+     </li>
+<li>
+      **Driving Style and Conditions:** The vehicle&amp;#39;s overall consumption affects the charging frequency and therefore the cost.
+     </li>
+</ul>
+<p class="disclaimer-text">
+     These calculators provide estimated results based on the data entered. Actual charging costs may vary depending on many variables, such as current changes in electricity tariffs, charger efficiency, battery condition, environmental factors and charging stations&amp;#39; own commissions.
+    </p>
+</section>
+</main>
+<div id="footer-placeholder">
+</div>
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+</body>
+</html>

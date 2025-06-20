@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Dokuma Makinesi Verimliliği Hesaplama - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="Dokuma tezgahlarının fiili üretim miktarı ve çalışma süresine göre verimlilik (randıman) oranını hesaplayın. Üretim kapasitesi ve maliyet optimizasyonu için pratik araç." name="description"/>
+  <meta content="dokuma makinesi verimliliği, dokuma randıman, tezgah verimliliği, üretim kapasitesi, dokuma hesabı, tekstil mühendisliği hesaplamaları, hesapkolik tekstil" name="keywords"/>
+  <link href="../../css/style.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+ </head>
+ <!-- Google tag (gtag.js) -->
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+   <section class="health-calculators-section">
+    <div class="container">
+     <h1 class="main-title">
+      Dokuma Makinesi Verimliliği Hesaplayıcı
+     </h1>
+     <p class="section-description">
+      Dokuma makinelerinin verimliliği (randımanı), planlanan üretim ile gerçekleşen üretim arasındaki oranı gösterir. Bu hesaplayıcı ile makine devri, atkı sıklığı, çalışma süresi ve fiili üretim gibi parametreleri kullanarak dokuma makinenizin verimliliğini yüzde olarak belirleyebilirsiniz.
+     </p>
+     <div class="calculator-group">
+      <div class="calculator-card-wrapper">
+       <div class="calculator-header">
+        <i class="fas fa-cogs icon-small">
+        </i>
+        <h2>
+         Makine Verimliliğini Hesapla
+        </h2>
+       </div>
+       <div class="calculator-form-container">
+        <form id="loomEfficiencyForm">
+         <p class="small-text">
+          Lütfen dokuma makinesi verimliliği için gerekli parametreleri girin:
+         </p>
+         <div class="input-with-unit">
+          <label for="machineRPM">
+           Makine Devri (Atkı/dakika):
+          </label>
+          <input id="machineRPM" min="1" placeholder="Örn: 500" required="" step="1" type="number"/>
+         </div>
+         <div class="input-with-unit">
+          <label for="weftDensity">
+           Atkı Sıklığı (Atkı/cm):
+          </label>
+          <input id="weftDensity" min="0.1" placeholder="Örn: 28" required="" step="0.1" type="number"/>
+         </div>
+         <div class="input-with-unit">
+          <label for="workingHours">
+           Çalışma Süresi (saat):
+          </label>
+          <input id="workingHours" min="0.1" placeholder="Örn: 8" required="" step="0.1" type="number"/>
+         </div>
+         <div class="input-with-unit">
+          <label for="actualProduction">
+           Fiili Üretim (metre):
+          </label>
+          <input id="actualProduction" min="0" placeholder="Örn: 183.6" required="" step="0.01" type="number"/>
+         </div>
+         <button onclick="calculateLoomEfficiency()" type="button">
+          Hesapla
+         </button>
+        </form>
+        <div class="result-display" id="resultBox">
+         <h3>
+          Sonuçlar:
+         </h3>
+         <p>
+          <strong>
+           Teorik Üretim (metre):
+          </strong>
+          <span class="result-value" id="theoreticalProduction">
+          </span>
+         </p>
+         <p>
+          <strong>
+           Dokuma Makinesi Verimliliği (%):
+          </strong>
+          <span class="result-value" id="efficiencyPercentage">
+          </span>
+         </p>
+        </div>
+        <p class="small-text">
+         Verimlilik, fiili üretimin teorik üretime oranının yüzdesidir. %100'den düşük olması normaldir.
+        </p>
+       </div>
+      </div>
+      <section class="info-section">
+       <h3>
+        Dokuma Makinesi Verimliliği Nedir?
+       </h3>
+       <p>
+        **Dokuma makinesi verimliliği** (veya **randımanı**), bir dokuma tezgahının belirli bir zaman diliminde teorik olarak üretebileceği maksimum kumaş miktarına kıyasla fiilen ürettiği kumaş miktarının yüzde (%) cinsinden ifadesidir. Yüksek verimlilik, makinenin daha az duruşla, daha az hata ile ve daha hızlı çalıştığı anlamına gelir.
+       </p>
+       <p>
+        Verimlilik, yalnızca makine hızına değil; iplik kopuşları, arıza duruşları, operatör müdahaleleri, bakım süreleri, kumaş hataları ve desen değişimleri gibi pek çok faktöre bağlıdır. Tekstil işletmeleri için verimlilik, maliyet etkinliği ve zamanında teslimat açısından hayati önem taşır.
+       </p>
+       <h4>
+        Dokuma Makinesi Verimliliği Neden Önemlidir?
+       </h4>
+       <ul>
+        <li>
+         **Maliyet Optimizasyonu:** Düşük verimlilik, yüksek işçilik, enerji ve amortisman maliyetleri anlamına gelir.
+        </li>
+        <li>
+         **Üretim Kapasitesi:** Verimlilik artışı, mevcut makine parkuruyla daha fazla üretim yapılmasını sağlar.
+        </li>
+        <li>
+         **Teslim Süresi Yönetimi:** Yüksek verimli makineler, siparişleri daha kısa sürede tamamlayabilir.
+        </li>
+        <li>
+         **Kalite İyileştirme:** Genellikle verimlilik artışı, daha az hata ve daha iyi proses kontrolü ile ilişkilidir.
+        </li>
+        <li>
+         **İşletme Karar Alma:** Makine alımı, işgücü planlaması ve yatırım kararları için temel veri sağlar.
+        </li>
+       </ul>
+       <h4>
+        Dokuma Makinesi Verimliliği Nasıl Hesaplanır?
+       </h4>
+       <p>
+        Dokuma makinesi verimliliğinin hesaplanmasında çeşitli yöntemler olmakla birlikte, en yaygın formüllerden biri aşağıdaki gibidir:
+       </p>
+       <p class="formula-text">
+        Teorik Üretim (m/saat) = (Makine Devri (atkı/dakika) * 60 (dak/saat)) / (Atkı Sıklığı (atkı/cm) * 100 (cm/m))
+       </p>
+       <p class="formula-text">
+        Teorik Toplam Üretim (metre) = Teorik Üretim (m/saat) * Çalışma Süresi (saat)
+       </p>
+       <p class="formula-text">
+        Verimlilik (%) = (Fiili Üretim (metre) / Teorik Toplam Üretim (metre)) * 100
+       </p>
+       <p>
+        **Açıklamalar:**
+        <ul>
+         <li>
+          **Makine Devri (Atkı/dakika):** Makinenin bir dakikada attığı atkı sayısı (RPM - Revolutions Per Minute olarak da geçer).
+         </li>
+         <li>
+          **Atkı Sıklığı (Atkı/cm):** Dokunan kumaşın bir santimetresindeki atkı ipliği sayısı.
+         </li>
+         <li>
+          **Çalışma Süresi (saat):** Makinenin fiilen çalıştığı toplam süre.
+         </li>
+         <li>
+          **Fiili Üretim (metre):** Belirtilen çalışma süresi boyunca makinenin gerçekten ürettiği kumaş miktarı.
+         </li>
+        </ul>
+        Bu hesaplayıcı, bu prensipleri kullanarak teorik üretimi ve ardından verimlilik yüzdesini belirler.
+       </p>
+       <h4>
+        Verimliliği Etkileyen Başlıca Faktörler:
+       </h4>
+       <ul>
+        <li>
+         **İplik Kalitesi:** Kopuşlar verimliliği düşürür.
+        </li>
+        <li>
+         **Makine Bakımı ve Ayarları:** Düzenli bakım ve doğru ayarlar duruşları minimize eder.
+        </li>
+        <li>
+         **Operatör Yetkinliği:** Hızlı müdahale ve doğru işlem, duruş sürelerini azaltır.
+        </li>
+        <li>
+         **Atkı/Çözgü Kopuşları:** En büyük verimlilik kayıplarından biridir.
+        </li>
+        <li>
+         **Kumaş Deseni ve Yapısı:** Karmaşık desenler ve yüksek sıklıklar makine hızını etkileyebilir.
+        </li>
+        <li>
+         **Çevresel Koşullar:** Sıcaklık ve nem gibi faktörler iplik davranışını etkileyebilir.
+        </li>
+       </ul>
+       <p class="disclaimer-text">
+        Bu hesaplayıcı temel dokuma makinesi verimliliği prensiplerini uygulamak için bir araçtır. Gerçek endüstriyel ortamlarda verimlilik analizi, duruş süreleri, hata oranları, OEE (Overall Equipment Effectiveness) gibi daha karmaşık metrikleri ve detaylı veri toplama sistemlerini içerir. Hassas ticari veya endüstriyel uygulamalar için fabrika verileri ve uzman mühendislik analizi gereklidir. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize
+        <a href="../../iletisim.html">
+         iletişim
+        </a>
+        sayfamızdan ulaşın.
+       </p>
+      </section>
+     </div>
+    </div>
+   </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+ </body>
+</html>

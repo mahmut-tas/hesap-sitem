@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<link href="/css/header.css" rel="stylesheet"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TOEFL iBT Score Calculator</title>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/footer.css" rel="stylesheet"/>
+<meta content="Easily calculate your TOEFL iBT score. Find out your overall score with estimated scores for your Reading, Listening, Speaking and Writing sections." name="description"/>
+<meta content="TOEFL score calculation, TOEFL score, TOEFL Reading, TOEFL Listening, TOEFL Speaking, TOEFL Writing, TOEFL iBT, English exam, education abroad, hesapkolik TOEFL" name="keywords"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+<link href="../css/style.css" rel="stylesheet"/>
+<script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+</script>
+<style>
+   /* Sadece bu sayfaya özel stil eklemeleri - Genel style.css'ten sonra yüklenir */
+        .calculator-form-container .input-group {
+            margin-bottom: 20px;
+        }
+        .calculator-form-container .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calculator-form-container .input-group input[type="number"],
+        .calculator-form-container .input-group select {
+            width: 100%;
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calculator-form-container .input-group input[type="number"]:focus,
+        .calculator-form-container .input-group select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        /* Result display specific styles */
+        .result-display strong {
+            color: #e74c3c;
+        }
+        .result-display p {
+            margin: 5px 0;
+        }
+        .result-display p:last-child {
+            margin-bottom: 0;
+        }
+        .result-display .error {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        /* Calculator explanation styles */
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+        .calc-explanation h4 {
+            color: #34495e;
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .calc-explanation ul {
+            list-style-type: disc;
+            margin: 10px 0 15px 20px;
+            padding: 0;
+        }
+        .calc-explanation ul li {
+            margin-bottom: 5px;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+            overflow-x: auto; /* Küçük ekranlarda formül taşmasını önler */
+        }
+
+        /* Gizli ve Aktif Hesaplayıcı Stilleri */
+        .hidden-calc {
+            display: none;
+        }
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+        /* Hero Section için header ile aynı arka plan */
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        /* Calculator Selection Section */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        .calc-type-button {
+            background-color: #3498db;
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 auto; /* Esnek buton genişliği */
+            max-width: 320px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 800px; /* Kapsamlı hesaplayıcı için genişlik artırıldı */
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .calculator-form-container button[type="submit"] {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button[type="submit"]:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1em; /* Daha küçük ekranda daha küçük font */
+            }
+        }
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+        }
+  </style>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+</script>
+<script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+<link href="https://hesapkolik.net/egitim/toefl-hesaplama.html" hreflang="tr" rel="alternate"/>
+<link href="https://hesapkolik.net/en/egitim/toefl-hesaplama.html" hreflang="en" rel="alternate"/>
+<link href="https://hesapkolik.net/egitim/toefl-hesaplama.html" hreflang="x-default" rel="alternate"/>
+</head>
+<body>
+<div id="header-placeholder">
+</div>
+<main>
+<section class="hero-section">
+<div class="container">
+<h1>
+      TOEFL iBT Score Calculator
+     </h1>
+<p>
+      Easily calculate your overall score by entering your estimated or final scores for each section of your TOEFL iBT test.
+     </p>
+</div>
+</section>
+<section class="calculator-selection-section">
+<div class="container">
+<h2>
+      Calculate Your TOEFL Score:
+     </h2>
+<div class="calc-buttons-container" style="justify-content: center;">
+<button class="calc-type-button active" data-calc-type="toefl-general-score">
+       General Score Calculation
+      </button>
+<button class="calc-type-button" data-calc-type="toefl-info">
+       Information About TOEFL iBT
+      </button>
+</div>
+<div class="calc-wrapper" id="calculator-toefl-general-score">
+<h3>
+<i class="fas fa-file-alt icon-small">
+</i>
+       TOEFL iBT Overall Score Calculation
+      </h3>
+<div class="calculator-form-container">
+<form id="formToeflGeneralScore">
+<div class="input-group">
+<label for="readingRawScore">
+          Number of Correct Answers for Reading (Max 30):
+         </label>
+<input id="readingRawScore" max="30" min="0" placeholder="Örn: 25" required="" step="1" type="number"/>
+</div>
+<div class="input-group">
+<label for="listeningRawScore">
+          Listening Number of Correct Answers (Max 28-39):
+         </label>
+<input id="listeningRawScore" max="39" min="0" placeholder="Örn: 28" required="" step="1" type="number"/>
+<p style="font-size: 0.85em; color: #888; margin-top: 5px;">
+          *The number of listening questions may vary from test to test (between 28-39).
+         </p>
+</div>
+<div class="input-group">
+<label for="speakingScore">
+          Your Speaking Score (0 - 30):
+         </label>
+<select id="speakingScore" required="">
+<option value="">
+           Select Points
+          </option>
+</select>
+</div>
+<div class="input-group">
+<label for="writingScore">
+          Your Writing Score (0 - 30):
+         </label>
+<select id="writingScore" required="">
+<option value="">
+           Select Points
+          </option>
+</select>
+</div>
+<button type="submit">
+         Calculate Overall Score
+        </button>
+</form>
+<div class="result-display" id="resultToeflGeneralScore" style="display: none;">
+</div>
+<div class="calc-explanation">
+<h4>
+         How to Calculate?
+        </h4>
+<p>
+         The TOEFL iBT total score is the sum of the scores you receive from the four sections (Reading, Listening, Speaking, Writing). Each section is scored from 0 to 30.
+        </p>
+<p>
+<strong>
+          Reading and Listening
+         </strong>
+         You get an estimated score by entering the number of correct answers for each section. The value and scoring of questions in these sections may vary slightly depending on the overall difficulty of the test and ETS&amp;#39; adjustments.
+        </p>
+<p>
+<strong>
+          Speaking and Writing
+         </strong>
+         The sections are scored directly on a 0-30 scale by more than one evaluator, based on specific criteria (content, language use, fluency, vocabulary, etc.). You must enter these scores directly.
+        </p>
+<p class="disclaimer-text">
+         This calculator estimates your score based on TOEFL iBT scoring guidelines. The number of correct answers to score conversions for Reading and Listening are approximate and may vary slightly from exam to exam and even from question set to question set. Your actual TOEFL iBT score is the final score listed on your official scorecard from ETS.
+        </p>
+</div>
+</div>
+</div>
+<div class="calc-wrapper hidden-calc" id="calculator-toefl-info">
+<h3>
+<i class="fas fa-info-circle icon-small">
+</i>
+       Information About TOEFL iBT
+      </h3>
+<div class="calculator-form-container">
+<p>
+        **TOEFL iBT (Internet-Based Test)** is one of the most widely accepted tests for measuring academic English proficiency by English-speaking universities, colleges and institutions around the world. The test assesses your ability to read, listen, speak and write in English in an academic setting.
+       </p>
+<h4>
+        TOEFL iBT Sections and Durations (Current - After July 2023):
+       </h4>
+<ul>
+<li>
+         **Reading:** ~35 minutes (2 reading passages, 20 questions)
+        </li>
+<li>
+         **Listening:** ~36 minutes (3 lectures, 2 conversations, 28-39 questions)
+        </li>
+<li>
+         **Speaking:** 16 minutes (4 tasks)
+        </li>
+<li>
+         **Writing:** 29 minutes (2 tasks)
+        </li>
+</ul>
+<p>
+        The total duration of the exam is approximately **2 hours**. Each section is scored from 0-30 and the total score is from 0-120. Universities and institutions usually set a certain overall and/or section score threshold for admission.
+       </p>
+<p class="disclaimer-text">
+        This information is about the general structure of the TOEFL iBT. For the most up-to-date test dates, registration processes, content changes and detailed information, please visit the official ETS TOEFL website.
+       </p>
+</div>
+</div>
+</div>
+</section>
+<section class="info-section container">
+<h3>
+     What is TOEFL iBT and Why is it Important?
+    </h3>
+<p>
+     **TOEFL iBT** is one of the most internationally recognized ways to prove your English language skills. It is accepted by thousands of universities and institutions, especially in the USA, Canada, UK, Australia and New Zealand. The exam measures your reading, listening, speaking and writing skills in English in an academic environment, showing how prepared you are for the linguistic challenges you may face while studying in a foreign language.
+    </p>
+<p>
+     A TOEFL score may be required not only for university admissions but also for some visa applications and professional certifications. A good TOEFL score is a critical step towards achieving your academic and professional goals.
+    </p>
+<h4>
+     TOEFL iBT Scoring Scale:
+    </h4>
+<ul>
+<li>
+      Each section (Reading, Listening, Speaking, Writing) is scored between 0-30.
+     </li>
+<li>
+      The total score is the sum of the four section scores and ranges from 0 to 120.
+     </li>
+</ul>
+<h4>
+     How to Prepare for TOEFL iBT?
+    </h4>
+<ul>
+<li>
+      **Official ETS Materials:** Practice with official ETS practice tests and prep books.
+     </li>
+<li>
+      **Time Management:** Pay special attention to time management during mock exams as each section has a specific time limit.
+     </li>
+<li>
+      **Note-Taking Skills:** Develop effective note-taking techniques in the Listening and Speaking sections.
+     </li>
+<li>
+      **Speaking and Writing Practice:** Read out loud, record yourself, write mock essays, and get feedback if possible.
+     </li>
+<li>
+      **Academic English:** Increase your familiarity with academic language by reading scientific articles and listening to academic podcasts.
+     </li>
+</ul>
+<p class="disclaimer-text">
+     The TOEFL iBT score calculator on this page provides estimated results. The conversion tables from raw score (number of correct answers) to score for the Reading and Listening sections are based on official information published by ETS, but may vary slightly from test to test. Always reference your official ETS test score document for your most accurate and official TOEFL iBT score.
+    </p>
+</section>
+</main>
+<div id="footer-placeholder">
+</div>
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+</body>
+</html>
