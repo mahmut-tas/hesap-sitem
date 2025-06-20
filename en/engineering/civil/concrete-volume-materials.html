@@ -763,5 +763,223 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Beton İhtiyacını Hesapla',
+                invalidInput: 'Lütfen tüm boyutlar ve oranlar için geçerli pozitif sayılar girin.',
+                errorZeroDimension: 'Uzunluk, genişlik ve yükseklik sıfır olamaz.',
+                errorRatio: 'Oranlar pozitif olmalıdır.',
+                errorWastageFactor: 'Fire oranı 0 ile 100 arasında olmalıdır.',
+                resultTitle: 'Gerekli Beton ve Malzemeler:',
+                // Sonuç Çıktıları
+                elementVolume: 'Yapı Elemanı Hacmi:',
+                totalConcreteVolume: 'Toplam Gerekli Beton Hacmi:',
+                cementNeeded: 'Çimento Miktarı:',
+                sandNeeded: 'Kum Miktarı:',
+                gravelNeeded: 'Çakıl Miktarı:',
+                waterNeeded: 'Su Miktarı:',
+                // Birimler
+                unit_m: 'm',
+                unit_cm: 'cm',
+                unit_mm: 'mm',
+                unit_ft: 'ft',
+                unit_in: 'inç',
+                unit_m3: 'm³',
+                unit_kg: 'kg',
+                unit_litre: 'litre',
+                unit_percent: '%',
+                // Advanced Options
+                showAdvanced: 'Gelişmiş Ayarları Göster',
+                hideAdvanced: 'Gelişmiş Ayarları Gizle',
+                additionalSettings: 'Ek Ayarlar',
+                wastageRateLabel: 'Fire Oranı (%):',
+                wastageRateInfo: 'Beton dökümü, taşıma ve uygulama sırasında meydana gelebilecek kayıplar için eklenen yüzde.'
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate Concrete Needs',
+                invalidInput: 'Please enter valid positive numbers for all dimensions and ratios.',
+                errorZeroDimension: 'Length, width, and height cannot be zero.',
+                errorRatio: 'Ratios must be positive.',
+                errorWastageFactor: 'Wastage rate must be between 0 and 100.',
+                resultTitle: 'Required Concrete and Materials:',
+                // Result Outputs
+                elementVolume: 'Structural Element Volume:',
+                totalConcreteVolume: 'Total Required Concrete Volume:',
+                cementNeeded: 'Cement Needed:',
+                sandNeeded: 'Sand Needed:',
+                gravelNeeded: 'Gravel Needed:',
+                waterNeeded: 'Water Needed:',
+                // Units
+                unit_m: 'm',
+                unit_cm: 'cm',
+                unit_mm: 'mm',
+                unit_ft: 'ft',
+                unit_in: 'inch',
+                unit_m3: 'm³',
+                unit_kg: 'kg',
+                unit_litre: 'liters',
+                unit_percent: '%',
+                // Advanced Options
+                showAdvanced: 'Show Advanced Options',
+                hideAdvanced: 'Hide Advanced Options',
+                additionalSettings: 'Additional Settings',
+                wastageRateLabel: 'Wastage Rate (%):',
+                wastageRateInfo: 'Percentage added for losses that may occur during concrete casting, transportation and application.'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // --- Helper Functions ---
+        // Uzunluk birimlerini metreye dönüştürme faktörleri
+        const LENGTH_TO_METER = {
+            'm': 1,
+            'cm': 0.01,
+            'mm': 0.001,
+            'ft': 0.3048,
+            'in': 0.0254
+        };
+
+        // Beton sınıfı oranları (1 m³ beton için yaklaşık değerler)
+        // [Çimento (kg), Kum (m³), Çakıl (m³), Su (litre)]
+        const CONCRETE_RATIOS = {
+            'C16/20': { cement: 250, sand: 0.70, gravel: 1.05, water: 175 },
+            'C20/25': { cement: 300, sand: 0.65, gravel: 1.00, water: 180 },
+            'C25/30': { cement: 350, sand: 0.60, gravel: 0.95, water: 190 },
+            'C30/37': { cement: 400, sand: 0.55, gravel: 0.90, water: 200 }
+        };
+
+        // --- DOM Elements ---
+        const concreteVolumeForm = document.getElementById('concreteVolumeForm');
+        const concreteVolumeResultDiv = document.getElementById('concreteVolumeResult');
+
+        const lengthInput = document.getElementById('length');
+        const lengthUnitSelect = document.getElementById('lengthUnit');
+        const widthInput = document.getElementById('width');
+        const widthUnitSelect = document.getElementById('widthUnit');
+        const heightInput = document.getElementById('height');
+        const heightUnitSelect = document.getElementById('heightUnit');
+
+        const concreteRatioSelect = document.getElementById('concreteRatioSelect');
+        const cementPerM3Input = document.getElementById('cementPerM3');
+        const sandPerM3Input = document.getElementById('sandPerM3');
+        const gravelPerM3Input = document.getElementById('gravelPerM3');
+        const waterPerM3Input = document.getElementById('waterPerM3');
+
+        const toggleAdvancedOptionsButton = document.getElementById('toggleAdvancedOptions');
+        const advancedOptionsContent = document.getElementById('advancedOptionsContent');
+        const wastageFactorInput = document.getElementById('wastageFactor');
+
+        // --- Event Listeners ---
+
+        // Advanced Options toggle
+        toggleAdvancedOptionsButton.addEventListener('click', function() {
+            advancedOptionsContent.classList.toggle('hidden-section');
+            toggleAdvancedOptionsButton.classList.toggle('active');
+            toggleAdvancedOptionsButton.innerHTML = advancedOptionsContent.classList.contains('hidden-section') ?
+                `<i class="fas fa-cogs"></i> ${currentTexts.showAdvanced}` :
+                `<i class="fas fa-cogs"></i> ${currentTexts.hideAdvanced}`;
+        });
+
+        // Concrete Ratio selection logic
+        concreteRatioSelect.addEventListener('change', function() {
+            const selectedRatio = this.value;
+            if (selectedRatio === 'custom') {
+                cementPerM3Input.disabled = false;
+                sandPerM3Input.disabled = false;
+                gravelPerM3Input.disabled = false;
+                waterPerM3Input.disabled = false;
+                cementPerM3Input.value = ''; // Clear custom values
+                sandPerM3Input.value = '';
+                gravelPerM3Input.value = '';
+                waterPerM3Input.value = '';
+            } else {
+                const ratios = CONCRETE_RATIOS[selectedRatio];
+                cementPerM3Input.value = ratios.cement;
+                sandPerM3Input.value = ratios.sand;
+                gravelPerM3Input.value = ratios.gravel;
+                waterPerM3Input.value = ratios.water;
+
+                cementPerM3Input.disabled = true;
+                sandPerM3Input.disabled = true;
+                gravelPerM3Input.disabled = true;
+                waterPerM3Input.disabled = true;
+            }
+        });
+        // Initial call to set defaults
+        concreteRatioSelect.dispatchEvent(new Event('change'));
+
+        // Main form submission
+        concreteVolumeForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // --- Get Input Values and Convert to Base Units (meters) ---
+            const length = parseFloat(lengthInput.value) * LENGTH_TO_METER[lengthUnitSelect.value];
+            const width = parseFloat(widthInput.value) * LENGTH_TO_METER[widthUnitSelect.value];
+            const height = parseFloat(heightInput.value) * LENGTH_TO_METER[heightUnitSelect.value];
+
+            const cementPerM3 = parseFloat(cementPerM3Input.value);
+            const sandPerM3 = parseFloat(sandPerM3Input.value);
+            const gravelPerM3 = parseFloat(gravelPerM3Input.value);
+            const waterPerM3 = parseFloat(waterPerM3Input.value);
+
+            const wastageFactor = parseFloat(wastageFactorInput.value) / 100; // % to decimal
+
+            // --- Input Validation ---
+            if (isNaN(length) || isNaN(width) || isNaN(height) || length <= 0 || width <= 0 || height <= 0) {
+                concreteVolumeResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroDimension}</p>`;
+                concreteVolumeResultDiv.style.display = 'block';
+                return;
+            }
+            if (isNaN(cementPerM3) || isNaN(sandPerM3) || isNaN(gravelPerM3) || isNaN(waterPerM3) ||
+                cementPerM3 <= 0 || sandPerM3 <= 0 || gravelPerM3 <= 0 || waterPerM3 <= 0) {
+                concreteVolumeResultDiv.innerHTML = `<p class="error">${currentTexts.errorRatio}</p>`;
+                concreteVolumeResultDiv.style.display = 'block';
+                return;
+            }
+            if (isNaN(wastageFactor) || wastageFactor < 0 || wastageFactor > 1) { // Wastage factor is already /100 so it should be 0-1
+                concreteVolumeResultDiv.innerHTML = `<p class="error">${currentTexts.errorWastageFactor}</p>`;
+                concreteVolumeResultDiv.style.display = 'block';
+                return;
+            }
+            
+
+            // --- Calculations ---
+
+            // Yapı elemanı hacmi (m³)
+            const elementVolume = length * width * height;
+
+            // Toplam gerekli beton hacmi (fire dahil)
+            const totalConcreteVolume = elementVolume * (1 + wastageFactor);
+
+            // Malzeme miktarları
+            const cementNeeded_kg = totalConcreteVolume * cementPerM3;
+            const sandNeeded_m3 = totalConcreteVolume * sandPerM3;
+            const gravelNeeded_m3 = totalConcreteVolume * gravelPerM3;
+            const waterNeeded_liters = totalConcreteVolume * waterPerM3;
+
+            // --- Display Results ---
+            concreteVolumeResultDiv.innerHTML = `
+                <h4>${currentTexts.resultTitle}</h4>
+                <div class="result-item"><strong>${currentTexts.elementVolume}</strong> <span class="result-value">${elementVolume.toFixed(3)} ${currentTexts.unit_m3}</span></div>
+                <div class="result-item"><strong>${currentTexts.totalConcreteVolume}</strong> <span class="result-value">${totalConcreteVolume.toFixed(3)} ${currentTexts.unit_m3}</span></div>
+                <div class="result-item"><strong>${currentTexts.cementNeeded}</strong> <span class="result-value">${cementNeeded_kg.toFixed(2)} ${currentTexts.unit_kg}</span></div>
+                <div class="result-item"><strong>${currentTexts.sandNeeded}</strong> <span class="result-value">${sandNeeded_m3.toFixed(3)} ${currentTexts.unit_m3}</span></div>
+                <div class="result-item"><strong>${currentTexts.gravelNeeded}</strong> <span class="result-value">${gravelNeeded_m3.toFixed(3)} ${currentTexts.unit_m3}</span></div>
+                <div class="result-item"><strong>${currentTexts.waterNeeded}</strong> <span class="result-value">${waterNeeded_liters.toFixed(2)} ${currentTexts.unit_litre}</span></div>
+            `;
+            concreteVolumeResultDiv.style.display = 'block';
+        });
+    });
+</script>
  </body>
 </html>

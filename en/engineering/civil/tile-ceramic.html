@@ -793,5 +793,262 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Malzemeleri Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                errorZeroDimension: 'Uzunluk ve genişlik sıfır olamaz.',
+                errorJointWidth: 'Derz kalınlığı negatif olamaz.',
+                errorAdhesiveCoverage: 'Yapıştırıcı kaplama oranı sıfırdan büyük olmalıdır.',
+                errorGroutDensity: 'Derz dolgu yoğunluğu sıfırdan büyük olmalıdır.',
+                errorWastageFactor: 'Fire oranı 0 ile 100 arasında olmalıdır.',
+                resultTitle: 'Gerekli Malzemeler:',
+                // Sonuç Çıktıları
+                totalArea: 'Toplam Alan:',
+                numberOfTiles: 'Fayans/Seramik Adedi:',
+                adhesiveNeeded: 'Yapıştırıcı Miktarı:',
+                groutNeeded: 'Derz Dolgu Miktarı:',
+                // Birimler
+                unit_m: 'm',
+                unit_cm: 'cm',
+                unit_mm: 'mm',
+                unit_m2: 'm²',
+                unit_adet: 'adet',
+                unit_kg: 'kg',
+                unit_kg_m2: 'kg/m²',
+                unit_kg_m3: 'kg/m³',
+                unit_percent: '%',
+                // Gelişmiş Ayarlar
+                advancedSettings: 'Gelişmiş Ayarlar (Yapıştırıcı, Derz Dolgu ve Fire)',
+                adhesiveSection: 'Fayans Yapıştırıcısı',
+                adhesiveCoverageLabel: 'Yapıştırıcı Kaplama Oranı (kg/m²):',
+                adhesiveCoverageInfo: '1 metrekare alan için ne kadar yapıştırıcı gerektiği. Ambalajında yazar.',
+                groutSection: 'Derz Dolgu',
+                groutDensityLabel: 'Derz Dolgu Yoğunluğu (kg/m³):',
+                groutDensityInfo: 'Derz dolgu malzemesinin özgül ağırlığı. Genellikle 1500-1800 kg/m³ arasındadır.',
+                wasteRates: 'Fire Oranları',
+                tileWastageLabel: 'Fayans/Seramik Fire Oranı (%):',
+                tileWastageInfo: 'Kesme, kırılma veya hatalı döşeme için eklenen yüzde. Genellikle %10 önerilir.',
+                adhesiveWastageLabel: 'Yapıştırıcı Fire Oranı (%):',
+                groutWastageLabel: 'Derz Dolgu Fire Oranı (%):',
+                showAdvanced: '<i class="fas fa-cogs"></i> Gelişmiş Ayarları Göster',
+                hideAdvanced: '<i class="fas fa-cogs"></i> Gelişmiş Ayarları Gizle',
+                tileThicknessLabel: 'Fayans/Seramik Kalınlığı (mm):',
+                tileThicknessInfo: 'Derz dolgu hesaplaması için kullanılır. Genellikle 8-12 mm arasındadır.'
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate Ingredients',
+                invalidInput: 'Please enter valid positive numbers for all fields.',
+                errorZeroDimension: 'Length and width cannot be zero.',
+                errorJointWidth: 'Joint width cannot be negative.',
+                errorAdhesiveCoverage: 'Adhesive coverage rate must be greater than zero.',
+                errorGroutDensity: 'Grout density must be greater than zero.',
+                errorWastageFactor: 'Wastage rate must be between 0 and 100.',
+                resultTitle: 'Required Materials:',
+                // Result Outputs
+                totalArea: 'Total Area:',
+                numberOfTiles: 'Number of Tiles/Ceramic:',
+                adhesiveNeeded: 'Adhesive Needed:',
+                groutNeeded: 'Grout Needed:',
+                // Units
+                unit_m: 'm',
+                unit_cm: 'cm',
+                unit_mm: 'mm',
+                unit_m2: 'm²',
+                unit_adet: 'pcs',
+                unit_kg: 'kg',
+                unit_kg_m2: 'kg/m²',
+                unit_kg_m3: 'kg/m³',
+                unit_percent: '%',
+                // Advanced Options
+                advancedSettings: 'Advanced Settings (Adhesive, Grout and Waste)',
+                adhesiveSection: 'Tile Adhesive',
+                adhesiveCoverageLabel: 'Adhesive Coverage Rate (kg/m²):',
+                adhesiveCoverageInfo: 'Amount of adhesive required per 1 square meter. Stated on packaging.',
+                groutSection: 'Grout',
+                groutDensityLabel: 'Grout Density (kg/m³):',
+                groutDensityInfo: 'Specific gravity of the grout. Usually between 1500-1800 kg/m³.',
+                wasteRates: 'Waste Rates',
+                tileWastageLabel: 'Tile/Ceramic Waste Rate (%):',
+                tileWastageInfo: 'Percentage added for cutting, breaking or faulty installation. 10% is generally recommended.',
+                adhesiveWastageLabel: 'Adhesive Waste Rate (%):',
+                groutWastageLabel: 'Grout Waste Rate (%):',
+                showAdvanced: '<i class="fas fa-cogs"></i> Show Advanced Settings',
+                hideAdvanced: '<i class="fas fa-cogs"></i> Hide Advanced Settings',
+                tileThicknessLabel: 'Tile/Ceramic Thickness (mm):',
+                tileThicknessInfo: 'Used for grout calculation. Usually between 8-12 mm.'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // --- Helper Functions ---
+        // Uzunluk birimlerini metreye dönüştürme faktörleri
+        const LENGTH_TO_METER = {
+            'm': 1,
+            'cm': 0.01,
+            'mm': 0.001
+        };
+
+        // --- DOM Elements ---
+        const tileAmountForm = document.getElementById('tileAmountForm');
+        const tileAmountResultDiv = document.getElementById('tileAmountResult');
+
+        const areaLengthInput = document.getElementById('areaLength');
+        const areaLengthUnitSelect = document.getElementById('areaLengthUnit');
+        const areaWidthInput = document.getElementById('areaWidth');
+        const areaWidthUnitSelect = document.getElementById('areaWidthUnit');
+
+        const tileLengthInput = document.getElementById('tileLength');
+        const tileLengthUnitSelect = document.getElementById('tileLengthUnit');
+        const tileWidthInput = document.getElementById('tileWidth');
+        const tileWidthUnitSelect = document.getElementById('tileWidthUnit');
+        const jointWidthInput = document.getElementById('jointWidth'); // cm olarak kalacak, dönüştürülecek
+
+        const toggleAdvancedOptionsButton = document.getElementById('toggleAdvancedOptions');
+        const advancedOptionsContent = document.getElementById('advancedOptionsContent');
+
+        const adhesiveCoverageInput = document.getElementById('adhesiveCoverage');
+        const groutDensityInput = document.getElementById('groutDensity');
+        const tileWastageFactorInput = document.getElementById('tileWastageFactor');
+        const adhesiveWastageFactorInput = document.getElementById('adhesiveWastageFactor');
+        const groutWastageFactorInput = document.getElementById('groutWastageFactor');
+
+        const tileThicknessInput = document.getElementById('tileThickness'); // Yeni eklenen input
+
+
+        // --- Event Listeners ---
+
+        // Advanced Options toggle
+        toggleAdvancedOptionsButton.innerHTML = currentTexts.showAdvanced; // İlk yüklemede metni ayarla
+        toggleAdvancedOptionsButton.addEventListener('click', function() {
+            advancedOptionsContent.classList.toggle('hidden-section');
+            toggleAdvancedOptionsButton.classList.toggle('active');
+            toggleAdvancedOptionsButton.innerHTML = advancedOptionsContent.classList.contains('hidden-section') ?
+                `<i class="fas fa-cogs"></i> ${currentTexts.showAdvanced}` :
+                `<i class="fas fa-cogs"></i> ${currentTexts.hideAdvanced}`;
+        });
+
+        // Main form submission
+        tileAmountForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // --- Get Input Values and Convert to Base Units (meters) ---
+            const areaLength = parseFloat(areaLengthInput.value) * LENGTH_TO_METER[areaLengthUnitSelect.value];
+            const areaWidth = parseFloat(areaWidthInput.value) * LENGTH_TO_METER[areaWidthUnitSelect.value];
+
+            const tileLength = parseFloat(tileLengthInput.value) * LENGTH_TO_METER[tileLengthUnitSelect.value];
+            const tileWidth = parseFloat(tileWidthInput.value) * LENGTH_TO_METER[tileWidthUnitSelect.value];
+            
+            // Joint width is in cm, convert to meters
+            const jointWidth = parseFloat(jointWidthInput.value) / 100; // cm to meter
+
+            // Advanced options (defaults if hidden/not filled)
+            let adhesiveCoverage = parseFloat(adhesiveCoverageInput.value);
+            let groutDensity = parseFloat(groutDensityInput.value);
+            let tileWastageFactor = parseFloat(tileWastageFactorInput.value) / 100; // % to decimal
+            let adhesiveWastageFactor = parseFloat(adhesiveWastageFactorInput.value) / 100; // % to decimal
+            let groutWastageFactor = parseFloat(groutWastageFactorInput.value) / 100; // % to decimal
+            let tileThickness = parseFloat(tileThicknessInput.value); // mm olarak alıyoruz, m'ye çevireceğiz
+
+            // --- Input Validation ---
+            if (isNaN(areaLength) || isNaN(areaWidth) || areaLength <= 0 || areaWidth <= 0) {
+                tileAmountResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroDimension}</p>`;
+                tileAmountResultDiv.style.display = 'block';
+                return;
+            }
+            if (isNaN(tileLength) || isNaN(tileWidth) || tileLength <= 0 || tileWidth <= 0) {
+                tileAmountResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroDimension}</p>`;
+                tileAmountResultDiv.style.display = 'block';
+                return;
+            }
+            if (isNaN(jointWidth) || jointWidth < 0) { // Can be 0 for very tight joints
+                tileAmountResultDiv.innerHTML = `<p class="error">${currentTexts.errorJointWidth}</p>`;
+                tileAmountResultDiv.style.display = 'block';
+                return;
+            }
+
+            // Validate advanced options only if visible or if they are to be used in calculation (always in this case)
+            if (isNaN(adhesiveCoverage) || adhesiveCoverage <= 0 ||
+                isNaN(groutDensity) || groutDensity <= 0 ||
+                isNaN(tileWastageFactor) || tileWastageFactor < 0 || tileWastageFactor > 1 ||
+                isNaN(adhesiveWastageFactor) || adhesiveWastageFactor < 0 || adhesiveWastageFactor > 1 ||
+                isNaN(groutWastageFactor) || groutWastageFactor < 0 || groutWastageFactor > 1 ||
+                isNaN(tileThickness) || tileThickness <=0) { // Tile thickness also validated
+                tileAmountResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                tileAmountResultDiv.style.display = 'block';
+                return;
+            }
+
+            // --- Calculations ---
+
+            // Toplam döşenecek alan (m²)
+            const totalArea = areaLength * areaWidth;
+
+            // Derz dahil tek fayans/seramik alanı (m²)
+            const effectiveTileLength = tileLength + jointWidth;
+            const effectiveTileWidth = tileWidth + jointWidth;
+            const effectiveTileArea = effectiveTileLength * effectiveTileWidth;
+
+            // Toplam fayans/seramik adedi (fire dahil)
+            let numberOfTiles = totalArea / effectiveTileArea;
+            numberOfTiles *= (1 + tileWastageFactor); // Fire oranı ekle
+            numberOfTiles = Math.ceil(numberOfTiles); // Tam adet için yukarı yuvarla
+
+            // Yapıştırıcı miktarı (kg) (fire dahil)
+            let adhesiveNeeded = (totalArea * adhesiveCoverage);
+            adhesiveNeeded *= (1 + adhesiveWastageFactor);
+
+            // Derz dolgu miktarı (kg) (fire dahil)
+            // Genel formül: ( (FayansUzunluk + FayansGenislik) / (FayansUzunluk * FayansGenislik) ) * DerzGenislik * FayansKalinlik * DerzYogunluk * ToplamAlan
+            // Fayans kalınlığı mm'den metreye
+            const tileThicknessM = tileThickness / 1000; 
+            
+            // Fayans boyutları cm'den metreye
+            const tileLengthM = tileLengthInput.value * LENGTH_TO_METER[tileLengthUnitSelect.value];
+            const tileWidthM = tileWidthInput.value * LENGTH_TO_METER[tileWidthUnitSelect.value];
+
+            // Formül: ( (L_t + W_t) / (L_t * W_t) ) * w * t_tile * rho_grout * A
+            // Not: Bu formül derz dolgu hacmini hesaplar, sonra yoğunlukla çarparız.
+            // Bu formül fayans başına derz dolgu hacmini hesaplamaz, toplam alan için hesaplar.
+            // Kaynaklara göre derz dolgu formülü karmaşıktır ve birçok değişken içerir.
+            // Burada daha yaygın olan basitleştirilmiş bir yaklaşım kullanılacaktır:
+            // Derz hacmi = Toplam Alan * (Derz Dolgu Kalınlığı) * (Tiled-Area-Ratio)
+            // Veya daha pratik bir formül: [(Fayans Uzunluk + Fayans Genişlik) / (Fayans Uzunluk x Fayans Genişlik)] x Derz Kalınlığı x Derz Dolgu Derinliği x Derz Dolgu Yoğunluğu x Toplam Alan
+            // En doğru yöntem: Toplam derz hacmi (m³) = (Toplam fayans alanı + derz alanı) * (derz dolgu kalınlığı) - (fayans hacmi)
+            // Veya daha basit: Harç Hacmi = toplam alan * derz dolgu miktarının birim alana oranı
+            // Yaygın formül: Derz Dolgu (kg) = (Fayans_Uzunluk_cm + Fayans_Genislik_cm) / (Fayans_Uzunluk_cm * Fayans_Genislik_cm) * Derz_Kalınlık_mm * Derz_Dolgu_Katsayısı(ör. 1.7)
+            // Sizin HTML'de verilen formüle yakın bir versiyon:
+            // Grout (kg) = ( (Tile Length (m) + Tile Width (m)) / (Tile Length (m) × Tile Width (m)) ) × Joint Thickness (m) × Grout Density (kg/m³) × Total Area (m²) × (1 + Grout Waste Rate / 100)
+            // Ek olarak, fayans kalınlığı da etkilidir.
+            
+            let groutNeeded = ((tileLengthM + tileWidthM) / (tileLengthM * tileWidthM));
+            groutNeeded *= jointWidth; // Joint thickness (m)
+            groutNeeded *= tileThicknessM; // Tile thickness (m)
+            groutNeeded *= groutDensity; // kg/m³
+            groutNeeded *= totalArea; // total area m²
+            groutNeeded *= (1 + groutWastageFactor);
+
+            // --- Display Results ---
+            tileAmountResultDiv.innerHTML = `
+                <h4>${currentTexts.resultTitle}</h4>
+                <div class="result-item"><strong>${currentTexts.totalArea}</strong> <span class="result-value">${totalArea.toFixed(2)} ${currentTexts.unit_m2}</span></div>
+                <div class="result-item"><strong>${currentTexts.numberOfTiles}</strong> <span class="result-value">${numberOfTiles.toLocaleString(isEnglishPage ? 'en-US' : 'tr-TR', { maximumFractionDigits: 0 })} ${currentTexts.unit_adet}</span></div>
+                <div class="result-item"><strong>${currentTexts.adhesiveNeeded}</strong> <span class="result-value">${adhesiveNeeded.toFixed(2)} ${currentTexts.unit_kg}</span></div>
+                <div class="result-item"><strong>${currentTexts.groutNeeded}</strong> <span class="result-value">${groutNeeded.toFixed(2)} ${currentTexts.unit_kg}</span></div>
+            `;
+            tileAmountResultDiv.style.display = 'block';
+        });
+    });
+</script>
  </body>
 </html>

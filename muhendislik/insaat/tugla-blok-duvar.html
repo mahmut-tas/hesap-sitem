@@ -807,5 +807,330 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Malzemeleri Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                errorZeroDimension: 'Duvar veya tuğla/blok boyutları sıfır olamaz.',
+                errorWallLengthHeight: 'Duvar uzunluğu ve yüksekliği pozitif olmalıdır.',
+                errorBrickDimensions: 'Tuğla/blok boyutları pozitif olmalıdır.',
+                errorJointThickness: 'Derz kalınlıkları pozitif olmalıdır.',
+                errorMortarRatio: 'Harç oranları pozitif olmalıdır.',
+                errorWastageFactor: 'Fire oranları 0 ile 100 arasında olmalıdır.',
+                resultTitle: 'Gerekli Malzemeler:',
+                // Sonuç Çıktıları
+                wallArea: 'Duvar Alanı:',
+                numberOfBricks: 'Tuğla/Blok Adedi:',
+                totalMortarVolume: 'Toplam Harç Hacmi:',
+                cementNeeded: 'Çimento Miktarı:',
+                sandNeeded: 'Kum Miktarı:',
+                waterNeeded: 'Su Miktarı:',
+                // Birimler
+                unit_m: 'm',
+                unit_cm: 'cm',
+                unit_mm: 'mm',
+                unit_m2: 'm²',
+                unit_adet: 'adet',
+                unit_m3: 'm³',
+                unit_kg: 'kg',
+                unit_litre: 'litre',
+                unit_ft: 'ft',
+                unit_inch: 'inç',
+                unit_percent: '%',
+                // Advanced Options
+                advancedSettings: 'Gelişmiş Ayarlar (Harç Oranları ve Fire)',
+                mortarMixRatios: 'Harç Karışım Oranları (1 m³ Harç için)',
+                selectMortarRatio: 'Harç Oranını Seçin:',
+                customMortar: 'Özel Oranları Girin',
+                cementPerM3Mortar: 'Çimento (kg/m³ Harç):',
+                sandPerM3Mortar: 'Kum (m³/m³ Harç):',
+                waterPerM3Mortar: 'Su (litre/m³ Harç):',
+                wasteRates: 'Fire Oranları',
+                brickWastage: 'Tuğla/Blok Fire Oranı (%):',
+                brickWastageInfo: 'Tuğla/blok kırılması veya zayiatı için eklenen yüzde.',
+                mortarWastage: 'Harç Fire Oranı (%):',
+                mortarWastageInfo: 'Harç dökülmesi veya artıkları için eklenen yüzde.'
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate Ingredients',
+                invalidInput: 'Please enter valid positive numbers for all fields.',
+                errorZeroDimension: 'Wall or brick/block dimensions cannot be zero.',
+                errorWallLengthHeight: 'Wall length and height must be positive.',
+                errorBrickDimensions: 'Brick/block dimensions must be positive.',
+                errorJointThickness: 'Joint thicknesses must be positive.',
+                errorMortarRatio: 'Mortar ratios must be positive.',
+                errorWastageFactor: 'Wastage factors must be between 0 and 100.',
+                resultTitle: 'Required Materials:',
+                // Result Outputs
+                wallArea: 'Wall Area:',
+                numberOfBricks: 'Number of Bricks/Blocks:',
+                totalMortarVolume: 'Total Mortar Volume:',
+                cementNeeded: 'Cement Needed:',
+                sandNeeded: 'Sand Needed:',
+                waterNeeded: 'Water Needed:',
+                // Units
+                unit_m: 'm',
+                unit_cm: 'cm',
+                unit_mm: 'mm',
+                unit_m2: 'm²',
+                unit_adet: 'units',
+                unit_m3: 'm³',
+                unit_kg: 'kg',
+                unit_litre: 'liters',
+                unit_ft: 'ft',
+                unit_inch: 'inch',
+                unit_percent: '%',
+                // Advanced Options
+                advancedSettings: 'Advanced Settings (Mortar Ratios and Waste)',
+                mortarMixRatios: 'Mortar Mix Ratios (per 1 m³ Mortar)',
+                selectMortarRatio: 'Select Mortar Ratio:',
+                customMortar: 'Enter Custom Ratios',
+                cementPerM3Mortar: 'Cement (kg/m³ Mortar):',
+                sandPerM3Mortar: 'Sand (m³/m³ Mortar):',
+                waterPerM3Mortar: 'Water (liters/m³ Mortar):',
+                wasteRates: 'Waste Rates',
+                brickWastage: 'Brick/Block Waste Rate (%):',
+                brickWastageInfo: 'Percentage added for brick/block breakage or waste.',
+                mortarWastage: 'Mortar Waste Rate (%):',
+                mortarWastageInfo: 'Percentage added for mortar spillage or residue.'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // --- Helper Functions ---
+        // Uzunluk birimlerini metreye dönüştürme faktörleri
+        const LENGTH_TO_METER = {
+            'm': 1,
+            'cm': 0.01,
+            'mm': 0.001,
+            'ft': 0.3048,
+            'inch': 0.0254
+        };
+
+        // Kütle birimlerini kilograma dönüştürme faktörleri
+        const MASS_TO_KG = {
+            'kg': 1,
+            'g': 0.001,
+            'lb': 0.453592
+        };
+
+        // Belirli tuğla/blok tipleri ve boyutları (metre cinsinden)
+        const BRICK_TYPES = {
+            'standart_tugla': { length: 0.19, width: 0.09, height: 0.135 },
+            'delikli_tugla': { length: 0.19, width: 0.19, height: 0.135 },
+            'bims_blok_20': { length: 0.39, width: 0.20, height: 0.19 }, // Genişlik 20cm için uzunluk 39cm, yükseklik 19cm
+            'gazbeton_blok_10': { length: 0.60, width: 0.10, height: 0.25 } // Uzunluk 60cm, genişlik 10cm, yükseklik 25cm
+        };
+
+        // Harç karışım oranları (1 m³ harç için)
+        // [Çimento (kg), Kum (m³), Su (litre)]
+        const MORTAR_RATIOS = {
+            '1_3': { cement: 400, sand: 1.0, water: 200 }, // Örnek değerler, gerçek değerler değişebilir
+            '1_4': { cement: 300, sand: 1.0, water: 175 },
+            '1_5': { cement: 250, sand: 1.0, water: 150 }
+        };
+
+        // --- DOM Elements ---
+        const brickBlockWallForm = document.getElementById('brickBlockWallForm');
+        const brickBlockWallResultDiv = document.getElementById('brickBlockWallResult');
+
+        const wallLengthInput = document.getElementById('wallLength');
+        const wallLengthUnitSelect = document.getElementById('wallLengthUnit');
+        const wallHeightInput = document.getElementById('wallHeight');
+        const wallHeightUnitSelect = document.getElementById('wallHeightUnit');
+
+        const brickTypeSelect = document.getElementById('brickTypeSelect');
+        const brickLengthInput = document.getElementById('brickLength');
+        const brickWidthInput = document.getElementById('brickWidth');
+        const brickHeightInput = document.getElementById('brickHeight');
+        const brickLengthUnitSelect = document.getElementById('brickLengthUnit');
+        const brickWidthUnitSelect = document.getElementById('brickWidthUnit');
+        const brickHeightUnitSelect = document.getElementById('brickHeightUnit');
+
+        const mortarJointHorizontalInput = document.getElementById('mortarJointHorizontal');
+        const mortarJointVerticalInput = document.getElementById('mortarJointVertical');
+
+        const toggleAdvancedOptionsButton = document.getElementById('toggleAdvancedOptions');
+        const advancedOptionsContent = document.getElementById('advancedOptionsContent');
+
+        const mortarRatioSelect = document.getElementById('mortarRatioSelect');
+        const cementPerM3MortarInput = document.getElementById('cementPerM3Mortar');
+        const sandPerM3MortarInput = document.getElementById('sandPerM3Mortar');
+        const waterPerM3MortarInput = document.getElementById('waterPerM3Mortar');
+
+        const brickWastageFactorInput = document.getElementById('brickWastageFactor');
+        const mortarWastageFactorInput = document.getElementById('mortarWastageFactor');
+
+        // --- Event Listeners ---
+
+        // Advanced Options toggle
+        toggleAdvancedOptionsButton.addEventListener('click', function() {
+            advancedOptionsContent.classList.toggle('hidden-section');
+            toggleAdvancedOptionsButton.classList.toggle('active');
+            toggleAdvancedOptionsButton.innerHTML = advancedOptionsContent.classList.contains('hidden-section') ?
+                `<i class="fas fa-cogs"></i> ${currentTexts.advancedSettings}` :
+                `<i class="fas fa-cogs"></i> ${currentTexts.advancedSettings}`; // Aynı kalabilir veya farklı metin olabilir
+        });
+
+        // Brick Type selection logic
+        brickTypeSelect.addEventListener('change', function() {
+            const selectedType = this.value;
+            if (selectedType === 'custom') {
+                brickLengthInput.disabled = false;
+                brickWidthInput.disabled = false;
+                brickHeightInput.disabled = false;
+            } else {
+                const dimensions = BRICK_TYPES[selectedType];
+                // Metre cinsinden değerleri inputlara yansıtalım
+                brickLengthInput.value = dimensions.length;
+                brickWidthInput.value = dimensions.width;
+                brickHeightInput.value = dimensions.height;
+
+                // Birimleri de metre olarak ayarlayalım, kullanıcının değiştirmesini engellemeyelim
+                brickLengthUnitSelect.value = 'm';
+                brickWidthUnitSelect.value = 'm';
+                brickHeightUnitSelect.value = 'm';
+
+                brickLengthInput.disabled = true;
+                brickWidthInput.disabled = true;
+                brickHeightInput.disabled = true;
+            }
+        });
+        // Initial call to set defaults
+        brickTypeSelect.dispatchEvent(new Event('change'));
+
+        // Mortar Ratio selection logic
+        mortarRatioSelect.addEventListener('change', function() {
+            const selectedRatio = this.value;
+            if (selectedRatio === 'custom_mortar') {
+                cementPerM3MortarInput.disabled = false;
+                sandPerM3MortarInput.disabled = false;
+                waterPerM3MortarInput.disabled = false;
+            } else {
+                const ratios = MORTAR_RATIOS[selectedRatio];
+                cementPerM3MortarInput.value = ratios.cement;
+                sandPerM3MortarInput.value = ratios.sand;
+                waterPerM3MortarInput.value = ratios.water;
+
+                cementPerM3MortarInput.disabled = true;
+                sandPerM3MortarInput.disabled = true;
+                waterPerM3MortarInput.disabled = true;
+            }
+        });
+        // Initial call to set defaults
+        mortarRatioSelect.dispatchEvent(new Event('change'));
+
+
+        // Main form submission
+        brickBlockWallForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // --- Get Input Values and Convert to Base Units (meters, kg, liters) ---
+            const wallLength = parseFloat(wallLengthInput.value) * LENGTH_TO_METER[wallLengthUnitSelect.value];
+            const wallHeight = parseFloat(wallHeightInput.value) * LENGTH_TO_METER[wallHeightUnitSelect.value];
+
+            const brickLength = parseFloat(brickLengthInput.value) * LENGTH_TO_METER[brickLengthUnitSelect.value];
+            const brickWidth = parseFloat(brickWidthInput.value) * LENGTH_TO_METER[brickWidthUnitSelect.value];
+            const brickHeight = parseFloat(brickHeightInput.value) * LENGTH_TO_METER[brickHeightUnitSelect.value];
+
+            // Harç derz kalınlıkları (cm'den metreye)
+            const mortarJointHorizontal = parseFloat(mortarJointHorizontalInput.value) / 100; // cm to meter
+            const mortarJointVertical = parseFloat(mortarJointVerticalInput.value) / 100;     // cm to meter
+
+            const cementPerM3Mortar = parseFloat(cementPerM3MortarInput.value);
+            const sandPerM3Mortar = parseFloat(sandPerM3MortarInput.value);
+            const waterPerM3Mortar = parseFloat(waterPerM3MortarInput.value);
+
+            const brickWastageFactor = parseFloat(brickWastageFactorInput.value) / 100; // % to decimal
+            const mortarWastageFactor = parseFloat(mortarWastageFactorInput.value) / 100; // % to decimal
+
+            // --- Input Validation ---
+            if (isNaN(wallLength) || isNaN(wallHeight) || wallLength <= 0 || wallHeight <= 0) {
+                brickBlockWallResultDiv.innerHTML = `<p class="error">${currentTexts.errorWallLengthHeight}</p>`;
+                brickBlockWallResultDiv.style.display = 'block';
+                return;
+            }
+            if (isNaN(brickLength) || isNaN(brickWidth) || isNaN(brickHeight) || brickLength <= 0 || brickWidth <= 0 || brickHeight <= 0) {
+                brickBlockWallResultDiv.innerHTML = `<p class="error">${currentTexts.errorBrickDimensions}</p>`;
+                brickBlockWallResultDiv.style.display = 'block';
+                return;
+            }
+            if (isNaN(mortarJointHorizontal) || isNaN(mortarJointVertical) || mortarJointHorizontal < 0 || mortarJointVertical < 0) {
+                brickBlockWallResultDiv.innerHTML = `<p class="error">${currentTexts.errorJointThickness}</p>`;
+                brickBlockWallResultDiv.style.display = 'block';
+                return;
+            }
+            if (isNaN(cementPerM3Mortar) || isNaN(sandPerM3Mortar) || isNaN(waterPerM3Mortar) ||
+                cementPerM3Mortar <= 0 || sandPerM3Mortar <= 0 || waterPerM3Mortar <= 0) {
+                brickBlockWallResultDiv.innerHTML = `<p class="error">${currentTexts.errorMortarRatio}</p>`;
+                brickBlockWallResultDiv.style.display = 'block';
+                return;
+            }
+             if (isNaN(brickWastageFactor) || isNaN(mortarWastageFactor) ||
+                brickWastageFactor < 0 || brickWastageFactor > 1 || mortarWastageFactor < 0 || mortarWastageFactor > 1) {
+                brickBlockWallResultDiv.innerHTML = `<p class="error">${currentTexts.errorWastageFactor}</p>`;
+                brickBlockWallResultDiv.style.display = 'block';
+                return;
+            }
+
+            // --- Calculations ---
+
+            // Duvar alanı (m²)
+            const wallArea = wallLength * wallHeight;
+
+            // Harç dahil tek tuğla/blok alanı (m²)
+            const effectiveBrickLength = brickLength + mortarJointHorizontal;
+            const effectiveBrickHeight = brickHeight + mortarJointVertical;
+            const effectiveBrickArea = effectiveBrickLength * effectiveBrickHeight;
+
+            // 1 m² alana düşen tuğla/blok adedi
+            const bricksPerM2 = 1 / effectiveBrickArea;
+            
+            // Toplam tuğla/blok adedi (fire dahil)
+            let totalBricks = wallArea * bricksPerM2;
+            totalBricks *= (1 + brickWastageFactor); // Fire oranı ekle
+            totalBricks = Math.ceil(totalBricks); // Tam tuğla/blok adedi için yukarı yuvarla
+
+            // Her bir tuğla/blok için harç hacmi (m³)
+            // (Etkili tuğla hacmi - Tuğla katı hacmi) / 1000 => m3 cinsinden
+            const brickVolume = brickLength * brickWidth * brickHeight;
+            const effectiveVolumePerBrick = effectiveBrickLength * brickWidth * effectiveBrickHeight;
+            const mortarVolumePerBrick = effectiveVolumePerBrick - brickVolume;
+
+
+            // Toplam harç hacmi (m³) (fire dahil)
+            let totalMortarVolume = totalBricks * mortarVolumePerBrick; // Toplam tuğla adedi ile çarparız
+            totalMortarVolume *= (1 + mortarWastageFactor); // Fire oranı ekle
+
+
+            // Harç malzemeleri
+            const cementNeeded_kg = totalMortarVolume * cementPerM3Mortar;
+            const sandNeeded_m3 = totalMortarVolume * sandPerM3Mortar;
+            const waterNeeded_liters = totalMortarVolume * waterPerM3Mortar;
+
+            // --- Display Results ---
+            brickBlockWallResultDiv.innerHTML = `
+                <h4>${currentTexts.resultTitle}</h4>
+                <div class="result-item"><strong>${currentTexts.wallArea}</strong> <span class="result-value">${wallArea.toFixed(2)} ${currentTexts.unit_m2}</span></div>
+                <div class="result-item"><strong>${currentTexts.numberOfBricks}</strong> <span class="result-value">${totalBricks.toLocaleString(isEnglishPage ? 'en-US' : 'tr-TR', { maximumFractionDigits: 0 })} ${currentTexts.unit_adet}</span></div>
+                <div class="result-item"><strong>${currentTexts.totalMortarVolume}</strong> <span class="result-value">${totalMortarVolume.toFixed(3)} ${currentTexts.unit_m3}</span></div>
+                <div class="result-item"><strong>${currentTexts.cementNeeded}</strong> <span class="result-value">${cementNeeded_kg.toFixed(2)} ${currentTexts.unit_kg}</span></div>
+                <div class="result-item"><strong>${currentTexts.sandNeeded}</strong> <span class="result-value">${sandNeeded_m3.toFixed(3)} ${currentTexts.unit_m3}</span></div>
+                <div class="result-item"><strong>${currentTexts.waterNeeded}</strong> <span class="result-value">${waterNeeded_liters.toFixed(2)} ${currentTexts.unit_litre}</span></div>
+            `;
+            brickBlockWallResultDiv.style.display = 'block';
+        });
+    });
+</script>
  </body>
 </html>

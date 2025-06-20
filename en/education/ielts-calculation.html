@@ -652,5 +652,172 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                listeningRawLabel: 'Listening Doğru Cevap Sayısı (Max 40):',
+                readingRawLabel: 'Reading Doğru Cevap Sayısı (Max 40):',
+                writingBandLabel: 'Writing Puanınız (0.0 - 9.0):',
+                speakingBandLabel: 'Speaking Puanınız (0.0 - 9.0):',
+                selectScore: 'Puan Seçin',
+                calculateOverall: 'Genel Puanı Hesapla',
+                estimatedListening: 'Tahmini Listening Bant Puanınız:',
+                estimatedReading: 'Tahmini Reading Bant Puanınız:',
+                writingBandScore: 'Writing Bant Puanınız:',
+                speakingBandScore: 'Speaking Bant Puanınız:',
+                overallBandScore: 'Genel IELTS Bant Puanınız:',
+                invalidInput: 'Lütfen tüm alanlara geçerli değerler girin.',
+                scoreRange: '0.0 - 9.0 arasında bir puan girin.',
+                dataNotAvailable: 'Veri yok' // For potential future use or errors
+            },
+            en: {
+                listeningRawLabel: 'Listening Correct Answers (Max 40):',
+                readingRawLabel: 'Reading Correct Answers (Max 40):',
+                writingBandLabel: 'Writing Band Score (0.0 - 9.0):',
+                speakingBandLabel: 'Speaking Band Score (0.0 - 9.0):',
+                selectScore: 'Select Score',
+                calculateOverall: 'Calculate Overall Band Score',
+                estimatedListening: 'Estimated Listening Band Score:',
+                estimatedReading: 'Estimated Reading Band Score:',
+                writingBandScore: 'Writing Band Score:',
+                speakingBandScore: 'Speaking Band Score:',
+                overallBandScore: 'Overall IELTS Band Score:',
+                invalidInput: 'Please enter valid values for all fields.',
+                scoreRange: 'Please enter a score between 0.0 and 9.0.',
+                dataNotAvailable: 'Data not available'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // Hesaplayıcı butonları ve içerikleri
+        const calcButtons = document.querySelectorAll('.calc-type-button');
+        const calcWrappers = document.querySelectorAll('.calc-wrapper');
+
+        // Hesaplayıcıları gizleme/gösterme işlevi
+        function showCalculator(calcType) {
+            calcWrappers.forEach(wrapper => {
+                if (wrapper.id === `calculator-${calcType}`) {
+                    wrapper.classList.remove('hidden-calc');
+                } else {
+                    wrapper.classList.add('hidden-calc');
+                }
+            });
+
+            calcButtons.forEach(button => {
+                if (button.dataset.calcType === calcType) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        // Butonlara click eventi ekleme
+        calcButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const calcType = this.dataset.calcType;
+                showCalculator(calcType);
+            });
+        });
+
+        // Sayfa yüklendiğinde varsayılan olarak ilk hesaplayıcıyı göster
+        showCalculator('ielts-general-score');
+
+        // Listening ve Reading Ham Puanı Bant Puanına Çevirme Fonksiyonu
+        function convertRawToBand(rawScore, sectionType) {
+            // Bu dönüşüm tablosu IELTS'in resmi rehberlerinden alınan yaklaşık değerlerdir.
+            // Sınavın zorluğuna göre küçük sapmalar gösterebilir.
+            const bandScores = {
+                listening: {
+                    // Raw Score: Band Score
+                    '0-1': 2.5, '2-3': 3.0, '4-5': 3.5, '6-7': 4.0, '8-9': 4.5,
+                    '10-12': 5.0, '13-15': 5.5, '16-19': 6.0, '20-22': 6.5,
+                    '23-26': 7.0, '27-29': 7.5, '30-32': 8.0, '33-35': 8.5,
+                    '36-40': 9.0
+                },
+                reading: { // Academic Reading (Genel Eğitim Reading biraz farklı olabilir)
+                    '0-1': 2.5, '2-3': 3.0, '4-5': 3.5, '6-7': 4.0, '8-9': 4.5,
+                    '10-12': 5.0, '13-15': 5.5, '16-19': 6.0, '20-22': 6.5,
+                    '23-26': 7.0, '27-29': 7.5, '30-32': 8.0, '33-35': 8.5,
+                    '36-40': 9.0
+                }
+            };
+
+            const ranges = Object.keys(bandScores[sectionType]);
+            for (const range of ranges) {
+                const [min, max] = range.split('-').map(Number);
+                if (rawScore >= min && rawScore <= max) {
+                    return bandScores[sectionType][range];
+                }
+            }
+            return 0.0; // Varsayılan veya geçersiz durum
+        }
+
+        // IELTS Genel Bant Puanı Yuvarlama Fonksiyonu
+        function roundIELTSBand(score) {
+            const decimalPart = score - Math.floor(score);
+            if (decimalPart < 0.25) {
+                return Math.floor(score);
+            } else if (decimalPart >= 0.25 && decimalPart < 0.75) {
+                return Math.floor(score) + 0.5;
+            } else { // decimalPart >= 0.75
+                return Math.ceil(score);
+            }
+        }
+
+
+        // --- IELTS Genel Bant Puanı Hesaplama ---
+        const formIeltsGeneralScore = document.getElementById('formIeltsGeneralScore');
+        const resultIeltsGeneralScore = document.getElementById('resultIeltsGeneralScore');
+
+        formIeltsGeneralScore.addEventListener('submit', function(event) {
+            event.preventDefault(); // Formun varsayılan submit davranışını engelle
+
+            const listeningRawScore = parseInt(document.getElementById('listeningRawScore').value);
+            const readingRawScore = parseInt(document.getElementById('readingRawScore').value);
+            const writingBandScore = parseFloat(document.getElementById('writingBandScore').value);
+            const speakingBandScore = parseFloat(document.getElementById('speakingBandScore').value);
+
+            // Giriş doğrulaması
+            if (isNaN(listeningRawScore) || isNaN(readingRawScore) || isNaN(writingBandScore) || isNaN(speakingBandScore) ||
+                listeningRawScore < 0 || listeningRawScore > 40 ||
+                readingRawScore < 0 || readingRawScore > 40 ||
+                writingBandScore < 0 || writingBandScore > 9 ||
+                speakingBandScore < 0 || speakingBandScore > 9) {
+                resultIeltsGeneralScore.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                resultIeltsGeneralScore.style.display = 'block';
+                return;
+            }
+
+            const listeningBand = convertRawToBand(listeningRawScore, 'listening');
+            const readingBand = convertRawToBand(readingRawScore, 'reading');
+
+            const totalScore = (listeningBand + readingBand + writingBandScore + speakingBandScore) / 4;
+            const overallBand = roundIELTSBand(totalScore);
+
+            resultIeltsGeneralScore.innerHTML = `
+                <p>${currentTexts.estimatedListening} <strong>${listeningBand.toFixed(1)}</strong></p>
+                <p>${currentTexts.estimatedReading} <strong>${readingBand.toFixed(1)}</strong></p>
+                <p>${currentTexts.writingBandScore} <strong>${writingBandScore.toFixed(1)}</strong></p>
+                <p>${currentTexts.speakingBandScore} <strong>${speakingBandScore.toFixed(1)}</strong></p>
+                <p>${currentTexts.overallBandScore} <span class="result-value">${overallBand.toFixed(1)}</span></p>
+            `;
+            resultIeltsGeneralScore.style.display = 'block';
+        });
+
+        // NOT: IELTS sayfasında ayrı bir Yüzdelik Dilim veya AWA hesaplayıcısı yok.
+        // Sadece Genel Bant Puanı Hesaplama ve Bilgi bölümleri var.
+        // Bu yüzden, HTML'deki "ielts-info" bölümü için ayrı bir form veya hesaplama mantığı eklenmedi.
+        // Sadece butonlar arası geçişi yöneten `showCalculator` fonksiyonu tarafından ele alınır.
+
+    });
+</script>
  </body>
 </html>

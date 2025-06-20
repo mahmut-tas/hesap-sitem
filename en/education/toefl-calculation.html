@@ -528,5 +528,167 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                readingRawLabel: 'Reading Doğru Cevap Sayısı (Max 30):',
+                listeningRawLabel: 'Listening Doğru Cevap Sayısı (Max 28-39):',
+                listeningInfo: '*Listening soru sayısı testten teste değişebilir (28-39 arası).',
+                speakingScoreLabel: 'Speaking Puanınız (0 - 30):',
+                writingScoreLabel: 'Writing Puanınız (0 - 30):',
+                selectScore: 'Puan Seçin',
+                calculateOverall: 'Genel Puanı Hesapla',
+                estimatedReading: 'Tahmini Reading Puanınız:',
+                estimatedListening: 'Tahmini Listening Puanınız:',
+                speakingScoreDisplay: 'Speaking Puanınız:',
+                writingScoreDisplay: 'Writing Puanınız:',
+                overallScore: 'Genel TOEFL iBT Puanınız:',
+                invalidInput: 'Lütfen tüm alanlara geçerli değerler girin.',
+                dataNotAvailable: 'Veri yok'
+            },
+            en: {
+                readingRawLabel: 'Reading Correct Answers (Max 30):',
+                listeningRawLabel: 'Listening Correct Answers (Max 28-39):',
+                listeningInfo: '*Listening question count may vary (28-39) per test.',
+                speakingScoreLabel: 'Speaking Score (0 - 30):',
+                writingScoreLabel: 'Writing Score (0 - 30):',
+                selectScore: 'Select Score',
+                calculateOverall: 'Calculate Overall Score',
+                estimatedReading: 'Estimated Reading Score:',
+                estimatedListening: 'Estimated Listening Score:',
+                speakingScoreDisplay: 'Speaking Score:',
+                writingScoreDisplay: 'Writing Score:',
+                overallScore: 'Overall TOEFL iBT Score:',
+                invalidInput: 'Please enter valid values for all fields.',
+                dataNotAvailable: 'Data not available'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // Hesaplayıcı butonları ve içerikleri
+        const calcButtons = document.querySelectorAll('.calc-type-button');
+        const calcWrappers = document.querySelectorAll('.calc-wrapper');
+
+        // Function to show/hide calculators
+        function showCalculator(calcType) {
+            calcWrappers.forEach(wrapper => {
+                if (wrapper.id === `calculator-${calcType}`) {
+                    wrapper.classList.remove('hidden-calc');
+                } else {
+                    wrapper.classList.add('hidden-calc');
+                }
+            });
+
+            calcButtons.forEach(button => {
+                if (button.dataset.calcType === calcType) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        // Add click event to buttons
+        calcButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const calcType = this.dataset.calcType;
+                showCalculator(calcType);
+            });
+        });
+
+        // Sayfa yüklendiğinde varsayılan olarak ilk hesaplayıcıyı göster
+        showCalculator('toefl-general-score');
+
+        // Dinamik olarak Speaking ve Writing puan seçeneklerini doldurma
+        function populateScoreSelects() {
+            const speakingSelect = document.getElementById('speakingScore');
+            const writingSelect = document.getElementById('writingScore');
+
+            // Clear existing options, but keep "Select Score"
+            speakingSelect.innerHTML = `<option value="">${currentTexts.selectScore}</option>`;
+            writingSelect.innerHTML = `<option value="">${currentTexts.selectScore}</option>`;
+
+            for (let i = 0; i <= 30; i++) {
+                const optionSpeaking = document.createElement('option');
+                optionSpeaking.value = i.toString();
+                optionSpeaking.textContent = i.toString();
+                speakingSelect.appendChild(optionSpeaking);
+
+                const optionWriting = document.createElement('option');
+                optionWriting.value = i.toString();
+                optionWriting.textContent = i.toString();
+                writingSelect.appendChild(optionWriting);
+            }
+        }
+        populateScoreSelects(); // Sayfa yüklendiğinde seçenekleri doldur
+
+        // --- TOEFL iBT Genel Puan Hesaplama ---
+        const formToeflGeneralScore = document.getElementById('formToeflGeneralScore');
+        const resultToeflGeneralScore = document.getElementById('resultToeflGeneralScore');
+
+        // Reading ve Listening ham puanı skor bandına dönüştürme fonksiyonu
+        // Bu tablolar ETS'nin yayımladığı genel bilgilere dayanır ve testten testte değişebilir.
+        function convertRawToScaled(rawScore, sectionType) {
+            const scoreMap = {
+                reading: { // Max 30 doğru cevap
+                    0:0, 1:0, 2:0, 3:1, 4:2, 5:3, 6:4, 7:5, 8:6, 9:7, 10:8, 11:9, 12:10, 13:11, 14:12, 15:13, 16:14, 17:15, 18:16, 19:17, 20:18, 21:19, 22:20, 23:21, 24:22, 25:23, 26:24, 27:25, 28:26, 29:28, 30:30
+                },
+                listening: { // Max 39 doğru cevap (örnektir, kesin tablo değişebilir)
+                    0:0, 1:0, 2:0, 3:1, 4:2, 5:3, 6:4, 7:5, 8:6, 9:7, 10:8, 11:9, 12:10, 13:11, 14:12, 15:13, 16:14, 17:15, 18:16, 19:17, 20:18, 21:19, 22:20, 23:21, 24:22, 25:23, 26:24, 27:25, 28:26, 29:27, 30:28, 31:29, 32:29, 33:30, 34:30, 35:30, 36:30, 37:30, 38:30, 39:30 // Kaba bir tahmin
+                }
+            };
+            return scoreMap[sectionType][rawScore] !== undefined ? scoreMap[sectionType][rawScore] : 0;
+        }
+
+
+        formToeflGeneralScore.addEventListener('submit', function(event) {
+            event.preventDefault(); // Formun varsayılan submit davranışını engelle
+
+            const readingRawScore = parseInt(document.getElementById('readingRawScore').value);
+            const listeningRawScore = parseInt(document.getElementById('listeningRawScore').value);
+            const speakingScore = parseInt(document.getElementById('speakingScore').value);
+            const writingScore = parseInt(document.getElementById('writingScore').value);
+
+            // Giriş doğrulaması
+            // listeningRawScore max değeri 39, Reading 30'a güncellendi.
+            if (isNaN(readingRawScore) || isNaN(listeningRawScore) || isNaN(speakingScore) || isNaN(writingScore) ||
+                readingRawScore < 0 || readingRawScore > 30 ||
+                listeningRawScore < 0 || listeningRawScore > 39 || // Listening max değeri 39'a güncellendi
+                speakingScore < 0 || speakingScore > 30 ||
+                writingScore < 0 || writingScore > 30) {
+                resultToeflGeneralScore.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                resultToeflGeneralScore.style.display = 'block';
+                return;
+            }
+
+            const readingScaledScore = convertRawToScaled(readingRawScore, 'reading');
+            const listeningScaledScore = convertRawToScaled(listeningRawScore, 'listening');
+
+            const totalToeflScore = readingScaledScore + listeningScaledScore + speakingScore + writingScore;
+
+            resultToeflGeneralScore.innerHTML = `
+                <p>${currentTexts.estimatedReading} <strong>${readingScaledScore}</strong></p>
+                <p>${currentTexts.estimatedListening} <strong>${listeningScaledScore}</strong></p>
+                <p>${currentTexts.speakingScoreDisplay} <strong>${speakingScore}</strong></p>
+                <p>${currentTexts.writingScoreDisplay} <strong>${writingScore}</strong></p>
+                <p>${currentTexts.overallScore} <span class="result-value">${totalToeflScore}</span></p>
+            `;
+            resultToeflGeneralScore.style.display = 'block';
+        });
+
+        // NOT: TOEFL sayfasında ayrı bir Yüzdelik Dilim veya farklı bir hesaplayıcı yok.
+        // Sadece Genel Puan Hesaplama ve Bilgi bölümleri var.
+        // Bu yüzden, HTML'deki "toefl-info" bölümü için ayrı bir form veya hesaplama mantığı eklenmedi.
+        // Sadece butonlar arası geçişi yöneten `showCalculator` fonksiyonu tarafından ele alınır.
+
+    });
+</script>
  </body>
 </html>

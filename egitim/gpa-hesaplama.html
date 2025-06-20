@@ -785,5 +785,149 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                quantScore: 'Tahmini Quantitative Reasoning Puanınız:',
+                verbalScore: 'Tahmini Verbal Reasoning Puanınız:',
+                dataInsightsScore: 'Tahmini Data Insights Puanınız:',
+                totalScore: 'Tahmini Toplam GMAT Focus Puanınız:',
+                percentile: 'Tahmini Yüzdelik Diliminiz:',
+                dataNotAvailable: 'Veri yok'
+            },
+            en: {
+                quantScore: 'Estimated Quantitative Reasoning Score:',
+                verbalScore: 'Estimated Verbal Reasoning Score:',
+                dataInsightsScore: 'Estimated Data Insights Score:',
+                totalScore: 'Estimated Total GMAT Focus Score:',
+                percentile: 'Estimated Percentile Rank:',
+                dataNotAvailable: 'Data not available'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // Calculator buttons and wrappers
+        const calcButtons = document.querySelectorAll('.calc-type-button');
+        const calcWrappers = document.querySelectorAll('.calc-wrapper');
+
+        // Function to show/hide calculators
+        function showCalculator(calcType) {
+            calcWrappers.forEach(wrapper => {
+                if (wrapper.id === `calculator-${calcType}`) {
+                    wrapper.classList.remove('hidden-calc');
+                } else {
+                    wrapper.classList.add('hidden-calc');
+                }
+            });
+
+            calcButtons.forEach(button => {
+                if (button.dataset.calcType === calcType) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        // Add click event to buttons
+        calcButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const calcType = this.dataset.calcType;
+                showCalculator(calcType);
+            });
+        });
+
+        // Show the first calculator by default when the page loads
+        showCalculator('gmat-focus-general-score');
+
+        // --- GMAT Focus General Score Calculator ---
+        const formGmatFocusGeneralScore = document.getElementById('formGmatFocusGeneralScore');
+        const resultGmatFocusGeneralScore = document.getElementById('resultGmatFocusGeneralScore');
+
+        formGmatFocusGeneralScore.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const quantCorrect = parseInt(document.getElementById('quantCorrect').value);
+            const verbalCorrect = parseInt(document.getElementById('verbalCorrect').value);
+            const dataInsightsCorrect = parseInt(document.getElementById('dataInsightsCorrect').value);
+
+            // Simple estimated scoring based on correct answers (this is an estimation due to GMAT Focus being adaptive)
+            let estimatedQuantScore;
+            if (quantCorrect >= 19) estimatedQuantScore = '85-90';
+            else if (quantCorrect >= 15) estimatedQuantScore = '75-80';
+            else if (quantCorrect >= 10) estimatedQuantScore = '65-70';
+            else estimatedQuantScore = '60-65';
+
+            let estimatedVerbalScore;
+            if (verbalCorrect >= 21) estimatedVerbalScore = '85-90';
+            else if (verbalCorrect >= 17) estimatedVerbalScore = '75-80';
+            else if (verbalCorrect >= 12) estimatedVerbalScore = '65-70';
+            else estimatedVerbalScore = '60-65';
+
+            let estimatedDataInsightsScore;
+            if (dataInsightsCorrect >= 18) estimatedDataInsightsScore = '85-90';
+            else if (dataInsightsCorrect >= 14) estimatedDataInsightsScore = '75-80';
+            else if (dataInsightsCorrect >= 9) estimatedDataInsightsScore = '65-70';
+            else estimatedDataInsightsScore = '60-65';
+            
+            // Estimate total score (simplified approximation)
+            const avgQuant = (parseInt(estimatedQuantScore.split('-')[0]) + parseInt(estimatedQuantScore.split('-')[1])) / 2;
+            const avgVerbal = (parseInt(estimatedVerbalScore.split('-')[0]) + parseInt(estimatedVerbalScore.split('-')[1])) / 2;
+            const avgDataInsights = (parseInt(estimatedDataInsightsScore.split('-')[0]) + parseInt(estimatedDataInsightsScore.split('-')[1])) / 2;
+            
+            // Convert to 205-805 scale (very rough linear approximation)
+            const totalEstimatedScore = Math.round((avgQuant + avgVerbal + avgDataInsights) / 270 * (805 - 205) + 205);
+            
+            let totalScoreRange = '';
+            if (totalEstimatedScore >= 700) totalScoreRange = '705-805';
+            else if (totalEstimatedScore >= 600) totalScoreRange = '605-705';
+            else if (totalEstimatedScore >= 500) totalScoreRange = '505-605';
+            else if (totalEstimatedScore >= 400) totalScoreRange = '405-505';
+            else totalScoreRange = '205-405';
+
+
+            resultGmatFocusGeneralScore.innerHTML = `
+                <p>${currentTexts.quantScore} <strong>${estimatedQuantScore}</strong></p>
+                <p>${currentTexts.verbalScore} <strong>${estimatedVerbalScore}</strong></p>
+                <p>${currentTexts.dataInsightsScore} <strong>${estimatedDataInsightsScore}</strong></p>
+                <p>${currentTexts.totalScore} <span class="result-value">${totalScoreRange}</span></p>
+            `;
+            resultGmatFocusGeneralScore.style.display = 'block';
+        });
+
+        // --- GMAT Focus Percentile Calculator ---
+        const formGmatFocusPercentile = document.getElementById('formGmatFocusPercentile');
+        const resultGmatFocusPercentile = document.getElementById('resultGmatFocusPercentile');
+
+        formGmatFocusPercentile.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const totalFocusScore = parseInt(document.getElementById('totalFocusScore').value);
+            let percentile = currentTexts.dataNotAvailable; // Default value based on language
+
+            // Simple mapping based on approximate percentile data (may vary over time)
+            if (totalFocusScore >= 755) percentile = '90-100%';
+            else if (totalFocusScore >= 705) percentile = '80-89%';
+            else if (totalFocusScore >= 655) percentile = '70-79%';
+            else if (totalFocusScore >= 605) percentile = '50-69%';
+            else if (totalFocusScore >= 505) percentile = '20-49%';
+            else if (totalFocusScore >= 405) percentile = '5-19%';
+            else percentile = '0-4%';
+            
+
+            resultGmatFocusPercentile.innerHTML = `
+                <p>${currentTexts.percentile} <span class="result-value">${percentile}</span></p>
+            `;
+            resultGmatFocusPercentile.style.display = 'block';
+        });
+    });
+</script>
  </body>
 </html>

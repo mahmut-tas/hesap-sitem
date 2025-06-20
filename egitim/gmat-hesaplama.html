@@ -559,5 +559,129 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Hesaplayıcı butonları ve içerikleri
+        const calcButtons = document.querySelectorAll('.calc-type-button');
+        const calcWrappers = document.querySelectorAll('.calc-wrapper');
+
+        // Hesaplayıcıları gizleme/gösterme işlevi
+        function showCalculator(calcType) {
+            calcWrappers.forEach(wrapper => {
+                if (wrapper.id === `calculator-${calcType}`) {
+                    wrapper.classList.remove('hidden-calc');
+                } else {
+                    wrapper.classList.add('hidden-calc');
+                }
+            });
+
+            calcButtons.forEach(button => {
+                if (button.dataset.calcType === calcType) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        // Butonlara click eventi ekleme
+        calcButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const calcType = this.dataset.calcType;
+                showCalculator(calcType);
+            });
+        });
+
+        // Sayfa yüklendiğinde varsayılan olarak ilk hesaplayıcıyı göster
+        showCalculator('gmat-focus-general-score');
+
+        // --- GMAT Focus Genel Puan Hesaplama ---
+        const formGmatFocusGeneralScore = document.getElementById('formGmatFocusGeneralScore');
+        const resultGmatFocusGeneralScore = document.getElementById('resultGmatFocusGeneralScore');
+
+        formGmatFocusGeneralScore.addEventListener('submit', function(event) {
+            event.preventDefault(); // Formun varsayılan submit davranışını engelle
+
+            const quantCorrect = parseInt(document.getElementById('quantCorrect').value);
+            const verbalCorrect = parseInt(document.getElementById('verbalCorrect').value);
+            const dataInsightsCorrect = parseInt(document.getElementById('dataInsightsCorrect').value);
+
+            // Basit bir doğru cevap sayısına dayalı tahmini puanlama (GMAT Focus adaptif olduğu için bu sadece bir tahmindir)
+            let estimatedQuantScore;
+            if (quantCorrect >= 19) estimatedQuantScore = '85-90';
+            else if (quantCorrect >= 15) estimatedQuantScore = '75-80';
+            else if (quantCorrect >= 10) estimatedQuantScore = '65-70';
+            else estimatedQuantScore = '60-65';
+
+            let estimatedVerbalScore;
+            if (verbalCorrect >= 21) estimatedVerbalScore = '85-90';
+            else if (verbalCorrect >= 17) estimatedVerbalScore = '75-80';
+            else if (verbalCorrect >= 12) estimatedVerbalScore = '65-70';
+            else estimatedVerbalScore = '60-65';
+
+            let estimatedDataInsightsScore;
+            if (dataInsightsCorrect >= 18) estimatedDataInsightsScore = '85-90';
+            else if (dataInsightsCorrect >= 14) estimatedDataInsightsScore = '75-80';
+            else if (dataInsightsCorrect >= 9) estimatedDataInsightsScore = '65-70';
+            else estimatedDataInsightsScore = '60-65';
+            
+            // Toplam puanı tahmini olarak hesaplama (her bölümden ortalama değer alarak)
+            // Bu kısım oldukça basitleştirilmiştir ve gerçek GMAT puanlamasını yansıtmaz.
+            // Gerçek GMAT algoritması çok daha karmaşıktır.
+            const avgQuant = (parseInt(estimatedQuantScore.split('-')[0]) + parseInt(estimatedQuantScore.split('-')[1])) / 2;
+            const avgVerbal = (parseInt(estimatedVerbalScore.split('-')[0]) + parseInt(estimatedVerbalScore.split('-')[1])) / 2;
+            const avgDataInsights = (parseInt(estimatedDataInsightsScore.split('-')[0]) + parseInt(estimatedDataInsightsScore.split('-')[1])) / 2;
+            
+            // Toplam puan için kaba bir tahmin aralığı (205-805)
+            // Her bölüm 60-90 arası olduğuna göre, 3 bölüm * 60 = 180 (min), 3 * 90 = 270 (max).
+            // GMAC'ın 205-805 aralığına uyarlamak için bir katsayı veya ofset gerekebilir.
+            // Burada basit bir lineer dönüşüm varsayımı yapılıyor.
+            const totalEstimatedScore = Math.round((avgQuant + avgVerbal + avgDataInsights) / 270 * (805 - 205) + 205);
+            
+            let totalScoreRange = '';
+            if (totalEstimatedScore >= 700) totalScoreRange = '705-805';
+            else if (totalEstimatedScore >= 600) totalScoreRange = '605-705';
+            else if (totalEstimatedScore >= 500) totalScoreRange = '505-605';
+            else if (totalEstimatedScore >= 400) totalScoreRange = '405-505';
+            else totalScoreRange = '205-405';
+
+
+            resultGmatFocusGeneralScore.innerHTML = `
+                <p>Tahmini Quantitative Reasoning Puanınız: <strong>${estimatedQuantScore}</strong></p>
+                <p>Tahmini Verbal Reasoning Puanınız: <strong>${estimatedVerbalScore}</strong></p>
+                <p>Tahmini Data Insights Puanınız: <strong>${estimatedDataInsightsScore}</strong></p>
+                <p>Tahmini Toplam GMAT Focus Puanınız: <span class="result-value">${totalScoreRange}</span></p>
+            `;
+            resultGmatFocusGeneralScore.style.display = 'block';
+        });
+
+        // --- GMAT Focus Yüzdelik Dilim Hesaplama ---
+        const formGmatFocusPercentile = document.getElementById('formGmatFocusPercentile');
+        const resultGmatFocusPercentile = document.getElementById('resultGmatFocusPercentile');
+
+        formGmatFocusPercentile.addEventListener('submit', function(event) {
+            event.preventDefault(); // Formun varsayılan submit davranışını engelle
+
+            const totalFocusScore = parseInt(document.getElementById('totalFocusScore').value);
+            let percentile = 'Veri yok'; // Varsayılan değer
+
+            // GMAC'ın yayınladığı yaklaşık yüzdelik dilimlere göre basit bir eşleştirme
+            // Bu veriler zamanla değişebilir ve genel bir tahmindir.
+            if (totalFocusScore >= 755) percentile = '90-100%';
+            else if (totalFocusScore >= 705) percentile = '80-89%';
+            else if (totalFocusScore >= 655) percentile = '70-79%';
+            else if (totalFocusScore >= 605) percentile = '50-69%';
+            else if (totalFocusScore >= 505) percentile = '20-49%';
+            else if (totalFocusScore >= 405) percentile = '5-19%';
+            else percentile = '0-4%';
+            
+
+            resultGmatFocusPercentile.innerHTML = `
+                <p>Tahmini Yüzdelik Diliminiz: <span class="result-value">${percentile}</span></p>
+            `;
+            resultGmatFocusPercentile.style.display = 'block';
+        });
+    });
+</script>
  </body>
 </html>

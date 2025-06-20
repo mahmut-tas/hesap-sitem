@@ -551,5 +551,148 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                verbalCorrectLabel: 'Verbal Reasoning Doğru Cevap Sayısı (Max 27):',
+                quantitativeCorrectLabel: 'Quantitative Reasoning Doğru Cevap Sayısı (Max 27):',
+                calculateButton: 'Puanımı Hesapla',
+                verbalScoreDisplay: 'Tahmini Verbal Reasoning Puanınız:',
+                quantitativeScoreDisplay: 'Tahmini Quantitative Reasoning Puanınız:',
+                totalScoreDisplay: 'Tahmini Toplam GRE Puanınız:',
+                percentileCalculateButton: 'Yüzdelik Dilimi Hesapla',
+                verbalScoreInputLabel: 'Verbal Reasoning Puanınız (130-170):',
+                quantitativeScoreInputLabel: 'Quantitative Reasoning Puanınız (130-170):',
+                percentileDisplay: 'Tahmini Yüzdelik Diliminiz:',
+                dataNotAvailable: 'Veri yok'
+            },
+            en: {
+                verbalCorrectLabel: 'Verbal Reasoning Correct Answers (Max 27):',
+                quantitativeCorrectLabel: 'Quantitative Reasoning Correct Answers (Max 27):',
+                calculateButton: 'Calculate Score',
+                verbalScoreDisplay: 'Estimated Verbal Reasoning Score:',
+                quantitativeScoreDisplay: 'Estimated Quantitative Reasoning Score:',
+                totalScoreDisplay: 'Estimated Total GRE Score:',
+                percentileCalculateButton: 'Calculate Percentile',
+                verbalScoreInputLabel: 'Verbal Reasoning Score (130-170):',
+                quantitativeScoreInputLabel: 'Quantitative Reasoning Score (130-170):',
+                percentileDisplay: 'Estimated Percentile Rank:',
+                dataNotAvailable: 'Data not available'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // Hesaplayıcı butonları ve içerikleri
+        const calcButtons = document.querySelectorAll('.calc-type-button');
+        const calcWrappers = document.querySelectorAll('.calc-wrapper');
+
+        // Hesaplayıcıları gizleme/gösterme işlevi
+        function showCalculator(calcType) {
+            calcWrappers.forEach(wrapper => {
+                if (wrapper.id === `calculator-${calcType}`) {
+                    wrapper.classList.remove('hidden-calc');
+                } else {
+                    wrapper.classList.add('hidden-calc');
+                }
+            });
+
+            calcButtons.forEach(button => {
+                if (button.dataset.calcType === calcType) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        // Butonlara click eventi ekleme
+        calcButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const calcType = this.dataset.calcType;
+                showCalculator(calcType);
+            });
+        });
+
+        // Sayfa yüklendiğinde varsayılan olarak ilk hesaplayıcıyı göster
+        showCalculator('gre-general-score');
+
+        // --- GRE Genel Puan Hesaplama ---
+        const formGreGeneralScore = document.getElementById('formGreGeneralScore');
+        const resultGreGeneralScore = document.getElementById('resultGreGeneralScore');
+
+        formGreGeneralScore.addEventListener('submit', function(event) {
+            event.preventDefault(); // Formun varsayılan submit davranışını engelle
+
+            const verbalCorrect = parseInt(document.getElementById('verbalCorrect').value);
+            const quantitativeCorrect = parseInt(document.getElementById('quantitativeCorrect').value);
+
+            // Basit bir doğru cevap sayısına dayalı tahmini puanlama (GRE adaptif olduğu için bu sadece bir tahmindir)
+            let estimatedVerbalScore;
+            if (verbalCorrect >= 25) estimatedVerbalScore = '165-170';
+            else if (verbalCorrect >= 20) estimatedVerbalScore = '155-164';
+            else if (verbalCorrect >= 15) estimatedVerbalScore = '145-154';
+            else if (verbalCorrect >= 10) estimatedVerbalScore = '135-144';
+            else estimatedVerbalScore = '130-134';
+
+            let estimatedQuantitativeScore;
+            if (quantitativeCorrect >= 25) estimatedQuantitativeScore = '165-170';
+            else if (quantitativeCorrect >= 20) estimatedQuantitativeScore = '155-164';
+            else if (quantitativeCorrect >= 15) estimatedQuantitativeScore = '145-154';
+            else if (quantitativeCorrect >= 10) estimatedQuantitativeScore = '135-144';
+            else estimatedQuantitativeScore = '130-134';
+
+            const avgVerbal = (parseInt(estimatedVerbalScore.split('-')[0]) + parseInt(estimatedVerbalScore.split('-')[1])) / 2;
+            const avgQuantitative = (parseInt(estimatedQuantitativeScore.split('-')[0]) + parseInt(estimatedQuantitativeScore.split('-')[1])) / 2;
+            const totalEstimatedScore = Math.round(avgVerbal + avgQuantitative);
+
+            resultGreGeneralScore.innerHTML = `
+                <p>${currentTexts.verbalScoreDisplay} <strong>${estimatedVerbalScore}</strong></p>
+                <p>${currentTexts.quantitativeScoreDisplay} <strong>${estimatedQuantitativeScore}</strong></p>
+                <p>${currentTexts.totalScoreDisplay} <span class="result-value">${totalEstimatedScore}</span></p>
+            `;
+            resultGreGeneralScore.style.display = 'block';
+        });
+
+        // --- GRE Yüzdelik Dilim Hesaplama ---
+        const formGrePercentile = document.getElementById('formGrePercentile');
+        const resultGrePercentile = document.getElementById('resultGrePercentile');
+
+        formGrePercentile.addEventListener('submit', function(event) {
+            event.preventDefault(); // Formun varsayılan submit davranışını engelle
+
+            const verbalScore = parseInt(document.getElementById('verbalScore').value);
+            const quantitativeScore = parseInt(document.getElementById('quantitativeScore').value);
+
+            let verbalPercentile = currentTexts.dataNotAvailable;
+            if (verbalScore >= 166) verbalPercentile = '90-99%';
+            else if (verbalScore >= 160) verbalPercentile = '80-89%';
+            else if (verbalScore >= 153) verbalPercentile = '60-79%';
+            else if (verbalScore >= 144) verbalPercentile = '40-59%';
+            else if (verbalScore >= 135) verbalPercentile = '20-39%';
+            else verbalPercentile = '0-19%';
+
+            let quantitativePercentile = currentTexts.dataNotAvailable;
+            if (quantitativeScore >= 166) quantitativePercentile = '80-99%';
+            else if (quantitativeScore >= 160) quantitativePercentile = '60-79%';
+            else if (quantitativeScore >= 152) quantitativePercentile = '40-59%';
+            else if (quantitativeScore >= 145) quantitativePercentile = '20-39%';
+            else if (quantitativeScore >= 135) quantitativePercentile = '10-19%';
+            else quantitativePercentile = '0-9%';
+
+            resultGrePercentile.innerHTML = `
+                <p>${currentTexts.verbalScoreDisplay} <span class="result-value">${verbalScore}</span> (${currentTexts.percentile} <span class="result-value">${verbalPercentile}</span>)</p>
+                <p>${currentTexts.quantitativeScoreDisplay} <span class="result-value">${quantitativeScore}</span> (${currentTexts.percentile} <span class="result-value">${quantitativePercentile}</span>)</p>
+            `;
+            resultGrePercentile.style.display = 'block';
+        });
+    });
+</script>
  </body>
 </html>

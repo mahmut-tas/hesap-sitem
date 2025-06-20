@@ -735,5 +735,312 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                errorConversionRange: 'Dönüşüm 0 ile 1 arasında bir ondalık değer olmalıdır.',
+                errorLogZero: 'Dönüşüm 1 olamaz, çünkü bu durumda formül tanımsız hale gelir. Lütfen 1\'e çok yakın bir değer girin (örn: 0.999999).',
+                resultPrefix: 'Sonuç:',
+                // CSTR Hacmi
+                cstrVolumeTitle: 'CSTR Hacmini Hesapla ($V = F_{A0} \\cdot X_A / (-r_A)$)',
+                initialMolarFlowLabel: 'A Maddesi Giriş Mol Akış Hızı ($F_{A0}$):',
+                conversionLabel: 'A Maddesi Dönüşümü ($X_A$) (ondalık, 0-1 arası):',
+                reactionRateLabel: 'A Maddesinin Reaksiyon Hızı ($-r_A$) (çıkış noktasında):',
+                reactorVolumeResultLabel: 'Gerekli CSTR Hacmi:',
+                // PFR Hacmi
+                pfrVolumeTitle: 'PFR Hacmini Hesapla (1. Derece Reaksiyonlar İçin)',
+                rateConstantLabel: 'Hız Sabiti ($k$) (1. derece için):',
+                initialConcentrationLabel: 'A Maddesi Giriş Konsantrasyonu ($C_{A0}$):',
+                pfrVolumeResultLabel: 'Gerekli PFR Hacmi:',
+                // Reaksiyon Hızı
+                reactionRateTitle: 'Reaksiyon Hızını Hesapla (CSTR İçin)',
+                reactorVolumeLabel: 'CSTR Hacmi ($V$):',
+                reactionRateResultLabel: 'Reaksiyon Hızı ($-r_A$):',
+                // Birimler
+                unit_mol_s: 'mol/s',
+                unit_mol_min: 'mol/min',
+                unit_kmol_h: 'kmol/saat',
+                unit_mol_Ls: 'mol/(L·s)',
+                unit_mol_Lmin: 'mol/(L·min)',
+                unit_kmol_m3h: 'kmol/(m³·saat)',
+                unit_1_s: '1/s',
+                unit_1_min: '1/min',
+                unit_1_h: '1/saat',
+                unit_mol_L: 'mol/L',
+                unit_kmol_m3: 'kmol/m³',
+                unit_L: 'Litre (L)',
+                unit_m3: 'Metreküp (m³)'
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate',
+                invalidInput: 'Please enter valid positive numbers for all fields.',
+                errorConversionRange: 'Conversion must be a decimal value between 0 and 1.',
+                errorLogZero: 'Conversion cannot be 1, as the formula becomes undefined. Please enter a value very close to 1 (e.g., 0.999999).',
+                resultPrefix: 'Result:',
+                // CSTR Volume
+                cstrVolumeTitle: 'Calculate CSTR Volume ($V = F_{A0} \\cdot X_A / (-r_A)$)',
+                initialMolarFlowLabel: 'Molar Flow Rate of A ($F_{A0}$):',
+                conversionLabel: 'Conversion of A ($X_A$) (decimal, 0-1):',
+                reactionRateLabel: 'Reaction Rate of A ($-r_A$) (at outlet):',
+                reactorVolumeResultLabel: 'Required CSTR Volume:',
+                // PFR Volume
+                pfrVolumeTitle: 'Calculate PFR Volume (For 1st Order Reactions)',
+                rateConstantLabel: 'Rate Constant ($k$) (for 1st order):',
+                initialConcentrationLabel: 'Initial Concentration of A ($C_{A0}$):',
+                pfrVolumeResultLabel: 'Required PFR Volume:',
+                // Reaction Rate
+                reactionRateTitle: 'Calculate Reaction Rate (For CSTR)',
+                reactorVolumeLabel: 'CSTR Volume ($V$):',
+                reactionRateResultLabel: 'Reaction Rate ($-r_A$):',
+                // Units
+                unit_mol_s: 'mol/s',
+                unit_mol_min: 'mol/min',
+                unit_kmol_h: 'kmol/hr',
+                unit_mol_Ls: 'mol/(L·s)',
+                unit_mol_Lmin: 'mol/(L·min)',
+                unit_kmol_m3h: 'kmol/(m³·hr)',
+                unit_1_s: '1/s',
+                unit_1_min: '1/min',
+                unit_1_h: '1/hr',
+                unit_mol_L: 'mol/L',
+                unit_kmol_m3: 'kmol/m³',
+                unit_L: 'Liters (L)',
+                unit_m3: 'Cubic Meters (m³)'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // Hesaplayıcı butonları ve içerikleri
+        const calcButtons = document.querySelectorAll('.calc-type-button');
+        const calcWrappers = document.querySelectorAll('.calc-wrapper');
+
+        // Function to show/hide calculators
+        function showCalculator(calcType) {
+            calcWrappers.forEach(wrapper => {
+                if (wrapper.id === `calculator-${calcType}`) {
+                    wrapper.classList.remove('hidden-calc');
+                } else {
+                    wrapper.classList.add('hidden-calc');
+                }
+            });
+
+            calcButtons.forEach(button => {
+                if (button.dataset.calcType === calcType) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        // Add click event to buttons
+        calcButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const calcType = this.dataset.calcType;
+                showCalculator(calcType);
+                // MathJax'i güncelle (eğer formül görünür hale gelirse)
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typeset();
+                }
+            });
+        });
+
+        // Sayfa yüklendiğinde varsayılan olarak ilk hesaplayıcıyı göster
+        showCalculator('cstrVolume');
+
+        // MathJax yüklemesini de tetikle
+        if (typeof MathJax !== 'undefined') {
+            MathJax.typesetPromise().then(() => {
+                console.log("MathJax typeset complete for initial load.");
+            }).catch((err) => console.error("MathJax typeset error on initial load:", err));
+        }
+
+        // --- Birim Dönüşüm Sabitleri (Tümü baz birimlere dönüştürülür: mol, s, L) ---
+        const UNIT_CONVERSIONS = {
+            // Mol Akış Hızı: mol/s'ye dönüştürme faktörleri
+            molarFlow: {
+                'mol/s': 1,
+                'mol/min': 1 / 60,
+                'kmol/h': 1000 / 3600 // kmol -> mol, saat -> saniye
+            },
+            // Reaksiyon Hızı: mol/(L·s) birimine dönüştürme faktörleri
+            reactionRate: {
+                'mol/Ls': 1,
+                'mol/Lmin': 1 / 60,
+                'kmol/m3h': 1000 / 3600 // kmol -> mol, m³ -> L (1m³=1000L), saat -> saniye
+                                       // 1 kmol/(m³·saat) = 1000 mol / (1000 L * 3600 s) = 1 mol / (3600 L·s)
+                                       // Veya daha basiti: (1000 mol/m³) / (3600 s/hr) = (1 mol/L) / 3600 s = 1/(3600 mol/(L·s))
+                                       // 1 kmol/m3h = (1000 mol / 1000 L) / 3600 s = 1/(3600) mol/(L·s)
+            },
+            // Hız Sabiti (1. Derece): 1/s birimine dönüştürme faktörleri
+            rateConstant: {
+                '1/s': 1,
+                '1/min': 1 / 60,
+                '1/h': 1 / 3600
+            },
+            // Konsantrasyon: mol/L birimine dönüştürme faktörleri
+            concentration: {
+                'mol/L': 1,
+                'kmol/m3': 1 // 1 kmol/m³ = 1000 mol / 1000 L = 1 mol/L
+            },
+            // Hacim: Litreye dönüştürme faktörleri
+            volume: {
+                'L': 1,
+                'm3': 1000
+            }
+        };
+
+        // --- CSTR Hacmini Hesapla ---
+        const cstrVolumeForm = document.getElementById('cstrVolumeForm');
+        const cstrVolumeResultDiv = document.getElementById('cstrVolumeResult');
+
+        cstrVolumeForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const initialMolarFlow = parseFloat(document.getElementById('initialMolarFlow_cstr').value);
+            const conversion = parseFloat(document.getElementById('conversion_cstr').value);
+            const reactionRate = parseFloat(document.getElementById('reactionRate_cstr').value);
+
+            const initialMolarFlowUnit = document.getElementById('initialMolarFlowUnit_cstr').value;
+            const reactionRateUnit = document.getElementById('reactionRateUnit_cstr').value;
+
+            if (isNaN(initialMolarFlow) || isNaN(conversion) || isNaN(reactionRate) ||
+                initialMolarFlow <= 0 || reactionRate <= 0) {
+                cstrVolumeResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                cstrVolumeResultDiv.style.display = 'block';
+                return;
+            }
+            if (conversion < 0 || conversion > 1) {
+                 cstrVolumeResultDiv.innerHTML = `<p class="error">${currentTexts.errorConversionRange}</p>`;
+                 cstrVolumeResultDiv.style.display = 'block';
+                 return;
+            }
+             if (conversion === 0 && reactionRate > 0) { // If conversion is 0, V should be 0 ideally for non-zero reaction rate
+                cstrVolumeResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`; // or a specific error
+                cstrVolumeResultDiv.style.display = 'block';
+                return;
+            }
+
+
+            // Birimleri baz birimlere dönüştür (mol/s ve mol/(L·s))
+            const F_A0_mols = initialMolarFlow * UNIT_CONVERSIONS.molarFlow[initialMolarFlowUnit];
+            const r_A_molLs = reactionRate * UNIT_CONVERSIONS.reactionRate[reactionRateUnit];
+
+            // V_CSTR = (F_A0 * X_A) / (-r_A) (Litre)
+            const cstrVolume_L = (F_A0_mols * conversion) / r_A_molLs;
+
+            cstrVolumeResultDiv.innerHTML = `
+                <p>${currentTexts.reactorVolumeResultLabel} <span class="result-value">${cstrVolume_L.toFixed(4)}</span> ${currentTexts.unit_L}</p>
+                <p>${currentTexts.reactorVolumeResultLabel} <span class="result-value">${(cstrVolume_L / 1000).toFixed(4)}</span> ${currentTexts.unit_m3}</p>
+            `;
+            cstrVolumeResultDiv.style.display = 'block';
+        });
+
+        // --- PFR Hacmini Hesapla (1. Derece Reaksiyonlar İçin) ---
+        const pfrVolumeForm = document.getElementById('pfrVolumeForm');
+        const pfrVolumeResultDiv = document.getElementById('pfrVolumeResult');
+
+        pfrVolumeForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const initialMolarFlow = parseFloat(document.getElementById('initialMolarFlow_pfr').value);
+            const rateConstant = parseFloat(document.getElementById('rateConstant_pfr').value);
+            const initialConcentration = parseFloat(document.getElementById('initialConcentration_pfr').value);
+            const conversion = parseFloat(document.getElementById('conversion_pfr').value);
+
+            const initialMolarFlowUnit = document.getElementById('initialMolarFlowUnit_pfr').value;
+            const rateConstantUnit = document.getElementById('rateConstantUnit_pfr').value;
+            const initialConcentrationUnit = document.getElementById('initialConcentrationUnit_pfr').value;
+
+            if (isNaN(initialMolarFlow) || isNaN(rateConstant) || isNaN(initialConcentration) || isNaN(conversion) ||
+                initialMolarFlow <= 0 || rateConstant <= 0 || initialConcentration <= 0) {
+                pfrVolumeResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                pfrVolumeResultDiv.style.display = 'block';
+                return;
+            }
+            if (conversion < 0 || conversion >= 1) { // PFR için X_A 1 olamaz
+                 pfrVolumeResultDiv.innerHTML = `<p class="error">${currentTexts.errorConversionRange} ${currentTexts.errorLogZero}</p>`;
+                 pfrVolumeResultDiv.style.display = 'block';
+                 return;
+            }
+             if (conversion === 0) { // If conversion is 0, V should be 0 ideally for non-zero reaction rate
+                pfrVolumeResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`; // or a specific error
+                pfrVolumeResultDiv.style.display = 'block';
+                return;
+            }
+
+
+            // Birimleri baz birimlere dönüştür (mol/s, 1/s, mol/L)
+            const F_A0_mols = initialMolarFlow * UNIT_CONVERSIONS.molarFlow[initialMolarFlowUnit];
+            const k_1_s = rateConstant * UNIT_CONVERSIONS.rateConstant[rateConstantUnit];
+            const C_A0_molL = initialConcentration * UNIT_CONVERSIONS.concentration[initialConcentrationUnit];
+
+            // V_PFR = (F_A0 / (k * C_A0)) * ln(1 / (1 - X_A)) (Litre)
+            const pfrVolume_L = (F_A0_mols / (k_1_s * C_A0_molL)) * Math.log(1 / (1 - conversion));
+
+            pfrVolumeResultDiv.innerHTML = `
+                <p>${currentTexts.pfrVolumeResultLabel} <span class="result-value">${pfrVolume_L.toFixed(4)}</span> ${currentTexts.unit_L}</p>
+                <p>${currentTexts.pfrVolumeResultLabel} <span class="result-value">${(pfrVolume_L / 1000).toFixed(4)}</span> ${currentTexts.unit_m3}</p>
+            `;
+            pfrVolumeResultDiv.style.display = 'block';
+        });
+
+        // --- Reaksiyon Hızını Hesapla (CSTR İçin) ---
+        const reactionRateForm = document.getElementById('reactionRateForm');
+        const reactionRateResultDiv = document.getElementById('reactionRateResult');
+
+        reactionRateForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const initialMolarFlow = parseFloat(document.getElementById('initialMolarFlow_rr').value);
+            const conversion = parseFloat(document.getElementById('conversion_rr').value);
+            const reactorVolume = parseFloat(document.getElementById('reactorVolume_rr').value);
+
+            const initialMolarFlowUnit = document.getElementById('initialMolarFlowUnit_rr').value;
+            const reactorVolumeUnit = document.getElementById('reactorVolumeUnit_rr').value;
+
+            if (isNaN(initialMolarFlow) || isNaN(conversion) || isNaN(reactorVolume) ||
+                initialMolarFlow <= 0 || reactorVolume <= 0) {
+                reactionRateResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                reactionRateResultDiv.style.display = 'block';
+                return;
+            }
+            if (conversion < 0 || conversion > 1) {
+                 reactionRateResultDiv.innerHTML = `<p class="error">${currentTexts.errorConversionRange}</p>`;
+                 reactionRateResultDiv.style.display = 'block';
+                 return;
+            }
+            if (conversion === 0 && initialMolarFlow > 0) { // Eğer dönüşüm 0 ise reaksiyon hızı 0 olmalı (aksini belirtmedikçe)
+                reactionRateResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`; // or a specific error
+                reactionRateResultDiv.style.display = 'block';
+                return;
+            }
+
+
+            // Birimleri baz birimlere dönüştür (mol/s ve L)
+            const F_A0_mols = initialMolarFlow * UNIT_CONVERSIONS.molarFlow[initialMolarFlowUnit];
+            const V_L = reactorVolume * UNIT_CONVERSIONS.volume[reactorVolumeUnit];
+
+            // (-r_A) = (F_A0 * X_A) / V_CSTR (mol/(L·s))
+            const reactionRate_molLs = (F_A0_mols * conversion) / V_L;
+
+            reactionRateResultDiv.innerHTML = `
+                <p>${currentTexts.reactionRateResultLabel} <span class="result-value">${reactionRate_molLs.toExponential(4)}</span> ${currentTexts.unit_mol_Ls}</p>
+            `;
+            reactionRateResultDiv.style.display = 'block';
+        });
+    });
+</script>
  </body>
 </html>

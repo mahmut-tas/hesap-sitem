@@ -691,5 +691,240 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Tip 1
+                fuelConsumption100kmLabel: 'Aracın 100 KM Başına Yakıt Tüketimi (Litre):',
+                fuelPrice1Label: 'Yakıt Litre Fiyatı (TL):',
+                distanceToCalculate1Label: 'Hesaplamak İstediğiniz Mesafe (KM):',
+                calculateButton: 'Hesapla',
+                totalFuelRequirement: 'Toplam Yakıt İhtiyacı:',
+                totalCost: 'Toplam Maliyet:',
+                // Tip 2
+                drivenDistanceLabel: 'Kat Edilen Mesafe (KM):',
+                consumedFuelLabel: 'Tüketilen Yakıt Miktarı (Litre):',
+                fuelPrice2Label: 'Yakıt Litre Fiyatı (TL):',
+                consumptionPer100km: '100 KM Başına Tüketim:',
+                // Tip 3
+                odoStartLabel: 'Depo Doldurmadan Önceki Kilometre:',
+                odoEndLabel: 'Depo Doldurduktan Sonraki (Şimdiki) Kilometre:',
+                refuelAmountLabel: 'Doldurulan Yakıt Miktarı (Litre):',
+                fuelPrice3Label: 'Yakıt Litre Fiyatı (TL):',
+                distanceTraveled: 'Kat Edilen Mesafe:',
+                // Tip 4
+                totalDistanceLabel: 'Kat Edilecek Toplam Mesafe (KM):',
+                averageConsumptionLabel: 'Aracın Ortalama Yakıt Tüketimi (Litre/100 KM):',
+                fuelPrice4Label: 'Yakıt Litre Fiyatı (TL):',
+                // Genel
+                invalidInput: 'Lütfen tüm alanlara geçerli değerler girin.',
+                ltUnit: 'Litre',
+                kmUnit: 'KM',
+                tlUnit: 'TL',
+                ltPer100kmUnit: 'Litre/100 KM',
+                errorNegativeDistance: 'Kat edilen mesafe 0\'dan büyük olmalıdır.',
+                errorOdometer: 'Şimdiki kilometre, önceki kilometreden büyük olmalıdır.'
+            },
+            en: {
+                // Type 1
+                fuelConsumption100kmLabel: 'Fuel Consumption of the Vehicle per 100 KM (Liters):',
+                fuelPrice1Label: 'Fuel Liter Price (TL):',
+                distanceToCalculate1Label: 'Distance You Want to Calculate (KM):',
+                calculateButton: 'Calculate',
+                totalFuelRequirement: 'Total Fuel Requirement:',
+                totalCost: 'Total Cost:',
+                // Type 2
+                drivenDistanceLabel: 'Distance Traveled (KM):',
+                consumedFuelLabel: 'Amount of Fuel Consumed (Liters):',
+                fuelPrice2Label: 'Fuel Liter Price (TL):',
+                consumptionPer100km: 'Consumption per 100 KM:',
+                // Type 3
+                odoStartLabel: 'Mileage Before Filling Tank:',
+                odoEndLabel: 'Mileage After Filling the Tank (Current):',
+                refuelAmountLabel: 'Fuel Amount Filled (Liters):',
+                fuelPrice3Label: 'Fuel Liter Price (TL):',
+                distanceTraveled: 'Distance Traveled:',
+                // Type 4
+                totalDistanceLabel: 'Total Distance to be Covered (KM):',
+                averageConsumptionLabel: 'Average Fuel Consumption of the Vehicle (Liter/100 KM):',
+                fuelPrice4Label: 'Fuel Liter Price (TL):',
+                // General
+                invalidInput: 'Please enter valid values for all fields.',
+                ltUnit: 'Liters',
+                kmUnit: 'KM',
+                tlUnit: 'TL',
+                ltPer100kmUnit: 'Liters/100 KM',
+                errorNegativeDistance: 'Distance traveled must be greater than 0.',
+                errorOdometer: 'Current mileage must be greater than initial mileage.'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // Hesaplayıcı butonları ve içerikleri
+        const calcButtons = document.querySelectorAll('.calc-type-button');
+        const calcWrappers = document.querySelectorAll('.calc-wrapper');
+
+        // Hesaplayıcıları gizleme/gösterme işlevi
+        function showCalculator(calcType) {
+            calcWrappers.forEach(wrapper => {
+                if (wrapper.id === `calculator-${calcType}`) {
+                    wrapper.classList.remove('hidden-calc');
+                } else {
+                    wrapper.classList.add('hidden-calc');
+                }
+            });
+
+            calcButtons.forEach(button => {
+                if (button.dataset.calcType === calcType) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+        }
+
+        // Butonlara click eventi ekleme
+        calcButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const calcType = this.dataset.calcType;
+                showCalculator(calcType);
+            });
+        });
+
+        // Sayfa yüklendiğinde varsayılan olarak ilk hesaplayıcıyı göster
+        showCalculator('type1');
+
+        // --- Tip 1: 100 KM Başına Tüketimi Bilerek Hesaplama ---
+        const formType1 = document.getElementById('formType1');
+        const resultType1 = document.getElementById('resultType1');
+
+        formType1.addEventListener('submit', function(event) {
+            event.preventDefault(); // Formun varsayılan submit davranışını engelle
+
+            const fuelConsumption100km = parseFloat(document.getElementById('fuelConsumption100km').value);
+            const fuelPrice1 = parseFloat(document.getElementById('fuelPrice1').value);
+            const distanceToCalculate1 = parseFloat(document.getElementById('distanceToCalculate1').value);
+
+            // Giriş doğrulaması
+            if (isNaN(fuelConsumption100km) || isNaN(fuelPrice1) || isNaN(distanceToCalculate1) ||
+                fuelConsumption100km <= 0 || fuelPrice1 <= 0 || distanceToCalculate1 <= 0) {
+                resultType1.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                resultType1.style.display = 'block';
+                return;
+            }
+
+            const totalFuelRequirement = (distanceToCalculate1 / 100) * fuelConsumption100km;
+            const totalCost = totalFuelRequirement * fuelPrice1;
+
+            resultType1.innerHTML = `
+                <p>${currentTexts.totalFuelRequirement} <span class="result-value">${totalFuelRequirement.toFixed(2)} ${currentTexts.ltUnit}</span></p>
+                <p>${currentTexts.totalCost} <span class="result-value">${totalCost.toFixed(2)} ${currentTexts.tlUnit}</span></p>
+            `;
+            resultType1.style.display = 'block';
+        });
+
+        // --- Tip 2: Kat Edilen Mesafe ve Tüketilen Yakıt ile Hesaplama ---
+        const formType2 = document.getElementById('formType2');
+        const resultType2 = document.getElementById('resultType2');
+
+        formType2.addEventListener('submit', function(event) {
+            event.preventDefault(); // Formun varsayılan submit davranışını engelle
+
+            const drivenDistance = parseFloat(document.getElementById('drivenDistance').value);
+            const consumedFuel = parseFloat(document.getElementById('consumedFuel').value);
+            const fuelPrice2 = parseFloat(document.getElementById('fuelPrice2').value);
+
+            // Giriş doğrulaması
+            if (isNaN(drivenDistance) || isNaN(consumedFuel) || isNaN(fuelPrice2) ||
+                drivenDistance <= 0 || consumedFuel <= 0 || fuelPrice2 <= 0) {
+                resultType2.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                resultType2.style.display = 'block';
+                return;
+            }
+
+            const consumptionPer100km = (consumedFuel / drivenDistance) * 100;
+            const totalCost = consumedFuel * fuelPrice2;
+
+            resultType2.innerHTML = `
+                <p>${currentTexts.consumptionPer100km} <span class="result-value">${consumptionPer100km.toFixed(2)} ${currentTexts.ltPer100kmUnit}</span></p>
+                <p>${currentTexts.totalCost} <span class="result-value">${totalCost.toFixed(2)} ${currentTexts.tlUnit}</span></p>
+            `;
+            resultType2.style.display = 'block';
+        });
+
+        // --- Tip 3: Depo Doldurma Yöntemi ile Hesaplama ---
+        const formType3 = document.getElementById('formType3');
+        const resultType3 = document.getElementById('resultType3');
+
+        formType3.addEventListener('submit', function(event) {
+            event.preventDefault(); // Formun varsayılan submit davranışını engelle
+
+            const odoStart = parseFloat(document.getElementById('odoStart').value);
+            const odoEnd = parseFloat(document.getElementById('odoEnd').value);
+            const refuelAmount = parseFloat(document.getElementById('refuelAmount').value);
+            const fuelPrice3 = parseFloat(document.getElementById('fuelPrice3').value);
+
+            // Giriş doğrulaması
+            if (isNaN(odoStart) || isNaN(odoEnd) || isNaN(refuelAmount) || isNaN(fuelPrice3) ||
+                odoStart < 0 || odoEnd < 0 || refuelAmount <= 0 || fuelPrice3 <= 0) {
+                resultType3.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                resultType3.style.display = 'block';
+                return;
+            }
+            if (odoEnd <= odoStart) {
+                resultType3.innerHTML = `<p class="error">${currentTexts.errorOdometer}</p>`;
+                resultType3.style.display = 'block';
+                return;
+            }
+
+            const distanceTraveled = odoEnd - odoStart;
+            const consumptionPer100km = (refuelAmount / distanceTraveled) * 100;
+            const totalCost = refuelAmount * fuelPrice3;
+
+            resultType3.innerHTML = `
+                <p>${currentTexts.distanceTraveled} <span class="result-value">${distanceTraveled.toFixed(2)} ${currentTexts.kmUnit}</span></p>
+                <p>${currentTexts.consumptionPer100km} <span class="result-value">${consumptionPer100km.toFixed(2)} ${currentTexts.ltPer100kmUnit}</span></p>
+                <p>${currentTexts.totalCost} <span class="result-value">${totalCost.toFixed(2)} ${currentTexts.tlUnit}</span></p>
+            `;
+            resultType3.style.display = 'block';
+        });
+
+        // --- Tip 4: Toplam Mesafe ve Ortalama Tüketim ile Hesaplama ---
+        const formType4 = document.getElementById('formType4');
+        const resultType4 = document.getElementById('resultType4');
+
+        formType4.addEventListener('submit', function(event) {
+            event.preventDefault(); // Formun varsayılan submit davranışını engelle
+
+            const totalDistance = parseFloat(document.getElementById('totalDistance').value);
+            const averageConsumption = parseFloat(document.getElementById('averageConsumption').value);
+            const fuelPrice4 = parseFloat(document.getElementById('fuelPrice4').value);
+
+            // Giriş doğrulaması
+            if (isNaN(totalDistance) || isNaN(averageConsumption) || isNaN(fuelPrice4) ||
+                totalDistance <= 0 || averageConsumption <= 0 || fuelPrice4 <= 0) {
+                resultType4.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                resultType4.style.display = 'block';
+                return;
+            }
+
+            const totalFuelRequirement = (totalDistance / 100) * averageConsumption;
+            const totalCost = totalFuelRequirement * fuelPrice4;
+
+            resultType4.innerHTML = `
+                <p>${currentTexts.totalFuelRequirement} <span class="result-value">${totalFuelRequirement.toFixed(2)} ${currentTexts.ltUnit}</span></p>
+                <p>${currentTexts.totalCost} <span class="result-value">${totalCost.toFixed(2)} ${currentTexts.tlUnit}</span></p>
+            `;
+            resultType4.style.display = 'block';
+        });
+    });
+</script>
  </body>
 </html>
