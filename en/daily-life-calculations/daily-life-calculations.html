@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+
+<html lang="tr">
+<head>
+<meta charset="utf-8"/>
+<link href="/css/header.css" rel="stylesheet"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>
+   Daily Life Calculations - Hesapkolik
+  </title>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/footer.css" rel="stylesheet"/>
+<meta content="Practical calculations frequently needed in daily life such as vehicle fuel consumption, electric vehicle charging cost, light bulb energy consumption." name="description"/>
+<meta content="daily calculation, fuel consumption calculation, electric vehicle charging cost, light bulb energy, cost calculation, practical calculations, hesapkolik" name="keywords"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+<link href="../css/style.css" rel="stylesheet"/>
+<script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+</script>
+<style>
+   /* Bu sayfaya özel stil eklemeleri - Genel style.css dosyasından gelmiyorsa buraya ekleyin */
+        /* Eğer bu stiller zaten '../../css/style.css' içinde varsa, bu <style> bloğunu silebilirsiniz. */
+        .calculator-form-container .input-group {
+            margin-bottom: 20px;
+        }
+        .calculator-form-container .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calculator-form-container .input-group input[type="number"] {
+            width: 100%;
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calculator-form-container .input-group input[type="number"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .calculator-form-container .input-group select {
+            width: auto;
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
+        /* Result display specific styles */
+        .result-display strong {
+            color: #e74c3c;
+        }
+        .result-display p {
+            margin: 5px 0;
+        }
+        .result-display p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Calculator explanation styles */
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+        .calc-explanation h4 {
+            color: #34495e;
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .calc-explanation ul {
+            list-style-type: disc;
+            margin: 10px 0 15px 20px;
+            padding: 0;
+        }
+        .calc-explanation ul li {
+            margin-bottom: 5px;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+
+        /* Gizli ve Aktif Hesaplayıcı Stilleri */
+        .hidden-calc {
+            display: none;
+        }
+        .calc-type-button.active {
+            background-color: #e74c3c;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+        /* Hero Section için header ile aynı arka plan */
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        /* Calculator Selection Section */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        .calc-type-button {
+            background-color: #3498db;
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 auto;
+            max-width: 320px;
+            text-align: center;
+        }
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .calculator-form-container button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+        }
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+            }
+        }
+  </style>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+</script>
+<script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+<link href="https://hesapkolik.net/gunluk hayat hesaplamalari/gunluk-hayat-hesaplamalari.html" hreflang="tr" rel="alternate"/>
+<link href="https://hesapkolik.net/en/gunluk hayat hesaplamalari/gunluk-hayat-hesaplamalari.html" hreflang="en" rel="alternate"/>
+<link href="https://hesapkolik.net/gunluk hayat hesaplamalari/gunluk-hayat-hesaplamalari.html" hreflang="x-default" rel="alternate"/>
+</head>
+<body>
+<div id="header-placeholder">
+</div>
+<main>
+<section class="health-calculator-landing-section">
+<div class="container">
+<h1 class="main-title">
+      Daily Life Calculations
+     </h1>
+<p class="section-description">
+      Practical calculation tools to understand your daily living costs, manage your budget and optimize energy consumption:
+     </p>
+<div class="calculator-grid">
+<div class="calculator-card">
+<i class="fas fa-gas-pump icon-big">
+</i>
+<h3>
+        Vehicle Fuel Consumption
+       </h3>
+<p>
+        Calculate how much fuel you consume per 100 km and its cost.
+       </p>
+<a class="card-button" href="fuel-consumption-calculator.html">
+        Calculate
+       </a>
+</div>
+<div class="calculator-card">
+<i class="fas fa-bolt icon-big">
+</i>
+<h3>
+        Electric Vehicle Charging Cost
+       </h3>
+<p>
+        Find out how much it costs to fully charge your electric vehicle.
+       </p>
+<a class="card-button" href="electric-vehicle-charging-cost.html">
+        Calculate
+       </a>
+</div>
+<div class="calculator-card">
+<i class="fas fa-lightbulb icon-big">
+</i>
+<h3>
+        Bulb Energy Consumption
+       </h3>
+<p>
+        Calculate the energy consumption cost of light bulbs and appliances in your home.
+       </p>
+<a class="card-button" href="bulb-energy-calculator.html">
+        Calculate
+       </a>
+</div>
+<div class="calculator-card">
+<i class="fas fa-dollar-sign icon-big">
+</i>
+<h3>
+        Weekly/Monthly Budget Planner
+       </h3>
+<p>
+        Plan your budget by managing your income and expenses.
+       </p>
+<a class="card-button" href="budget-planner.html">
+        Calculate
+       </a>
+</div>
+<div class="calculator-card">
+<i class="fas fa-utensils icon-big">
+</i>
+<h3>
+        Food Portion Calculator
+       </h3>
+<p>
+        Adjust food portions according to the number of guests.
+       </p>
+<a class="card-button" href="food-portion-calculator.html">
+        Calculate
+       </a>
+</div>
+<div class="calculator-card">
+<i class="fas fa-calculator icon-big">
+</i>
+<h3>
+        Invoice Expenses Tracking
+       </h3>
+<p>
+        Keep track of the costs of your water, electricity and natural gas bills.
+       </p>
+<a class="card-button" href="invoice-expense-tracker.html">
+        Calculate
+       </a>
+</div>
+<div class="calculator-card">
+<i class="fas fa-fire icon-big">
+</i>
+<h3>
+        Air Conditioning Energy Consumption
+       </h3>
+<p>
+        Calculate how much electricity your air conditioner uses and its cost.
+       </p>
+<a class="card-button" href="air-conditioner-energy-consumption.html">
+        Calculate
+       </a>
+</div>
+<div class="calculator-card">
+<i class="fas fa-shopping-cart icon-big">
+</i>
+<h3>
+        Discount Calculator
+       </h3>
+<p>
+        See the final price of discounted items when shopping.
+       </p>
+<a class="card-button" href="discount-calculator.html">
+        Calculate
+       </a>
+</div>
+<div class="calculator-card">
+<i class="fas fa-seedling icon-big">
+</i>
+<h3>
+        To be added soon
+       </h3>
+<p>
+        A new and useful calculation tool is coming soon!
+       </p>
+<a class="card-button disabled" href="#">
+        Soon
+       </a>
+</div>
+<div class="calculator-card">
+<i class="fas fa-sync-alt icon-big">
+</i>
+<h3>
+        To be added soon
+       </h3>
+<p>
+        A new calculation is on the way for you!
+       </p>
+<a class="card-button disabled" href="#">
+        Soon
+       </a>
+</div>
+<div class="calculator-card">
+<i class="fas fa-chart-line icon-big">
+</i>
+<h3>
+        To be added soon
+       </h3>
+<p>
+        A new tool is coming that will make your daily life easier!
+       </p>
+<a class="card-button disabled" href="#">
+        Soon
+       </a>
+</div>
+</div>
+</div>
+</section>
+</main>
+<div id="footer-placeholder">
+</div>
+<script>
+   // Header Yükleme Fonksiyonu
+        fetch('../header.html') // header.html dosyasının yolunu kontrol edin!
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response for header was not ok ' + response.statusText);
+                }
+                return response.text();
+            })
+            .then(data => {
+                const headerPlaceholder = document.getElementById('header-placeholder');
+                headerPlaceholder.innerHTML = data;
+                
+                // header.html içinde tanımlanan JavaScript'i (menü açma/kapatma) çalıştır
+                // Güvenlik riski taşıyabilir, dikkatli kullanılmalı.
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.text = scriptElement.innerText;
+                    document.body.appendChild(newScript);
+                    scriptElement.remove();
+                }
+
+                // Placeholder div'ini semantik bir <header> etiketiyle değiştir
+                const headerContent = headerPlaceholder.innerHTML;
+                const newHeaderElement = document.createElement('header');
+                newHeaderElement.innerHTML = headerContent;
+                headerPlaceholder.replaceWith(newHeaderElement);
+            })
+            .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+        // Footer Yükleme Fonksiyonu
+        fetch('../footer.html') // footer.html dosyasının yolunu kontrol edin!
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response for footer was not ok ' + response.statusText);
+                }
+                return response.text();
+            })
+            .then(data => {
+                const footerPlaceholder = document.getElementById('footer-placeholder');
+                footerPlaceholder.innerHTML = data;
+
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const footerContent = footerPlaceholder.innerHTML;
+                const newFooterElement = document.createElement('footer');
+                newFooterElement.innerHTML = footerContent;
+                footerPlaceholder.replaceWith(newFooterElement);
+            })
+            .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+  </script>
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+</body>
+</html>

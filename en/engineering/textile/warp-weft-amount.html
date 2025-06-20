@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html lang="tr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>
+   Total Warp and Weft Quantity Calculation - Hesapkolik
+  </title>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/footer.css" rel="stylesheet"/>
+<link href="/css/header.css" rel="stylesheet"/>
+<meta content="Calculate the total amount of warp and weft yarns (kg) for a given fabric footage. A practical tool for production planning, yarn ordering and cost analysis." name="description"/>
+<meta content="warp amount, weft amount, yarn consumption, fabric production, yarn calculation, weaving, textile engineering, hesapkolik textile" name="keywords"/>
+<link href="../../css/style.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+<link href="css/style.css" rel="stylesheet"/>
+<script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+</script>
+<script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+<link href="https://hesapkolik.net/muhendislik/tekstil/cozgu-atki-miktari.html" hreflang="tr" rel="alternate"/>
+<link href="https://hesapkolik.net/en/muhendislik/tekstil/cozgu-atki-miktari.html" hreflang="en" rel="alternate"/>
+<link href="https://hesapkolik.net/muhendislik/tekstil/cozgu-atki-miktari.html" hreflang="x-default" rel="alternate"/>
+</head>
+<!-- Google tag (gtag.js) -->
+<body>
+<div id="header-placeholder">
+</div>
+<main>
+<section class="health-calculators-section">
+<div class="container">
+<h1 class="main-title">
+      Total Warp and Weft Quantity Calculator
+     </h1>
+<p class="section-description">
+      With this calculator you can easily determine how much warp and weft yarn you need for a certain fabric production. Optimize your yarn orders, keep your costs under control and make your production planning more efficient.
+     </p>
+<div class="calculator-group">
+<div class="calculator-card-wrapper">
+<div class="calculator-header">
+<i class="fas fa-splotch icon-small">
+</i>
+<h2>
+         Calculate Yarn Quantities
+        </h2>
+</div>
+<div class="calculator-form-container">
+<form id="yarnConsumptionForm">
+<p class="small-text">
+          Please enter fabric and thread information:
+         </p>
+<h4>
+          Fabric Information
+         </h4>
+<div class="input-with-unit">
+<label for="fabricLength">
+           Fabric Length to be Produced (meters):
+          </label>
+<input id="fabricLength" min="0.01" placeholder="Örn: 1000" required="" step="0.01" type="number"/>
+</div>
+<div class="input-with-unit">
+<label for="fabricWidth">
+           Finished Fabric Width (cm):
+          </label>
+<input id="fabricWidth" min="0.1" placeholder="Örn: 150" required="" step="0.1" type="number"/>
+</div>
+<div class="input-with-unit">
+<label for="warpDensity">
+           Warp Density (wires/cm):
+          </label>
+<input id="warpDensity" min="0.1" placeholder="Örn: 30" required="" step="0.1" type="number"/>
+</div>
+<div class="input-with-unit">
+<label for="weftDensity">
+           Weft Density (wires/cm):
+          </label>
+<input id="weftDensity" min="0.1" placeholder="Örn: 28" required="" step="0.1" type="number"/>
+</div>
+<div class="form-divider">
+</div>
+<h4>
+          Yarn Information (Average)
+         </h4>
+<div class="input-with-unit">
+<label for="warpYarnCount">
+           Warp Yarn Count:
+          </label>
+<input id="warpYarnCount" min="0.01" placeholder="Örn: 50" required="" step="0.01" type="number"/>
+<select id="warpCountSystem">
+<option value="nm">
+            Nm
+           </option>
+<option value="tex">
+            Tex
+           </option>
+<option value="denye">
+            Denier
+           </option>
+<option value="ne">
+            What
+           </option>
+<option value="dtex">
+            dTex
+           </option>
+</select>
+</div>
+<div class="input-with-unit">
+<label for="weftYarnCount">
+           Weft Yarn Count:
+          </label>
+<input id="weftYarnCount" min="0.01" placeholder="Örn: 40" required="" step="0.01" type="number"/>
+<select id="weftCountSystem">
+<option value="nm">
+            Nm
+           </option>
+<option value="tex">
+            Tex
+           </option>
+<option value="denye">
+            Denier
+           </option>
+<option value="ne">
+            What
+           </option>
+<option value="dtex">
+            dTex
+           </option>
+</select>
+</div>
+<div class="form-divider">
+</div>
+<h4>
+          Tolerances / Waste (%)
+         </h4>
+<div class="input-with-unit">
+<label for="warpWastePercentage">
+           Warp Waste Rate (%):
+          </label>
+<input id="warpWastePercentage" max="100" min="0" placeholder="Örn: 5" step="0.1" type="number" value="5"/>
+</div>
+<div class="input-with-unit">
+<label for="weftWastePercentage">
+           Weft Waste Rate (%):
+          </label>
+<input id="weftWastePercentage" max="100" min="0" placeholder="Örn: 3" step="0.1" type="number" value="3"/>
+</div>
+<button onclick="calculateYarnConsumption()" type="button">
+          Calculate
+         </button>
+</form>
+<div class="result-display" id="resultBox">
+<h3>
+          Results (Quantities Required):
+         </h3>
+<p>
+<strong>
+           Total Warp Quantity:
+          </strong>
+<span class="result-value" id="totalWarpYarn">
+</span>
+          kg
+         </p>
+<p>
+<strong>
+           Total Weft Quantity:
+          </strong>
+<span class="result-value" id="totalWeftYarn">
+</span>
+          kg
+         </p>
+<p class="small-text">
+          Calculations were made by including waste rates.
+         </p>
+</div>
+<p class="small-text">
+         Make sure you enter all measurements in the correct units and select the correct thread count systems.
+        </p>
+</div>
+</div>
+<section class="info-section">
+<h3>
+        What is the Calculation of Total Warp and Weft Quantity?
+       </h3>
+<p>
+        **Total warp and weft yarn quantity calculation** is the process of determining in advance how many warp yarns (longitudinal yarns) and weft yarns (crosswise yarns) will be required to produce a certain amount of fabric. This calculation is a fundamental step for operational decisions such as production planning, raw material ordering, cost analysis and inventory management in weaving mills.
+       </p>
+<p>
+        This calculation is based on parameters such as the structure of the fabric (warp and weft density), the dimensions of the fabric to be produced (length and width) and the number of threads used (fineness). In addition, natural waste rates in the production process are also taken into account.
+       </p>
+<h4>
+        Why is Warp and Weft Quantity Calculation Important?
+       </h4>
+<ul>
+<li>
+         **Raw Material Management:** Ensures that yarns are supplied on time and in the right amount, preventing excess or shortage of stock.
+        </li>
+<li>
+         **Cost Control:** Yarn is one of the biggest cost items in fabric production. Correct calculation prevents unnecessary purchases.
+        </li>
+<li>
+         **Production Planning:** Helps to determine machine capacity and production schedule accurately.
+        </li>
+<li>
+         **Pricing:** It is necessary to accurately calculate the unit cost of the fabric to be produced.
+        </li>
+<li>
+         **Efficiency Analysis:** Allows monitoring of waste rates and efficiency by comparing actual consumption with planned consumption.
+        </li>
+</ul>
+<h4>
+        How to Calculate Warp and Weft Quantity?
+       </h4>
+<p>
+        The calculation is done separately for each type of yarn. The formulas vary depending on the yarn count system and units used.
+       </p>
+<p class="formula-text">
+        **General Principle:**
+        <br/>
+        Required Yarn Quantity (kg) = (Total Yarn Length (km) / Grams of Yarn per Km)
+       </p>
+<p>
+        In this calculation, yarn counts are converted to standard units such as Tex or Nm.
+       </p>
+<p class="formula-text">
+        **Warp Yarn Quantity (kg) Formula:**
+        <br/>
+        = (Fabric Length (m) * Finished Fabric Width (cm) * Warp Density (wire/cm) * Warp Yarn Number (Tex)) / 1000
+        <br/>
+        *(Note: Tex is used in this formula. If the yarn count is in another system, it must first be converted to Tex.)*
+       </p>
+<p class="formula-text">
+        **Weft Yarn Quantity (kg) Formula:**
+        <br/>
+        = (Fabric Length (m) * Finished Fabric Width (cm) * Weft Density (wire/cm) * Weft Yarn Number (Tex)) / 1000
+        <br/>
+        *(Note: Tex is used in this formula. If the yarn count is in another system, it must first be converted to Tex.)*
+       </p>
+<p>
+        Our calculator automatically converts the yarn count system (Tex, Denier, Ne, Nm, dTex) you enter into Tex and takes into account the waste rates.
+       </p>
+<h4>
+        Application Areas:
+       </h4>
+<ul>
+<li>
+         Woven fabric production facilities.
+        </li>
+<li>
+         Yarn and fabric suppliers.
+        </li>
+<li>
+         Production planning and control departments.
+        </li>
+<li>
+         Cost accounting and pricing units.
+        </li>
+<li>
+         Education and R&amp;amp;D studies.
+        </li>
+</ul>
+<p class="disclaimer-text">
+        This calculator is for general information purposes and provides theoretical calculations. In real production, many variables such as yarn twist, yarn elongation, machine settings, stoppages, cutting losses and waste rates at different process steps can affect the actual yarn consumption. For sensitive commercial or industrial applications, analysis by experienced engineers and detailed factory data should be taken as basis. If you have any problems with your calculations, please contact us.
+        <a href="../../contact.html">
+         communication
+        </a>
+        reach us from our page.
+       </p>
+</section>
+</div>
+</div>
+</section>
+</main>
+<div id="footer-placeholder">
+</div>
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+</body>
+</html>
