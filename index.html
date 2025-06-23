@@ -486,5 +486,190 @@
         .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
 });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+        const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+        const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+        // Header Yükleme
+        fetch(headerPath)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+                }
+                return response.text();
+            })
+            .then(data => {
+                const headerPlaceholder = document.getElementById('header-placeholder');
+                if (headerPlaceholder) {
+                    headerPlaceholder.innerHTML = data;
+
+                    // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                    const scriptElement = headerPlaceholder.querySelector('script');
+                    if (scriptElement) {
+                        const newScript = document.createElement('script');
+                        newScript.textContent = scriptElement.textContent;
+                        document.body.appendChild(newScript);
+                        scriptElement.remove();
+                    }
+                }
+            })
+            .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+        // Footer Yükleme
+        fetch(footerPath)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+                }
+                return response.text();
+            })
+            .then(data => {
+                const footerPlaceholder = document.getElementById('footer-placeholder');
+                if (footerPlaceholder) {
+                    footerPlaceholder.innerHTML = data;
+                    // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = data;
+                    const footerElement = tempDiv.querySelector('footer');
+                    if (footerElement) {
+                        footerPlaceholder.replaceWith(footerElement);
+                    }
+                }
+            })
+            .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+
+        // Arama motoru işlevselliği
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const searchResultsDropdown = document.getElementById('searchResults');
+        const noResultsMessage = document.createElement('div');
+        noResultsMessage.className = 'no-results';
+        noResultsMessage.textContent = 'Sonuç bulunamadı.';
+        noResultsMessage.style.display = 'none'; // Başlangıçta gizle
+
+        // Aranabilir hesaplama verileri (Sitemap'inizden otomatik olarak oluşturulmuştur)
+        const calculators = [
+            { name: 'Ana Sayfa', url: '/' },
+            { name: 'Mühendislik Hesaplamaları', url: '/muhendislik-hesaplamalari.html' },
+            { name: 'Sağlık Hesaplamaları', url: '/saglik-hesaplamalari.html' },
+            { name: 'Eğitim Hesaplamaları', url: '/egitim/egitim-hesaplamalari.html' },
+            { name: 'Yüzde Hesaplayıcı', url: '/yuzde-hesaplayici.html' },
+            { name: 'Faiz Hesaplayıcı', url: '/faiz-hesaplayici.html' },
+            { name: 'Günlük Hayat Hesaplamaları', url: '/gunluk%20hayat%20hesaplamalari/gunluk-hayat-hesaplamalari.html' },
+            { name: 'Yaş Hesaplayıcı', url: '/yas-hesaplayici.html' },
+            { name: 'Birim Çevirici', url: '/birim-cevirici.html' },
+            { name: 'Kimya Mühendisliği', url: '/muhendislik/kimya/kimya-muhendisligi.html' },
+            { name: 'Çevre Mühendisliği', url: '/muhendislik/cevre/cevre-muh.html' },
+            { name: 'İnşaat Mühendisliği', url: '/muhendislik/insaat/insaat-muh.html' },
+            { name: 'Elektrik Elektronik Mühendisliği', url: '/muhendislik/elektrik-elektronik/elektrik-elektronik.html' },
+            { name: 'Makine Mühendisliği', url: '/muhendislik/makine/makine-muhendisligi.html' },
+            { name: 'Tekstil Mühendisliği', url: '/muhendislik/tekstil/tekstil-muhendisligi.html' },
+            { name: 'BMI Hesaplayıcı', url: '/saglik/bmi-hesaplayici.html' },
+            { name: 'Vücut Yağ Hesaplama', url: '/saglik/vucut-yag-hesaplama.html' },
+            { name: 'İdeal Kilo Hesaplayıcı', url: '/saglik/ideal-kilo-hesaplayici.html' },
+            { name: 'Adım Kalori Hesaplayıcı', url: '/saglik/adim-kalori-hesaplayici.html' },
+            { name: 'Günlük Kalori İhtiyacı Hesaplayıcı', url: '/saglik/gunluk-kalori-ihtiyaci-hesaplayici.html' },
+            { name: 'Günlük Su İhtiyacı', url: '/saglik/gunluk-su-ihtiyaci.html' },
+            { name: 'Günlük Karbonhidrat İhtiyacı', url: '/saglik/gunluk-karbonhidrat-ihtiyaci.html' },
+            { name: 'Günlük Protein İhtiyacı', url: '/saglik/gunluk-protein-ihtiyaci.html' },
+            { name: 'Adet Döngüsü Takibi', url: '/saglik/adet-dongusu-takibi.html' },
+            { name: 'Hedef Nabız Bölgesi', url: '/saglik/hedef-nabiz-bolgesi.html' },
+            { name: 'GPA Hesaplama', url: '/egitim/gpa-hesaplama.html' },
+            { name: 'TOEFL Hesaplama', url: '/egitim/toefl-hesaplama.html' },
+            { name: 'IELTS Hesaplama', url: '/egitim/ielts-hesaplama.html' },
+            { name: 'GRE Hesaplama', url: '/egitim/gre-hesaplama.html' },
+            { name: 'GMAT Hesaplama', url: '/egitim/gmat-hesaplama.html' },
+            { name: 'Yakıt Tüketimi Hesaplayıcı', url: '/gunluk%20hayat%20hesaplamalari/yakit-tuketimi-hesaplayici.html' },
+            { name: 'Elektrikli Araç Şarj Maliyeti', url: '/gunluk%20hayat%20hesaplamalari/elektrikli-arac-sarj-maliyeti.html' },
+            { name: 'Kütle Denkliği', url: '/muhendislik/kimya/kutle-denkligi.html' },
+            { name: 'Enerji Denkliği', url: '/muhendislik/kimya/enerji-denkligi.html' },
+            { name: 'Reaktör Hacmi', url: '/muhendislik/kimya/reaktor-hacmi.html' },
+            { name: 'Molarite Hesaplama', url: '/muhendislik/kimya/molarite-hesaplama.html' },
+            { name: 'Yoğunluk Hesaplama', url: '/muhendislik/kimya/yogunluk-hesaplama.html' },
+            { name: 'PH Hesaplama', url: '/muhendislik/kimya/ph-hesaplama.html' },
+            { name: 'Isı Transferi', url: '/muhendislik/kimya/isi-transferi.html' },
+            { name: 'Yüzde Kütle Hesaplama', url: '/muhendislik/kimya/yuzde-kutle-hesaplama.html' },
+            { name: 'Gaz Yoğunluğu', url: '/muhendislik/kimya/gaz-yogunlugu.html' },
+            { name: 'Beton Hacmi ve Malzeme Hesaplama', url: '/muhendislik/insaat/beton-hacmi-malzeme.html' },
+            { name: 'Tuğla ve Blok Duvar Hesaplama', url: '/muhendislik/insaat/tugla-blok-duvar.html' },
+            { name: 'Boya Miktarı Hesaplayıcı', url: '/muhendislik/insaat/boya-miktari-hesaplayici.html' },
+            { name: 'Fayans ve Seramik Hesaplama', url: '/muhendislik/insaat/fayans-seramik.html' },
+            { name: 'Normal Gerilme', url: '/muhendislik/makine/normal-gerilme.html' },
+            { name: 'Kesme Gerilmesi', url: '/muhendislik/makine/kesme-gerilme.html' },
+            { name: 'Eğilme Gerilmesi', url: '/muhendislik/makine/egilme-gerilmesi.html' },
+            { name: 'Burulma Gerilmesi', url: '/muhendislik/makine/burulma.gerilmesi.html' },
+            { name: 'Emniyet Faktörü', url: '/muhendislik/makine/emniyet-faktoru.html' },
+            { name: 'Burkulma Yükü', url: '/muhendislik/makine/burkulma-yuku.html' },
+            { name: 'Isı Eşanjörü LMTD', url: '/muhendislik/makine/isi-esanj%C3%B6r%C3%BC-lmtd.html' },
+            { name: 'Soğutma Yükü', url: '/muhendislik/makine/sogutma-yuku.html' },
+            { name: 'Pompa Gücü', url: '/muhendislik/makine/pompa-gucu.html' },
+            { name: 'Reynolds Sayısı', url: '/muhendislik/makine/reynolds-sayisi.html' },
+            { name: 'Sertlik Dönüşümü', url: '/muhendislik/makine/sertlik-donusumu.html' },
+            { name: 'İplik Numarası', url: '/muhendislik/tekstil/iplik-numarasi.html' },
+            { name: 'Kumaş Gramajı', url: '/muhendislik/tekstil/kumas-gramaji.html' },
+            { name: 'Kumaş Çekme Oranı', url: '/muhendislik/tekstil/kumas-cekme-orani.html' },
+            { name: 'Boya Reçetesi', url: '/muhendislik/tekstil/boya-recetesi.html' },
+            { name: 'Dokuma Verimlilik', url: '/muhendislik/tekstil/dokuma-verimlilik.html' },
+            { name: 'Elyaf Karışım Hesaplama', url: '/muhendislik/tekstil/elyaf-karisim.html' },
+            { name: 'Çözgü ve Atkı Miktarı', url: '/muhendislik/tekstil/cozgu-atki-miktari.html' },
+            { name: 'İplik Uzunluğu', url: '/muhendislik/tekstil/iplik-uzunlugu.html' },
+            { name: 'Baskı Pati Hesaplama', url: '/muhendislik/tekstil/baski-pati.html' },
+            { name: 'Kumaş Fire Hesaplama', url: '/muhendislik/tekstil/kumas-fire.html' },
+            { name: 'Kumaş Sıkılığı', url: '/muhendislik/tekstil/kumas-sikiligi.html' },
+            { name: 'İletişim', url: '/iletisim.html' }
+        ];
+
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            searchResultsDropdown.innerHTML = ''; // Önceki sonuçları temizle
+
+            if (searchTerm.length === 0) {
+                searchResultsDropdown.style.display = 'none';
+                return;
+            }
+
+            const filteredCalculators = calculators.filter(calculator =>
+                calculator.name.toLowerCase().includes(searchTerm)
+            );
+
+            if (filteredCalculators.length > 0) {
+                filteredCalculators.forEach(calculator => {
+                    const resultLink = document.createElement('a');
+                    resultLink.href = calculator.url;
+                    resultLink.textContent = calculator.name;
+                    searchResultsDropdown.appendChild(resultLink);
+                });
+                noResultsMessage.style.display = 'none';
+                searchResultsDropdown.style.display = 'block';
+            } else {
+                noResultsMessage.style.display = 'block';
+                searchResultsDropdown.appendChild(noResultsMessage);
+                searchResultsDropdown.style.display = 'block';
+            }
+        }
+
+        // Arama inputunda her tuşa basıldığında arama yap
+        searchInput.addEventListener('keyup', performSearch);
+
+        // Arama butonuna tıklandığında arama yap (isteğe bağlı, keyup yeterli olabilir)
+        searchButton.addEventListener('click', performSearch);
+
+        // Input dışına tıklandığında sonuçları gizle
+        document.addEventListener('click', function(event) {
+            if (!searchResultsDropdown.contains(event.target) && event.target !== searchInput && event.target !== searchButton) {
+                searchResultsDropdown.style.display = 'none';
+            }
+        });
+
+        // Dropdown içindeki bir sonuca tıklandığında dropdown'ı kapat
+        searchResultsDropdown.addEventListener('click', function(event) {
+            if (event.target.tagName === 'A') {
+                searchResultsDropdown.style.display = 'none';
+            }
+        });
+    });
+</script>
  </body>
 </html>
