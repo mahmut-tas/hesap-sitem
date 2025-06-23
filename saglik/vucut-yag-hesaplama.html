@@ -1,963 +1,463 @@
 <!DOCTYPE html>
 <html lang="tr">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>
-   Vücut Yağ Oranı Hesaplayıcı - Hesapkolik
-  </title>
-  <link href="/css/style.css" rel="stylesheet"/>
-  <link href="/css/footer.css" rel="stylesheet"/>
-  <link href="/css/header.css" rel="stylesheet"/>
-  <link href="../css/style.css" rel="stylesheet"/>
-  <meta content="Boyun, bel, kalça çevreleri, boy ve cinsiyet kullanarak vücut yağ oranınızı kolayca tahmin edin. Sağlıklı yağ oranı aralıkları ve yorumları ile kapsamlı analiz." name="description"/>
-  <meta content="vücut yağ oranı, yağ oranı hesaplama, vücut ölçüleri, cinsiyet, sağlıklı yağ oranı, vücut kompozisyonu, fitness, sağlık hesaplamaları, hesapkolik yağ" name="keywords"/>
-  <link href="https://fonts.googleapis.com" rel="preconnect"/>
-  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
-  <style>
-   /* Ana Sayfa ve Genel Stil */
-        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
-        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
-        
-        .hero-section {
-            background-color: #34495e;
-            color: white;
-            padding: 80px 0;
-            text-align: center;
-        }
-        .hero-section h1 {
-            font-size: 3em;
-            margin-bottom: 20px;
-        }
-        .hero-section p {
-            font-size: 1.2em;
-            opacity: 0.9;
-        }
-
-        /* Hesaplayıcı Seçim Bölümü Stilleri */
-        .calculator-selection-section {
-            padding: 50px 0;
-            text-align: center;
-            background-color: #eaf0f0;
-            border-bottom: 1px solid #dee7e7;
-        }
-
-        .calculator-selection-section h2 {
-            margin-bottom: 30px;
-            color: #2c3e50;
-            font-size: 2.2em;
-        }
-
-        .calc-buttons-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 40px;
-        }
-
-        .calc-type-button {
-            background-color: #3498db; /* Mavi ton */
-            color: white;
-            padding: 15px 25px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
-            max-width: 250px; /* Butonların maksimum genişliği */
-            text-align: center;
-        }
-        
-        .calc-type-button:hover {
-            background-color: #2980b9;
-            transform: translateY(-3px);
-        }
-
-        .calc-type-button.active {
-            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-            transform: translateY(-3px);
-        }
-
-        /* Her bir hesaplayıcı formu için genel stil */
-        .calc-wrapper {
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            max-width: 650px;
-            margin: 30px auto;
-            text-align: left;
-        }
-
-        .calc-wrapper h3 {
-            font-size: 2em;
-            color: #e74c3c;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        .calc-wrapper label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
-
-        .calc-wrapper input[type="number"],
-        .calc-wrapper select {
-            width: 100%;
-            padding: 12px 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1em;
-            box-sizing: border-box;
-            transition: border-color 0.3s ease;
-        }
-
-        .calc-wrapper input[type="number"]:focus,
-        .calc-wrapper select:focus {
-            border-color: #3498db;
-            outline: none;
-        }
-
-        .calc-wrapper input.error {
-            border-color: red !important;
-        }
-
-        .calc-result {
-            margin-top: 25px;
-            font-size: 1.6em;
-            font-weight: 700;
-            color: #2c3e50;
-            text-align: center;
-            min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
-            background-color: #ecf0f1;
-            padding: 15px 20px;
-            border-radius: 8px;
-            border: 1px solid #dcdfe4;
-        }
-        .calc-result strong {
-            color: #e74c3c;
-        }
-        .calc-result .error {
-            color: #e74c3c;
-            font-size: 0.8em;
-        }
-
-        .calc-explanation {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            color: #666;
-            line-height: 1.6;
-            text-align: justify;
-        }
-        .calc-explanation strong {
-            color: #333;
-        }
-        .calc-explanation p:last-child {
-            margin-bottom: 0;
-        }
-
-        /* Genel açıklama bölümleri */
-        .info-section {
-            padding: 40px 0;
-            background-color: #ffffff;
-            margin-top: 40px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            border-radius: 8px;
-        }
-        .info-section h3 {
-            color: #e74c3c;
-            font-size: 1.8em;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .info-section p {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 15px;
-            padding: 0 20px;
-            text-align: justify;
-        }
-        .info-section ul {
-            list-style-type: disc;
-            margin: 0 20px 20px 40px;
-            color: #666;
-        }
-        .info-section ul li {
-            margin-bottom: 10px;
-            line-height: 1.5;
-        }
-        .info-section strong {
-            color: #333;
-        }
-
-        /* Responsive Ayarlamalar */
-        @media (max-width: 768px) {
-            .calc-type-button {
-                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
-            }
-            .calc-wrapper {
-                padding: 30px 20px;
-                margin: 20px auto;
-            }
-            .calc-wrapper h3 {
-                font-size: 1.8em;
-            }
-            .calc-result {
-                font-size: 1.4em;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .calc-type-button {
-                flex: 1 1 100%; /* Tek sütunlu düzen */
-                max-width: 100%;
-            }
-            header nav ul {
-                flex-direction: column;
-                align-items: center;
-            }
-            header nav ul li {
-                margin: 10px 0;
-            }
-        }
-        .hidden-calc {
-            display: none;
-        }
-
-        /* Form elemanları ve sonuç gösterimi için ek stil */
-        .calculator-form-container button {
-            background-color: #28a745; /* Yeşil ton */
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            width: 100%;
-            box-sizing: border-box;
-            margin-top: 10px;
-        }
-
-        .calculator-form-container button:hover {
-            background-color: #218838;
-            transform: translateY(-2px);
-        }
-
-        .result-display {
-            margin-top: 25px;
-            font-size: 1.1em;
-            font-weight: 600;
-            color: #2c3e50;
-            text-align: center;
-            min-height: 1.8em;
-            background-color: #ecf0f1;
-            padding: 15px 20px;
-            border-radius: 8px;
-            border: 1px solid #dcdfe4;
-        }
-
-        .result-display .result-value {
-            color: #e74c3c;
-            font-weight: 700;
-            font-size: 1.3em;
-        }
-
-        .small-text {
-            font-size: 0.85em;
-            color: #777;
-            text-align: justify;
-            margin-top: 15px;
-            line-height: 1.5;
-        }
-        .formula-text {
-            font-family: 'Courier New', Courier, monospace;
-            background-color: #f0f0f0;
-            padding: 10px;
-            border-radius: 5px;
-            text-align: center;
-            font-size: 1.1em;
-            margin: 15px 0;
-            color: #444;
-        }
-        .formula-text.small-margin {
-            margin: 5px 0;
-            padding: 5px;
-            font-size: 1em;
-        }
-        .disclaimer-text {
-            font-size: 0.8em;
-            color: #999;
-            margin-top: 25px;
-            border-top: 1px dashed #eee;
-            padding-top: 15px;
-            text-align: justify;
-        }
-        .icon-small {
-            margin-right: 10px;
-            color: #3498db; /* İkon rengi */
-        }
-        
-        .input-with-unit {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
-        }
-        .input-with-unit label {
-            flex-basis: 100%; /* Label her zaman üstte veya solda */
-            margin-bottom: 5px;
-        }
-        .input-with-unit input[type="number"] {
-            flex-grow: 1; /* Input alanı boşluğu doldurur */
-            margin-bottom: 0; /* İç boşluğu kaldır */
-        }
-        .input-with-unit select {
-            flex-shrink: 0; /* Select kutusu sabit kalır */
-            width: auto; /* Select kutusu kendi genişliğinde olur */
-            margin-bottom: 0; /* İç boşluğu kaldır */
-        }
-
-        /* Yorumlama Tablosu Stilleri */
-        .yorum-tablosu {
-            margin-top: 30px;
-            text-align: left;
-            background-color: #fcfcfc;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            padding: 20px;
-        }
-        .yorum-tablosu h4 {
-            font-size: 1.4em;
-            color: #34495e;
-            margin-bottom: 15px;
-            text-align: center;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-        .yorum-tablosu table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 0; /* Son paragraf varsa alt boşluk olmasın */
-        }
-        .yorum-tablosu th, .yorum-tablosu td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
-        .yorum-tablosu th {
-            background-color: #eaf0f0;
-            font-weight: 600;
-            color: #555;
-        }
-        .yorum-tablosu tr:nth-child(even) {
-            background-color: #f8f8f8;
-        }
-  </style>
-  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
-  </script>
-  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
-  </script>
- </head>
- <body>
-  <div id="header-placeholder">
-  </div>
-  <main>
-   <section class="hero-section">
-    <div class="container">
-     <h1>
-      Vücut Yağ Oranı Hesaplayıcı
-     </h1>
-     <p>
-      Boyun, bel, kalça çevreleri, boy ve cinsiyet kullanarak vücut yağ oranınızı kolayca tahmin edin.
-     </p>
-    </div>
-   </section>
-   <section class="calculator-selection-section">
-    <div class="container">
-     <h2>
-      Vücut Yağ Oranını Hesapla
-     </h2>
-     <div class="calc-buttons-container">
-      <button class="calc-type-button active" data-calc-type="bodyFatPercentage">
-       Vücut Yağ Oranını Hesapla
-      </button>
-     </div>
-     <div class="calc-wrapper active-calc" id="calculator-bodyFatPercentage">
-      <h3>
-       <i class="fas fa-percentage icon-small">
-       </i>
-       Vücut Yağ Oranını Hesapla (US Navy Yöntemi)
-      </h3>
-      <div class="calculator-form-container">
-       <form id="bodyFatForm">
-        <div class="input-with-unit">
-         <label for="gender">
-          Cinsiyet:
-         </label>
-         <select id="gender" required="">
-          <option value="male">
-           Erkek
-          </option>
-          <option value="female">
-           Kadın
-          </option>
-         </select>
-        </div>
-        <hr class="form-divider"/>
-        <div class="input-with-unit">
-         <label for="age">
-          Yaş:
-         </label>
-         <input id="age" max="100" min="1" placeholder="Örn: 30" required="" step="1" type="number"/>
-        </div>
-        <hr class="form-divider"/>
-        <div class="input-with-unit">
-         <label for="height">
-          Boy:
-         </label>
-         <input id="height" min="50" placeholder="Örn: 175 (cm)" required="" step="0.1" type="number"/>
-         <select id="heightUnit">
-          <option value="cm">
-           cm
-          </option>
-          <option value="in">
-           inç
-          </option>
-         </select>
-        </div>
-        <hr class="form-divider"/>
-        <div class="input-with-unit">
-         <label for="neck">
-          Boyun Çevresi:
-         </label>
-         <input id="neck" min="10" placeholder="Örn: 38 (cm)" required="" step="0.1" type="number"/>
-         <select id="neckUnit">
-          <option value="cm">
-           cm
-          </option>
-          <option value="in">
-           inç
-          </option>
-         </select>
-        </div>
-        <hr class="form-divider"/>
-        <div class="input-with-unit">
-         <label for="waist">
-          Bel Çevresi:
-         </label>
-         <input id="waist" min="20" placeholder="Örn: 80 (cm)" required="" step="0.1" type="number"/>
-         <select id="waistUnit">
-          <option value="cm">
-           cm
-          </option>
-          <option value="in">
-           inç
-          </option>
-         </select>
-        </div>
-        <hr class="form-divider" id="hipDivider"/>
-        <div class="input-with-unit" id="hipMeasurementDiv">
-         <label for="hip">
-          Kalça Çevresi:
-         </label>
-         <input id="hip" min="20" placeholder="Örn: 95 (cm)" required="" step="0.1" type="number"/>
-         <select id="hipUnit">
-          <option value="cm">
-           cm
-          </option>
-          <option value="in">
-           inç
-          </option>
-         </select>
-        </div>
-        <button type="submit">
-         Vücut Yağ Oranını Hesapla
-        </button>
-       </form>
-       <div class="result-display" id="bodyFatResult">
-       </div>
-       <div class="calc-explanation">
-        <p>
-         Bu hesaplayıcı, ABD Donanması (U.S. Navy) tarafından kullanılan bir formülü kullanarak vücut yağ oranınızı tahmin eder. Bu yöntem, vücut kompozisyonunuzu değerlendirmek için hızlı ve pratik bir yol sunar.
-        </p>
-        <p class="small-text">
-         **Formüller (Ölçümler inç cinsinden alındığında):**
-         <br/>
-         **Erkekler:** %Yağ = 86.010 * log10(Bel - Boyun) - 70.041 * log10(Boy) + 36.76
-         <br/>
-         **Kadınlar:** %Yağ = 163.205 * log10(Bel + Kalça - Boyun) - 97.684 * log10(Boy) - 78.387
-        </p>
-        <p>
-         Sonuç, yaklaşık bir değer olup, profesyonel vücut yağ analizi yöntemleri (örneğin DEXA taraması) kadar hassas değildir.
-        </p>
-       </div>
-      </div>
-     </div>
-    </div>
-   </section>
-   <section class="info-section container">
-    <h3>
-     Vücut Yağ Oranı Nedir ve Neden Önemlidir?
-    </h3>
-    <p>
-     **Vücut yağ oranı**, vücudunuzdaki yağ kütlesinin toplam vücut kütlesine oranıdır. Sadece kilonuz değil, vücudunuzun ne kadarının yağ, ne kadarının yağsız kütle (kas, kemik, su) olduğunu gösterdiği için genel sağlığın ve fitness seviyesinin önemli bir göstergesidir. Yüksek vücut yağ oranı, obeziteyle ilişkili birçok sağlık sorunu (kalp hastalığı, diyabet gibi) riskini artırırken, çok düşük vücut yağ oranı da sağlık sorunlarına yol açabilir.
-    </p>
-    <h4>
-     Neden Önemlidir?
-    </h4>
-    <ul>
-     <li>
-      **Sağlık Riski Değerlendirmesi:** Sağlıklı bir yağ oranına sahip olmak, kronik hastalık riskini azaltır.
-     </li>
-     <li>
-      **Fitness Takibi:** Sporcular ve fitness meraklıları için antrenmanların etkinliğini gösterir.
-     </li>
-     <li>
-      **Hedef Belirleme:** Kilo verme veya kas kütlesi kazanma hedeflerinde yol gösterir.
-     </li>
-    </ul>
-    <h4>
-     Vücut Yağ Oranı Kategorileri (Amerikan Egzersiz Konseyi - ACE Rehberi):
-    </h4>
-    <div class="yorum-tablosu">
-     <h4>
-      Erkekler İçin Vücut Yağ Oranı Kategorileri
-     </h4>
-     <table>
-      <thead>
-       <tr>
-        <th>
-         Kategori
-        </th>
-        <th>
-         Yağ Oranı (%)
-        </th>
-       </tr>
-      </thead>
-      <tbody>
-       <tr>
-        <td>
-         Temel Yağ
-        </td>
-        <td>
-         2-5%
-        </td>
-       </tr>
-       <tr>
-        <td>
-         Sporcular
-        </td>
-        <td>
-         6-13%
-        </td>
-       </tr>
-       <tr>
-        <td>
-         Fitness (Sağlıklı)
-        </td>
-        <td>
-         14-17%
-        </td>
-       </tr>
-       <tr>
-        <td>
-         Ortalama
-        </td>
-        <td>
-         18-24%
-        </td>
-       </tr>
-       <tr>
-        <td>
-         Obez
-        </td>
-        <td>
-         &gt;= 25%
-        </td>
-       </tr>
-      </tbody>
-     </table>
-    </div>
-    <br/>
-    <div class="yorum-tablosu">
-     <h4>
-      Kadınlar İçin Vücut Yağ Oranı Kategorileri
-     </h4>
-     <table>
-      <thead>
-       <tr>
-        <th>
-         Kategori
-        </th>
-        <th>
-         Yağ Oranı (%)
-        </th>
-       </tr>
-      </thead>
-      <tbody>
-       <tr>
-        <td>
-         Temel Yağ
-        </td>
-        <td>
-         10-13%
-        </td>
-       </tr>
-       <tr>
-        <td>
-         Sporcular
-        </td>
-        <td>
-         14-20%
-        </td>
-       </tr>
-       <tr>
-        <td>
-         Fitness (Sağlıklı)
-        </td>
-        <td>
-         21-24%
-        </td>
-       </tr>
-       <tr>
-        <td>
-         Ortalama
-        </td>
-        <td>
-         25-31%
-        </td>
-       </tr>
-       <tr>
-        <td>
-         Obez
-        </td>
-        <td>
-         &gt;= 32%
-        </td>
-       </tr>
-      </tbody>
-     </table>
-    </div>
-    <h4>
-     Vücut Yağ Oranı Ölçüm Yöntemleri:
-    </h4>
-    <ul>
-     <li>
-      **DEXA Tarama:** X-ışınları kullanarak en doğru yöntemlerden biridir.
-     </li>
-     <li>
-      **Hidrostatik Tartım (Su Altı Tartımı):** Vücut yoğunluğunu ölçerek yağ oranını belirler.
-     </li>
-     <li>
-      **Biyoelektrik Empedans Analizi (BIA):** Vücuttan elektrik akımı geçirerek direnci ölçer (daha az hassas).
-     </li>
-     <li>
-      **Deri Kıvrımı Ölçümü (Skinfold Calipers):** Vücudun belirli bölgelerindeki deri altı yağ kalınlığını ölçer.
-     </li>
-     <li>
-      **Çevresel Ölçümler (Bu Hesaplayıcıda Kullanılan):** Bel, boyun, kalça gibi çevre ölçüleriyle matematiksel formüller kullanır.
-     </li>
-    </ul>
-    <p class="disclaimer-text">
-     Bu hesaplayıcıda kullanılan ABD Donanması (U.S. Navy) yöntemi, hızlı ve kolay bir tahmin sağlar, ancak diğer profesyonel yöntemler (DEXA, hidrostatik tartım) kadar hassas değildir. Sonuçlar genel bir gösterge niteliğindedir ve kişinin genel sağlık durumu, kas kütlesi ve vücut tipi gibi faktörlere göre değişiklik gösterebilir. Sağlıkla ilgili herhangi bir karar vermeden önce daima bir sağlık uzmanına danışmalısınız.
-    </p>
-   </section>
-  </main>
-  <div id="footer-placeholder">
-  </div>
-  <script>
-   document.addEventListener('DOMContentLoaded', function() {
-    const isEnglishPage = window.location.pathname.startsWith('/en/');
-    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
-    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
-
-    // Header Yükleme
-    fetch(headerPath)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
-            }
-            return response.text();
-        })
-        .then(data => {
-            const headerPlaceholder = document.getElementById('header-placeholder');
-            if (headerPlaceholder) {
-                headerPlaceholder.innerHTML = data;
-
-                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
-                const scriptElement = headerPlaceholder.querySelector('script');
-                if (scriptElement) {
-                    const newScript = document.createElement('script');
-                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
-                    document.body.appendChild(newScript);
-                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
-                }
-            }
-        })
-        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
-
-    // Footer Yükleme
-    fetch(footerPath)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
-            }
-            return response.text();
-        })
-        .then(data => {
-            const footerPlaceholder = document.getElementById('footer-placeholder');
-            if (footerPlaceholder) {
-                footerPlaceholder.innerHTML = data;
-                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = data;
-                const footerElement = tempDiv.querySelector('footer');
-                if (footerElement) {
-                    footerPlaceholder.replaceWith(footerElement);
-                }
-            }
-        })
-        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
-});
-  </script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-    // Language detection: Assume English if URL starts with '/en/', otherwise Turkish
-    const isEnglishPage = window.location.pathname.startsWith('/en/');
-
-    // Text strings object for dynamic content
-    const texts = {
-        tr: {
-            calculateButtonText: 'Vücut Yağ Oranını Hesapla',
-            genderLabel: 'Cinsiyet:',
-            genderMale: 'Erkek',
-            genderFemale: 'Kadın',
-            ageLabel: 'Yaş:',
-            heightLabel: 'Boy:',
-            neckLabel: 'Boyun Çevresi:',
-            waistLabel: 'Bel Çevresi:',
-            hipLabel: 'Kalça Çevresi:',
-            invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
-            resultTitle: 'Sonuç:',
-            bodyFatPercentage: 'Vücut Yağ Oranınız:',
-            commentEssentialFat: 'Temel Yağ',
-            commentAthletes: 'Sporcular',
-            commentFitness: 'Fitness (Sağlıklı)',
-            commentAverage: 'Ortalama',
-            commentObese: 'Obez',
-            commentBelowHealthy: 'Sağlıklı aralığın altında (Temel yağ seviyesine yakın)',
-            commentHealthy: 'Sağlıklı aralıkta',
-            commentSlightlyHigh: 'Biraz yüksek (Ortalama üzeri)',
-            commentHigh: 'Yüksek (Obez kategorisinde)',
-            placeholderAge: 'Örn: 30',
-            placeholderHeight: 'Örn: 175 (cm)',
-            placeholderNeck: 'Örn: 38 (cm)',
-            placeholderWaist: 'Örn: 80 (cm)',
-            placeholderHip: 'Örn: 95 (cm)',
-            unitCm: 'cm',
-            unitIn: 'inç',
-            formulaNote: 'Ölçümler inç cinsinden olduğunda kullanılan formüller:',
-            disclaimer: 'Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Sonuçlar, kişinin genel sağlığı, kas kütlesi ve vücut tipi gibi faktörlere bağlı olarak değişebilir. Herhangi bir sağlıkla ilgili karar vermeden önce daima bir sağlık uzmanına danışmalısınız.'
-        },
-        en: {
-            calculateButtonText: 'Calculate Your Body Fat Percentage',
-            genderLabel: 'Gender:',
-            genderMale: 'Male',
-            genderFemale: 'Woman',
-            ageLabel: 'Age:',
-            heightLabel: 'Height:',
-            neckLabel: 'Neck Circumference:',
-            waistLabel: 'Waist Circumference:',
-            hipLabel: 'Hip Circumference:',
-            invalidInput: 'Please enter valid positive numbers for all fields.',
-            resultTitle: 'Result:',
-            bodyFatPercentage: 'Your Body Fat Percentage:',
-            commentEssentialFat: 'Essential Fat',
-            commentAthletes: 'Athletes',
-            commentFitness: 'Fitness (Healthy)',
-            commentAverage: 'Average',
-            commentObese: 'Obese',
-            commentBelowHealthy: 'Below healthy range (Close to essential fat level)',
-            commentHealthy: 'In healthy range',
-            commentSlightlyHigh: 'Slightly high (Above average)',
-            commentHigh: 'High (In obese category)',
-            placeholderAge: 'e.g.: 30',
-            placeholderHeight: 'e.g.: 175 (cm)',
-            placeholderNeck: 'e.g.: 38 (cm)',
-            placeholderWaist: 'e.g.: 80 (cm)',
-            placeholderHip: 'e.g.: 95 (cm)',
-            unitCm: 'cm',
-            unitIn: 'inch',
-            formulaNote: 'Formulas (When measurements are in inches):',
-            disclaimer: 'This calculator provides a quick and easy estimate, but is not as accurate as other professional methods (DEXA, hydrostatic weighing). Results are a general guide and may vary depending on factors such as a person\'s overall health, muscle mass, and body type. You should always consult a healthcare professional before making any health-related decisions.'
-        }
-    };
-
-    // Select active language texts
-    const currentTexts = isEnglishPage ? texts.en : texts.tr;
-
-    // --- DOM Elements ---
-    const bodyFatForm = document.getElementById('bodyFatForm');
-    const genderSelect = document.getElementById('gender');
-    const ageInput = document.getElementById('age');
-    const heightInput = document.getElementById('height');
-    const heightUnitSelect = document.getElementById('heightUnit');
-    const neckInput = document.getElementById('neck');
-    const neckUnitSelect = document.getElementById('neckUnit');
-    const waistInput = document.getElementById('waist');
-    const waistUnitSelect = document.getElementById('waistUnit');
-    const hipInput = document.getElementById('hip');
-    const hipUnitSelect = document.getElementById('hipUnit');
-    const hipMeasurementDiv = document.getElementById('hipMeasurementDiv'); // Div for hip measurement
-    const hipDivider = document.getElementById('hipDivider'); // Divider before hip measurement
-
-    const bodyFatResultDiv = document.getElementById('bodyFatResult');
-    const calculateButton = bodyFatForm.querySelector('button[type="submit"]');
-
-    // Update static labels and placeholders on load
-    document.querySelector('label[for="gender"]').textContent = currentTexts.genderLabel;
-    document.querySelector('#gender option[value="male"]').textContent = currentTexts.genderMale;
-    document.querySelector('#gender option[value="female"]').textContent = currentTexts.genderFemale;
-    document.querySelector('label[for="age"]').textContent = currentTexts.ageLabel;
-    ageInput.placeholder = currentTexts.placeholderAge;
-    document.querySelector('label[for="height"]').textContent = currentTexts.heightLabel;
-    heightInput.placeholder = currentTexts.placeholderHeight;
-    document.querySelector('label[for="neck"]').textContent = currentTexts.neckLabel;
-    neckInput.placeholder = currentTexts.placeholderNeck;
-    document.querySelector('label[for="waist"]').textContent = currentTexts.waistLabel;
-    waistInput.placeholder = currentTexts.placeholderWaist;
-    document.querySelector('label[for="hip"]').textContent = currentTexts.hipLabel;
-    hipInput.placeholder = currentTexts.placeholderHip;
-
-    // Update unit options
-    document.querySelectorAll('#heightUnit option[value="cm"]').forEach(opt => opt.textContent = currentTexts.unitCm);
-    document.querySelectorAll('#heightUnit option[value="in"]').forEach(opt => opt.textContent = currentTexts.unitIn);
-    document.querySelectorAll('#neckUnit option[value="cm"]').forEach(opt => opt.textContent = currentTexts.unitCm);
-    document.querySelectorAll('#neckUnit option[value="in"]').forEach(opt => opt.textContent = currentTexts.unitIn);
-    document.querySelectorAll('#waistUnit option[value="cm"]').forEach(opt => opt.textContent = currentTexts.unitCm);
-    document.querySelectorAll('#waistUnit option[value="in"]').forEach(opt => opt.textContent = currentTexts.unitIn);
-    document.querySelectorAll('#hipUnit option[value="cm"]').forEach(opt => opt.textContent = currentTexts.unitCm);
-    document.querySelectorAll('#hipUnit option[value="in"]').forEach(opt => opt.textContent = currentTexts.unitIn);
-
-    calculateButton.textContent = currentTexts.calculateButtonText;
-    document.querySelector('.calc-explanation p.small-text').innerHTML = `
-        <p class="small-text">
-            <strong>${currentTexts.formulaNote}</strong>
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Vücut Yağ Oranı Hesaplayıcı - Hesapkolik</title>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    <link href="/css/header.css" rel="stylesheet"/>
+    <meta content="Boyun, bel, kalça çevreleri, boy ve cinsiyet kullanarak vücut yağ oranınızı kolayca tahmin edin. Sağlıklı yağ oranı aralıkları ve yorumları ile kapsamlı analiz." name="description"/>
+    <meta content="vücut yağ oranı, yağ oranı hesaplama, vücut ölçüleri, cinsiyet, sağlıklı yağ oranı, vücut kompozisyonu, fitness, sağlık hesaplamaları, hesapkolik yağ" name="keywords"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Vücut Yağ Oranı Hesaplayıcı</h1>
+                <p>Boyun, bel, kalça çevreleri, boy ve cinsiyet kullanarak vücut yağ oranınızı kolayca tahmin edin.</p>
+            </div>
+        </section>
+        <section class="calculator-selection-section">
+            <div class="container">
+                <h2>Vücut Yağ Oranını Hesapla</h2>
+                <div class="calc-buttons-container">
+                    <button class="calc-type-button active" data-calc-type="bodyFatPercentage">Vücut Yağ Oranını Hesapla</button>
+                </div>
+                <div class="calc-wrapper active-calc" id="calculator-bodyFatPercentage">
+                    <h3><i class="fas fa-percentage icon-small"></i> Vücut Yağ Oranını Hesapla (US Navy Yöntemi)</h3>
+                    <div class="calculator-form-container">
+                        <form id="bodyFatForm">
+                            <div class="input-with-unit">
+                                <label for="gender">Cinsiyet:</label>
+                                <select id="gender" required="">
+                                    <option value="male">Erkek</option>
+                                    <option value="female">Kadın</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider"/>
+                            <div class="input-with-unit">
+                                <label for="age">Yaş:</label>
+                                <input id="age" max="100" min="1" placeholder="Örn: 30" required="" step="1" type="number"/>
+                            </div>
+                            <hr class="form-divider"/>
+                            <div class="input-with-unit">
+                                <label for="height">Boy:</label>
+                                <input id="height" min="50" placeholder="Örn: 175 (cm)" required="" step="0.1" type="number"/>
+                                <select id="heightUnit">
+                                    <option value="cm">cm</option>
+                                    <option value="in">inç</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider"/>
+                            <div class="input-with-unit">
+                                <label for="neck">Boyun Çevresi:</label>
+                                <input id="neck" min="10" placeholder="Örn: 38 (cm)" required="" step="0.1" type="number"/>
+                                <select id="neckUnit">
+                                    <option value="cm">cm</option>
+                                    <option value="in">inç</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider"/>
+                            <div class="input-with-unit">
+                                <label for="waist">Bel Çevresi:</label>
+                                <input id="waist" min="20" placeholder="Örn: 80 (cm)" required="" step="0.1" type="number"/>
+                                <select id="waistUnit">
+                                    <option value="cm">cm</option>
+                                    <option value="in">inç</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider" id="hipDivider"/>
+                            <div class="input-with-unit" id="hipMeasurementDiv">
+                                <label for="hip">Kalça Çevresi:</label>
+                                <input id="hip" min="20" placeholder="Örn: 95 (cm)" required="" step="0.1" type="number"/>
+                                <select id="hipUnit">
+                                    <option value="cm">cm</option>
+                                    <option value="in">inç</option>
+                                </select>
+                            </div>
+                            <button type="submit">Vücut Yağ Oranını Hesapla</button>
+                        </form>
+                        <div class="result-display" id="bodyFatResult" style="display: none;">
+                            </div>
+                        <div class="calc-explanation">
+                            <p>Bu hesaplayıcı, ABD Donanması (U.S. Navy) tarafından kullanılan bir formülü kullanarak vücut yağ oranınızı tahmin eder. Bu yöntem, vücut kompozisyonunuzu değerlendirmek için hızlı ve pratik bir yol sunar.</p>
+                            <p class="small-text">
+                                <strong>Formüller (Ölçümler inç cinsinden alındığında):</strong>
+                                <br/>
+                                <strong>Erkekler:</strong> %Yağ = 86.010 * log10(Bel - Boyun) - 70.041 * log10(Boy) + 36.76
+                                <br/>
+                                <strong>Kadınlar:</strong> %Yağ = 163.205 * log10(Bel + Kalça - Boyun) - 97.684 * log10(Boy) - 78.387
+                            </p>
+                            <p>Sonuç, yaklaşık bir değer olup, profesyonel vücut yağ analizi yöntemleri (örneğin DEXA taraması) kadar hassas değildir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="info-section container">
+            <h3>Vücut Yağ Oranı Nedir ve Neden Önemlidir?</h3>
+            <p><strong>Vücut yağ oranı</strong>, vücudunuzdaki yağ kütlesinin toplam vücut kütlesine oranıdır. Sadece kilonuz değil, vücudunuzun ne kadarının yağ, ne kadarının yağsız kütle (kas, kemik, su) olduğunu gösterdiği için genel sağlığın ve fitness seviyesinin önemli bir göstergesidir. Yüksek vücut yağ oranı, obeziteyle ilişkili birçok sağlık sorunu (kalp hastalığı, diyabet gibi) riskini artırırken, çok düşük vücut yağ oranı da sağlık sorunlarına yol açabilir.</p>
+            <h4>Neden Önemlidir?</h4>
+            <ul>
+                <li><strong>Sağlık Riski Değerlendirmesi:</strong> Sağlıklı bir yağ oranına sahip olmak, kronik hastalık riskini azaltır.</li>
+                <li><strong>Fitness Takibi:</strong> Sporcular ve fitness meraklıları için antrenmanların etkinliğini gösterir.</li>
+                <li><strong>Hedef Belirleme:</strong> Kilo verme veya kas kütlesi kazanma hedeflerinde yol gösterir.</li>
+            </ul>
+            <h4>Vücut Yağ Oranı Kategorileri (Amerikan Egzersiz Konseyi - ACE Rehberi):</h4>
+            <div class="yorum-tablosu">
+                <h4>Erkekler İçin Vücut Yağ Oranı Kategorileri</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Kategori</th>
+                            <th>Yağ Oranı (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Temel Yağ</td><td>2-5%</td></tr>
+                        <tr><td>Sporcular</td><td>6-13%</td></tr>
+                        <tr><td>Fitness (Sağlıklı)</td><td>14-17%</td></tr>
+                        <tr><td>Ortalama</td><td>18-24%</td></tr>
+                        <tr><td>Obez</td><td>&gt;= 25%</td></tr>
+                    </tbody>
+                </table>
+            </div>
             <br/>
-            <strong>${isEnglishPage ? 'Men:' : 'Erkekler:'}</strong> %Fat = 86.010 * log10(Waist - Neck) - 70.041 * log10(Height) + 36.76
-            <br/>
-            <strong>${isEnglishPage ? 'Women:' : 'Kadınlar:'}</strong> %Fat = 163.205 * log10(Waist + Hip - Neck) - 97.684 * log10(Height) - 78.387
-        </p>
-    `;
-    document.querySelector('.disclaimer-text').textContent = currentTexts.disclaimer;
+            <div class="yorum-tablosu">
+                <h4>Kadınlar İçin Vücut Yağ Oranı Kategorileri</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Kategori</th>
+                            <th>Yağ Oranı (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Temel Yağ</td><td>10-13%</td></tr>
+                        <tr><td>Sporcular</td><td>14-20%</td></tr>
+                        <tr><td>Fitness (Sağlıklı)</td><td>21-24%</td></tr>
+                        <tr><td>Ortalama</td><td>25-31%</td></tr>
+                        <tr><td>Obez</td><td>&gt;= 32%</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h4>Vücut Yağ Oranı Ölçüm Yöntemleri:</h4>
+            <ul>
+                <li><strong>DEXA Tarama:</strong> X-ışınları kullanarak en doğru yöntemlerden biridir.</li>
+                <li><strong>Hidrostatik Tartım (Su Altı Tartımı):</strong> Vücut yoğunluğunu ölçerek yağ oranını belirler.</li>
+                <li><strong>Biyoelektrik Empedans Analizi (BIA):</strong> Vücuttan elektrik akımı geçirerek direnci ölçer (daha az hassas).</li>
+                <li><strong>Deri Kıvrımı Ölçümü (Skinfold Calipers):</strong> Vücudun belirli bölgelerindeki deri altı yağ kalınlığını ölçer.</li>
+                <li><strong>Çevresel Ölçümler (Bu Hesaplayıcıda Kullanılan):</strong> Bel, boyun, kalça gibi çevre ölçüleriyle matematiksel formüller kullanır.</li>
+            </ul>
+            <p class="disclaimer-text">Bu hesaplayıcıda kullanılan ABD Donanması (U.S. Navy) yöntemi, hızlı ve kolay bir tahmin sağlar, ancak diğer profesyonel yöntemler (DEXA, hidrostatik tartım) kadar hassas değildir. Sonuçlar genel bir gösterge niteliğindedir ve kişinin genel sağlık durumu, kas kütlesi ve vücut tipi gibi faktörlere göre değişiklik gösterebilir. Sağlıkla ilgili herhangi bir karar vermeden önce daima bir sağlık uzmanına danışmalısınız.</p>
+        </section>
+    </main>
+    <div id="footer-placeholder"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            // Header Yükleme
+            fetch(headerPath)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    const headerPlaceholder = document.getElementById('header-placeholder');
+                    if (headerPlaceholder) {
+                        headerPlaceholder.innerHTML = data;
+                        const scriptElement = headerPlaceholder.querySelector('script');
+                        if (scriptElement) {
+                            const newScript = document.createElement('script');
+                            newScript.textContent = scriptElement.textContent;
+                            document.body.appendChild(newScript);
+                            scriptElement.remove();
+                        }
+                    }
+                })
+                .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+            // Footer Yükleme
+            fetch(footerPath)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    const footerPlaceholder = document.getElementById('footer-placeholder');
+                    if (footerPlaceholder) {
+                        footerPlaceholder.innerHTML = data;
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = data;
+                        const footerElement = tempDiv.querySelector('footer');
+                        if (footerElement) {
+                            footerPlaceholder.replaceWith(footerElement);
+                        }
+                    }
+                })
+                .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Language detection: Assume English if URL starts with '/en/', otherwise Turkish
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+            // Text strings object for dynamic content
+            const texts = {
+                tr: {
+                    calculateButtonText: 'Vücut Yağ Oranını Hesapla',
+                    genderLabel: 'Cinsiyet:',
+                    genderMale: 'Erkek',
+                    genderFemale: 'Kadın',
+                    ageLabel: 'Yaş:',
+                    heightLabel: 'Boy:',
+                    neckLabel: 'Boyun Çevresi:',
+                    waistLabel: 'Bel Çevresi:',
+                    hipLabel: 'Kalça Çevresi:',
+                    invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                    resultTitle: 'Sonuç:',
+                    bodyFatPercentage: 'Vücut Yağ Oranınız:',
+                    commentEssentialFat: 'Temel Yağ',
+                    commentAthletes: 'Sporcular',
+                    commentFitness: 'Fitness (Sağlıklı)',
+                    commentAverage: 'Ortalama',
+                    commentObese: 'Obez',
+                    commentBelowHealthy: 'Sağlıklı aralığın altında (Temel yağ seviyesine yakın)',
+                    commentHealthy: 'Sağlıklı aralıkta',
+                    commentSlightlyHigh: 'Biraz yüksek (Ortalama üzeri)',
+                    commentHigh: 'Yüksek (Obez kategorisinde)',
+                    placeholderAge: 'Örn: 30',
+                    placeholderHeight: 'Örn: 175 (cm)',
+                    placeholderNeck: 'Örn: 38 (cm)',
+                    placeholderWaist: 'Örn: 80 (cm)',
+                    placeholderHip: 'Örn: 95 (cm)',
+                    unitCm: 'cm',
+                    unitIn: 'inç',
+                    formulaNote: 'Ölçümler inç cinsinden olduğunda kullanılan formüller:',
+                    disclaimer: 'Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Sonuçlar, kişinin genel sağlığı, kas kaskatı ve vücut tipi gibi faktörlere bağlı olarak değişebilir. Herhangi bir sağlıkla ilgili karar vermeden önce daima bir sağlık uzmanına danışmalısınız.'
+                },
+                en: {
+                    calculateButtonText: 'Calculate Your Body Fat Percentage',
+                    genderLabel: 'Gender:',
+                    genderMale: 'Male',
+                    genderFemale: 'Woman',
+                    ageLabel: 'Age:',
+                    heightLabel: 'Height:',
+                    neckLabel: 'Neck Circumference:',
+                    waistLabel: 'Waist Circumference:',
+                    hipLabel: 'Hip Circumference:',
+                    invalidInput: 'Please enter valid positive numbers for all fields.',
+                    resultTitle: 'Result:',
+                    bodyFatPercentage: 'Your Body Fat Percentage:',
+                    commentEssentialFat: 'Essential Fat',
+                    commentAthletes: 'Athletes',
+                    commentFitness: 'Fitness (Healthy)',
+                    commentAverage: 'Average',
+                    commentObese: 'Obese',
+                    commentBelowHealthy: 'Below healthy range (Close to essential fat level)',
+                    commentHealthy: 'In healthy range',
+                    commentSlightlyHigh: 'Slightly high (Above average)',
+                    commentHigh: 'High (In obese category)',
+                    placeholderAge: 'e.g.: 30',
+                    placeholderHeight: 'e.g.: 175 (cm)',
+                    placeholderNeck: 'e.g.: 38 (cm)',
+                    placeholderWaist: 'e.g.: 80 (cm)',
+                    placeholderHip: 'e.g.: 95 (cm)',
+                    unitCm: 'cm',
+                    unitIn: 'inch',
+                    formulaNote: 'Formulas (When measurements are in inches):',
+                    disclaimer: 'This calculator provides a quick and easy estimate, but is not as accurate as other professional methods (DEXA, hydrostatic weighing). Results are a general guide and may vary depending on factors such as a person\'s overall health, muscle mass, and body type. You should always consult a healthcare professional before making any health-related decisions.'
+                }
+            };
+
+            // Select active language texts
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // --- DOM Elements ---
+            const bodyFatForm = document.getElementById('bodyFatForm');
+            const genderSelect = document.getElementById('gender');
+            const ageInput = document.getElementById('age');
+            const heightInput = document.getElementById('height');
+            const heightUnitSelect = document.getElementById('heightUnit');
+            const neckInput = document.getElementById('neck');
+            const neckUnitSelect = document.getElementById('neckUnit');
+            const waistInput = document.getElementById('waist');
+            const waistUnitSelect = document.getElementById('waistUnit');
+            const hipInput = document.getElementById('hip');
+            const hipUnitSelect = document.getElementById('hipUnit');
+            const hipMeasurementDiv = document.getElementById('hipMeasurementDiv'); // Div for hip measurement
+            const hipDivider = document.getElementById('hipDivider'); // Divider before hip measurement
+
+            const bodyFatResultDiv = document.getElementById('bodyFatResult');
+            const calculateButton = bodyFatForm.querySelector('button[type="submit"]');
+
+            // Update static labels and placeholders on load
+            document.querySelector('label[for="gender"]').textContent = currentTexts.genderLabel;
+            document.querySelector('#gender option[value="male"]').textContent = currentTexts.genderMale;
+            document.querySelector('#gender option[value="female"]').textContent = currentTexts.genderFemale;
+            document.querySelector('label[for="age"]').textContent = currentTexts.ageLabel;
+            ageInput.placeholder = currentTexts.placeholderAge;
+            document.querySelector('label[for="height"]').textContent = currentTexts.heightLabel;
+            heightInput.placeholder = currentTexts.placeholderHeight;
+            document.querySelector('label[for="neck"]').textContent = currentTexts.neckLabel;
+            neckInput.placeholder = currentTexts.placeholderNeck;
+            document.querySelector('label[for="waist"]').textContent = currentTexts.waistLabel;
+            waistInput.placeholder = currentTexts.placeholderWaist;
+            document.querySelector('label[for="hip"]').textContent = currentTexts.hipLabel;
+            hipInput.placeholder = currentTexts.placeholderHip;
+
+            // Update unit options
+            document.querySelectorAll('#heightUnit option[value="cm"]').forEach(opt => opt.textContent = currentTexts.unitCm);
+            document.querySelectorAll('#heightUnit option[value="in"]').forEach(opt => opt.textContent = currentTexts.unitIn);
+            document.querySelectorAll('#neckUnit option[value="cm"]').forEach(opt => opt.textContent = currentTexts.unitCm);
+            document.querySelectorAll('#neckUnit option[value="in"]').forEach(opt => opt.textContent = currentTexts.unitIn);
+            document.querySelectorAll('#waistUnit option[value="cm"]').forEach(opt => opt.textContent = currentTexts.unitCm);
+            document.querySelectorAll('#waistUnit option[value="in"]').forEach(opt => opt.textContent = currentTexts.unitIn);
+            document.querySelectorAll('#hipUnit option[value="cm"]').forEach(opt => opt.textContent = currentTexts.unitCm);
+            document.querySelectorAll('#hipUnit option[value="in"]').forEach(opt => opt.textContent = currentTexts.unitIn);
+
+            calculateButton.textContent = currentTexts.calculateButtonText;
+            document.querySelector('.calc-explanation p.small-text').innerHTML = `
+                <p class="small-text">
+                    <strong>${currentTexts.formulaNote}</strong>
+                    <br/>
+                    <strong>${isEnglishPage ? 'Men:' : 'Erkekler:'}</strong> %Fat = 86.010 * log10(Waist - Neck) - 70.041 * log10(Height) + 36.76
+                    <br/>
+                    <strong>${isEnglishPage ? 'Women:' : 'Kadınlar:'}</strong> %Fat = 163.205 * log10(Waist + Hip - Neck) - 97.684 * log10(Height) - 78.387
+                </p>
+            `;
+            document.querySelector('.disclaimer-text').textContent = currentTexts.disclaimer;
+
+            // --- Toggle Hip Measurement based on Gender ---
+            genderSelect.addEventListener('change', function() {
+                if (genderSelect.value === 'male') {
+                    hipMeasurementDiv.style.display = 'none';
+                    hipDivider.style.display = 'none';
+                    hipInput.removeAttribute('required');
+                    hipInput.value = ''; // Erkek seçildiğinde kalça değerini temizle
+                } else { // female
+                    hipMeasurementDiv.style.display = 'flex'; // Use flex to match input-with-unit style
+                    hipDivider.style.display = 'block';
+                    hipInput.setAttribute('required', '');
+                }
+                bodyFatResultDiv.innerHTML = ''; // Cinsiyet değiştiğinde sonuçları temizle
+                bodyFatResultDiv.style.display = 'none'; // Ve gizle
+            });
+
+            // Initial state setup
+            genderSelect.dispatchEvent(new Event('change')); // Sayfa yüklendiğinde varsayılan cinsiyete göre hip div'ini ayarla
+
+            // --- Unit Conversion Helper ---
+            function convertToInches(value, unit) {
+                if (unit === 'cm') {
+                    return value * 0.393701; // 1 cm = 0.393701 inches
+                }
+                return value; // Already in inches
+            }
+
+            // --- Body Fat Calculation Function ---
+            function calculateBodyFat(event) {
+                event.preventDefault(); // Prevent form submission and page reload
+
+                let gender = genderSelect.value;
+                let age = parseFloat(ageInput.value);
+                let height = parseFloat(heightInput.value);
+                let neck = parseFloat(neckInput.value);
+                let waist = parseFloat(waistInput.value);
+                let hip = parseFloat(hipInput.value); // Will be 0 or null for male, but formula handles it.
+
+                // Clear previous results and hide result div
+                bodyFatResultDiv.innerHTML = '';
+                bodyFatResultDiv.style.display = 'none';
+
+                // --- Input Validation ---
+                // Ortak validation kontrolü
+                if (isNaN(age) || age < 1 ||
+                    isNaN(height) || height <= 0 ||
+                    isNaN(neck) || neck <= 0 ||
+                    isNaN(waist) || waist <= 0 ||
+                    (gender === 'female' && (isNaN(hip) || hip <= 0))) {
+                    bodyFatResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                    bodyFatResultDiv.style.display = 'block'; // Hata mesajını göster
+                    return;
+                }
+
+                // Convert all measurements to inches for the formula
+                const heightIn = convertToInches(height, heightUnitSelect.value);
+                const neckIn = convertToInches(neck, neckUnitSelect.value);
+                const waistIn = convertToInches(waist, waistUnitSelect.value);
+                const hipIn = convertToInches(hip, hipUnitSelect.value);
+
+                let bodyFatPercentage = 0;
+
+                // US Navy Formula
+                if (gender === 'male') {
+                    // Erkekler için bel çevresi boyun çevresinden küçük olmamalıdır (log10 hatasını önlemek için)
+                    if (waistIn - neckIn <= 0) {
+                        bodyFatResultDiv.innerHTML = `<p class="error">Erkekler için bel çevresi boyun çevresinden büyük olmalıdır.</p>`;
+                        bodyFatResultDiv.style.display = 'block';
+                        return;
+                    }
+                    bodyFatPercentage = 86.010 * Math.log10(waistIn - neckIn) - 70.041 * Math.log10(heightIn) + 36.76;
+                } else { // female
+                    // Kadınlar için bel+kalça çevresi boyun çevresinden küçük olmamalıdır
+                    if (waistIn + hipIn - neckIn <= 0) {
+                        bodyFatResultDiv.innerHTML = `<p class="error">Kadınlar için bel ve kalça çevrelerinin toplamı boyun çevresinden büyük olmalıdır.</p>`;
+                        bodyFatResultDiv.style.display = 'block';
+                        return;
+                    }
+                    bodyFatPercentage = 163.205 * Math.log10(waistIn + hipIn - neckIn) - 97.684 * Math.log10(heightIn) - 78.387;
+                }
+
+                // Ensure percentage is not negative or excessively high
+                bodyFatPercentage = Math.max(0, Math.min(100, bodyFatPercentage));
+
+                // Determine category comment based on ACE guidelines and age (simplified for calculator)
+                let comment = '';
+                let commentKey = ''; // Yorumun dil anahtarı
+                if (gender === 'male') {
+                    if (bodyFatPercentage < 6) commentKey = 'commentEssentialFat';
+                    else if (bodyFatPercentage >= 6 && bodyFatPercentage <= 13) commentKey = 'commentAthletes';
+                    else if (bodyFatPercentage >= 14 && bodyFatPercentage <= 17) commentKey = 'commentFitness';
+                    else if (bodyFatPercentage >= 18 && bodyFatPercentage <= 24) commentKey = 'commentAverage';
+                    else if (bodyFatPercentage >= 25) commentKey = 'commentObese';
+                } else { // female
+                    if (bodyFatPercentage < 14) commentKey = 'commentEssentialFat';
+                    else if (bodyFatPercentage >= 14 && bodyFatPercentage <= 20) commentKey = 'commentAthletes';
+                    else if (bodyFatPercentage >= 21 && bodyFatPercentage <= 24) commentKey = 'commentFitness';
+                    else if (bodyFatPercentage >= 25 && bodyFatPercentage <= 31) commentKey = 'commentAverage';
+                    else if (bodyFatPercentage >= 32) commentKey = 'commentObese';
+                }
+                comment = currentTexts[commentKey];
+
+                // Display Body Fat Percentage and comment
+                let resultHtml = `<h3>${currentTexts.resultTitle}</h3>`;
+                resultHtml += `<p><strong>${currentTexts.bodyFatPercentage}</strong> <span class="result-value">${bodyFatPercentage.toFixed(2)} %</span></p>`;
+                resultHtml += `<p class="small-text">Kategori: <span class="result-category">${comment}</span></p>`;
 
 
-    // --- Toggle Hip Measurement based on Gender ---
-    genderSelect.addEventListener('change', function() {
-        if (genderSelect.value === 'male') {
-            hipMeasurementDiv.style.display = 'none';
-            hipDivider.style.display = 'none';
-            hipInput.removeAttribute('required');
-        } else { // female
-            hipMeasurementDiv.style.display = 'flex'; // Use flex to match input-with-unit style
-            hipDivider.style.display = 'block';
-            hipInput.setAttribute('required', '');
-        }
-        bodyFatResultDiv.innerHTML = ''; // Clear results on gender change
-    });
+                bodyFatResultDiv.innerHTML = resultHtml;
+                bodyFatResultDiv.style.display = 'block'; // Sonuç div'ini görünür yap
+            }
 
-    // Initial state setup
-    genderSelect.dispatchEvent(new Event('change'));
-
-    // --- Unit Conversion Helper ---
-    function convertToInches(value, unit) {
-        if (unit === 'cm') {
-            return value * 0.393701; // 1 cm = 0.393701 inches
-        }
-        return value; // Already in inches
-    }
-
-    // --- Body Fat Calculation Function ---
-    function calculateBodyFat(event) {
-        event.preventDefault(); // Prevent form submission and page reload
-
-        let gender = genderSelect.value;
-        let age = parseFloat(ageInput.value);
-        let height = parseFloat(heightInput.value);
-        let neck = parseFloat(neckInput.value);
-        let waist = parseFloat(waistInput.value);
-        let hip = parseFloat(hipInput.value); // Will be 0 or null for male, but formula handles it.
-
-        // Clear previous results
-        bodyFatResultDiv.innerHTML = '';
-
-        // --- Input Validation ---
-        if (isNaN(age) || age < 1 ||
-            isNaN(height) || height <= 0 ||
-            isNaN(neck) || neck <= 0 ||
-            isNaN(waist) || waist <= 0 ||
-            (gender === 'female' && (isNaN(hip) || hip <= 0))) {
-            bodyFatResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
-            return;
-        }
-
-        // Convert all measurements to inches for the formula
-        const heightIn = convertToInches(height, heightUnitSelect.value);
-        const neckIn = convertToInches(neck, neckUnitSelect.value);
-        const waistIn = convertToInches(waist, waistUnitSelect.value);
-        const hipIn = convertToInches(hip, hipUnitSelect.value);
-
-        let bodyFatPercentage = 0;
-
-        // US Navy Formula
-        if (gender === 'male') {
-            bodyFatPercentage = 86.010 * Math.log10(waistIn - neckIn) - 70.041 * Math.log10(heightIn) + 36.76;
-        } else { // female
-            bodyFatPercentage = 163.205 * Math.log10(waistIn + hipIn - neckIn) - 97.684 * Math.log10(heightIn) - 78.387;
-        }
-
-        // Ensure percentage is not negative or excessively high
-        bodyFatPercentage = Math.max(0, Math.min(100, bodyFatPercentage));
-
-        // Display Body Fat Percentage
-        let resultHtml = `<h3>${currentTexts.resultTitle}</h3>`;
-        resultHtml += `<p><strong>${currentTexts.bodyFatPercentage}</strong> <span class="result-value">${bodyFatPercentage.toFixed(2)} %</span></p>`;
-
-        // Add category comment based on ACE guidelines and age (simplified for calculator)
-        let comment = '';
-        if (gender === 'male') {
-            if (bodyFatPercentage < 6) comment = currentTexts.commentEssentialFat;
-            else if (bodyFatPercentage >= 6 && bodyFatPercentage <= 13) comment = currentTexts.commentAthletes;
-            else if (bodyFatPercentage >= 14 && bodyFatPercentage <= 17) comment = currentTexts.commentFitness;
-            else if (bodyFatPercentage >= 18 && bodyFatPercentage <= 24) comment = currentTexts.commentAverage;
-            else if (bodyFatPercentage >= 25) comment = currentTexts.commentObese;
-        } else { // female
-            if (bodyFatPercentage < 14) comment = currentTexts.commentEssentialFat;
-            else if (bodyFatPercentage >= 14 && bodyFatPercentage <= 20) comment = currentTexts.commentAthletes;
-            else if (bodyFatPercentage >= 21 && bodyFatPercentage <= 24) comment = currentTexts.commentFitness;
-            else if (bodyFatPercentage >= 25 && bodyFatPercentage <= 31) comment = currentTexts.commentAverage;
-            else if (bodyFatPercentage >= 32) comment = currentTexts.commentObese;
-        }
-        resultHtml += `<p class="small-text">${currentTexts.bmiInterpretation} <span class="result-category">${comment}</span></p>`; // Re-using bmiInterpretation key for a general intro.
-
-        bodyFatResultDiv.innerHTML = resultHtml;
-    }
-
-    // Add event listener to the form for submission
-    bodyFatForm.addEventListener('submit', calculateBodyFat);
-});
-  </script>
- </body>
+            // Add event listener to the form for submission
+            bodyFatForm.addEventListener('submit', calculateBodyFat);
+        });
+    </script>
+</body>
 </html>
