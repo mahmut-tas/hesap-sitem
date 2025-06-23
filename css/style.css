@@ -2512,3 +2512,136 @@ select:focus {
         font-size: 1.2em;
     }
 }
+/* --- Arama Kutusu ve Sonuçları Stilleri --- */
+.search-container {
+    display: flex;
+    position: relative; /* Dropdown için konumlandırma */
+    width: 100%;
+    max-width: 700px; /* Maksimum genişlik */
+    margin: -60px auto 40px auto; /* Hero'nun üzerine bindir, alt boşluk bırak */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Kutuya belirgin gölge */
+    border-radius: 12px; /* Köşe yuvarlama */
+    background-color: #fff; /* Beyaz arka plan */
+    overflow: hidden; /* İçeriğin taşmasını engelle */
+    z-index: 10; /* Diğer içeriklerin üzerinde olmasını sağla */
+    border: 1px solid #eee; /* Hafif kenarlık */
+}
+
+.search-input {
+    flex-grow: 1; /* Geri kalan alanı kapla */
+    padding: 15px 20px;
+    border: none; /* Kendi kenarlığı olmasın */
+    font-size: 1.1em;
+    outline: none; /* Odaklandığında kenarlık olmasın */
+    background-color: transparent; /* Arka planı şeffaf yap */
+    color: #333;
+    -webkit-appearance: none; /* Safari'de varsayılan stilleri kaldır */
+    -moz-appearance: none; /* Firefox'ta varsayılan stilleri kaldır */
+    appearance: none; /* Diğer tarayıcılarda varsayılan stilleri kaldır */
+}
+
+.search-input::placeholder {
+    color: #999;
+}
+
+.search-button {
+    background-color: #3498db; /* Bul butonu rengi */
+    color: white;
+    padding: 15px 25px;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex; /* İçindeki ikon ve metni hizala */
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* İkon ile metin arası boşluk */
+}
+
+.search-button:hover {
+    background-color: #2980b9;
+    transform: none; /* Herhangi bir transform olmasın */
+    box-shadow: none; /* Butonun kendi gölgesi olmasın */
+}
+
+.search-button i {
+    font-size: 1.2em;
+}
+
+.search-results-dropdown {
+    position: absolute;
+    top: 100%; /* Arama kutusunun hemen altında başla */
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-top: none; /* Üst kenarlık olmasın */
+    border-radius: 0 0 12px 12px; /* Alt köşeleri yuvarla */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Açıkken gölge */
+    max-height: 300px; /* Maksimum yükseklik */
+    overflow-y: auto; /* İçerik taşarsa kaydırma çubuğu çıksın */
+    z-index: 9; /* Arama kutusundan bir alt katmanda olsun */
+    display: none; /* Başlangıçta gizli */
+}
+
+.search-results-dropdown.visible {
+    display: block; /* Görünür olduğunda */
+}
+
+.search-result-item {
+    padding: 12px 20px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    color: #333;
+    text-align: left; /* Metin hizalaması */
+    display: flex;
+    align-items: center;
+    gap: 10px; /* İkon ve metin arası boşluk */
+}
+
+.search-result-item:last-child {
+    border-bottom: none; /* Son öğede kenarlık olmasın */
+}
+
+.search-result-item:hover {
+    background-color: #f0f0f0;
+}
+
+.search-result-item i {
+    color: #3498db; /* İkon rengi */
+    font-size: 1.1em;
+}
+
+.no-results {
+    padding: 15px 20px;
+    color: #666;
+    text-align: center;
+    font-style: italic;
+}
+
+/* --- Responsive Ayarlamalar --- */
+@media (max-width: 768px) {
+    .search-container {
+        flex-direction: column; /* Mobil'de alt alta */
+        margin-top: -40px; /* Daha az negatif margin */
+        border-radius: 8px; /* Daha küçük köşe yuvarlama */
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-input {
+        padding: 12px 15px;
+        border-bottom: 1px solid #eee; /* Input altında çizgi */
+    }
+
+    .search-button {
+        padding: 12px 15px;
+        border-radius: 0 0 8px 8px; /* Sadece alt köşeleri yuvarla */
+    }
+
+    .search-results-dropdown {
+        border-radius: 0 0 8px 8px;
+        max-height: 250px;
+    }
+}
