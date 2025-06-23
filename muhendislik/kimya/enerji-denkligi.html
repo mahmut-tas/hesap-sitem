@@ -233,7 +233,6 @@
         <section class="info-section container">
             <h3>Enerji Denkliği Nedir?</h3>
             <p><strong>Enerji denkliği</strong>, termodinamiğin birinci yasasına dayanır ve bir sistemdeki toplam enerjinin korunduğunu ifade eder. Yani, bir sisteme giren toplam enerji, sistemden çıkan toplam enerjiye ve sistemde depolanan enerji değişimine eşit olmalıdır. Kimya mühendisliğinde proseslerin ısınma, soğuma, reaksiyon veya faz değişimi gibi enerji transferlerini anlamak ve tasarlamak için temel bir araçtır.</p>
-            <p>Basit enerji denkliği denklemi:</p>
             <p class="formula-text">Giren Enerji - Çıkan Enerji + Üretilen Enerji = Biriken Enerji</p>
             <p>Durgun (steady-state) sistemlerde (zamanla değişmeyen sistemler) birikme ve üretim terimleri genellikle sıfır kabul edilir. Bu durumda denklem şöyle basitleşir:</p>
             <p class="formula-text">Giren Enerji = Çıkan Enerji</p>
@@ -277,8 +276,38 @@
         </section>
     </main>
     <div id="footer-placeholder"></div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // --- Header ve Footer İçeriklerini Yükle (Eğer ayrı dosyalardaysa) ---
+            // Bu kısım, eğer header.html ve footer.html dosyalarınız varsa çalışır.
+            // Yoksa veya içeriği doğrudan HTML'e ekleyecekseniz bu kısmı kaldırın.
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            // 404 gibi hataları yakala
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        document.getElementById(elementId).innerHTML = html;
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        // Hata durumunda kullanıcıya bilgi verebilir veya bir varsayılan içerik gösterebilirsiniz
+                        document.getElementById(elementId).innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                    });
+            }
+
+            // Örnek kullanım (eğer header.html ve footer.html mevcutsa)
+            // loadPartial('header-placeholder', '/header.html'); // Eğer böyle bir dosyanız varsa
+            // loadPartial('footer-placeholder', '/footer.html'); // Eğer böyle bir dosyanız varsa
+            // Header ve footer içeriklerini doğrudan buraya yazabilirsiniz eğer ayrı dosyalara gerek yoksa
+            // document.getElementById('header-placeholder').innerHTML = '';
+            // document.getElementById('footer-placeholder').innerHTML = '';
+
             // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
             const isEnglishPage = window.location.pathname.startsWith('/en/');
 
@@ -474,39 +503,70 @@
 
             // Info Section Content Update
             function updateInfoSection() {
+                // Not: .innerHTML kullanımları, içeriğin HTML etiketleri (strong gibi) içermesi durumunda gerekli ve doğrudur.
+                // textContent kullanımları ise sadece düz metin içindir.
                 document.querySelector('.info-section h3').textContent = currentTexts.infoSectionTitle;
                 document.querySelector('.info-section p:nth-of-type(1)').innerHTML = currentTexts.infoSectionP1;
                 document.querySelector('.info-section p.formula-text:nth-of-type(1)').textContent = currentTexts.infoSectionFormula1;
                 document.querySelector('.info-section p:nth-of-type(2)').innerHTML = currentTexts.infoSectionP2;
                 document.querySelector('.info-section p.formula-text:nth-of-type(2)').textContent = currentTexts.infoSectionFormula2;
-                document.querySelector('.info-section h4:nth-of-type(1)').textContent = currentTexts.infoSectionH4_1;
+                document.querySelector('.info-section h4:nth-of-type(1)').textContent = currentTexts.infoSectionH4_1; 
                 document.querySelector('.info-section p:nth-of-type(3)').textContent = currentTexts.infoSectionP3;
 
-                // Duyulur Isı Transferi
-                document.querySelector('.info-section ul li:nth-of-type(1) strong').textContent = currentTexts.infoSectionList1_Title.split('(')[0].trim();
-                document.querySelector('.info-section ul li:nth-of-type(1)').innerHTML = `<strong>${currentTexts.infoSectionList1_Title}</strong> ${currentTexts.infoSectionList1_Desc}`;
-                document.querySelector('.info-section ul li:nth-of-type(1) ul li:nth-of-type(1)').innerHTML = currentTexts.infoSectionList1_m;
-                document.querySelector('.info-section ul li:nth-of-type(1) ul li:nth-of-type(2)').innerHTML = currentTexts.infoSectionList1_cp;
-                document.querySelector('.info-section ul li:nth-of-type(1) ul li:nth-of-type(3)').innerHTML = currentTexts.infoSectionList1_deltaT;
+                // Duyulur Isı Transferi listesini güncelleme
+                const sensibleHeatLi = document.querySelector('.info-section ul li:nth-of-type(1)');
+                if (sensibleHeatLi) {
+                    sensibleHeatLi.innerHTML = `<strong>${currentTexts.infoSectionList1_Title}</strong> ${currentTexts.infoSectionList1_Desc}`;
+                    // İç içe listeleri güncelle
+                    const sensibleHeatUl = sensibleHeatLi.querySelector('ul');
+                    if (sensibleHeatUl) {
+                        sensibleHeatUl.innerHTML = `
+                            <li>${currentTexts.infoSectionList1_m}</li>
+                            <li>${currentTexts.infoSectionList1_cp}</li>
+                            <li>${currentTexts.infoSectionList1_deltaT}</li>
+                        `;
+                    }
+                }
 
-                // Gizli Isı Transferi
-                document.querySelector('.info-section ul li:nth-of-type(2) strong').textContent = currentTexts.infoSectionList2_Title.split('(')[0].trim();
-                document.querySelector('.info-section ul li:nth-of-type(2)').innerHTML = `<strong>${currentTexts.infoSectionList2_Title}</strong> ${currentTexts.infoSectionList2_Desc}`;
-                document.querySelector('.info-section ul li:nth-of-type(2) ul li:nth-of-type(1)').innerHTML = currentTexts.infoSectionList2_m;
-                document.querySelector('.info-section ul li:nth-of-type(2) ul li:nth-of-type(2)').innerHTML = currentTexts.infoSectionList2_L;
+                // Gizli Isı Transferi listesini güncelleme
+                const latentHeatLi = document.querySelector('.info-section ul li:nth-of-type(2)');
+                if (latentHeatLi) {
+                    latentHeatLi.innerHTML = `<strong>${currentTexts.infoSectionList2_Title}</strong> ${currentTexts.infoSectionList2_Desc}`;
+                    // İç içe listeleri güncelle
+                    const latentHeatUl = latentHeatLi.querySelector('ul');
+                    if (latentHeatUl) {
+                        latentHeatUl.innerHTML = `
+                            <li>${currentTexts.infoSectionList2_m}</li>
+                            <li>${currentTexts.infoSectionList2_L}</li>
+                        `;
+                    }
+                }
                 
                 document.querySelector('.info-section h4:nth-of-type(2)').textContent = currentTexts.infoSectionH4_2;
-                document.querySelector('.info-section ul:nth-of-type(2) li:nth-of-type(1)').innerHTML = currentTexts.infoSectionUnitQ;
-                document.querySelector('.info-section ul:nth-of-type(2) li:nth-of-type(2)').innerHTML = currentTexts.infoSectionUnitKcalKj;
-                document.querySelector('.info-section ul:nth-of-type(2) li:nth-of-type(3)').innerHTML = currentTexts.infoSectionUnitBtuKj;
-                document.querySelector('.info-section ul:nth-of-type(2) li:nth-of-type(4)').innerHTML = currentTexts.infoSectionUnitTempChange;
+                // Birim dönüşüm listesini güncelle
+                const unitConversionUl = document.querySelector('.info-section ul:nth-of-type(2)');
+                if (unitConversionUl) {
+                    unitConversionUl.innerHTML = `
+                        <li>${currentTexts.infoSectionUnitQ}</li>
+                        <li>${currentTexts.infoSectionUnitKcalKj}</li>
+                        <li>${currentTexts.infoSectionUnitBtuKj}</li>
+                        <li>${currentTexts.infoSectionUnitTempChange}</li>
+                    `;
+                }
+
 
                 document.querySelector('.info-section h4:nth-of-type(3)').textContent = currentTexts.infoSectionH4_3;
-                document.querySelector('.info-section ul:nth-of-type(3) li:nth-of-type(1)').innerHTML = currentTexts.infoSectionApp1;
-                document.querySelector('.info-section ul:nth-of-type(3) li:nth-of-type(2)').innerHTML = currentTexts.infoSectionApp2;
-                document.querySelector('.info-section ul:nth-of-type(3) li:nth-of-type(3)').innerHTML = currentTexts.infoSectionApp3;
-                document.querySelector('.info-section ul:nth-of-type(3) li:nth-of-type(4)').innerHTML = currentTexts.infoSectionApp4;
-                document.querySelector('.info-section ul:nth-of-type(3) li:nth-of-type(5)').innerHTML = currentTexts.infoSectionApp5;
+                // Uygulama alanları listesini güncelle
+                const applicationAreasUl = document.querySelector('.info-section ul:nth-of-type(3)');
+                if (applicationAreasUl) {
+                    applicationAreasUl.innerHTML = `
+                        <li>${currentTexts.infoSectionApp1}</li>
+                        <li>${currentTexts.infoSectionApp2}</li>
+                        <li>${currentTexts.infoSectionApp3}</li>
+                        <li>${currentTexts.infoSectionApp4}</li>
+                        <li>${currentTexts.infoSectionApp5}</li>
+                    `;
+                }
                 
                 document.querySelector('.info-section .disclaimer-text').textContent = currentTexts.disclaimerText;
             }
