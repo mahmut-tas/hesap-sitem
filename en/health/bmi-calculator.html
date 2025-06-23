@@ -6,11 +6,9 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>BMI Calculator - Calculator</title>
 <link href="/css/style.css" rel="stylesheet"/>
-<link href="/css/footer.css" rel="stylesheet"/>
 <link href="/css/header.css" rel="stylesheet"/>
 <meta content="Calculate your Body Mass Index (BMI) by entering your height and weight and evaluate your health status." name="description"/>
 <meta content="calculate bmi, body mass index, healthy weight, underweight, normal weight, overweight, obese" name="keywords"/>
-<link href="../css/style.css" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
@@ -240,10 +238,10 @@
   </script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-    // Language detection: Assume English if URL starts with '/en/', otherwise Turkish
+    // Dil algılama: URL '/en/' ile başlıyorsa İngilizce, aksi takdirde Türkçe olduğunu varsay
     const isEnglishPage = window.location.pathname.startsWith('/en/');
 
-    // Text strings object for dynamic content
+    // Dinamik içerik için metin dizeleri nesnesi
     const texts = {
         tr: {
             calculateButtonText: 'BMI Hesapla',
@@ -279,10 +277,10 @@
         }
     };
 
-    // Select active language texts
+    // Aktif dil metinlerini seç
     const currentTexts = isEnglishPage ? texts.en : texts.tr;
 
-    // --- DOM Elements ---
+    // --- DOM Elemanları ---
     const bmiForm = document.getElementById('bmiForm');
     const bmiHeightInput = document.getElementById('bmi_height');
     const bmiWeightInput = document.getElementById('bmi_weight');
@@ -290,40 +288,97 @@
     const bmiCategoryDiv = document.getElementById('bmiCategory');
     const calculateButton = bmiForm.querySelector('button[type="submit"]');
 
-    // Update static labels and placeholders on load
+    // Sayfa yüklendiğinde statik etiketleri ve yer tutucuları güncelle
     document.querySelector('label[for="bmi_height"]').textContent = currentTexts.heightLabel;
     document.querySelector('label[for="bmi_weight"]').textContent = currentTexts.weightLabel;
     bmiHeightInput.placeholder = currentTexts.inputPlaceholderHeight;
     bmiWeightInput.placeholder = currentTexts.inputPlaceholderWeight;
     calculateButton.textContent = currentTexts.calculateButtonText;
 
-    // --- BMI Calculation Function ---
+    // --- Header ve Footer Yükleme İşlemi ---
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                // Dinamik olarak yüklenen scriptlerin çalışması için bu adım önemlidir.
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent;
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir (eğer footer.html içinde footer etiketi varsa)
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+
+    // --- BMI Hesaplama Fonksiyonu ---
     function calculateBMI(event) {
-        event.preventDefault(); // Prevent form submission and page reload
+        event.preventDefault(); // Form gönderimini ve sayfa yenilemeyi engelle
 
         let heightCm = parseFloat(bmiHeightInput.value);
         let weightKg = parseFloat(bmiWeightInput.value);
 
-        // Clear previous results
+        // Önceki sonuçları temizle ve gizle
         bmiResultDiv.innerHTML = '';
         bmiCategoryDiv.innerHTML = '';
+        bmiResultDiv.style.display = 'none'; // Sonuç div'ini gizle
+        bmiCategoryDiv.style.display = 'none'; // Kategori div'ini gizle
 
-        // --- Input Validation ---
+        // --- Giriş Doğrulama ---
         if (isNaN(heightCm) || isNaN(weightKg) || heightCm <= 0 || weightKg <= 0) {
             bmiResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            bmiResultDiv.style.display = 'block'; // Hata mesajını göstermek için div'i görünür yap
             return;
         }
 
-        // Convert height from cm to meters
+        // Boyu cm'den metreye çevir
         const heightM = heightCm / 100;
 
-        // Calculate BMI
+        // BMI hesapla
         const bmi = weightKg / (heightM * heightM);
 
-        // Display BMI result
+        // BMI sonucunu göster
         bmiResultDiv.innerHTML = `<p><strong>${currentTexts.resultBMI}</strong> <span class="result-value">${bmi.toFixed(2)}</span></p>`;
+        bmiResultDiv.style.display = 'block'; // Sonuç div'ini görünür yap
 
-        // Determine BMI category
+        // BMI kategorisini belirle
         let category = '';
         let categoryColor = '';
 
@@ -347,11 +402,12 @@
             categoryColor = 'category-obese-iii';
         }
 
-        // Display category
+        // Kategoriyi göster
         bmiCategoryDiv.innerHTML = `<p><strong>${currentTexts.bmiInterpretation}</strong> <span class="result-category ${categoryColor}">${category}</span></p>`;
+        bmiCategoryDiv.style.display = 'block'; // Kategori div'ini görünür yap
     }
 
-    // Add event listener to the form for submission
+    // Form gönderimine olay dinleyicisi ekle
     bmiForm.addEventListener('submit', calculateBMI);
 });
   </script>
