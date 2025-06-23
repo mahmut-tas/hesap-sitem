@@ -25,6 +25,397 @@
         gtag('config', 'G-3655KNY8CP');
     </script>
 </head>
+<style>
+    /* Genel Ayarlar ve Font */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa; /* Açık gri arka plan */
+    color: #343a40; /* Koyu gri yazı rengi */
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* --- Header ve Footer --- */
+.header, .footer {
+    background-color: #34495e; /* Koyu gri/mavi */
+    color: white;
+    padding: 15px 0;
+    text-align: center;
+}
+
+.header .logo {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+}
+
+.footer p {
+    margin: 0;
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+/* --- Hero Section --- */
+.hero-section {
+    background-color: #34495e; /* Koyu gri/mavi */
+    color: white;
+    padding: 80px 20px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Hafif gölge */
+}
+
+.hero-section h1 {
+    font-size: 2.8em;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.hero-section p {
+    font-size: 1.1em;
+    opacity: 0.9;
+}
+
+/* --- Hesaplayıcı Seçim Bölümü --- */
+.calculator-selection-section {
+    padding: 50px 0;
+    text-align: center;
+    background-color: #ffffff; /* Beyaz arka plan */
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.calculator-selection-section h2 {
+    font-size: 2.2em;
+    color: #2c3e50; /* Koyu mavi/gri başlık */
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+.calc-buttons-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.calc-type-button {
+    background-color: #3498db; /* Mavi buton */
+    color: white;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 6px; /* Hafif yuvarlak kenarlar */
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex: 1 1 auto; /* Esnek genişlik */
+    max-width: 280px; /* Maksimum genişlik */
+    font-weight: 500;
+}
+
+.calc-type-button:hover {
+    background-color: #2980b9; /* Koyu mavi hover */
+    transform: translateY(-2px);
+}
+
+.calc-type-button.active {
+    background-color: #e67e22; /* Turuncu vurgu rengi */
+    box-shadow: 0 4px 8px rgba(230, 126, 34, 0.3);
+    transform: translateY(-2px);
+}
+
+/* --- Her Bir Hesaplayıcı Formu Stili --- */
+.calc-wrapper {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px; /* Daha yuvarlak kenarlar */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    margin: 30px auto;
+    text-align: left;
+    max-width: 700px; /* Daha geniş formlar */
+    border: 1px solid #e0e0e0;
+}
+
+.calc-wrapper h3 {
+    font-size: 1.8em;
+    color: #34495e; /* Koyu gri/mavi */
+    margin-bottom: 25px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: 600;
+    border-bottom: 2px solid #f0f0f0; /* Alt çizgi */
+    padding-bottom: 15px;
+}
+
+.icon-small {
+    font-size: 1em; /* İkon boyutu */
+    color: #3498db; /* Mavi ikon rengi */
+}
+
+.hidden-calc {
+    display: none;
+}
+
+/* Form Elemanları */
+.input-with-unit-group {
+    display: flex;
+    flex-wrap: wrap; /* Küçük ekranlarda alt alta gelmesi için */
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 10px; /* Input ve select arasında boşluk */
+}
+
+.input-with-unit-group label {
+    flex-basis: 100%; /* Etiketin tam genişlikte olması için */
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+}
+
+.input-with-unit-group input[type="number"] {
+    flex-grow: 1; /* Geri kalan alanı doldur */
+    padding: 10px 12px;
+    border: 1px solid #ced4da; /* Sade border rengi */
+    border-radius: 5px;
+    font-size: 1em;
+    box-sizing: border-box;
+    min-width: 150px; /* Input için minimum genişlik */
+}
+
+.input-with-unit-group select {
+    padding: 10px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 1em;
+    box-sizing: border-box;
+    background-color: #f1f3f5; /* Hafif arka plan rengi */
+    cursor: pointer;
+}
+
+.input-with-unit-group input[type="number"]:focus,
+.input-with-unit-group select:focus {
+    border-color: #3498db; /* Focus durumunda mavi border */
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25); /* Hafif focus gölgesi */
+}
+
+.form-divider {
+    border: none;
+    border-top: 1px dashed #e9ecef; /* Kesikli çizgi */
+    margin: 30px 0;
+}
+
+.calculator-form-container button[type="submit"] {
+    background-color: #28a745; /* Yeşil buton */
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+}
+
+.calculator-form-container button[type="submit"]:hover {
+    background-color: #218838; /* Koyu yeşil hover */
+    transform: translateY(-2px);
+}
+
+/* Sonuç Ekranı */
+.result-display {
+    margin-top: 25px;
+    padding: 20px;
+    background-color: #e9f7ef; /* Açık yeşilimsi arka plan */
+    border: 1px solid #d4edda;
+    border-radius: 8px;
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #155724; /* Koyu yeşil yazı */
+    text-align: center;
+    min-height: 50px; /* Yeterli yükseklik */
+    display: flex; /* Dikey ortalama için */
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.result-display .result-value {
+    color: #e67e22; /* Turuncu vurgu rengi */
+    font-weight: 700;
+    font-size: 1.3em;
+    margin-left: 5px;
+}
+
+.result-display .error {
+    color: #dc3545; /* Kırmızı hata rengi */
+    font-weight: normal;
+    font-size: 0.9em;
+}
+
+/* Açıklama Alanları (Form altı ve ana bilgi bölümü) */
+.calc-explanation, .info-section {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 30px;
+    border: 1px solid #e0e0e0;
+}
+
+.info-section h3 {
+    font-size: 2em;
+    color: #34495e;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e67e22; /* Turuncu alt çizgi */
+    padding-bottom: 10px;
+    font-weight: 600;
+    text-align: left;
+}
+
+.info-section h4 {
+    font-size: 1.4em;
+    color: #3498db; /* Mavi */
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.calc-explanation p, .info-section p {
+    font-size: 0.95em;
+    line-height: 1.7;
+    margin-bottom: 15px;
+    color: #495057; /* Koyu gri */
+    text-align: justify;
+}
+
+.formula-text {
+    font-family: 'Courier New', monospace;
+    background-color: #f0f4f7; /* Açık mavi/gri arka plan */
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1.05em;
+    margin: 15px 0;
+    color: #34495e;
+    font-weight: bold;
+    display: inline-block; /* Formülün genişliğine göre ayarlanması için */
+    width: auto;
+    max-width: 100%;
+}
+
+.calc-explanation ul, .info-section ul {
+    list-style-type: disc;
+    padding-left: 25px;
+    margin-bottom: 15px;
+    color: #495057;
+}
+
+.calc-explanation ul li, .info-section ul li {
+    margin-bottom: 8px;
+}
+
+.calc-explanation strong, .info-section strong {
+    color: #343a40;
+}
+
+.disclaimer-text {
+    font-size: 0.8em;
+    color: #6c757d; /* Açıklayıcı metin için daha açık gri */
+    margin-top: 30px;
+    border-top: 1px dashed #e0e0e0;
+    padding-top: 20px;
+    text-align: justify;
+}
+
+/* --- Responsive Ayarlamalar --- */
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2.2em;
+    }
+    .hero-section p {
+        font-size: 1em;
+    }
+    .calculator-selection-section h2 {
+        font-size: 1.8em;
+    }
+    .calc-type-button {
+        flex: 1 1 calc(50% - 15px); /* İki sütun */
+        max-width: none; /* Kısıtlamayı kaldır */
+    }
+    .calc-wrapper {
+        padding: 20px;
+        margin: 20px auto;
+    }
+    .calc-wrapper h3 {
+        font-size: 1.6em;
+        text-align: center; /* Başlığı ortala */
+        justify-content: center; /* İkon ve metni ortala */
+    }
+    .input-with-unit-group {
+        flex-direction: column; /* Küçük ekranlarda alt alta */
+        align-items: stretch;
+        gap: 0;
+    }
+    .input-with-unit-group label {
+        margin-bottom: 5px;
+        text-align: left;
+    }
+    .input-with-unit-group input[type="number"],
+    .input-with-unit-group select {
+        width: 100%;
+        margin-bottom: 10px; /* Elemanlar arasına boşluk */
+    }
+    .info-section h3 {
+        font-size: 1.6em;
+    }
+    .info-section h4 {
+        font-size: 1.2em;
+    }
+}
+
+@media (max-width: 480px) {
+    .calc-type-button {
+        flex: 1 1 100%; /* Tek sütun */
+    }
+    .hero-section {
+        padding: 60px 15px;
+    }
+    .hero-section h1 {
+        font-size: 1.8em;
+    }
+    .calculator-selection-section, .info-section {
+        padding: 30px 0;
+    }
+    .calc-wrapper {
+        padding: 15px;
+    }
+    .calc-wrapper h3 {
+        font-size: 1.4em;
+    }
+    .result-display {
+        font-size: 1em;
+        padding: 15px;
+    }
+    .result-display .result-value {
+        font-size: 1.2em;
+    }
+}
+</style>
 <body>
     <div id="header-placeholder"></div>
     <main>
