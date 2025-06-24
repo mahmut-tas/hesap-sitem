@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Hesapkolik Blog - Tüm Hesaplama İhtiyaçlarınız İçin Makaleler</title>
+    <meta content="Hesapkolik blogunda sağlık, finans, mühendislik ve günlük hayat konularında faydalı makaleler, ipuçları ve detaylı rehberler bulabilirsiniz." name="description"/>
+    <meta content="hesaplama, blog, makale, rehber, ipuçları, finans, sağlık, mühendislik, günlük hayat" name="keywords"/>
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3655KNY8CP');
+    </script>
+    <style>
+      /* Ana sayfadaki blog-post-grid ve blog-post-card stillerini buraya kopyalayabilirsiniz */
+      /* Eğer style.css dosyasına eklediyseniz buraya tekrar eklemenize gerek yok */
+
+      /* Örnek olarak, ana sayfadaki .calculator-grid ve .calculator-card stillerinin benzerlerini buraya koydum */
+      .blog-post-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 30px;
+          justify-content: center;
+          align-items: stretch;
+          padding-top: 50px;
+          padding-bottom: 50px;
+      }
+
+      .blog-post-card {
+          background-color: #ffffff;
+          border-radius: 10px;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+          padding: 25px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          min-height: 250px;
+      }
+
+      .blog-post-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .blog-post-card img {
+          width: 80px;
+          height: 80px;
+          margin-bottom: 15px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 2px solid #ddd;
+      }
+
+      .blog-post-card h3 {
+          font-size: 1.5em;
+          color: #2c3e50;
+          margin-bottom: 10px;
+          flex-grow: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+
+      .blog-post-card p {
+          font-size: 0.9em;
+          color: #666;
+          margin-bottom: 20px;
+          flex-grow: 1;
+      }
+
+      .blog-post-card .card-button {
+          display: inline-block;
+          background-color: #3498db;
+          color: white;
+          padding: 10px 20px;
+          border-radius: 5px;
+          text-decoration: none;
+          font-weight: 600;
+          transition: background-color 0.3s ease, transform 0.2s ease;
+          width: 80%;
+          max-width: 200px;
+      }
+
+      .blog-post-card .card-button:hover {
+          background-color: #2980b9;
+          transform: translateY(-2px);
+      }
+
+      /* Sayfalama (Pagination) Stilleri */
+      .pagination {
+          display: flex;
+          justify-content: center;
+          padding: 30px 0;
+          list-style: none;
+          margin-top: 20px;
+      }
+
+      .pagination li {
+          margin: 0 5px;
+      }
+
+      .pagination a, .pagination span {
+          display: block;
+          padding: 10px 15px;
+          text-decoration: none;
+          color: #3498db;
+          border: 1px solid #ddd;
+          border-radius: 5px;
+          transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      .pagination a:hover {
+          background-color: #f0f0f0;
+      }
+
+      .pagination .active a, .pagination .active span {
+          background-color: #3498db;
+          color: white;
+          border-color: #3498db;
+          cursor: default;
+      }
+
+      .pagination .disabled a, .pagination .disabled span {
+          color: #ccc;
+          cursor: not-allowed;
+          background-color: #f9f9f9;
+          border-color: #eee;
+      }
+
+      /* Responsive Ayarlamalar */
+      @media (max-width: 768px) {
+          .blog-post-grid {
+              grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          }
+          .blog-post-card {
+              min-height: auto;
+          }
+      }
+      @media (max-width: 480px) {
+          .blog-post-card h3 {
+              font-size: 1.3em;
+          }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header-placeholder"></div>
+
+    <main>
+      <section class="hero" style="background-color: #8e44ad;">
+        <div class="container">
+          <h2>Hesapkolik Blog</h2>
+          <p>Sağlık, finans, mühendislik ve günlük hayatla ilgili bilmeniz gereken her şey burada. Pratik bilgiler, rehberler ve ipuçlarıyla hayatınızı kolaylaştırın!</p>
+          <a class="cta-button" href="#latest-posts">Son Yazılarımızı Keşfedin</a>
+        </div>
+      </section>
+
+      <div class="container">
+        <h2 id="latest-posts">Tüm Blog Yazıları</h2>
+        <div class="blog-post-grid" id="blog-posts-container">
+          </div>
+
+        <ul class="pagination" id="pagination-controls">
+          </ul>
+      </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+        const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+        const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+        // Header Yükleme
+        fetch(headerPath)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+          })
+          .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+              headerPlaceholder.innerHTML = data;
+              const scriptElement = headerPlaceholder.querySelector('script');
+              if (scriptElement) {
+                const newScript = document.createElement('script');
+                newScript.textContent = scriptElement.textContent;
+                document.body.appendChild(newScript);
+                scriptElement.remove();
+              }
+            }
+          })
+          .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+        // Footer Yükleme
+        fetch(footerPath)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+          })
+          .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+              footerPlaceholder.innerHTML = data;
+              const tempDiv = document.createElement('div');
+              tempDiv.innerHTML = data;
+              const footerElement = tempDiv.querySelector('footer');
+              if (footerElement) {
+                footerPlaceholder.replaceWith(footerElement);
+              }
+            }
+          })
+          .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+
+        // Blog Yazıları Verisi
+        // Burayı kendi blog yazılarınızın bilgileriyle güncelleyeceksiniz.
+        // img src ve url alanlarını kendi görsellerinize ve linklerinize göre ayarlayın.
+        const blogPosts = [
+          { title: 'HbA1c Değerini Anlamak', description: 'Diyabet yönetiminin temel taşı olan HbA1cyi, tanıdaki önemini ve kan şekeri kontrolünüz üzerindeki etkilerini interaktif bir şekilde keşfedin.', img: 'https://via.placeholder.com/80/3498db/ffffff?text=BMI', url: '/blog/hba1c.html' },
+          { title: 'Basit Faiz mi Bileşik Faiz mi? Hangisi Sizin İçin Daha İyi?', description: 'Basit ve bileşik faizin farkları, yatırım ve kredilerdeki etkileri.', img: 'https://via.placeholder.com/80/2ecc71/ffffff?text=FAIZ', url: '/blog/faiz-farklari.html' },
+          { title: 'Günlük Kalori İhtiyacınızı Hesaplamanın Yolları', description: 'Metabolizma hızınızı ve günlük aktivitenizi göz önünde bulundurarak kalori ihtiyacınızı belirleyin.', img: 'https://via.placeholder.com/80/e74c3c/ffffff?text=KALORI', url: '/blog/kalori-ihtiyaci.html' },
+          { title: 'Mühendislikte Isı Transferi Temelleri', description: 'Isı transferinin temel prensipleri ve mühendislik uygulamalarındaki rolü.', img: 'https://via.placeholder.com/80/1abc9c/ffffff?text=ISI', url: '/blog/isi-transferi.html' },
+          { title: 'Yüzde Hesaplamaları: İndirimlerden Vergilere Kadar Her Alanda', description: 'Günlük hayatta sıkça karşılaşılan yüzde hesaplamalarına pratik yaklaşımlar.', img: 'https://via.placeholder.com/80/9b59b6/ffffff?text=YUZDE', url: '/blog/yuzde-hesaplama.html' },
+          { title: 'Seyahat Bütçesi Planlama Rehberi', description: 'Tatil masraflarınızı kontrol altında tutmak için detaylı bütçe planlama ipuçları.', img: 'https://via.placeholder.com/80/f1c40f/ffffff?text=SEYAHAT', url: '/blog/seyahat-butcesi.html' },
+          { title: 'Evde Elektrik Tüketimini Azaltma Yolları', description: 'Enerji tasarrufu yaparak elektrik faturalarınızı düşürmenin yolları.', img: 'https://via.placeholder.com/80/34495e/ffffff?text=ENERJI', url: '/blog/enerji-tasarrufu.html' },
+          { title: 'Yeni Başlayanlar İçin Programlama Dilleri', description: 'Hangi programlama dilini öğrenmelisiniz? Popüler diller ve kullanım alanları.', img: 'https://via.placeholder.com/80/c0392b/ffffff?text=KOD', url: '/blog/programlama-dilleri.html' },
+          { title: 'Su Tüketiminin Önemi ve Hesaplama İpuçları', description: 'Sağlıklı bir yaşam için günlük su ihtiyacınızı karşılamanın yolları.', img: 'https://via.placeholder.com/80/2980b9/ffffff?text=SU', url: '/blog/su-tuketimi.html' },
+          { title: 'Kripto Paralar ve Blok Zinciri Teknolojisi', description: 'Kripto paraların temelleri, blok zinciri teknolojisi ve geleceği.', img: 'https://via.placeholder.com/80/d35400/ffffff?text=KRIPTO', url: '/blog/kripto-paralar.html' },
+          { title: 'Akıllı Ev Teknolojileri Rehberi', description: 'Evinizi daha akıllı ve verimli hale getirecek teknolojiler.', img: 'https://via.placeholder.com/80/7f8c8d/ffffff?text=AKILLI', url: '/blog/akilli-ev.html' },
+          { title: 'Bitki Bakımı İpuçları: Yeni Başlayanlar İçin', description: 'Evde bitki yetiştirmeye başlamak için temel bilgiler ve pratik ipuçları.', img: 'https://via.placeholder.com/80/16a085/ffffff?text=BITKI', url: '/blog/bitki-bakimi.html' },
+          { title: 'İş Görüşmesi Hazırlığı: Başarılı Olmanın Sırları', description: 'İş görüşmelerinde kendinizi en iyi şekilde tanıtmak için ipuçları.', img: 'https://via.placeholder.com/80/95a5a6/ffffff?text=IS', url: '/blog/is-gorusmesi.html' },
+          { title: 'Minimalist Yaşam Tarzı ve Faydaları', description: 'Daha azla daha çok şeye sahip olma felsefesi ve minimalist yaşamın avantajları.', img: 'https://via.placeholder.com/80/f39c12/ffffff?text=MINIMAL', url: '/blog/minimalist-yasam.html' },
+          { title: 'Dijital Pazarlama Stratejileri', description: 'Online görünürlüğünüzü artırmak için etkili dijital pazarlama yöntemleri.', img: 'https://via.placeholder.com/80/e67e22/ffffff?text=PAZARLAMA', url: '/blog/dijital-pazarlama.html' },
+          { title: 'Yapay Zeka ve Geleceğimiz', description: 'Yapay zekanın gelişimi, kullanım alanları ve potansiyel etkileri.', img: 'https://via.placeholder.com/80/2c3e50/ffffff?text=AI', url: '/blog/yapay-zeka.html' },
+          { title: 'Gönüllü Çalışmanın Faydaları', description: 'Topluma katkıda bulunmanın ve kişisel gelişmenin yolları.', img: 'https://via.placeholder.com/80/f1c40f/ffffff?text=GONULLU', url: '/blog/gonullu-calisma.html' },
+          { title: 'Online Eğitim Platformları Rehberi', description: 'Uzaktan eğitim alabileceğiniz en iyi platformlar ve kurslar.', img: 'https://via.placeholder.com/80/3498db/ffffff?text=ONLINE', url: '/blog/online-egitim.html' },
+          { title: 'Yaratıcı Yazarlık İpuçları', description: 'Hikaye anlatımı ve metin yazarlığı becerilerinizi geliştirmek için pratik öneriler.', img: 'https://via.placeholder.com/80/e74c3c/ffffff?text=YAZI', url: '/blog/yaratici-yazarlik.html' },
+          { title: 'Evcil Hayvan Bakımı İçin Temel Bilgiler', description: 'Sorumlu evcil hayvan sahiplenmenin temel prensipleri ve bakım ipuçları.', img: 'https://via.placeholder.com/80/2ecc71/ffffff?text=EVCIL', url: '/blog/evcil-hayvan-bakimi.html' },
+        ];
+
+
+        const postsPerPage = 10; // Sayfa başına gösterilecek blog yazısı sayısı
+        let currentPage = 1;
+
+        const blogPostsContainer = document.getElementById('blog-posts-container');
+        const paginationControls = document.getElementById('pagination-controls');
+
+        function displayPosts(page) {
+          blogPostsContainer.innerHTML = ''; // Önceki gönderileri temizle
+          const startIndex = (page - 1) * postsPerPage;
+          const endIndex = startIndex + postsPerPage;
+          const postsToDisplay = blogPosts.slice(startIndex, endIndex);
+
+          if (postsToDisplay.length === 0) {
+            blogPostsContainer.innerHTML = '<p style="text-align: center; color: #666; font-size: 1.1em; padding: 50px;">Henüz gösterilecek blog yazısı bulunmamaktadır.</p>';
+            return;
+          }
+
+          postsToDisplay.forEach(post => {
+            const card = document.createElement('div');
+            card.classList.add('blog-post-card');
+            card.innerHTML = `
+              <img alt="${post.title} İkonu" src="${post.img}"/>
+              <h3>${post.title}</h3>
+              <p>${post.description}</p>
+              <a class="card-button" href="${post.url}">Devamını Oku</a>
+            `;
+            blogPostsContainer.appendChild(card);
+          });
+        }
+
+        function setupPagination(totalPages) {
+          paginationControls.innerHTML = ''; // Önceki sayfalama kontrollerini temizle
+
+          const prevLink = document.createElement('li');
+          prevLink.classList.add('page-item');
+          if (currentPage === 1) {
+            prevLink.classList.add('disabled');
+          }
+          prevLink.innerHTML = `<a href="#" data-page="${currentPage - 1}">&laquo; Önceki</a>`;
+          paginationControls.appendChild(prevLink);
+
+          for (let i = 1; i <= totalPages; i++) {
+            const pageLink = document.createElement('li');
+            pageLink.classList.add('page-item');
+            if (i === currentPage) {
+              pageLink.classList.add('active');
+            }
+            pageLink.innerHTML = `<a href="#" data-page="${i}">${i}</a>`;
+            paginationControls.appendChild(pageLink);
+          }
+
+          const nextLink = document.createElement('li');
+          nextLink.classList.add('page-item');
+          if (currentPage === totalPages) {
+            nextLink.classList.add('disabled');
+          }
+          nextLink.innerHTML = `<a href="#" data-page="${currentPage + 1}">Sonraki &raquo;</a>`;
+          paginationControls.appendChild(nextLink);
+
+          // Sayfalama linklerine tıklama olayını ekle
+          paginationControls.addEventListener('click', function(event) {
+            event.preventDefault();
+            const targetPage = parseInt(event.target.dataset.page);
+            if (!isNaN(targetPage) && targetPage > 0 && targetPage <= totalPages && targetPage !== currentPage) {
+              currentPage = targetPage;
+              displayPosts(currentPage);
+              setupPagination(totalPages);
+              window.scrollTo({ top: 0, behavior: 'smooth' }); // Sayfa başına kaydır
+            }
+          });
+        }
+
+        const totalPages = Math.ceil(blogPosts.length / postsPerPage);
+        displayPosts(currentPage);
+        setupPagination(totalPages);
+      });
+    </script>
+  </body>
+</html>

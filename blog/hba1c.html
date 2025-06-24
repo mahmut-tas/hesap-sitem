@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HbA1c Etkileşimli Rehberi - Diyabet Yönetimini Anlamak | Hesapkolik Blog</title>
+    <meta name="description" content="Diyabet yönetiminin temel taşı olan HbA1c değerini, tanıdaki önemini, etkileyen faktörleri ve tahmini ortalama glikoz (eAG) hesaplayıcısı ile interaktif bir şekilde keşfedin.">
+    <meta name="keywords" content="HbA1c, diyabet, kan şekeri, eAG hesaplayıcı, glikoz, prediyabet, diyabet yönetimi, sağlık, tıbbi bilgi, hesaplama">
+    
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3655KNY8CP');
+    </script>
+    
+    <style>
+        /* Ana sayfanızın Poppins fontunu bu sayfada da kullanmak isterseniz: */
+        body {
+            font-family: 'Poppins', sans-serif; /* Inter yerine Poppins kullanırız */
+            background-color: #f8f7f4; /* Mevcut tasarımınızla uyumlu arka plan rengi */
+            color: #333;
+        }
+
+        /* Bu yazıya özel Tailwind CSS sınıflarını global stilinize çevirmeniz veya burada bırakmanız gerekiyor */
+        /* Örneğin, "section-title" için kendi stil.css dosyanızdaki h2 stilini kullanabiliriz */
+        .section-title {
+            font-size: 2.2em; /* style.css'deki h2 boyutu */
+            color: #2c3e50; /* style.css'deki h2 rengi */
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+        .section-subtitle {
+            font-size: 1.1em; /* style.css'deki p'ye yakın bir boyut */
+            text-align: center;
+            color: #666; /* style.css'deki p rengi */
+            max-width: 800px; /* Daha geniş metin alanı */
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 30px;
+        }
+        /* Genel Hesapkolik sitenizde card sınıfı yoksa, bu stilleri kullanabilirsiniz */
+        .card {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #ddd; /* Ana sitenizdeki kartlara benzer */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px); /* Daha hafif bir hover efekti */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12); /* Daha hafif bir gölge */
+        }
+
+        /* Navigasyon linkleri (Mevcut header.css ile çakışabilir, ayar yapılmalı) */
+        /* Eğer bu yazı içindeki özel navigasyonu korumak istiyorsanız buraya ekleyebilirsiniz */
+        .article-nav-header {
+            background-color: #f4f7ff; /* Hafif mavi tonu */
+            border-bottom: 1px solid #e0e7ff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .article-nav-link {
+            padding: 10px 15px;
+            color: #3498db; /* Hesapkolik mavi rengi */
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            border-radius: 5px;
+        }
+        .article-nav-link:hover {
+            background-color: #e8f4fd; /* Hover arka planı */
+            color: #2980b9;
+        }
+        .article-nav-link.active {
+            background-color: #d1e7ff; /* Aktif link arka planı */
+            color: #1a70c0; /* Daha koyu mavi */
+        }
+        
+        /* Accordion ve Tabs için renk uyarlamaları */
+        .accordion-button {
+            background-color: #ecf0f1; /* Hafif gri */
+            color: #2c3e50; /* Koyu gri yazı rengi */
+            border-radius: 8px; /* Daha yuvarlak köşeler */
+            font-weight: 600;
+        }
+        .accordion-button:hover {
+            background-color: #dde1e2;
+        }
+        .plus-icon, .minus-icon {
+            color: #3498db; /* Hesapkolik mavi */
+        }
+
+        .tab-button {
+            color: #666; /* Gri tonu */
+            border-color: transparent;
+            font-weight: 600;
+        }
+        .tab-button:hover {
+            color: #3498db; /* Hesapkolik mavisi */
+            border-color: #3498db;
+        }
+        .tab-button.active {
+            color: #3498db;
+            border-color: #3498db;
+        }
+        
+        /* Range slider thumb stilleri (Mavi tonunu Hesapkolik mavisine ayarladım) */
+        input[type="range"]::-webkit-slider-thumb {
+            background: #3498db; /* Hesapkolik mavi */
+        }
+        input[type="range"]::-moz-range-thumb {
+            background: #3498db; /* Hesapkolik mavi */
+        }
+
+        /* Chart.js container */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px; /* Orjinal genişlik */
+            margin-left: auto;
+            margin-right: auto;
+            height: auto;
+            aspect-ratio: 1 / 1;
+        }
+
+        /* Hero section için Hesapkolik ana sayfasındaki stilin aynısı (arka plan rengini değiştirdim) */
+        .hero {
+            background-color: #3498db; /* Hesapkolik ana hero rengi */
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+        }
+        .hero h1 { /* Başlık font-size'ını biraz küçültüm, yazıya uygun olsun */
+            font-size: 2.8em;
+            margin-bottom: 20px;
+        }
+        .hero p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .hero .cta-button {
+            display: inline-block;
+            background-color: #2ecc71; /* Ana sayfadaki yeşil buton rengi */
+            color: white;
+            padding: 15px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .hero .cta-button:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        /* responsive için kendi responsive ayarlamalarınızı uygulayın */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2em;
+            }
+            .section-title {
+                font-size: 1.8em;
+            }
+            .section-subtitle {
+                font-size: 1em;
+            }
+            .article-nav-link {
+                padding: 8px 10px;
+                font-size: 0.9em;
+            }
+            .tab-button {
+                font-size: 0.9em;
+                padding: 10px 12px;
+            }
+        }
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.8em;
+            }
+            .section-title {
+                font-size: 1.6em;
+            }
+            .article-nav-header .h-16 { /* Mobil menü boyutu */
+                height: auto;
+                flex-wrap: wrap;
+                padding-bottom: 10px;
+            }
+            .article-nav-header .flex-shrink-0 {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+            .article-nav-header .md\:hidden {
+                width: 100%;
+                text-align: center;
+            }
+            .article-nav-link {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section id="hero" class="py-20 bg-blue-600"> <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight"> <span class="text-green-300">HbA1c</span> Değerini Anlamak
+                </h1>
+                <p class="mt-6 text-xl text-white max-w-3xl mx-auto"> Diyabet yönetiminin temel taşı olan HbA1c'yi, tanıdaki önemini ve kan şekeri kontrolünüz üzerindeki etkilerini interaktif bir şekilde keşfedin.
+                </p>
+                <a href="#nedir" class="mt-8 inline-block bg-green-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-green-600 transition-transform transform hover:scale-105">Keşfetmeye Başla</a>
+            </div>
+        </section>
+
+        <section id="nedir" class="py-16 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">HbA1c Nedir?</h2>
+                <p class="section-subtitle">
+                    HbA1c, son 2-3 aydaki ortalama kan şekeri seviyenizin bir resmini çeker. Anlık ölçümlerden farklı olarak, uzun vadeli glisemik kontrolünüz hakkında değerli bilgiler sunar.
+                </p>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="card">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Hemoglobin Glikasyon Süreci</h3>
+                        <p class="text-slate-600 mb-6">
+                            HbA1c, kandaki glikozun, kırmızı kan hücrelerinde bulunan bir protein olan hemoglobine, özellikle hemoglobin A'nın N-terminal lizin ve valin kalıntılarına, enzimatik olmayan bir şekilde bağlanmasıyla oluşan glike edilmiş hemoglobindir. Bu kimyasal reaksiyon, başlangıçta geri dönüşümlü bir aldehit Schiff bazı oluşumunu içerir ve ardından geri döndürülemez bir Amadori yeniden düzenlemesi ile stabil bir ketoamin formuna dönüşür. Kan glikoz seviyeleri yükseldikçe, hemoglobinin glikozla kaplanma yüzdesi de doğru orantılı olarak artar. Bu artış, HbA1c testinin temelini oluşturur.
+                        </p>
+                        <div class="relative p-4 border rounded-lg bg-slate-50">
+                            <div class="flex items-center justify-around">
+                                <div class="text-center">
+                                    <div class="text-4xl">🩸</div>
+                                    <p class="font-semibold mt-2">Kırmızı Kan Hücresi (Hemoglobin içerir)</p>
+                                </div>
+                                <div class="text-3xl font-light text-slate-400">+</div>
+                                <div class="text-center">
+                                    <div class="text-4xl">🍬</div>
+                                    <p class="font-semibold mt-2">Glikoz (Şeker)</p>
+                                </div>
+                                <div class="text-3xl font-light text-slate-400">=</div>
+                                <div class="text-center">
+                                    <div class="text-4xl">🧬</div>
+                                    <p class="font-semibold mt-2">Glike Hemoglobin (HbA1c)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="card flex items-start space-x-4">
+                            <div class="flex-shrink-0 h-12 w-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-2xl font-bold">3 ay</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-800">2-3 Aylık Hafıza</h4>
+                                <p class="text-slate-600 mt-1">Kırmızı kan hücrelerinin ortalama ömrü yaklaşık 2 ila 3 ay (ortalama 120 gün) kadardır. Glikoz, hemoglobinlere bu hücrelerin yaşam döngüsü boyunca bağlı kaldığı için, HbA1c testi son 2-3 aylık ortalama kan şekeri seviyesini yansıtır. Bu özellik, HbA1c'yi anlık kan şekeri ölçümlerine kıyasla çok daha güvenilir bir uzun vadeli glisemik kontrol göstergesi haline getirir. HbA1c'nin kırmızı kan hücrelerinin ömrüne doğrudan bağlı olması, onun geriye dönük bir ortalama değer sağlamasının temelini oluşturur. Bu durum, HbA1c'nin uzun vadeli eğilimleri değerlendirmek için mükemmel bir araç olduğunu, ancak akut glikoz dalgalanmalarını veya günlük değişkenliği yakalayamadığını gösterir. Bu sınırlama, anlık tedavi ayarlamaları için önemli bir faktördür ve sürekli glikoz izleme (CGM) gibi tamamlayıcı yöntemlerin neden gerekli olduğunu açıklar.</p>
+                            </div>
+                        </div>
+                        <div class="card flex items-start space-x-4">
+                            <div class="flex-shrink-0 h-12 w-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-2xl font-bold">🎯</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-800">Uzun Vadeli Gösterge</h4>
+                                <p class="text-slate-600 mt-1">Anlık parmak ucu ölçümlerinin aksine, HbA1c günlük dalgalanmalardan etkilenmez ve tedavi planınızın genel etkinliğini gösterir.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tani" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">Tanı ve Tedavi Hedefleri</h2>
+                <p class="section-subtitle">
+                    HbA1c seviyeleri, diyabet ve prediyabet (gizli şeker) tanısı koymak için kullanılır. Ayrıca, diyabetli bireyler için tedavi hedeflerini belirlemede ve komplikasyon riskini değerlendirmede kritik bir rol oynar.
+                </p>
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="text-center">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4">HbA1c Tanı Değerleri</h3>
+                        <p class="text-slate-600 mb-6">HbA1c testi, tip 2 diyabet ve prediyabetin taranması ve tanısı için yaygın olarak kullanılmaktadır. Amerikan Diyabet Derneği (ADA) tarafından belirlenen tanı eşik değerleri aşağıdaki gibidir. Üzerlerine gelerek detayları görebilirsiniz. Bu net tanı eşik değerleri, diyabet teşhisini standartlaştırmaktadır. ADA, 45 yaş ve üzeri tüm bireylerde veya prediyabet öyküsü, fazla kilo/obezite, aile öyküsü (tip 2 diyabetli ebeveyn veya kardeş), yüksek tansiyon veya yüksek kolesterol seviyeleri, kalp hastalığı veya inme öyküsü, haftada 3 kereden az fiziksel aktivite, gestasyonel diyabet öyküsü veya 9 pounddan ağır bebek doğurma, Polikistik Over Sendromu (PCOS) gibi risk faktörleri olan 45 yaş altı bireylerde HbA1c testinin yapılmasını önermektedir. Bu proaktif tarama yaklaşımı, ciddi semptomlar veya komplikasyonlar gelişmeden önce risk altındaki bireyleri belirlemeyi amaçlayan güçlü bir erken teşhis ve müdahale stratejisini yansıtmaktadır. Bu, klinik kılavuzlara yerleştirilmiş bir halk sağlığı stratejisi olarak görülebilir.</p>
+                        <div class="chart-container">
+                            <canvas id="hba1cLevelsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="space-y-6">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4 text-center md:text-left">Tedavi Hedefleri Kişiye Özeldir</h3>
+                        <div class="card">
+                            <h4 class="text-xl font-bold text-green-600">Genel Hedef: &lt; %7</h4>
+                            <p class="text-slate-600 mt-2">Çoğu diyabetli yetişkin için hedeflenen HbA1c seviyesi %7'nin altındadır. Bu seviye, komplikasyon riskini önemli ölçüde azaltır.</p>
+                            <p class="text-slate-600 mt-2">Diyabet veya prediyabet tanısı konmuş kişilerde, HbA1c testi durumun izlenmesine ve kan şekeri seviyelerinin ne kadar iyi kontrol edildiğinin değerlendirilmesine yardımcı olur. ADA, stabil glisemik kontrolü olan hastalar için yılda en az iki kez HbA1c kontrolünü önermektedir. Tedavi hedeflerine ulaşamayan veya tedavisi değişen hastalar için ise testin her 3 ayda bir yapılması önerilmektedir. HbA1c test sıklığının, glisemik kontrolün stabilitesine ve tedavi hedeflerine göre değişmesi, HbA1c'nin statik bir ölçüm olmaktan ziyade, adaptif yönetim için dinamik bir araç olduğunu göstermektedir. Bu esneklik, kontrolün yetersiz olduğu veya tedavi değişikliklerinin yapıldığı durumlarda izlemi yoğunlaştırmaya olanak tanır ve diyabet bakımına duyarlı ve hasta odaklı bir yaklaşımı yansıtır.</p>
+                        </div>
+                        <div class="card">
+                            <h4 class="text-xl font-bold text-amber-600">Daha Gevşek Hedef: &lt; %8</h4>
+                            <p class="text-slate-600 mt-2">İleri yaştaki, ek sağlık sorunları olan veya hipoglisemi (düşük kan şekeri) riski yüksek kişilerde, doktor %8'in altı gibi daha esnek bir hedef belirleyebilir. Sınırlı yaşam beklentisi olan veya tedavinin zararlarının faydalarından daha fazla olduğu yaşlı veya kırılgan hastalar için uygun olabilir.</p>
+                        </div>
+                        <div class="card">
+                            <h4 class="text-xl font-bold text-blue-600">Daha Sıkı Hedef: &lt; %6.5</h4>
+                            <p class="text-slate-600 mt-2">Yeni tanı almış, genç ve başka sağlık sorunu olmayan bazı bireyler için, doktorun onayıyla %6.5'in altı gibi daha sıkı bir hedef uygun olabilir.</p>
+                        </div>
+                        <div class="card">
+                            <h4 class="text-xl font-bold text-slate-800">Diyabet Komplikasyonları Risk Değerlendirmesi</h4>
+                            <p class="text-slate-600 mt-2">Glike edilmiş hemoglobin, diyabetik retinopati (göz hasarı) ve nefropati (böbrek hasarı) gibi mikrovasküler komplikasyonların geliştirme riski için güçlü bir öngörücüdür. DCCT çalışması, daha yüksek ortalama A1c seviyesinin diyabetik retinopati ilerlemesinin baskın öngörücüsü olduğunu raporlamıştır. Bu çalışma, %7 veya altındaki HbA1c seviyeleri ile mikrovasküler komplikasyonlarda %35 ila %76 oranında bir azalma arasında güçlü bir korelasyon olduğunu göstermiştir. Ayrıca, DCCT'nin devamı niteliğindeki EDIC (Epidemiology of Diabetes Interventions and Complications) çalışması, daha düşük HbA1c seviyelerine sahip hastalar için kardiyovasküler risk ve mortalite açısından uzun vadeli faydalar olduğunu ortaya koymuştur. HbA1c seviyeleri ile mikrovasküler komplikasyonların mutlak riski arasındaki doğrudan orantı, HbA1c'yi kantitatif bir risk biyobelirteci olarak konumlandırmaktadır. Bu, sadece riski öngörmekle kalmayıp, aynı zamanda yükselme derecesinin gelecekteki komplikasyonların şiddetiyle doğrudan ilişkili olduğunu göstermektedir. Bu durum, sürdürülen hipergliseminin uzun vadeli, kümülatif hasarını vurgulamakta ve agresif glisemik kontrol için net bir gerekçe sunmaktadır. Her bir yüzde puanlık HbA1c düşüşü, zamanla somut bir komplikasyon riski azalmasına yol açabilir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="hesaplayici" class="py-16 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">Tahmini Ortalama Glikoz (eAG) Hesaplayıcı</h2>
+                <p class="section-subtitle">
+                    HbA1c sonucunuzun, günlük kan şekeri ölçüm cihazınızda gördüğünüz değerlere (mg/dL) ne anlama geldiğini hiç merak ettiniz mi? Bu araç, HbA1c değerinizi tahmini ortalama glikoz (eAG) değerine dönüştürür.
+                </p>
+                <div class="card max-w-2xl mx-auto">
+                    <p class="text-slate-600 mb-4">HbA1c sonuçları, "tahmini ortalama glikoz" (eAG) olarak da rapor edilebilir. eAG, hastaların genellikle günlük kan şekeri ölçümlerinde gördükleri birimlerde (mg/dL veya mmol/L) HbA1c sonuçlarını sunarak, glikoz kontrolü hakkındaki tartışmaları iyileştirmeyi amaçlamaktadır. eAG'nin tanıtılması, klinik laboratuvar sonuçları (HbA1c yüzdesi) ile hastaların günlük kendi kendine izleme deneyimleri (kan glikoz değerleri) arasındaki iletişim boşluğunu kapatmaya yönelik bilinçli bir çabayı temsil etmektedir. Bu girişim, uzun vadeli glisemik kontrolü daha anlaşılır ve uygulanabilir hale getirerek hastaların diyabet yönetimlerine katılımlarını ve tedavi planlarına uyumlarını artırmayı hedeflemektedir.</p>
+                    <div class="mb-6">
+                        <label for="hba1c-slider" class="block text-lg font-semibold text-slate-700 mb-2">HbA1c Değerinizi Seçin (%): <span id="slider-value" class="font-bold text-blue-600">7.0</span></label>
+                        <input type="range" id="hba1c-slider" min="4.0" max="14.0" step="0.1" value="7.0" class="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                    <div class="grid sm:grid-cols-2 gap-4 text-center">
+                        <div class="bg-blue-50 p-6 rounded-lg">
+                            <p class="text-sm font-medium text-blue-800 uppercase tracking-wider">Tahmini Ortalama Glikoz (eAG)</p>
+                            <p class="text-4xl font-bold text-blue-600 mt-2"><span id="eag-mgdl">154</span> mg/dL</p>
+                        </div>
+                        <div class="bg-green-50 p-6 rounded-lg">
+                            <p class="text-sm font-medium text-green-800 uppercase tracking-wider">Tahmini Ortalama Glikoz (eAG)</p>
+                            <p class="text-4xl font-bold text-green-600 mt-2"><span id="eag-mmol">8.6</span> mmol/L</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-4 text-center">Hesaplama Formülü: eAG (mg/dL) = 28.7 &times; HbA1c (%) &ndash; 46.7</p>
+                    <p class="text-sm text-slate-600 mt-4">ADAG formülü standart bir dönüşüm sağlasa da, diğer çalışmaların farklı doğrusal korelasyonlar veya %1 HbA1c artışı başına farklı ortalama kan glikoz artışları bulması, farklı popülasyonlarda ve ölçüm metodolojilerinde ortalama glikoz ile glike edilmiş hemoglobin arasındaki ilişkide doğal bir değişkenlik ve karmaşıklık olduğunu göstermektedir. Bu durum, ADAG formülünün yaygın olarak kabul görmesine rağmen, klinisyenlerin biyolojik ve metodolojik faktörlerin ince farklılıklar yaratabileceğini bilmelerini gerektirmekte, bu da katı bir uygulama yerine nüanslı bir yorumlamayı zorunlu kılmaktadır.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="faktorler" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">Ölçümü Etkileyen Faktörler</h2>
+                <p class="section-subtitle">
+                    HbA1c değerli bir test olmasına rağmen, çeşitli fizyolojik ve patolojik durumlar ile laboratuvar metodolojileri tarafından etkilenebilen sınırlamalara sahiptir. Bu faktörlerin anlaşılması, sonuçların doğru yorumlanması ve uygun klinik kararların alınması için büyük önem taşımaktadır.
+                </p>
+                <div class="max-w-3xl mx-auto space-y-4" id="accordion-container">
+                    <div class="accordion-item">
+                        <button class="accordion-button">
+                            <span>HbA1c'yi Yanlış Yüksek Gösteren Durumlar</span>
+                            <span class="plus-icon text-blue-600 text-2xl font-light">+</span>
+                            <span class="minus-icon text-blue-600 text-2xl font-light hidden">-</span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-4 bg-white border border-t-0 rounded-b-lg">
+                                <ul class="list-disc list-inside space-y-2 text-slate-600">
+                                    <li><b>Demir Eksikliği Anemisi (IDA):</b> Demir eksikliği anemisi, kırmızı kan hücresi üretimini azaltarak dolaşımdaki kırmızı kan hücrelerinin ortalama ömrünü uzatabilir. Bu durum, hemoglobinin glikoza daha uzun süre maruz kalmasına neden olarak HbA1c seviyelerini yanlışlıkla yüksek gösterebilir.</li>
+                                    <li><b>B12 Vitamini veya Folat Eksikliği Anemisi:</b> Benzer şekilde kırmızı kan hücresi ömrünü etkiler ve HbA1c'yi yanlış yüksek gösterebilir.</li>
+                                    <li><b>Ağır Alkol Tüketimi ve Hipertrigliseridemi.</b></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-button">
+                            <span>HbA1c'yi Yanlış Düşük Gösteren Durumlar</span>
+                            <span class="plus-icon text-blue-600 text-2xl font-light">+</span>
+                            <span class="minus-icon text-blue-600 text-2xl font-light hidden">-</span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-4 bg-white border border-t-0 rounded-b-lg">
+                                <ul class="list-disc list-inside space-y-2 text-slate-600">
+                                    <li><b>Hemolitik Anemi:</b> Orak hücre anemisi gibi, kırmızı kan hücrelerinin normalden hızlı yıkıldığı durumlar, HbA1c seviyelerini yanlışlıkla düşük gösterebilir. Bunun nedeni, hemoglobinin glike olması için daha az zaman kalması ve kırmızı kan hücrelerinin daha hızlı yok edilip yenilenmesidir.</li>
+                                    <li><b>Kronik Böbrek ve Karaciğer Hastalıkları:</b> Kronik böbrek hastalığı (KBH) ve karaciğer hastalığı, HbA1c ölçümünü etkileyebilir. Böbrek yetmezliğinde, kırmızı kan hücresi sağkalımının azalması, artan kan üre nitrojeni ve eritropoietin (EPO) tedavisi nedeniyle HbA1c'nin glisemik kontrolü olduğundan daha düşük gösterme eğilimi vardır. Bu durum, daha güvenilir bir değerlendirme için fruktozamin veya glike edilmiş albümin gibi alternatif belirteçlerin ve sürekli glikoz izlemininn kullanılması zorunlu kılmaktadır.</li>
+                                    <li><b>Yakın Zamanda Kan Nakli veya Ağır Kanama:</b> Dolaşımdaki kan hücrelerinin profilini değiştirerek HbA1c seviyelerini geçici olarak değiştirebilir.</li>
+                                    <li><b>Gebelik:</b> Özellikle ikinci ve üçüncü trimesterlerde fizyolojik değişiklikler sonucu etkileyebilir.</li>
+                                    <li><b>Eritropoietin (EPO) Tedavisi:</b> Kırmızı kan hücresi üretimini hızlandırarak HbA1c'yi yanlış düşük gösterebilir.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-button">
+                            <span>Test Yöntemini Etkileyen Durumlar (Hemoglobin Varyantları)</span>
+                            <span class="plus-icon text-blue-600 text-2xl font-light">+</span>
+                            <span class="minus-icon text-blue-600 text-2xl font-light hidden">-</span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-4 bg-white border border-t-0 rounded-b-lg">
+                                <p class="text-slate-600">
+                                    Orak hücre anemisi, talasemi ve diğer hemoglobin varyantları gibi genetik hemoglobin bozuklukları, glikozun hemoglobine bağlanmasını etkileyerek, kromatografi pik ölçümlerini değiştirerek veya hemoliz riskini artırarak HbA1c değerlerini etkileyebilir. Bu durumlar, kullanılan test yöntemine bağlı olarak yanlış yüksek veya düşük sonuçlara yol açabilir. Bir klinisyen, HbA1c değerinin beklenenden çok yüksek veya düşük olması, %15'in üzerinde olması veya kendi kendine izlenen kan şekeri sonuçlarıyla korelasyon göstermemesi durumunda hemoglobinopatiden şüphelenmelidir. Bu durumlarda, yaygın hemoglobin varyantlarından etkilenmeyen Ulusal Glikohemoglobin Standardizasyon Programı (NGSP) sertifikalı yöntemlerin kullanılması veya plazma glikoz örnekleri ile doğrulanması gerektiği vurgulanmaktadır. Hemoglobinopatilerin HbA1c ölçümleri üzerindeki etkisi, test metodolojisi ve standardizasyonunda kritik bir zorluğu ortaya koymaktadır.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-button">
+                            <span>Diğer Girişimler ve İlaçlar</span>
+                            <span class="plus-icon text-blue-600 text-2xl font-light">+</span>
+                            <span class="minus-icon text-blue-600 text-2xl font-light hidden">-</span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-4 bg-white border border-t-0 rounded-b-lg">
+                                <p class="text-slate-600">Yüksek irtifa, kanama, eritropoietin uygulaması, demir takviyesi ve C vitamini takviyesi gibi bazı durumlar yanlış düşük HbA1c'ye neden olabilir. Tersine, yetersiz demir (demir eksikliği anemisi), hipertrigliseridemi, organ nakli ve bazı etnik gruplarda hiperglikasyon yanlış yüksek HbA1c'ye yol açabilir. Opioidler ve bazı HIV ilaçları gibi belirli ilaçlar da sonuçları etkileyebilir; bu nedenle hastaların kullandıkları tüm ilaçları sağlık hizmeti sağlayıcılarına bildirmeleri önemlidir.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-button">
+                            <span>Alternatif Glikemik Belirteçler</span>
+                            <span class="plus-icon text-blue-600 text-2xl font-light">+</span>
+                            <span class="minus-icon text-blue-600 text-2xl font-light hidden">-</span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-4 bg-white border border-t-0 rounded-b-lg">
+                                <p class="text-slate-600">HbA1c'nin doğruluğunun etkilendiği durumlarda (örneğin anemi, böbrek yetmezliği, hemoglobinopatiler), fruktozamin ve glike edilmiş albümin gibi alternatif belirteçler kullanılabilir. Bu belirteçler, HbA1c'den daha kısa süreli glikoz kontrolünü (2-3 hafta) yansıtır ve hızlı metabolik değişiklikleri veya diyabet tedavisi değişikliklerini izlemek için daha uygun olabilir. Bu, glisemik değerlendirme aracının bireyin klinik bağlamına göre uyarlanarak, HbA1c'nin güvenilir olmadığı durumlarda daha doğru ve etkili bir yönetim sağlamak üzere daha kişiselleştirilmiş bir teşhis yaklaşımına doğru bir geçişi ima etmektedir.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gelecek" class="py-16 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">Diyabet Yönetiminin Geleceği</h2>
+                <p class="section-subtitle">
+                    Diyabet yönetimi sürekli gelişiyor. HbA1c temel bir gösterge olmaya devam ederken, yeni teknolojiler ve yaklaşımlar daha kişiselleştirilmiş ve hassas bir kontrol sağlıyor.
+                </p>
+                
+                <div class="max-w-4xl mx-auto">
+                    <div class="border-b border-slate-200 mb-8">
+                        <nav class="-mb-px flex justify-center space-x-2 md:space-x-8" aria-label="Tabs" id="tabs-nav">
+                            <button data-tab="cgm" class="tab-button active">CGM & TIR</button>
+                            <button data-tab="tedaviler" class="tab-button">Yeni Tedaviler</button>
+                            <button data-tab="hedefler" class="tab-button">Bireysel Hedefler</button>
+                        </nav>
+                    </div>
+
+                    <div id="tabs-content">
+                        <div id="cgm-content" class="tab-content">
+                            <div class="card">
+                                <h3 class="text-2xl font-bold text-slate-800 mb-4">Sürekli Glikoz İzleme (CGM) ve Hedef Aralıktaki Süre (TIR)</h3>
+                                <p class="text-slate-600 mb-4">HbA1c hala glisemik kontrol için altın standart olarak kabul edilse de, Sürekli Glikoz İzleme (CGM) teknolojisinin ve "Hedef Aralıktaki Süre" (TIR: Time in Range, 70-180 mg/dL) gibi CGM metriklerinin önemi giderek artmaktadır. TIR, HbA1c'ye kıyasla günlük glikoz dalgalanmalarını daha iyi yakalar ve daha eyleme dönüştürülebilir bilgiler sağlar. Çoğu hamile olmayan yetişkin için %70'in üzerinde TIR'ın, yaklaşık %7 HbA1c hedefiyle uyumlu olduğu belirtilmektedir. CGM'nin, özellikle tip 1 diyabetli gençlerde ve insülin kullanan tip 2 diyabetlilerde glisemik sonuçları iyileştirdiği ve hipoglisemiyi azalttığı vurgulanmaktadır.</p>
+                                <p class="text-slate-600 mb-6">CGM ve TIR'ın yükselişi, glisemik kontrole yönelik geriye dönük, ortalama bir bakış açısından (HbA1c), glikoz paternlerinin dinamik, gerçek zamanlı bir anlayışına doğru temel bir değişimi ifade etmektedir. HbA1c uzun vadeli risk için kritik olmaya devam ederken, TIR günlük glikoz değişkenliği, hipoglisemi ve hiperglisemi hakkında eyleme dönüştürülebilir bilgiler sağlayarak daha kesin ve anlık tedavi ayarlamalarına olanak tanımaktadır. Bu durum, hem uzun vadeli hem de kısa vadeli glisemik metriklerin optimal hasta sonuçları için entegre edildiği hassas diyabet yönetimine doğru bir geçişi göstermektedir.</p>
+                                <div class="w-full bg-slate-100 rounded-full h-8 flex overflow-hidden">
+                                    <div class="flex items-center justify-center h-full bg-red-400 text-white text-sm font-medium" style="width: 15%">Düşük</div>
+                                    <div class="flex items-center justify-center h-full bg-green-500 text-white text-sm font-medium" style="width: 70%">Hedef Aralık (TIR)</div>
+                                    <div class="flex items-center justify-center h-full bg-amber-400 text-white text-sm font-medium" style="width: 15%">Yüksek</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tedaviler-content" class="tab-content hidden">
+                           <div class="card">
+                                <h3 class="text-2xl font-bold text-slate-800 mb-4">Hastalığı Modifiye Eden Yeni Tedaviler</h3>
+                                <p class="text-slate-600">Diyabet tedavisinde, HbA1c düşüşünün yanı sıra hastalığın altında yatan mekanizmaları hedefleyen yeni ilaçlar geliştirilmektedir. Örneğin, Biomea Fusion'ın menin inhibitörü icovamenib, tip 2 diyabet tedavisinde plasebo ayarlı %1.0 HbA1c düşüşü ve insülin eksikliği olan hastalarda %55 C-peptit artışı göstermiştir. Bu ilacın, tedavi kesildikten 3 ay sonra bile sürdürülebilir etkinlik gösterdiği ve beta hücre restorasyonu yoluyla hastalığı modifiye edici potansiyele sahip olduğu vurgulanmaktadır. Ayrıca, GLP-1 Reseptör Agonisti (GLP-1 RA) tedavisi ile sinerjistik etkiler gösterdiği ve ek %1.0 HbA1c düşüşü sağladığı belirtilmektedir.</p>
+                                <p class="text-slate-600 mt-2">İcovamenib gibi yeni ilaçların geliştirilmesi, tip 2 diyabet için terapötik hedeflerde bir değişime işaret etmektedir. Bu durum, sadece semptomatik glikoz kontrolünün ötesine geçerek, hastalık modifikasyonu ve potansiyel beta-hücre restorasyonuna doğru bir ilerlemeyi, yani sadece yönetmek yerine daha kalıcı bir remisyonu hedeflemeyi önermektedir. Bu, diyabetin altında yatan patofizyolojisini anlama ve hedeflemede önemli bir ilerlemeyi temsil etmektedir.</p>
+                            </div>
+                        </div>
+                        <div id="hedefler-content" class="tab-content hidden">
+                           <div class="card">
+                                <h3 class="text-2xl font-bold text-slate-800 mb-4">Bireyselleştirilmiş HbA1c Hedefleri ve 2025 ADA Standartları</h3>
+                                <p class="text-slate-600">Amerikan Diyabet Derneği'nin (ADA) 2025 Diyabet Bakım Standartları, HbA1c hedeflerinin bireyselleştirilmesine devam eden güçlü bir vurgu yapmaktadır. Bu yaklaşım, hipoglisemi riski, komorbiditeler, yaşam beklentisi ve hasta tercihleri gibi bir dizi faktörün hedef belirlemede dikkate alınması gerektiğini belirtmektedir. Örneğin, düşük riskli ve yüksek faydalı hastalar için &lt;%6.5 gibi daha sıkı hedefler belirlenebilirken, orta riskli ve orta faydalı hastalar için ≤%7 ve yüksek riskli ve düşük faydalı hastalar için %7.5-8 aralığında hedefler uygun görülebilir. Yaşlı yetişkinler veya sınırlı yaşam beklentisi olanlar için &lt;%8 gibi daha az sıkı hedefler uygun olabileceği de belirtilmektedir.</p>
+                                <p class="text-slate-600 mt-2">2025 ADA güncellemeleri ayrıca uyku, kilo yönetimi, psikososyal bakım ve interprofesyonel ekiplerin diyabet yönetimindeki önemine yapılan vurgu gibi diğer önemli değişiklikleri de içermektedir. 2025 ADA Standartlarında bireyselleştirilmiş HbA1c hedeflerine yapılan güçlü vurgu, diyabet bakımında "tek beden herkese uyar" yaklaşımından, bütünsel, hasta merkezli bir modele doğru bir olgunlaşmayı ifade etmektedir. Bu yaklaşım, sıkı glisemik kontrolün faydalı olmasına rağmen, özellikle hassas popülasyonlarda hipoglisemi riskleri ve tedavi yükü ile dengelenmesi gerektiğini kabul etmektedir. Bu durum, katı sayısal hedefler yerine hasta güvenliğini, yaşam kalitesini ve gerçekçi sonuçları önceliklendiren daha nüanslı bir klinik karar verme sürecini gerektirmektedir.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sonuc" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">Sonuç ve Gelecek Perspektifleri</h2>
+                <p class="section-subtitle">
+                    Diyabet yönetimindeki ana gösterge olan HbA1c'nin önemi ve gelecekteki rolü hakkında genel bir özet.
+                </p>
+                <div class="card max-w-4xl mx-auto">
+                    <p class="text-slate-600 mb-4">HbA1c, diyabet yönetiminde temel bir araç olmaya devam etmekle birlikte, tek başına yeterli değildir. Glikozun hemoglobine bağlanma prensibi ve kırmızı kan hücrelerinin ömrüne dayalı olarak son 2-3 aylık ortalama kan şekeri seviyelerini yansıtması, onu uzun vadeli glisemik kontrolün güvenilir bir göstergesi yapmaktadır. Ancak, anemi, böbrek ve karaciğer hastalıkları, gebelik, kan transfüzyonları ve hemoglobin varyantları gibi çeşitli durumlar HbA1c ölçümlerinin doğruluğunu etkileyebilir. Bu durumlarda, fruktozamin ve glike edilmiş albümin gibi alternatif glisemik belirteçler, daha kısa süreli glikoz kontrolünü yansıtır ve kırmızı kan hücresi ömründen bağımsız olarak değerli bilgiler sunarak tamamlayıcı bir rol oynamaktadır.</p>
+                    <p class="text-slate-600 mb-4">Tahmini Ortalama Glikoz (eAG) dönüşümü, HbA1c sonuçlarını hastaların günlük kan şekeri ölçümleriyle daha ilişkili hale getirerek hasta-sağlık hizmeti sağlayıcısı iletişimini güçlendirmektedir. Bu, hastaların kendi durumlarını daha iyi anlamalarına ve tedaviye katılımlarını artırmalarına yardımcı olmaktadır.</p>
+                    <p class="text-slate-600 mb-4">Sürekli Glikoz İzleme (CGM) ve Hedef Aralıktaki Süre (TIR) gibi yeni teknolojiler ve metrikler, HbA1c'nin sağladığı uzun vadeli ortalamayı tamamlayarak, glikoz dalgalanmaları, hipoglisemi ve hiperglisemi hakkında daha dinamik ve eyleme dönüştürülebilir bilgiler sunmaktadır. Bu entegrasyon, diyabet yönetimini daha hassas ve kişiselleştirilmiş hale getirmektedir.</p>
+                    <p class="text-slate-600 mb-4">Yeni geliştirilen ilaçlar, sadece HbA1c'yi düşürmekle kalmayıp, beta hücre fonksiyonunu iyileştirme ve hastalığı modifiye etme potansiyeli sunarak diyabet tedavisinde önemli ilerlemeler sağlamaktadır. Amerikan Diyabet Derneği'nin (ADA) 2025 Diyabet Bakım Standartları'nın bireyselleştirilmiş HbA1c hedeflerine yaptığı vurgu, diyabet bakımının "tek beden herkese uyar" yaklaşımından, hastanın genel sağlığı, yaşam beklentisi ve hipoglisemi riski gibi faktörleri dikkate alan bütünsel, hasta merkezli bir modele doğru evrildiğini göstermektedir.</p>
+                    <p class="text-slate-600">Tüm bu gelişmeler, diyabet yönetiminde entegre ve kişiselleştirilmiş bir yaklaşıma doğru bir geçişi işaret etmektedir. HbA1c, bu büyük resmin temel bir parçası olmaya devam ederken, dinamik glikoz izleme, hasta özelliklerine göre bireyselleştirilmiş hedefler ve altta yatan hastalık mekanizmalarını hedefleyen yeni tedavilerle birlikte kullanılmaktadır. Gelecekte, diyabet tedavisinin teknolojik ilerlemeler, genetik bilgiler ve hasta merkezli yaklaşımlarla daha da gelişeceği ve HbA1c'nin bu entegre yaklaşımın önemli bir parçası olarak kalacağı öngörülmektedir. Bu, basitleştirilmiş metriklerin ötesine geçerek her hastanın benzersiz glisemik profilini ve klinik bağlamını kapsamlı bir şekilde anlamaya yönelik bir ilerlemeyi temsil etmektedir.</p>
+                </div>
+            </div>
+        </section>
+
+        </main>
+    
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            // Header Yükleme
+            fetch(headerPath)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    const headerPlaceholder = document.getElementById('header-placeholder');
+                    if (headerPlaceholder) {
+                        headerPlaceholder.innerHTML = data;
+                        const scriptElement = headerPlaceholder.querySelector('script');
+                        if (scriptElement) {
+                            const newScript = document.createElement('script');
+                            newScript.textContent = scriptElement.textContent;
+                            document.body.appendChild(newScript);
+                            scriptElement.remove();
+                        }
+                    }
+                })
+                .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+            // Footer Yükleme
+            fetch(footerPath)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    const footerPlaceholder = document.getElementById('footer-placeholder');
+                    if (footerPlaceholder) {
+                        footerPlaceholder.innerHTML = data;
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = data;
+                        const footerElement = tempDiv.querySelector('footer');
+                        if (footerElement) {
+                            footerPlaceholder.replaceWith(footerElement);
+                        }
+                    }
+                })
+                .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+
+            // ORİJİNAL HBA1C YAZISI JAVASCRİPT'İ
+            // Mobile Menu Toggle (Bu script orijinal HbA1c yazısındaydı, Hesapkolik header'ında yoksa çalışması için gerekli)
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuOpenIcon = document.getElementById('menu-open-icon');
+            const menuCloseIcon = document.getElementById('menu-close-icon');
+
+            if (mobileMenuButton) { // Sadece varsa çalıştır
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                    menuOpenIcon.classList.toggle('hidden');
+                    menuCloseIcon.classList.toggle('hidden');
+                });
+            }
+            
+            // Navigation Highlighting on Scroll (Bu script orijinal HbA1c yazısındaydı)
+            const sections = document.querySelectorAll('section');
+            // Yeni navigasyon linklerini buraya almalısınız, çünkü artık Hesapkolik header'ının bir parçası olmayacak.
+            // Eğer bu yazının kendi içinde bir navigasyon barı olacaksa, o linkleri burada tanımlamalısınız.
+            // Şu an için yazının kendi içindeki nav linklerini (header yerine) kullanalım.
+            const navLinks = document.querySelectorAll('.nav-link'); // HbA1c yazısının kendi nav linkleri
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    // Header'ınızın yüksekliğini de dikkate alın, bu 70px genelde fixed headerlar için offsettir.
+                    if (pageYOffset >= sectionTop - 70) { 
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            // Donut Chart for HbA1c Levels (Bu script orijinal HbA1c yazısındaydı)
+            const ctx = document.getElementById('hba1cLevelsChart');
+            if (ctx) { // Sadece canvas elementi varsa grafiği çiz
+                const hba1cLevelsChart = new Chart(ctx.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Normal (< 5.7%)', 'Prediyabet (5.7% - 6.4%)', 'Diyabet (≥ 6.5%)'],
+                        datasets: [{
+                            label: 'HbA1c Seviyeleri',
+                            data: [5.7, 0.8, 4.5], // Arbitrary values for visual proportion
+                            backgroundColor: [
+                                'rgba(22, 163, 74, 0.7)',
+                                'rgba(245, 158, 11, 0.7)',
+                                'rgba(220, 38, 38, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(22, 163, 74, 1)',
+                                'rgba(245, 158, 11, 1)',
+                                'rgba(220, 38, 38, 1)'
+                            ],
+                            borderWidth: 2,
+                            hoverOffset: 16
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '60%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20,
+                                    font: {
+                                        size: 14,
+                                        family: 'Inter' // Burada Poppins yerine Inter kullanmaya devam edebiliriz, chart özelinde sorun olmaz
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.label;
+                                    }
+                                },
+                                bodyFont: { size: 14, family: 'Inter' },
+                                titleFont: { size: 0 }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // eAG Calculator (Bu script orijinal HbA1c yazısındaydı)
+            const slider = document.getElementById('hba1c-slider');
+            const sliderValueDisplay = document.getElementById('slider-value');
+            const eagMgdlDisplay = document.getElementById('eag-mgdl');
+            const eagMmolDisplay = document.getElementById('eag-mmol');
+
+            if (slider) { // Sadece slider varsa hesaplayıcıyı çalıştır
+                function updateEAG() {
+                    const hba1c = parseFloat(slider.value);
+                    sliderValueDisplay.textContent = hba1c.toFixed(1);
+
+                    const eagMgdl = 28.7 * hba1c - 46.7;
+                    const eagMmol = eagMgdl / 18.0182;
+
+                    eagMgdlDisplay.textContent = Math.round(eagMgdl);
+                    eagMmolDisplay.textContent = eagMmol.toFixed(1);
+                }
+                slider.addEventListener('input', updateEAG);
+                updateEAG(); // Initial calculation
+            }
+
+            // Accordion (Bu script orijinal HbA1c yazısındaydı)
+            const accordionItems = document.querySelectorAll('.accordion-item');
+            accordionItems.forEach(item => {
+                const button = item.querySelector('.accordion-button');
+                const content = item.querySelector('.accordion-content');
+                const plusIcon = item.querySelector('.plus-icon');
+                const minusIcon = item.querySelector('.minus-icon');
+
+                button.addEventListener('click', () => {
+                    const isExpanded = content.style.maxHeight && content.style.maxHeight !== '0px';
+
+                    // Close all other items (isteğe bağlı: sadece tıklananı açmak isterseniz bu kısmı kaldırın)
+                    accordionItems.forEach(otherItem => {
+                        if(otherItem !== item) {
+                            otherItem.querySelector('.accordion-content').style.maxHeight = '0px';
+                            otherItem.querySelector('.plus-icon').classList.remove('hidden');
+                            otherItem.querySelector('.minus-icon').classList.add('hidden');
+                        }
+                    });
+
+                    // Toggle current item
+                    if (isExpanded) {
+                        content.style.maxHeight = '0px';
+                        plusIcon.classList.remove('hidden');
+                        minusIcon.classList.add('hidden');
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                        plusIcon.classList.add('hidden');
+                        minusIcon.classList.remove('hidden');
+                    }
+                });
+            });
+
+            // Tabs (Bu script orijinal HbA1c yazısındaydı)
+            const tabsNav = document.getElementById('tabs-nav');
+            const tabsContent = document.getElementById('tabs-content');
+            
+            if (tabsNav) { // Sadece tabsNav varsa çalıştır
+                tabsNav.addEventListener('click', (e) => {
+                    if (e.target.tagName === 'BUTTON') {
+                        const tabId = e.target.dataset.tab;
+
+                        // Update button styles
+                        tabsNav.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+                        e.target.classList.add('active');
+
+                        // Update content visibility
+                        tabsContent.querySelectorAll('.tab-content').forEach(content => {
+                            if (content.id === `${tabId}-content`) {
+                                content.classList.remove('hidden');
+                            } else {
+                                content.classList.add('hidden');
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
