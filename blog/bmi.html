@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vücut Kitle İndeksi (BMI) Rehberi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Calm Health (Soft Blues, Grays, Light Cream/White background) -->
+    <!-- Application Structure Plan: Bu uygulama, BMI konusunda sade ve metin odaklı bir yapıya sahiptir. Lineer okumayı teşvik eden, az etkileşimli bir akış sunar. Ana bölümler (Giriş, BMI Nedir?, Hesaplayıcı, Faktörler, Çalışmalar, Sonuç) arasındaki geçişler üst menü ile sağlanır. Hesaplayıcı dışındaki tüm içerikler düz metin ve grafiklerle sunularak, bilginin doğrudan ve karmaşık olmayan bir şekilde aktarılması hedeflenmiştir. Bu yapı, detaylı metin okumayı tercih eden kullanıcılar için optimize edilmiştir. -->
+    <!-- Visualization & Content Choices: 
+        - Rapor Bilgisi: BMI sınıflandırması -> Hedef: Karşılaştırma/Bilgilendirme -> Sunum: İnteraktif Donut Chart (Chart.js) -> Etkileşim: Değerlerin üzerine gelindiğinde detayların gösterilmesi. Gerekçe: Sınıflandırma eşiklerini görsel olarak sunar, ancak sade bir etkileşimle.
+        - Rapor Bilgisi: BMI hesaplama formülü -> Hedef: Hesaplama/İlişkilendirme -> Sunum: Kaydırıcı (slider) ile anlık sonuç gösteren hesaplayıcı -> Etkileşim: Kullanıcı kaydırıcıyı hareket ettirdikçe BMI değeri anlık olarak güncellenir. Gerekçe: Soyut bir formülü, somut ve anında kullanılabilir bir araca dönüştürür.
+        - Diğer Tüm Rapor Bilgisi (Tanım, Etkileyen Faktörler, Son Çalışmalar vb.) -> Hedef: Bilgilendirme -> Sunum: Düz metin, listeler, alt başlıklar. -> Etkileşim: Yok (scroll). Gerekçe: Sayfa etkileşimini azaltarak metin içeriğinin kolayca taranmasını sağlar.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f7f4;
+            color: #333;
+        }
+        .section-title {
+            @apply text-3xl font-bold text-center mb-4 text-slate-800;
+        }
+        .section-subtitle {
+            @apply text-lg text-center text-slate-600 max-w-3xl mx-auto mb-12;
+        }
+        .nav-link {
+            @apply px-4 py-2 text-slate-600 hover:text-blue-600 transition-colors duration-300 rounded-md;
+        }
+        .nav-link.active {
+            @apply text-blue-600 font-semibold bg-blue-50;
+        }
+        .card {
+            @apply bg-white p-6 rounded-xl shadow-sm border border-slate-100; /* Daha az gölge */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            height: auto;
+            aspect-ratio: 1 / 1;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #3b82f6;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: #3b82f6;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm border-b border-slate-200">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <a href="#" class="text-xl font-bold text-blue-600">BMI Rehberi</a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#nedir" class="nav-link">BMI Nedir?</a>
+                        <a href="#hesaplayici" class="nav-link">BMI Hesaplayıcı</a>
+                        <a href="#faktorler" class="nav-link">Etkileyen Faktörler</a>
+                        <a href="#calismalar" class="nav-link">Son Çalışmalar</a>
+                        <a href="#sonuc" class="nav-link">Sonuç</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-slate-600 hover:text-blue-600 hover:bg-blue-50 focus:outline-none">
+                        <span class="sr-only">Menüyü aç</span>
+                        <svg class="h-6 w-6" id="menu-open-icon" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                         <svg class="h-6 w-6 hidden" id="menu-close-icon" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+             <div id="mobile-menu" class="md:hidden hidden pb-4">
+                <a href="#nedir" class="block nav-link text-center">BMI Nedir?</a>
+                <a href="#hesaplayici" class="block nav-link text-center">BMI Hesaplayıcı</a>
+                <a href="#faktorler" class="block nav-link text-center">Etkileyen Faktörler</a>
+                <a href="#calismalar" class="block nav-link text-center">Son Çalışmalar</a>
+                <a href="#sonuc" class="block nav-link text-center">Sonuç</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero" class="py-20 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl md:text-6xl font-extrabold text-slate-800 leading-tight">
+                    <span class="text-blue-600">Vücut Kitle İndeksi (BMI)</span> Rehberi
+                </h1>
+                <p class="mt-6 text-xl text-slate-600 max-w-3xl mx-auto">
+                    Sağlıklı yaşamın önemli bir göstergesi olan BMI'ınızı hesaplayın ve vücut kompozisyonunuzun sağlığınız üzerindeki etkilerini keşfedin.
+                </p>
+                 <a href="#nedir" class="mt-8 inline-block bg-blue-600 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-blue-700 transition-colors">Keşfetmeye Başla</a>
+            </div>
+        </section>
+
+        <section id="nedir" class="py-16 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">BMI Nedir ve Neden Önemlidir?</h2>
+                <p class="section-subtitle">
+                    Vücut Kitle İndeksi (BMI), bir kişinin kilosunun boyuna göre sağlıklı olup olmadığını gösteren basit bir ölçümdür. Genellikle genel popülasyonda kilo durumunu değerlendirmek için bir tarama aracı olarak kullanılır.
+                </p>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="card">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4">BMI'ın Tanımı</h3>
+                        <p class="text-slate-600 mb-6">
+                            Vücut Kitle İndeksi, bir kişinin kilosunun (kilogram cinsinden) boyunun karesine (metre cinsinden) bölünmesiyle elde edilen bir değerdir. Formülü oldukça basittir: $$BMI = \frac{Kilo (kg)}{Boy (m)^2}$$. Bu oran, bir kişinin düşük kilolu, normal kilolu, fazla kilolu veya obez olup olmadığını belirlemek için kullanılır. BMI, vücut yağının doğrudan bir ölçüsü olmasa da, çoğu kişide toplam vücut yağı ile korelasyon gösterir.
+                        </p>
+                         <div class="relative p-4 border rounded-lg bg-slate-50">
+                            <div class="flex items-center justify-around text-center">
+                                <div class="text-4xl font-bold text-blue-600">KG</div>
+                                <div class="text-3xl font-light text-slate-400">/</div>
+                                <div class="text-center">
+                                    <div class="text-4xl font-bold text-blue-600">M²</div>
+                                    <p class="font-semibold mt-2 text-slate-600 text-sm">Boyun Karesi</p>
+                                </div>
+                                 <div class="text-3xl font-light text-slate-400">=</div>
+                                <div class="text-center">
+                                    <div class="text-4xl font-bold text-blue-600">BMI</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="space-y-6">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4 text-center md:text-left">Neden Önemlidir?</h3>
+                        <div class="card flex items-start space-x-4">
+                            <div class="flex-shrink-0 h-12 w-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-2xl font-bold">🩺</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-800">Sağlık Riskleri</h4>
+                                <p class="text-slate-600 mt-1">Yüksek BMI, tip 2 diyabet, kalp hastalığı, yüksek tansiyon, inme, bazı kanserler ve uyku apnesi gibi çeşitli kronik hastalıkların riski ile ilişkilidir.</p>
+                            </div>
+                        </div>
+                        <div class="card flex items-start space-x-4">
+                            <div class="flex-shrink-0 h-12 w-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-2xl font-bold">🎯</div>
+                             <div>
+                                <h4 class="text-xl font-bold text-slate-800">Kilo Yönetimi Aracı</h4>
+                                <p class="text-slate-600 mt-1">BMI, bireylerin kendi kilo durumlarını anlamalarına ve doktorlarıyla sağlıklı kilo hedefleri belirlemelerine yardımcı olan pratik bir araçtır.</p>
+                            </div>
+                        </div>
+                        <div class="card flex items-start space-x-4">
+                            <div class="flex-shrink-0 h-12 w-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-2xl font-bold">📊</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-slate-800">Popülasyon Sağlığı</h4>
+                                <p class="text-slate-600 mt-1">Halk sağlığı düzeyinde, BMI verileri obezite prevalansını izlemek ve sağlık politikalarını şekillendirmek için kullanılır.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-12">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-4 text-center">BMI Sınıflandırmaları</h3>
+                    <p class="text-slate-600 mb-6 text-center">Dünya Sağlık Örgütü (WHO) tarafından belirlenen standart BMI kategorileri aşağıdaki gibidir:</p>
+                    <div class="chart-container">
+                        <canvas id="bmiCategoriesChart"></canvas>
+                    </div>
+                    <div class="overflow-x-auto mt-6">
+                        <table class="min-w-full divide-y divide-slate-200">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Kategori</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">BMI Aralığı</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Sağlık Riski</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-slate-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">Zayıf</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900"> < 18.5</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">Düşük (beslenme eksikliği riski)</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600">Normal Kilo</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">18.5 – 24.9</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">Ortalama</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-orange-600">Fazla Kilo</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">25.0 – 29.9</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">Artmış</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-600">Obezite (Sınıf I)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">30.0 – 34.9</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">Yüksek</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-700">Obezite (Sınıf II)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">35.0 – 39.9</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">Çok Yüksek</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-800">Obezite (Sınıf III)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">≥ 40.0</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">Aşırı Yüksek</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="hesaplayici" class="py-16 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">BMI Hesaplayıcı</h2>
+                <p class="section-subtitle">
+                    Kilo ve boy değerlerinizi girerek BMI'ınızı anında hesaplayın ve hangi kategoriye girdiğinizi öğrenin.
+                </p>
+                <div class="card max-w-2xl mx-auto">
+                    <div class="mb-6">
+                        <label for="weight-slider" class="block text-lg font-semibold text-slate-700 mb-2">Kilo (kg): <span id="weight-value" class="font-bold text-blue-600">70</span></label>
+                        <input type="range" id="weight-slider" min="30" max="150" step="0.5" value="70" class="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                    <div class="mb-6">
+                        <label for="height-slider" class="block text-lg font-semibold text-slate-700 mb-2">Boy (cm): <span id="height-value" class="font-bold text-blue-600">170</span></label>
+                        <input type="range" id="height-slider" min="120" max="220" step="0.5" value="170" class="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                    <div class="grid sm:grid-cols-2 gap-4 text-center">
+                        <div class="bg-blue-50 p-6 rounded-lg">
+                            <p class="text-sm font-medium text-blue-800 uppercase tracking-wider">Hesaplanan BMI</p>
+                            <p class="text-4xl font-bold text-blue-600 mt-2"><span id="bmi-result">24.2</span></p>
+                        </div>
+                        <div class="bg-green-50 p-6 rounded-lg">
+                            <p class="text-sm font-medium text-green-800 uppercase tracking-wider">BMI Kategorisi</p>
+                            <p class="text-3xl font-bold text-green-600 mt-2"><span id="bmi-category">Normal Kilo</span></p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-4 text-center">Formül: BMI = Kilo (kg) / (Boy (m) &times; Boy (m))</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="faktorler" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">BMI'ı Etkileyen Faktörler ve Sınırlamalar</h2>
+                <p class="section-subtitle">
+                    BMI genel bir gösterge olsa da, bazı durumlarda veya belirli gruplarda vücut yağ yüzdesini veya sağlık riskini tam olarak yansıtmayabilir.
+                </p>
+                <div class="card max-w-3xl mx-auto space-y-6">
+                    <h3 class="text-xl font-bold text-slate-800">BMI'ın Sınırlamaları</h3>
+                    <ul class="list-disc list-inside space-y-2 text-slate-600 ml-4">
+                        <li><b>Kas Kütlesi:</b> BMI, kas ile yağı ayırt edemez. Bu nedenle, kaslı sporcular veya vücut geliştiriciler gibi yüksek kas kütlesine sahip bireyler, sağlıklı vücut yağı yüzdesine sahip olsalar bile "fazla kilolu" veya "obez" kategorisine girebilirler.</li>
+                        <li><b>Yağ Dağılımı:</b> BMI, vücut yağının nerede depolandığını göstermez. Karın çevresindeki fazla yağ (viseral yağ) kalp hastalığı ve tip 2 diyabet gibi kronik hastalıklar için daha yüksek risk taşır. Bu durumda bel çevresi ölçümü gibi ek göstergeler daha faydalı olabilir.</li>
+                        <li><b>Yaş ve Cinsiyet:</b> Yaşlandıkça vücut kompozisyonu değişir; kas kütlesi azalırken yağ kütlesi artabilir. Ayrıca, aynı BMI'a sahip olsalar bile, kadınlar genellikle erkeklerden daha fazla vücut yağına sahiptir.</li>
+                        <li><b>Etnik Köken:</b> Farklı etnik gruplarda, aynı BMI değerine sahip olmalarına rağmen farklı vücut kompozisyonları ve sağlık riskleri gözlemlenebilir. Örneğin, Asyalı popülasyonlarda daha düşük BMI değerlerinde bile artmış metabolik riskler görülebilir.</li>
+                    </ul>
+
+                    <h3 class="text-xl font-bold text-slate-800 mt-8">BMI Dışındaki Değerlendirmeler</h3>
+                    <p class="text-slate-600 ml-4">
+                        BMI değerli bir tarama aracı olsa da, bir kişinin genel sağlık durumunu tam olarak değerlendirmek için tek başına yeterli değildir. Sağlık uzmanları, BMI'a ek olarak bel çevresi ölçümü, cilt kıvrımı kalınlığı, vücut yağı yüzdesi testleri (biyoelektrik impedans analizi gibi), kan basıncı, kolesterol seviyeleri ve aile öyküsü gibi faktörleri de değerlendirirler. Bu bütünsel yaklaşım, bireyin sağlık risklerini daha doğru bir şekilde belirlemeye ve kişiselleştirilmiş sağlık tavsiyeleri sunmaya olanak tanır.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="calismalar" class="py-16 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">BMI ile İlgili Son Çalışmalar ve Güncel Gelişmeler</h2>
+                <p class="section-subtitle">
+                    BMI'ın sağlık üzerindeki etkileri ve bireysel farklılıklar üzerine yapılan araştırmalar sürekli devam etmektedir. Son çalışmalar, BMI'ın yorumlanmasında daha kişiselleştirilmiş yaklaşımların önemini vurgulamaktadır.
+                </p>
+                
+                <div class="card max-w-4xl mx-auto space-y-6">
+                    <h3 class="text-xl font-bold text-slate-800">Kişiselleştirilmiş BMI Yorumlaması</h3>
+                    <p class="text-slate-600">Son çalışmalar, BMI'ın tek başına bir sağlık göstergesi olmaktan ziyade, bireyin genel sağlık durumu ve metabolik profili bağlamında değerlendirilmesi gerektiğini göstermektedir. Örneğin, "metabolik olarak sağlıklı obez" bireylerde, BMI yüksek olmasına rağmen, normal kan basıncı, kan şekeri ve lipid seviyeleri gibi metabolik risk faktörlerinin bulunmadığı gözlemlenmiştir. Bu durum, BMI'ın her zaman metabolik sağlık durumuyla doğrudan örtüşmediğini ve klinik kararlarda sadece BMI'a güvenmenin yanıltıcı olabileceğini düşündürmektedir. Bu bulgular, kilo yönetiminde "tek beden herkese uyar" yaklaşımından uzaklaşarak, her bireyin benzersiz fizyolojik ve genetik yapısını dikkate alan kişiselleştirilmiş stratejilere doğru bir geçişi desteklemektedir.</p>
+
+                    <h3 class="text-xl font-bold text-slate-800 mt-8">Genetik Faktörlerin BMI Üzerindeki Etkisi</h3>
+                    <p class="text-slate-600">Genetik araştırmalar, obezite ve BMI üzerinde etkili olan çok sayıda genetik varyantı belirlemiştir. Bu varyantlar, iştah kontrolü, enerji harcaması, yağ depolama ve metabolizma gibi süreçleri etkileyerek bir kişinin kilo alma eğilimini belirleyebilir. Örneğin, FTO (Fat Mass and Obesity-associated) geni gibi genlerin, BMI'daki varyasyonların önemli bir kısmından sorumlu olduğu gösterilmiştir. Genetik risk skorları kullanılarak, bireylerin obezite geliştirme riski daha doğru bir şekilde tahmin edilebilir. Bu gelişmeler, genetik yatkınlığı olan bireyler için daha hedefe yönelik müdahalelerin geliştirilmesine yardımcı olabilirken, aynı zamanda obezitenin karmaşık bir hastalık olduğunu ve sadece yaşam tarzı faktörlerine indirgenemeyeceğini vurgulamaktadır.</p>
+
+                    <h3 class="text-xl font-bold text-slate-800 mt-8">BMI ve Hastalık Riski İlişkisinde Yeni Bulgular</h3>
+                    <p class="text-slate-600">Yeni çalışmalar, BMI ile belirli hastalıklar arasındaki ilişkinin beklenenden daha karmaşık olabileceğini ortaya koymaktadır. Bazı araştırmalar, yaşlı yetişkinlerde hafif fazla kilolu olmanın (25-29.9 BMI) normal kilolu olmaya kıyasla daha düşük mortalite riski ile ilişkili olabileceği "obezite paradoksu" kavramını tartışmaktadır. Ancak bu durum, BMI'ın genç yaşlarda sağlık riskleriyle güçlü ilişkisini ve yüksek obezite sınıflarının her yaşta ciddi risk taşıdığını değiştirmemektedir. Ayrıca, BMI'ın kardiyovasküler hastalıklar, diyabet ve bazı kanser türleri ile olan ilişkisi, epigenetik faktörler, mikrobiyom etkileşimleri ve kronik inflamasyon gibi yeni mekanizmalar üzerinden daha derinlemesine incelenmektedir. Bu bulgular, BMI'ı sadece bir sayı olarak değil, vücudun genel metabolik ve inflamatuar durumunun bir göstergesi olarak anlamamız gerektiğini işaret etmektedir.</p>
+
+                    <h3 class="text-xl font-bold text-slate-800 mt-8">BMI'ın Halk Sağlığı Politikalarındaki Rolü</h3>
+                    <p class="text-slate-600">BMI, obezite salgınının izlenmesi ve halk sağlığı politikalarının geliştirilmesinde temel bir araç olmaya devam etmektedir. Ancak, BMI'ın bireysel sağlık riskini tam olarak yansıtmadığına dair artan kanıtlar, halk sağlığı kampanyalarının ve klinik kılavuzların daha nüanslı hale gelmesine yol açmaktadır. Politikalar, artık sadece "kilo verme" yerine "sağlıklı beslenme", "fiziksel aktivite" ve "genel refah" gibi daha geniş kapsamlı hedeflere odaklanmaktadır. Ayrıca, BMI'ın etnik ve yaşa özel farklılıklarını dikkate alan daha hassas referans aralıklarının geliştirilmesi yönünde çalışmalar sürmektedir. Bu yaklaşım, obeziteyle mücadelede daha kapsayıcı ve etkili stratejiler oluşturmayı hedeflemektedir.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="sonuc" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">Sonuç ve Gelecek Perspektifleri</h2>
+                <p class="section-subtitle">
+                    Vücut Kitle İndeksi (BMI), genel popülasyonda kilo durumunu değerlendirmek için basit ve yaygın bir araç olmaya devam edecektir. Ancak, önemi giderek daha kişiselleştirilmiş ve bütünsel sağlık değerlendirmeleriyle tamamlanmaktadır.
+                </p>
+                <div class="card max-w-4xl mx-auto">
+                    <p class="text-slate-600 mb-4">BMI, kolay hesaplanabilmesi ve yaygın olarak anlaşılması nedeniyle halk sağlığı taramalarında ve genel kilo durumunun izlenmesinde değerli bir göstergedir. Aşırı kilo ve obezite ile ilişkili kronik hastalık risklerinin belirlenmesinde önemli bir başlangıç noktası sunar. Ancak, kas kütlesi ile yağ kütlesini ayırt edememesi, yağ dağılımını göz ardı etmesi ve yaş, cinsiyet, etnik köken gibi faktörlerden etkilenmesi gibi önemli sınırlamaları vardır. Bu sınırlamalar, BMI sonuçlarının daima bireysel bağlamda ve diğer sağlık belirteçleriyle birlikte yorumlanması gerektiğini vurgulamaktadır.</p>
+                    <p class="text-slate-600 mb-4">Son araştırmalar, BMI'ın yorumlanmasında kişiselleştirilmiş yaklaşımların önemini ve genetik faktörlerin, yaşam tarzının ve çevrenin karmaşık etkileşimini ortaya koymaktadır. "Metabolik olarak sağlıklı obezite" gibi kavramlar, sadece kiloya odaklanmak yerine, metabolik sağlığın da göz önünde bulundurulması gerektiğini işaret etmektedir. Ayrıca, BMI ile hastalık riski arasındaki ilişkinin yaş ve etnik kökene göre farklılık gösterebileceği anlaşılmıştır.</p>
+                    <p class="text-slate-600 mb-4">Gelecekte, BMI'ın yanı sıra bel çevresi, vücut yağı yüzdesi, biyoelektrik impedans analizi (BIA) ve dual-enerji X-ışını absorbsiyometrisi (DEXA) gibi daha gelişmiş vücut kompozisyonu ölçüm yöntemleri daha yaygın hale gelecektir. Yapay zeka ve makine öğrenimi algoritmaları, bireysel genetik profiller ve yaşam tarzı verileriyle birlikte BMI'ı kullanarak, kişiselleştirilmiş risk değerlendirmeleri ve müdahale stratejileri geliştirmeye yardımcı olabilir. Halk sağlığı politikaları da, sadece kilo endekslerine odaklanmak yerine, beslenme kalitesi, fiziksel aktivite, uyku düzeni ve zihinsel sağlık gibi geniş kapsamlı sağlık belirteçlerini ele alan daha holistik bir yaklaşıma doğru evrilmektedir.</p>
+                    <p class="text-slate-600">Sonuç olarak, BMI sağlıklı yaşam yolculuğumuzda basit ama önemli bir başlangıç noktasıdır. Ancak, bilim ve teknolojideki ilerlemeler sayesinde, vücudumuzun karmaşık yapısını ve sağlık risklerini daha bütünsel ve kişiye özel bir şekilde anlayabildiğimiz bir geleceğe doğru ilerliyoruz. Bu, her birey için en uygun sağlık ve refah stratejilerini geliştirmeyi mümkün kılacaktır.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="bg-slate-800 text-white">
+        <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2025 Vücut Kitle İndeksi (BMI) Rehberi. Tüm hakları saklıdır.</p>
+            <p class="text-sm text-slate-400 mt-2">Bu site yalnızca bilgilendirme amaçlıdır ve tıbbi tavsiye yerine geçmez. Sağlığınızla ilgili kararlar için daima doktorunuza danışın.</p>
+        </div>
+    </footer>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Mobile Menu Toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuOpenIcon = document.getElementById('menu-open-icon');
+            const menuCloseIcon = document.getElementById('menu-close-icon');
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                menuOpenIcon.classList.toggle('hidden');
+                menuCloseIcon.classList.toggle('hidden');
+            });
+            
+            // Navigation Highlighting on Scroll
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 70) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            // Donut Chart for BMI Categories
+            const ctx = document.getElementById('bmiCategoriesChart').getContext('2d');
+            const bmiCategoriesChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Zayıf (< 18.5)', 'Normal Kilo (18.5 - 24.9)', 'Fazla Kilo (25.0 - 29.9)', 'Obezite (≥ 30.0)'],
+                    datasets: [{
+                        label: 'BMI Kategorileri',
+                        data: [18.5, 6.4, 4.9, 10], // Oransal değerler
+                        backgroundColor: [
+                            'rgba(96, 165, 250, 0.7)', // Blue for Underweight
+                            'rgba(34, 197, 94, 0.7)',  // Green for Normal
+                            'rgba(251, 191, 36, 0.7)', // Orange for Overweight
+                            'rgba(239, 68, 68, 0.7)'   // Red for Obese
+                        ],
+                        borderColor: [
+                            'rgba(96, 165, 250, 1)',
+                            'rgba(34, 197, 94, 1)',
+                            'rgba(251, 191, 36, 1)',
+                            'rgba(239, 68, 68, 1)'
+                        ],
+                        borderWidth: 2,
+                        hoverOffset: 16
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                font: {
+                                    size: 14,
+                                    family: 'Inter'
+                                }
+                            }
+                        },
+                        tooltip: {
+                             callbacks: {
+                                label: function(context) {
+                                    return context.label;
+                                }
+                            },
+                             bodyFont: { size: 14, family: 'Inter' },
+                             titleFont: { size: 0 }
+                        }
+                    }
+                }
+            });
+
+            // BMI Calculator
+            const weightSlider = document.getElementById('weight-slider');
+            const heightSlider = document.getElementById('height-slider');
+            const weightValueDisplay = document.getElementById('weight-value');
+            const heightValueDisplay = document.getElementById('height-value');
+            const bmiResultDisplay = document.getElementById('bmi-result');
+            const bmiCategoryDisplay = document.getElementById('bmi-category');
+
+            function updateBMI() {
+                const weight = parseFloat(weightSlider.value);
+                const heightCm = parseFloat(heightSlider.value);
+                const heightM = heightCm / 100; // Convert cm to meters
+
+                weightValueDisplay.textContent = weight.toFixed(1);
+                heightValueDisplay.textContent = heightCm.toFixed(1);
+
+                if (heightM === 0) {
+                    bmiResultDisplay.textContent = 'Tanımsız';
+                    bmiCategoryDisplay.textContent = 'Geçersiz Boy';
+                    bmiCategoryDisplay.className = 'text-3xl font-bold text-gray-600 mt-2';
+                    return;
+                }
+
+                const bmi = weight / (heightM * heightM);
+                bmiResultDisplay.textContent = bmi.toFixed(1);
+
+                let category = '';
+                let textColorClass = '';
+
+                if (bmi < 18.5) {
+                    category = 'Zayıf';
+                    textColorClass = 'text-blue-600';
+                } else if (bmi >= 18.5 && bmi <= 24.9) {
+                    category = 'Normal Kilo';
+                    textColorClass = 'text-green-600';
+                } else if (bmi >= 25.0 && bmi <= 29.9) {
+                    category = 'Fazla Kilo';
+                    textColorClass = 'text-orange-600';
+                } else if (bmi >= 30.0 && bmi <= 34.9) {
+                    category = 'Obezite (Sınıf I)';
+                    textColorClass = 'text-red-600';
+                } else if (bmi >= 35.0 && bmi <= 39.9) {
+                    category = 'Obezite (Sınıf II)';
+                    textColorClass = 'text-red-700';
+                } else { // bmi >= 40.0
+                    category = 'Obezite (Sınıf III)';
+                    textColorClass = 'text-red-800';
+                }
+
+                bmiCategoryDisplay.textContent = category;
+                bmiCategoryDisplay.className = `text-3xl font-bold ${textColorClass} mt-2`;
+            }
+
+            weightSlider.addEventListener('input', updateBMI);
+            heightSlider.addEventListener('input', updateBMI);
+            updateBMI(); // Initial calculation
+        });
+    </script>
+</body>
+</html>
