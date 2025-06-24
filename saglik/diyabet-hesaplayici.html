@@ -5,8 +5,8 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Diyabet Hesaplayıcı - Hesapkolik</title>
     
-    <meta content="HbA1c'den ortalama kan şekerine (eAG) hesaplayın, kan şekeri birimlerini dönüştürün, Vücut Kitle İndeksi (BMI) hesaplayın ve insülin dozunu tahmin edin. Şeker hastaları için kapsamlı bir araç." name="description"/>
-    <meta content="diyabet, şeker hastalığı, HbA1c, ortalama kan şekeri, eAG, kan şekeri birimi, mg/dL, mmol/L, BMI, Vücut Kitle İndeksi, insülin dozu, karbonhidrat insülin oranı, düzeltme faktörü, diyabet hesaplayıcı, hesapkolik" name="keywords"/>
+    <meta content="HbA1c'den ortalama kan şekerine (eAG) hesaplayın, kan şekeri birimlerini dönüştürün ve Vücut Kitle İndeksi (BMI) hesaplayın. Şeker hastaları için kapsamlı bir araç." name="description"/>
+    <meta content="diyabet, şeker hastalığı, HbA1c, ortalama kan şekeri, eAG, kan şekeri birimi, mg/dL, mmol/L, BMI, Vücut Kitle İndeksi, diyabet hesaplayıcı, hesapkolik" name="keywords"/>
     
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -79,7 +79,7 @@
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            flex: 1 1 calc(25% - 30px); /* Dört sütunlu düzen */
+            flex: 1 1 calc(25% - 30px); /* Dört sütunlu düzen (yeni buton için) */
             max-width: 250px;
             text-align: center;
         }
@@ -147,27 +147,25 @@
         .calc-wrapper input.error {
             border-color: red !important;
         }
-        /* input-with-unit-group için özel stil */
+        /* input-with-unit-group için özel stil - BAŞLIK GÖRÜNÜRLÜĞÜ DÜZELTİLDİ */
         .input-with-unit-group {
             display: flex;
-            align-items: center;
-            gap: 10px;
+            flex-direction: column; /* Label ve input/select'i alt alta sırala */
+            align-items: flex-start; /* İçerikleri sola hizala */
+            gap: 8px; /* Etiket ve input arasında boşluk */
             margin-bottom: 20px;
         }
         .input-with-unit-group label {
-            flex-basis: 100%; /* Etiketin tam genişlikte olması için */
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
+            flex-basis: auto; /* Etiketin içeriğine göre genişlemesini sağla, sıkışmayı engelle */
+            width: 100%; /* Tam genişlik kaplamasını sağla */
+            margin-bottom: 0; /* Üstteki 8px gap yeterli */
+            text-align: left; /* Metni sola hizala */
         }
-        .input-with-unit-group input[type="number"] {
-            flex-grow: 1;
-            margin-bottom: 0;
-        }
+        .input-with-unit-group input[type="number"],
         .input-with-unit-group select {
-            width: auto;
-            min-width: 100px;
-            margin-bottom: 0;
+            width: 100%; /* Input ve select tam genişlik kaplasın */
+            margin-bottom: 0; /* Üstteki 8px gap yeterli */
+            /* Diğer padding, border vb. stiller aynı kalır */
         }
         .form-divider {
             border: 0;
@@ -282,6 +280,17 @@
             margin-top: 15px;
             line-height: 1.5;
         }
+        /* İnsülin hesaplayıcısı için özel uyarı metni */
+        .important-disclaimer {
+            color: #dc3545; /* Kırmızı renk */
+            font-weight: bold;
+            border: 2px solid #dc3545;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f8d7da; /* Açık kırmızı arka plan */
+            margin-top: 25px;
+        }
+
 
         /* Responsive Ayarlamalar */
         @media (max-width: 768px) {
@@ -537,6 +546,7 @@
                         if (placeholder) {
                             placeholder.innerHTML = html;
                             // Yüklenen HTML içindeki script etiketlerini bul ve çalıştır
+                            // Bu kısım, yüklenen HTML içeriğinde scriptler varsa onları dinamik olarak çalıştırmak için önemlidir.
                             const scripts = placeholder.querySelectorAll('script');
                             scripts.forEach(oldScript => {
                                 const newScript = document.createElement('script');
@@ -1000,7 +1010,7 @@
                 }
 
                 if (targetGlucose > currentGlucose && carbsGrams === 0) {
-                    insulinDoseResultDiv.innerHTML = `<p class="error">Hedef kan şekeri mevcut kan şekerinizden yüksekse ve karbonhidrat alımı yoksa insülin dozu negatif olamaz. Lütfen değerleri kontrol edin.</p>`;
+                    insulinDoseResultDiv.innerHTML = `<p class="error">Hedef kan şekeri mevcut kan şekerinizden yüksekse ve karbonhidrat alımı yoksa insülin dozu hesaplanamaz. Lütfen değerleri kontrol edin.</p>`;
                     insulinDoseResultDiv.style.display = 'block';
                     return;
                 }
@@ -1017,12 +1027,12 @@
 
 
                 let mealInsulin = 0;
-                if (carbsGrams > 0 && carbToInsulinRatio > 0) {
+                if (carbsGrams > 0) { // Sadece pozitif karbonhidratlar için hesapla
                     mealInsulin = carbsGrams / carbToInsulinRatio;
                 }
                 
                 let correctionInsulin = 0;
-                if (currentGlucose > targetGlucose && insulinSensitivityFactor > 0) {
+                if (currentGlucose > targetGlucose) { // Sadece mevcut kan şekeri hedeften yüksekse düzeltme yap
                     correctionInsulin = (currentGlucose - targetGlucose) / insulinSensitivityFactor;
                 }
 
