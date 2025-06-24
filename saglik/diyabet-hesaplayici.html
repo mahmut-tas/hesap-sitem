@@ -5,8 +5,8 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Diyabet Hesaplayıcı - Hesapkolik</title>
     
-    <meta content="HbA1c'den ortalama kan şekerine (eAG) hesaplayın, kan şekeri birimlerini dönüştürün ve Vücut Kitle İndeksi (BMI) hesaplayın. Şeker hastaları için kapsamlı bir araç." name="description"/>
-    <meta content="diyabet, şeker hastalığı, HbA1c, ortalama kan şekeri, eAG, kan şekeri birimi, mg/dL, mmol/L, BMI, Vücut Kitle İndeksi, diyabet hesaplayıcı, hesapkolik" name="keywords"/>
+    <meta content="HbA1c'den ortalama kan şekerine (eAG) hesaplayın, kan şekeri birimlerini dönüştürün, Vücut Kitle İndeksi (BMI) hesaplayın ve insülin dozunu tahmin edin. Şeker hastaları için kapsamlı bir araç." name="description"/>
+    <meta content="diyabet, şeker hastalığı, HbA1c, ortalama kan şekeri, eAG, kan şekeri birimi, mg/dL, mmol/L, BMI, Vücut Kitle İndeksi, insülin dozu, karbonhidrat insülin oranı, düzeltme faktörü, diyabet hesaplayıcı, hesapkolik" name="keywords"/>
     
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -14,7 +14,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
 
     <link href="/css/header.css" rel="stylesheet"/>
-    <link href="/css/style.css" rel="stylesheet"/> <link href="/css/footer.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/> 
+    <link href="/css/footer.css" rel="stylesheet"/>
     
     <style>
         /* Genel Ayarlar ve Font */
@@ -78,7 +79,7 @@
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            flex: 1 1 calc(33% - 30px); /* Üç sütunlu düzen */
+            flex: 1 1 calc(25% - 30px); /* Dört sütunlu düzen */
             max-width: 250px;
             text-align: center;
         }
@@ -274,7 +275,7 @@
             padding-top: 15px;
             text-align: justify;
         }
-        .small-text { /* Yeni eklenen bir sınıf */
+        .small-text { 
             font-size: 0.85em;
             color: #777;
             text-align: justify;
@@ -360,7 +361,7 @@
         <section class="hero-section">
             <div class="container">
                 <h1>Diyabet Hesaplayıcı</h1>
-                <p>HbA1c'den ortalama kan şekerine (eAG) hesaplayın, kan şekeri birimlerini dönüştürün ve Vücut Kitle İndeksi (BMI) hesaplayın.</p>
+                <p>HbA1c'den ortalama kan şekerine (eAG) hesaplayın, kan şekeri birimlerini dönüştürün, Vücut Kitle İndeksi (BMI) hesaplayın ve insülin dozunu tahmin edin.</p>
             </div>
         </section>
 
@@ -371,6 +372,7 @@
                     <button class="calc-type-button active" data-calc-type="hba1cToEAG">HbA1c'den Ortalama Kan Şekerine</button>
                     <button class="calc-type-button" data-calc-type="glucoseUnitConverter">Kan Şekeri Birim Dönüşümü</button>
                     <button class="calc-type-button" data-calc-type="bmiCalculator">Vücut Kitle İndeksi (BMI)</button>
+                    <button class="calc-type-button" data-calc-type="insulinDoseCalculator">İnsülin Dozu Tahmini</button>
                 </div>
 
                 <div class="calc-wrapper active-calc" id="calculator-hba1cToEAG">
@@ -448,6 +450,49 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="calc-wrapper hidden-calc" id="calculator-insulinDoseCalculator">
+                    <h3><i class="fas fa-syringe icon-small"></i> İnsülin Dozu Tahmini</h3>
+                    <div class="calculator-form-container">
+                        <form id="insulinDoseForm">
+                            <div class="input-with-unit-group">
+                                <label for="carbsGrams">Tüketilecek Karbonhidrat (gram):</label>
+                                <input id="carbsGrams" min="0" placeholder="Örn: 45" required="" step="0.1" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="carbToInsulinRatio">Karbonhidrat/İnsülin Oranı (gram KH / 1 Ünite İnsülin):</label>
+                                <input id="carbToInsulinRatio" min="1" placeholder="Örn: 15 (15 gram KH için 1 Ünite insülin)" required="" step="0.1" type="number"/>
+                            </div>
+                            <hr class="form-divider"/>
+                            <div class="input-with-unit-group">
+                                <label for="currentGlucose">Mevcut Kan Şekeri (mg/dL):</label>
+                                <input id="currentGlucose" min="0" placeholder="Örn: 200" required="" step="0.1" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="targetGlucose">Hedef Kan Şekeri (mg/dL):</label>
+                                <input id="targetGlucose" min="50" placeholder="Örn: 100" required="" step="0.1" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="insulinSensitivityFactor">İnsülin Hassasiyet Faktörü (1 Ünite İnsülin / kaç mg/dL düşüş):</label>
+                                <input id="insulinSensitivityFactor" min="1" placeholder="Örn: 50 (1 Ünite insülin kan şekerini 50 mg/dL düşürür)" required="" step="0.1" type="number"/>
+                            </div>
+                            <button type="submit">İnsülin Dozunu Tahmin Et</button>
+                        </form>
+                        <div class="result-display" id="insulinDoseResult"></div>
+                        <div class="calc-explanation">
+                            <p>Bu hesaplayıcı, doktorunuz tarafından belirlenen kişisel oranlarınıza göre öğün ve düzeltme insülin dozlarınızı tahmin etmenize yardımcı olur. Lütfen unutmayın ki bu bir tahmindir ve gerçek dozlar kişisel duruma, aktivite düzeyine ve diğer birçok faktöre göre değişebilir.</p>
+                            <p><strong>Öğün İnsülini Formülü:</strong></p>
+                            <p class="formula-text">Öğün İnsülini (Ünite) = Tüketilecek Karbonhidrat (gram) / Karbonhidrat/İnsülin Oranı</p>
+                            <p><strong>Düzeltme İnsülini Formülü:</strong></p>
+                            <p class="formula-text">Düzeltme İnsülini (Ünite) = (Mevcut Kan Şekeri - Hedef Kan Şekeri) / İnsülin Hassasiyet Faktörü</p>
+                            <p><strong>Toplam İnsülin Dozu:</strong> Öğün İnsülini + Düzeltme İnsülini</p>
+                            <p class="disclaimer-text important-disclaimer">
+                                **ÖNEMLİ UYARI:** Bu insülin dozu hesaplayıcısı yalnızca bir **tahmin aracıdır** ve **tıbbi tavsiye yerine geçmez**. İnsülin dozlarınız daima **doktorunuz veya diyabet eğitimciniz tarafından belirlenmeli ve onaylanmalıdır**. Yanlış insülin dozu ciddi sağlık sorunlarına yol açabilir. Herhangi bir değişiklik yapmadan önce daima sağlık uzmanınıza danışın.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </section>
 
@@ -461,13 +506,14 @@
                 <li>**Kan Şekeri Ölçümleri (Anlık):** Gün içinde yapılan parmak ucu veya sürekli glikoz monitörü (CGM) ölçümleri, anlık kan şekeri seviyelerini gösterir. Yemek öncesi, sonrası ve yatmadan önceki değerler önemlidir.</li>
                 <li>**Ortalama Kan Şekeri (eAG - Estimated Average Glucose):** HbA1c değerinden türetilen tahmini ortalama kan şekeri değeridir ve hastaların anlık kan şekeri ölçümleriyle daha kolay ilişki kurmasını sağlar.</li>
                 <li>**Vücut Kitle İndeksi (BMI):** Sağlıklı bir kiloyu korumak, özellikle Tip 2 diyabetin önlenmesi ve yönetimi için kritiktir. BMI, kişinin boyuna göre kilo aralığını gösterir.</li>
+                <li>**İnsülin Dozu Hesaplamaları:** Tip 1 diyabetli veya bazı Tip 2 diyabetli bireyler için karbonhidrat alımına ve mevcut kan şekerine göre insülin dozunu doğru hesaplamak kritik öneme sahiptir.</li>
             </ul>
             <h4>Uygulama Alanları:</h4>
             <ul>
-                <li>Diyabet hastalarının kendi kan şekeri verilerini daha iyi anlaması.</li>
+                <li>Diyabet hastalarının kendi kan şekeri verilerini ve yönetim parametrelerini daha iyi anlaması.</li>
                 <li>Sağlık profesyonellerinin hasta eğitiminde ve takibinde yardımcı araç olarak kullanması.</li>
                 <li>Diyabet riskini değerlendirme ve sağlıklı yaşam tarzı kararları alma.</li>
-                <li>Diyet ve egzersiz planlarının kan şekeri üzerindeki etkilerini izleme.</li>
+                <li>Diyet, egzersiz ve insülin dozajının kan şekeri üzerindeki etkilerini izleme.</li>
             </ul>
             <p class="disclaimer-text">Bu hesaplayıcı, bilgi amaçlı tasarlanmıştır ve profesyonel tıbbi tavsiye, teşhis veya tedavi yerine geçmez. Diyabet yönetimi ve tüm tıbbi kararlar için her zaman bir sağlık uzmanına danışılmalıdır. Hesaplamalar genel formüllere dayanmaktadır ve bireysel farklılıklar veya spesifik tıbbi durumlar için ayarlanması gerekebilir.</p>
         </section>
@@ -523,10 +569,11 @@
                 tr: {
                     // Genel
                     mainHeading: 'Diyabet Hesaplayıcı',
-                    mainDescription: 'HbA1c\'den ortalama kan şekerine (eAG) hesaplayın, kan şekeri birimlerini dönüştürün ve Vücut Kitle İndeksi (BMI) hesaplayın.',
+                    mainDescription: 'HbA1c\'den ortalama kan şekerine (eAG) hesaplayın, kan şekeri birimlerini dönüştürün, Vücut Kitle İndeksi (BMI) hesaplayın ve insülin dozunu tahmin edin.',
                     selectCalculationType: 'Yapmak İstediğiniz Hesaplama Türünü Seçin',
                     calculateButton: 'Hesapla',
                     convertButton: 'Dönüştür',
+                    estimateButton: 'Tahmin Et', // Yeni insülin butonu metni
                     invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
                     errorNegativeValue: 'Değer sıfırdan küçük olamaz.',
                     errorZeroValue: 'Değer sıfır olamaz.',
@@ -585,6 +632,30 @@
                         <p class="small-text">BMI yaşa, cinsiyete ve kas kütlesine göre değişebilir. Özellikle sporcular için yanıltıcı olabilir. En doğru değerlendirme için bir sağlık uzmanına danışmalısın.</p>
                     `,
 
+                    // İnsülin Dozu Tahmini
+                    insulinDoseCalculatorButton: 'İnsülin Dozu Tahmini',
+                    insulinDoseCalculatorTitle: 'İnsülin Dozu Tahmini',
+                    carbsGramsLabel: 'Tüketilecek Karbonhidrat (gram):',
+                    carbToInsulinRatioLabel: 'Karbonhidrat/İnsülin Oranı (gram KH / 1 Ünite İnsülin):',
+                    currentGlucoseLabel: 'Mevcut Kan Şekeri (mg/dL):',
+                    targetGlucoseLabel: 'Hedef Kan Şekeri (mg/dL):',
+                    insulinSensitivityFactorLabel: 'İnsülin Hassasiyet Faktörü (1 Ünite İnsülin / kaç mg/dL düşüş):',
+                    mealInsulinLabel: 'Öğün İnsülini:',
+                    correctionInsulinLabel: 'Düzeltme İnsülini:',
+                    totalInsulinLabel: 'Toplam İnsülin Dozu:',
+                    unitsLabel: 'Ünite',
+                    insulinDoseExplanation: `
+                        <p>Bu hesaplayıcı, doktorunuz tarafından belirlenen kişisel oranlarınıza göre öğün ve düzeltme insülin dozlarınızı tahmin etmenize yardımcı olur. Lütfen unutmayın ki bu bir tahmindir ve gerçek dozlar kişisel duruma, aktivite düzeyine ve diğer birçok faktöre göre değişebilir.</p>
+                        <p><strong>Öğün İnsülini Formülü:</strong></p>
+                        <p class="formula-text">Öğün İnsülini (Ünite) = Tüketilecek Karbonhidrat (gram) / Karbonhidrat/İnsülin Oranı</p>
+                        <p><strong>Düzeltme İnsülini Formülü:</strong></p>
+                        <p class="formula-text">Düzeltme İnsülini (Ünite) = (Mevcut Kan Şekeri - Hedef Kan Şekeri) / İnsülin Hassasiyet Faktörü</p>
+                        <p><strong>Toplam İnsülin Dozu:</strong> Öğün İnsülini + Düzeltme İnsülini</p>
+                        <p class="disclaimer-text important-disclaimer">
+                            <strong>ÖNEMLİ UYARI:</strong> Bu insülin dozu hesaplayıcısı yalnızca bir <strong>tahmin aracıdır</strong> ve <strong>tıbbi tavsiye yerine geçmez</strong>. İnsülin dozlarınız daima <strong>doktorunuz veya diyabet eğitimciniz tarafından belirlenmeli ve onaylanmalıdır</strong>. Yanlış insülin dozu ciddi sağlık sorunlarına yol açabilir. Herhangi bir değişiklik yapmadan önce daima sağlık uzmanınıza danışın.
+                        </p>
+                    `,
+
                     // Bilgi Bölümü
                     infoSectionTitle: 'Diyabet ve Kan Şekeri Yönetimi',
                     infoSectionP1: '<strong>Diyabet (şeker hastalığı)</strong>, vücudun kan şekerini (glikoz) düzgün bir şekilde kullanamadığı veya üretemediği zaman ortaya çıkan kronik bir durumdur. Vücudumuzun enerji ana kaynağı olan glikoz, yediğimiz yiyeceklerden gelir. İnsülin hormonu, glikozun kan dolaşımından hücrelere geçişine yardımcı olur.',
@@ -594,20 +665,22 @@
                     infoSectionList1_2: '**Kan Şekeri Ölçümleri (Anlık):** Gün içinde yapılan parmak ucu veya sürekli glikoz monitörü (CGM) ölçümleri, anlık kan şekeri seviyelerini gösterir. Yemek öncesi, sonrası ve yatmadan önceki değerler önemlidir.',
                     infoSectionList1_3: '**Ortalama Kan Şekeri (eAG - Estimated Average Glucose):** HbA1c değerinden türetilen tahmini ortalama kan şekeri değeridir ve hastaların anlık kan şekeri ölçümleriyle daha kolay ilişki kurmasını sağlar.',
                     infoSectionList1_4: '**Vücut Kitle İndeksi (BMI):** Sağlıklı bir kiloyu korumak, özellikle Tip 2 diyabetin önlenmesi ve yönetimi için kritiktir. BMI, kişinin boyuna göre kilo aralığını gösterir.',
+                    infoSectionList1_5: '**İnsülin Dozu Hesaplamaları:** Tip 1 diyabetli veya bazı Tip 2 diyabetli bireyler için karbonhidrat alımına ve mevcut kan şekerine göre insülin dozunu doğru hesaplamak kritik öneme sahiptir.', // Yeni madde
                     infoSectionH4_2: 'Uygulama Alanları:',
-                    infoSectionApp1: 'Diyabet hastalarının kendi kan şekeri verilerini daha iyi anlaması.',
+                    infoSectionApp1: 'Diyabet hastalarının kendi kan şekeri verilerini ve yönetim parametrelerini daha iyi anlaması.',
                     infoSectionApp2: 'Sağlık profesyonellerinin hasta eğitiminde ve takibinde yardımcı araç olarak kullanması.',
                     infoSectionApp3: 'Diyabet riskini değerlendirme ve sağlıklı yaşam tarzı kararları alma.',
-                    infoSectionApp4: 'Diyet ve egzersiz planlarının kan şekeri üzerindeki etkilerini izleme.',
+                    infoSectionApp4: 'Diyet, egzersiz ve insülin dozajının kan şekeri üzerindeki etkilerini izleme.',
                     disclaimerText: 'Bu hesaplayıcı, bilgi amaçlı tasarlanmıştır ve profesyonel tıbbi tavsiye, teşhis veya tedavi yerine geçmez. Diyabet yönetimi ve tüm tıbbi kararlar için her zaman bir sağlık uzmanına danışılmalıdır. Hesaplamalar genel formüllere dayanmaktadır ve bireysel farklılıklar veya spesifik tıbbi durumlar için ayarlanması gerekebilir.'
                 },
                 en: {
                     // General
                     mainHeading: 'Diabetes Calculator',
-                    mainDescription: 'Calculate estimated Average Glucose (eAG) from HbA1c, convert blood glucose units, and calculate Body Mass Index (BMI) for diabetes management.',
+                    mainDescription: 'Calculate estimated Average Glucose (eAG) from HbA1c, convert blood glucose units, calculate Body Mass Index (BMI), and estimate insulin dosage.',
                     selectCalculationType: 'Select Calculation Type',
                     calculateButton: 'Calculate',
                     convertButton: 'Convert',
+                    estimateButton: 'Estimate', // New insulin button text
                     invalidInput: 'Please enter valid positive numbers for all fields.',
                     errorNegativeValue: 'Value cannot be less than zero.',
                     errorZeroValue: 'Value cannot be zero.',
@@ -666,6 +739,30 @@
                         <p class="small-text">BMI can vary by age, sex, and muscle mass. It can be misleading, especially for athletes. For the most accurate assessment, you should consult a healthcare professional.</p>
                     `,
 
+                    // Insulin Dose Estimation
+                    insulinDoseCalculatorButton: 'Insulin Dose Estimation',
+                    insulinDoseCalculatorTitle: 'Insulin Dose Estimation',
+                    carbsGramsLabel: 'Carbohydrates to Consume (grams):',
+                    carbToInsulinRatioLabel: 'Carb-to-Insulin Ratio (grams CHO / 1 Unit Insulin):',
+                    currentGlucoseLabel: 'Current Blood Glucose (mg/dL):',
+                    targetGlucoseLabel: 'Target Blood Glucose (mg/dL):',
+                    insulinSensitivityFactorLabel: 'Insulin Sensitivity Factor (1 Unit Insulin / mg/dL drop):',
+                    mealInsulinLabel: 'Meal Insulin:',
+                    correctionInsulinLabel: 'Correction Insulin:',
+                    totalInsulinLabel: 'Total Insulin Dose:',
+                    unitsLabel: 'Units',
+                    insulinDoseExplanation: `
+                        <p>This calculator helps you estimate your meal and correction insulin doses based on your personalized ratios determined by your doctor. Please note that this is an estimation, and actual doses may vary based on individual circumstances, activity levels, and many other factors.</p>
+                        <p><strong>Meal Insulin Formula:</strong></p>
+                        <p class="formula-text">Meal Insulin (Units) = Carbohydrates to Consume (grams) / Carb-to-Insulin Ratio</p>
+                        <p><strong>Correction Insulin Formula:</strong></p>
+                        <p class="formula-text">Correction Insulin (Units) = (Current Blood Glucose - Target Blood Glucose) / Insulin Sensitivity Factor</p>
+                        <p><strong>Total Insulin Dose:</strong> Meal Insulin + Correction Insulin</p>
+                        <p class="disclaimer-text important-disclaimer">
+                            <strong>IMPORTANT WARNING:</strong> This insulin dose calculator is solely an <strong>estimation tool</strong> and does <strong>not replace medical advice</strong>. Your insulin doses must always be <strong>determined and approved by your doctor or diabetes educator</strong>. Incorrect insulin dosage can lead to serious health problems. Always consult your healthcare professional before making any changes.
+                        </p>
+                    `,
+
                     // Info Section
                     infoSectionTitle: 'Diabetes and Blood Glucose Management',
                     infoSectionP1: '<strong>Diabetes</strong> is a chronic condition that occurs when the body cannot properly use or produce blood sugar (glucose). Glucose, our body\'s main source of energy, comes from the food we eat. The hormone insulin helps glucose move from the bloodstream into cells.',
@@ -675,6 +772,7 @@
                     infoSectionList1_2: '**Blood Glucose Measurements (Instant):** Finger-prick or continuous glucose monitor (CGM) measurements throughout the day show instantaneous blood glucose levels. Values before, after meals, and before bedtime are important.',
                     infoSectionList1_3: '**Estimated Average Glucose (eAG):** This is an estimated average blood glucose value derived from the HbA1c value, allowing patients to relate more easily to their instant blood glucose measurements.',
                     infoSectionList1_4: '**Body Mass Index (BMI):** Maintaining a healthy weight is critical, especially for the prevention and management of Type 2 diabetes. BMI shows a person\'s weight range relative to their height.',
+                    infoSectionList1_5: '**Insulin Dose Calculations:** For individuals with Type 1 diabetes or some with Type 2 diabetes, accurately calculating insulin doses based on carbohydrate intake and current blood glucose is critically important.',
                     infoSectionH4_2: 'Areas of Application:',
                     infoSectionApp1: 'For diabetes patients to better understand their blood glucose data.',
                     infoSectionApp2: 'As a helpful tool for healthcare professionals in patient education and monitoring.',
@@ -697,6 +795,7 @@
             document.querySelector('.calc-type-button[data-calc-type="hba1cToEAG"]').textContent = currentTexts.hba1cToEAGButton;
             document.querySelector('.calc-type-button[data-calc-type="glucoseUnitConverter"]').textContent = currentTexts.glucoseUnitConverterButton;
             document.querySelector('.calc-type-button[data-calc-type="bmiCalculator"]').textContent = currentTexts.bmiCalculatorButton;
+            document.querySelector('.calc-type-button[data-calc-type="insulinDoseCalculator"]').textContent = currentTexts.insulinDoseCalculatorButton; // Yeni buton metni
 
             // Hesaplayıcıları göster/gizle fonksiyonu
             function showCalculator(calcType) {
@@ -866,6 +965,77 @@
                 bmiResultDiv.style.display = 'block';
             });
 
+            // --- İnsülin Dozu Tahmin Hesaplayıcı ---
+            const insulinDoseForm = document.getElementById('insulinDoseForm');
+            const insulinDoseResultDiv = document.getElementById('insulinDoseResult');
+
+            // Etiket metinlerini güncelle
+            document.querySelector('#calculator-insulinDoseCalculator h3').innerHTML = `<i class="fas fa-syringe icon-small"></i> ${currentTexts.insulinDoseCalculatorTitle}`;
+            document.getElementById('carbsGrams').previousElementSibling.textContent = currentTexts.carbsGramsLabel;
+            document.getElementById('carbToInsulinRatio').previousElementSibling.textContent = currentTexts.carbToInsulinRatioLabel;
+            document.getElementById('currentGlucose').previousElementSibling.textContent = currentTexts.currentGlucoseLabel;
+            document.getElementById('targetGlucose').previousElementSibling.textContent = currentTexts.targetGlucoseLabel;
+            document.getElementById('insulinSensitivityFactor').previousElementSibling.textContent = currentTexts.insulinSensitivityFactorLabel;
+            document.querySelector('#insulinDoseForm button[type="submit"]').textContent = currentTexts.estimateButton;
+            document.querySelector('#calculator-insulinDoseCalculator .calc-explanation').innerHTML = currentTexts.insulinDoseExplanation;
+
+
+            insulinDoseForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                insulinDoseResultDiv.innerHTML = '';
+                insulinDoseResultDiv.style.display = 'none';
+
+                const carbsGrams = parseFloat(document.getElementById('carbsGrams').value);
+                const carbToInsulinRatio = parseFloat(document.getElementById('carbToInsulinRatio').value);
+                const currentGlucose = parseFloat(document.getElementById('currentGlucose').value);
+                const targetGlucose = parseFloat(document.getElementById('targetGlucose').value);
+                const insulinSensitivityFactor = parseFloat(document.getElementById('insulinSensitivityFactor').value);
+
+                if (isNaN(carbsGrams) || isNaN(carbToInsulinRatio) || isNaN(currentGlucose) || isNaN(targetGlucose) || isNaN(insulinSensitivityFactor) ||
+                    carbsGrams < 0 || carbToInsulinRatio <= 0 || currentGlucose < 0 || targetGlucose < 0 || insulinSensitivityFactor <= 0) {
+                    insulinDoseResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                    insulinDoseResultDiv.style.display = 'block';
+                    return;
+                }
+
+                if (targetGlucose > currentGlucose && carbsGrams === 0) {
+                    insulinDoseResultDiv.innerHTML = `<p class="error">Hedef kan şekeri mevcut kan şekerinizden yüksekse ve karbonhidrat alımı yoksa insülin dozu negatif olamaz. Lütfen değerleri kontrol edin.</p>`;
+                    insulinDoseResultDiv.style.display = 'block';
+                    return;
+                }
+                if (insulinSensitivityFactor === 0) {
+                     insulinDoseResultDiv.innerHTML = `<p class="error">İnsülin Hassasiyet Faktörü sıfır olamaz.</p>`;
+                     insulinDoseResultDiv.style.display = 'block';
+                     return;
+                }
+                if (carbToInsulinRatio === 0) {
+                    insulinDoseResultDiv.innerHTML = `<p class="error">Karbonhidrat/İnsülin Oranı sıfır olamaz.</p>`;
+                    insulinDoseResultDiv.style.display = 'block';
+                    return;
+                }
+
+
+                let mealInsulin = 0;
+                if (carbsGrams > 0 && carbToInsulinRatio > 0) {
+                    mealInsulin = carbsGrams / carbToInsulinRatio;
+                }
+                
+                let correctionInsulin = 0;
+                if (currentGlucose > targetGlucose && insulinSensitivityFactor > 0) {
+                    correctionInsulin = (currentGlucose - targetGlucose) / insulinSensitivityFactor;
+                }
+
+                const totalInsulinDose = mealInsulin + correctionInsulin;
+
+                insulinDoseResultDiv.innerHTML = `
+                    <p>${currentTexts.mealInsulinLabel} <span class="result-value">${mealInsulin.toFixed(2)}</span> ${currentTexts.unitsLabel}</p>
+                    <p>${currentTexts.correctionInsulinLabel} <span class="result-value">${correctionInsulin.toFixed(2)}</span> ${currentTexts.unitsLabel}</p>
+                    <p>${currentTexts.totalInsulinLabel} <span class="result-value">${totalInsulinDose.toFixed(2)}</span> ${currentTexts.unitsLabel}</p>
+                `;
+                insulinDoseResultDiv.style.display = 'block';
+            });
+
             // Bilgi Bölümü Metin Güncelleme
             function updateInfoSectionContent() {
                 document.querySelector('.info-section h3').textContent = currentTexts.infoSectionTitle;
@@ -880,6 +1050,7 @@
                         <li>${currentTexts.infoSectionList1_2}</li>
                         <li>${currentTexts.infoSectionList1_3}</li>
                         <li>${currentTexts.infoSectionList1_4}</li>
+                        <li>${currentTexts.infoSectionList1_5}</li>
                     `;
                 }
 
