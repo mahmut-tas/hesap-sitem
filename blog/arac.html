@@ -301,7 +301,7 @@
                         { label: 'Benzinli', data: [2, 8, 7, 7, 3, 9], borderColor: '#F9A825', backgroundColor: 'rgba(249, 168, 37, 0.2)' },
                         { label: 'Dizel', data: [4, 7, 6, 8, 4, 9], borderColor: '#424242', backgroundColor: 'rgba(66, 66, 66, 0.2)' },
                         { label: 'Hibrit', data: [7, 6, 5, 7, 7, 8], borderColor: '#50C878', backgroundColor: 'rgba(80, 200, 120, 0.2)' },
-                        { label: 'Elektrikli', data: [10, 4, 9, 9, 10, 5], borderColor: '#3498db', backgroundColor: 'rgba(52, 152, 219, 0.2)' } /* Renk Hesapkolik mavisine güncellendi */
+                        { label: 'Elektrikli', data: [10, 4, 9, 9, 10, 5], borderColor: '#3498db', backgroundColor: 'rgba(52, 152, 219, 0.2)' } 
                     ]
                 },
                 costData: {
@@ -366,8 +366,8 @@
             const vehicleId = card.dataset.vehicleId;
             const vehicle = appData.vehicles[vehicleId];
             
-            document.querySelectorAll('#vehicle-types-container .card').forEach(c => c.classList.remove('ring-2', 'ring-offset-2', 'ring-[#3498db]')); /* Renk Hesapkolik mavisine güncellendi */
-            card.classList.add('ring-2', 'ring-offset-2', 'ring-[#3498db]'); /* Renk Hesapkolik mavisine güncellendi */
+            document.querySelectorAll('#vehicle-types-container .card').forEach(c => c.classList.remove('ring-2', 'ring-offset-2', 'ring-[#3498db]')); 
+            card.classList.add('ring-2', 'ring-offset-2', 'ring-[#3498db]'); 
             
             vehicleDetailsContainer.innerHTML = `
                 <div class="card p-8 max-w-4xl mx-auto transition-all duration-500">
@@ -397,7 +397,7 @@
 
         function renderComparisonTabs() {
             comparisonTabsContainer.innerHTML = appData.comparison.tabs.map(tab => `
-                <button data-tab-id="${tab.id}" class="tab-btn font-semibold text-lg py-3 px-6 border-b-4 border-transparent ${tab.id === activeComparisonTabId ? 'active-tab' : 'text-gray-500 hover:text-[#3498db]'}"> /* Renk Hesapkolik mavisine güncellendi */
+                <button data-tab-id="${tab.id}" class="tab-btn font-semibold text-lg py-3 px-6 border-b-4 border-transparent ${tab.id === activeComparisonTabId ? 'active-tab' : 'text-gray-500 hover:text-[#3498db]'}"> 
                     ${tab.name}
                 </button>
             `).join('');
@@ -476,7 +476,7 @@
                 <p class="text-center text-gray-600 mb-4">Araçların 100km'deki ortalama yakıt/enerji maliyetleri. Elektrikli araç için farklı şarj senaryolarını seçerek maliyet değişimini görün.</p>
                 <div class="max-w-md mx-auto mb-6">
                     <label for="cost-ev-charge-method" class="block text-base font-medium text-gray-700">Elektrikli Araç Şarj Yöntemi</label>
-                     <select id="cost-ev-charge-method" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-[#3498db] focus:border-[#3498db] sm:text-base"> /* Renk Hesapkolik mavisine güncellendi */
+                     <select id="cost-ev-charge-method" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-[#3498db] focus:border-[#3498db] sm:text-base"> 
                         <option value="home">Evde Şarj</option>
                         <option value="ac">AC İstasyon</option>
                         <option value="dc">DC Hızlı Şarj</option>
@@ -572,7 +572,7 @@
             
             const minCost = Math.min(...Object.values(costs));
             const bestOption = Object.keys(costs).find(key => costs[key] === minCost);
-            calculatorSummary.innerHTML = `Bu senaryoda en ekonomik seçenek <strong class="text-[#2ecc71]">${appData.vehicles[bestOption].name}</strong>.`; /* Renk Hesapkolik yeşiline güncellendi */
+            calculatorSummary.innerHTML = `Bu senaryoda en ekonomik seçenek <strong class="text-[#2ecc71]">${appData.vehicles[bestOption].name}</strong>.`; 
         }
         
         function createCalculatorChart(initialData) {
@@ -640,7 +640,7 @@
 
             const profile = appData.profiles.find(p => p.id === profileId);
             profileRecommendation.innerHTML = `
-                <h3 class="text-2xl font-bold text-[#3498db] mb-2">Sizin İçin Önerimiz: ${profile.rec.map(r => appData.vehicles[r].name).join(' veya ')}</h3> /* Renk Hesapkolik mavisine güncellendi */
+                <h3 class="text-2xl font-bold text-[#3498db] mb-2">Sizin İçin Önerimiz: ${profile.rec.map(r => appData.vehicles[r].name).join(' veya ')}</h3> 
                 <p class="text-lg text-gray-700">${profile.desc}</p>
             `;
             profileRecommendation.style.display = 'block';
