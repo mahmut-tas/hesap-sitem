@@ -7,15 +7,14 @@
     <meta name="description" content="Borsaya ilk adımını atmak isteyenler için kapsamlı rehber. Hisse senedi alım satımının temellerini, risk yönetimini ve analiz yöntemlerini sade bir dille öğrenin.">
     <meta name="keywords" content="borsa, hisse senedi, yatırım, borsa rehberi, borsa nasıl oynanır, temel analiz, teknik analiz, risk yönetimi, yatırım hesabı, stop loss, temettü, portföy, Hesapkolik">
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Chosen Palette: Calm Harmony (Adapted to Hesapkolik style/colors) -->
-    <!-- Application Structure Plan: Bu SPA, kullanıcıların karmaşık bilgileri blog post formatında kolayca sindirmesini sağlamak için tasarlanmıştır. Başlangıçta bir "Hero" bölümü ile dikkat çekilir. Her bir ana konu (Giriş, Temel Kavramlar, İlk Adımlar, Analiz, Risk Yönetimi, Hatalar, Kaynaklar) ayrı bir bölüm olarak sunulur. Etkileşimler, öğrenmeyi pekiştirmek için tasarlanmıştır: Terimler için filtrelenebilir bir sözlük (akordeon), emir türlerini görselleştiren kartlar, analiz yöntemlerini karşılaştıran dinamik grafik (Radar Chart), riski kişiselleştiren bir kaydırıcı ve çeşitlendirmeyi gösteren bir donut grafik. Bu yapı, bir blog yazısının okunabilirliğini korurken interaktif öğrenme deneyimi sunar. -->
+    <!-- Application Structure Plan: Bu SPA, kullanıcıların karmaşık bilgileri blog post formatında kolayca sindirmesini sağlamak için tasarlanmıştır. Başlangıçta bir "Hero" bölümü ile dikkat çekilir. Her bir ana konu (Giriş, Temel Kavramlar, İlk Adımlar, Analiz, Risk Yönetimi, Hatalar, Kaynaklar) ayrı bir bölüm olarak sunulur. Etkileşimler, öğrenmeyi pekiştirmek için tasarlanmıştır: Terimler için filtrelenebilir bir sözlük (akordeon), analiz yöntemlerini karşılaştıran dinamik grafik (Radar Chart), riski kişiselleştiren bir kaydırıcı ve çeşitlendirmeyi gösteren bir donut grafik. Bu yapı, bir blog yazısının okunabilirliğini korurken interaktif öğrenme deneyimi sunar. Hesapkolik'in header ve footer'ı entegre edilerek marka bütünlüğü sağlanmıştır. -->
     <!-- Visualization & Content Choices: 
         - Rapor Bilgisi: Borsa'nın temel işlevleri -> Goal: Inform -> Viz/Method: İkonlu kartlar ve metin blokları -> Interaction: Yok (bilgi sunumu) -> Justification: Temel kavramları hızlıca özetlemek.
         - Rapor Bilgisi: Borsa terimleri -> Goal: Organize/Inform -> Viz/Method: Filtrelenebilir/aranabilir akordeon liste -> Interaction: Tıklama ile genişletme, arama kutusuna yazma -> Justification: Kullanıcının aradığı bilgiye anında ulaşmasını sağlamak, fazla metni gizleyerek okunaklılığı artırmak.
@@ -23,75 +22,33 @@
         - Rapor Bilgisi: Portföy Çeşitlendirmesi -> Goal: Inform/Organize -> Viz/Method: Donut Chart (Chart.js) -> Interaction: Yok (bilgi sunumu), Chart.js tooltip -> Justification: Soyut bir kavram olan çeşitlendirmeyi somut bir portföy örneği ile görselleştirmek.
         - Rapor Bilgisi: Risk Toleransı -> Goal: Inform/Engage -> Viz/Method: İnteraktif kaydırıcı (HTML/JS) -> Interaction: Kaydırıcıyı hareket ettirerek ilgili metni dinamik olarak değiştirme -> Justification: Kullanıcının kendi risk profilini interaktif bir şekilde keşfetmesini sağlamak, kişisel alaka düzeyini artırmak.
         - Rapor Bilgisi: Yatırımcı Hataları -> Goal: Inform -> Viz/Method: İkonlu "Yap/Yapma" kartları (iki sütunlu) -> Interaction: Yok (bilgi sunumu) -> Justification: Öğrenmeyi kolaylaştırmak için görsel ipuçları ve net karşıtlıklar sunmak.
-        - Library/Method: Chart.js for all charts (Canvas-based). HTML/CSS/JS for custom interactive elements. -->
+        - Library/Method: Chart.js for all charts (Canvas-based). HTML/CSS/JS for custom interactive elements.
+    -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f7f4;
-            color: #333;
-        }
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #a5b4fc;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #818cf8;
-        }
-        .section-title {
-            font-size: 2.2em;
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 40px;
-            padding-top: 20px;
-        }
-        .section-subtitle {
-            font-size: 1.1em;
-            text-align: center;
-            color: #666;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            margin-bottom: 30px;
-        }
-        .card {
-            background-color: #ffffff;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            border: 1px solid #ddd;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-        }
-        .hero {
-            background-color: #3498db;
-            color: white;
-            text-align: center;
-            padding: 80px 20px;
-        }
-        .hero h1 {
-            font-size: 2.8em;
-            margin-bottom: 20px;
-        }
-        .hero p {
-            font-size: 1.2em;
-            margin-bottom: 30px;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+        /* Hesapkolik ana stilini korumak için bazı temel CSS varsayılanlarını ayarladım */
+        body { font-family: 'Poppins', sans-serif; background-color: #f8f7f4; color: #333; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #a5b4fc; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #818cf8; }
+
+        /* Hesapkolik ana hero rengine uyumlu hale getirildi */
+        .hero-bg { background: linear-gradient(45deg, #3498db 0%, #2e78b1 100%); } /* Hesapkolik mavi */
+        
+        /* Başlıklar ve alt başlıklar için Hesapkolik'in ana sayfadaki stillerine benzer düzenlemeler */
+        .section-title { font-size: 2.2em; color: #2c3e50; text-align: center; margin-bottom: 40px; padding-top: 20px; font-weight: 700; }
+        .section-subtitle { font-size: 1.1em; text-align: center; color: #666; max-width: 800px; margin-left: auto; margin-right: auto; margin-bottom: 30px; }
+        
+        /* Kartlar için Hesapkolik ana sayfa stili */
+        .card { background-color: #ffffff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); border: 1px solid #ddd; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12); }
+
+        .hero h1 { font-size: 2.8em; margin-bottom: 20px; }
+        .hero p { font-size: 1.2em; margin-bottom: 30px; max-width: 700px; margin-left: auto; margin-right: auto; }
         .hero .cta-button {
             display: inline-block;
-            background-color: #2ecc71;
+            background-color: #2ecc71; /* Ana sayfadaki yeşil buton rengi */
             color: white;
             padding: 15px 30px;
             border-radius: 5px;
@@ -99,69 +56,60 @@
             font-weight: 600;
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
-        .hero .cta-button:hover {
-            background-color: #27ae60;
-            transform: translateY(-2px);
-        }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            height: auto;
-            aspect-ratio: 1 / 1;
-        }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 400px; /* Ensure charts have enough vertical space */
-            }
-        }
-        .chart-container canvas {
-            max-width: 100%;
-            height: 100%;
-        }
+        .hero .cta-button:hover { background-color: #27ae60; transform: translateY(-2px); }
         
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: auto; aspect-ratio: 1 / 1; }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+        .chart-container canvas { max-width: 100%; height: 100%; }
+        
+        /* Range slider thumb stilleri (Hesapkolik mavi rengine ayarlandı) */
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
             width: 24px;
             height: 24px;
-            background: #4f46e5; /* Borsa Rehberi Indigo */
+            background: #3498db; /* Hesapkolik mavi */
             cursor: pointer;
             border-radius: 50%;
             border: 4px solid #fff;
             box-shadow: 0 0 5px rgba(0,0,0,0.2);
+            margin-top: -10px; /* Merkezleme için ayarlandı */
         }
         input[type="range"]::-moz-range-thumb {
             width: 24px;
             height: 24px;
-            background: #4f46e5; /* Borsa Rehberi Indigo */
+            background: #3498db; /* Hesapkolik mavi */
             cursor: pointer;
             border-radius: 50%;
             border: 4px solid #fff;
             box-shadow: 0 0 5px rgba(0,0,0,0.2);
         }
 
-        .accordion-button {
-            transition: background-color 0.3s ease;
-        }
-        .accordion-button.open {
-            background-color: #eef2ff; /* Light indigo */
-        }
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
-        }
-        .fade-in {
-            animation: fadeIn 0.8s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .accordion-button { transition: background-color 0.3s ease; }
+        .accordion-button.open { background-color: #eef2ff; /* Light indigo */ }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out; }
+        .fade-in { animation: fadeIn 0.8s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* Hesapkolik genel renk paletine uyduruldu */
+        .text-indigo-800 { color: #2e78b1; } /* Hesapkolik Mavisi koyu ton */
+        .bg-indigo-50 { background-color: #f0f8ff; } /* Hesapkolik Mavisi çok açık ton */
+        .border-indigo-400 { border-color: #6daee2; } /* Hesapkolik Mavisi orta ton */
+        .accent-indigo-600 { accent-color: #3498db; } /* Hesapkolik Mavisi */
+        .text-green-300 { color: #2ecc71; } /* Hesapkolik Yeşili */
+
+        /* Emir Türleri Tablosu Stili */
+        .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); }
+        .table-container table { width: 100%; border-collapse: collapse; min-width: 800px; } /* Küçük ekranlarda kaydırma için min-width */
+        .table-container th, .table-container td { padding: 12px 15px; border: 1px solid #e0e0e0; text-align: left; }
+        .table-container th { background-color: #3498db; color: white; font-weight: 600; }
+        .table-container tr:nth-child(even) { background-color: #f9f9f9; }
+        .table-container tr:hover { background-color: #f1f1f1; }
+        .table-container td b { color: #2c3e50; } /* Kalın yazılar için koyu gri */
+        .table-container ul { list-style: none; padding-left: 0; margin-top: 5px; }
+        .table-container ul li { margin-bottom: 2px; }
+
+        /* Responsive Ayarlamalar (Hesapkolik style.css'den adapte edildi) */
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.2em; }
             .hero p { font-size: 1em; }
@@ -177,11 +125,24 @@
 </head>
 <body class="antialiased">
 
-    <!-- Hesapkolik Header'ı Buraya Gelecek (Placeholder) -->
-    <div id="header-placeholder"></div>
+    <!-- Hesapkolik Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="text-2xl font-bold text-gray-800">Hesapkolik Blog</div>
+            <div class="hidden md:flex space-x-6">
+                <a href="#giris" class="text-gray-600 hover:text-[#3498db]">Giriş</a>
+                <a href="#terimler" class="text-gray-600 hover:text-[#3498db]">Terimler</a>
+                <a href="#ilk-adimlar" class="text-gray-600 hover:text-[#3498db]">İlk Adımlar</a>
+                <a href="#analiz" class="text-gray-600 hover:text-[#3498db]">Analiz</a>
+                <a href="#risk" class="text-gray-600 hover:text-[#3498db]">Risk Yönetimi</a>
+                <a href="#hatalar" class="text-gray-600 hover:text-[#3498db]">Sık Yapılan Hatalar</a>
+                <a href="#kaynaklar" class="text-gray-600 hover:text-[#3498db]">Kaynaklar</a>
+            </div>
+        </nav>
+    </header>
 
     <main>
-        <section id="hero" class="py-20 bg-blue-600">
+        <section id="hero" class="py-20 hero-bg">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight">
                     <span class="text-green-300">Yeni Başlayanlar İçin</span> Borsa Rehberi: Hisse Senedi Alım Satımına İlk Adım
@@ -257,7 +218,7 @@
                 </p>
                 <div class="card max-w-4xl mx-auto space-y-6">
                     <h3 class="text-xl font-bold text-slate-800">2.1. Sıkça Karşılaşacağınız Temel Terimler</h3>
-                    <input id="searchTermInput" type="text" placeholder="🔍 Terim ara (örn: Volatilite, Portföy)..." class="w-full p-3 border border-gray-300 rounded-lg mb-6 focus:ring-2 focus:ring-indigo-400 focus:outline-none transition">
+                    <input id="searchTermInput" type="text" placeholder="🔍 Terim ara (örn: Volatilite, Portföy)..." class="w-full p-3 border border-gray-300 rounded-lg mb-6 focus:ring-2 focus:ring-[#3498db] focus:outline-none transition"> <!-- Hesapkolik rengine güncellendi -->
                     <div id="terms-container" class="space-y-2"></div>
                     <p class="text-slate-600">
                         Temel terimleri anlamak, finansal okuryazarlığın ilk adımıdır. Bu terimlerin basit ve net bir şekilde öğrenilmesi, yatırımcının piyasayı ve kendi yatırımlarını daha iyi anlamasını sağlar. Yanlış anlaşılan terimler, yanlış kararlara yol açabilir. Finansal okuryazarlık, sadece borsa için değil, genel kişisel finans yönetimi için de temel bir beceridir. Bu terimleri anlamak, bireylerin bankacılık ürünleri, kredi kartları, sigorta gibi diğer finansal araçlarla ilgili bilinçli kararlar almasına da yardımcı olur. Bu, bireylerin finansal bağımsızlık yolculuğunda attığı ilk ve en önemli adımlardan biridir.
@@ -568,9 +529,9 @@
                     <div class="flex flex-col items-center">
                         <h3 class="text-2xl font-semibold text-gray-800 mb-4">Risk Toleransınızı Keşfedin</h3>
                         <p class="text-gray-600 mb-4">Aşağıdaki kaydırıcıyı hareket ettirerek kendi risk toleransınıza en uygun yatırımcı profilini ve potansiyel yatırım stratejilerini keşfedin.</p>
-                        <input id="riskSlider" type="range" min="0" max="100" value="50" class="w-full max-w-xl h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
-                        <div id="riskProfile" class="mt-4 p-4 bg-indigo-50 rounded-lg transition-all duration-300 w-full max-w-xl">
-                            <h4 class="font-bold text-indigo-800"></h4>
+                        <input id="riskSlider" type="range" min="0" max="100" value="50" class="w-full max-w-xl h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#3498db]"> <!-- Hesapkolik rengine güncellendi -->
+                        <div id="riskProfile" class="mt-4 p-4 bg-[#f0f8ff] rounded-lg border-l-4 border-[#6daee2] transition-all duration-300 w-full max-w-xl"> <!-- Hesapkolik renklerine güncellendi -->
+                            <h4 class="font-bold text-[#2e78b1]"></h4> <!-- Hesapkolik rengine güncellendi -->
                             <p class="text-gray-700"></p>
                         </div>
                     </div>
@@ -706,19 +667,19 @@
                             <p class="font-semibold text-gray-800">Paranın Psikolojisi</p>
                             <p class="text-sm text-gray-500">Morgan Housel</p>
                         </div>
-                         <div class="p-4 bg-gray-50 rounded-lg text-center">
+                        <div class="p-4 bg-gray-50 rounded-lg text-center">
                             <p class="font-semibold text-gray-800">Zengin Baba Yoksul Baba</p>
                             <p class="text-sm text-gray-500">Robert T. Kiyosaki</p>
                         </div>
-                         <div class="p-4 bg-gray-50 rounded-lg text-center">
+                        <div class="p-4 bg-gray-50 rounded-lg text-center">
                             <p class="font-semibold text-gray-800">Borsada Rastgele Seyir</p>
                             <p class="text-sm text-gray-500">Burton G. Malkiel</p>
                         </div>
-                         <div class="p-4 bg-gray-50 rounded-lg text-center">
+                        <div class="p-4 bg-gray-50 rounded-lg text-center">
                             <p class="font-semibold text-gray-800">Sağduyulu Yatırım Rehberi</p>
                             <p class="text-sm text-gray-500">John C. Bogle</p>
                         </div>
-                         <div class="p-4 bg-gray-50 rounded-lg text-center">
+                        <div class="p-4 bg-gray-50 rounded-lg text-center">
                             <p class="font-semibold text-gray-800">Bir Borsa Spekülatörünün Anıları</p>
                             <p class="text-sm text-gray-500">Edwin Lefevre</p>
                         </div>
@@ -763,8 +724,13 @@
         </section>
     </main>
     
-    <!-- Hesapkolik Footer'ı Buraya Gelecek (Placeholder) -->
-    <div id="footer-placeholder"></div>
+    <!-- Hesapkolik Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2025 Hesapkolik Blog. Tüm Hakları Saklıdır.</p>
+            <p class="text-sm text-gray-400 mt-2">Bu içerik bilgilendirme amacıyla hazırlanmıştır ve yatırım tavsiyesi değildir.</p>
+        </div>
+    </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -780,13 +746,6 @@
                 { term: 'Boğa Piyasası', definition: 'Fiyatların genel olarak yükseliş trendinde olduğu, iyimserliğin hakim olduğu piyasadır.' },
                 { term: 'Ayı Piyasası', definition: 'Fiyatların genel olarak düşüş trendinde olduğu, karamsarlığın hakim olduğu piyasadır.' },
                 { term: 'Halka Arz (IPO)', definition: 'Bir şirketin hisselerini ilk defa borsada yatırımcılara satışa sunmasıdır.' }
-            ];
-
-            const emirTurleriData = [
-                { name: "Piyasa Emri", desc: "Anında işlem! O anki en iyi fiyattan alır veya satar. Hız önemlidir.", icon: "⚡️" },
-                { name: "Limit Emri", desc: "Kontrol sizde! Belirlediğiniz fiyattan veya daha iyisinden işlem yapar. Sabır gerektirir.", icon: "🎯" },
-                { name: "Zararı Durdur (Stop Loss)", desc: "Güvenlik ağı! Fiyat belirlediğiniz zararı durdurma seviyesine gelince otomatik satar, büyük kayıpları önler.", icon: "🛡️" },
-                { name: "Kar Al (Take Profit)", desc: "Hedefe odaklı! Fiyat belirlediğiniz kar hedefine ulaştığında otomatik satar, kârınızı cebinize koyar.", icon: "💰" }
             ];
 
             const termsContainer = document.getElementById('terms-container');
@@ -836,7 +795,7 @@
                             content.style.paddingTop = "0px";
                         } else {
                             content.style.maxHeight = content.scrollHeight + "px";
-                            content.style.paddingTop = "0rem";
+                            content.style.paddingTop = "0.5rem"; // İçeriğin açıldığında üst boşluk ekle
                         }
                     });
                 });
@@ -848,18 +807,6 @@
 
             displayTerms();
             
-            const emirTurleriContainer = document.getElementById('emir-turleri-container');
-            emirTurleriData.forEach(emir => {
-                const card = document.createElement('div');
-                card.className = 'bg-gray-50 p-6 rounded-lg hover:bg-white hover:shadow-lg transition-all duration-300 cursor-pointer';
-                card.innerHTML = `
-                    <div class="text-3xl mb-3">${emir.icon}</div>
-                    <h4 class="font-bold text-lg text-gray-800 mb-2">${emir.name}</h4>
-                    <p class="text-sm text-gray-600">${emir.desc}</p>
-                `;
-                emirTurleriContainer.appendChild(card);
-            });
-            
             const riskSlider = document.getElementById('riskSlider');
             const riskProfile = document.getElementById('riskProfile');
             const riskProfileTitle = riskProfile.querySelector('h4');
@@ -870,7 +817,7 @@
                 { title: 'Muhafazakar', text: 'Düşük risk ve istikrarlı getiri peşindesiniz. Büyük ve köklü şirketlerin hisseleri, temettü fonları düşünülebilir.', color: 'teal' },
                 { title: 'Dengeli', text: 'Risk ve getiri arasında bir denge arıyorsunuz. Hisse senetleri ve tahvillerden oluşan çeşitlendirilmiş bir portföy idealdir.', color: 'green' },
                 { title: 'Büyüme Odaklı', text: 'Yüksek getiri potansiyeli için daha fazla risk alabilirsiniz. Büyüme potansiyeli olan sektör ve şirket hisselerine yönelebilirsiniz.', color: 'orange' },
-                { title: 'Agresif', text: 'Maksimum getiri için yüksek risk almaktan çekinmiyorsunuz. Tekn speculative hisseler ve startup yatırımları ilginizi çekebilir.', color: 'red' }
+                { title: 'Agresif', text: 'Maksimum getiri için yüksek risk almaktan çekinmiyorsunuz. Spekülatif hisseler ve startup yatırımları ilginizi çekebilir.', color: 'red' }
             ];
             
             function updateRiskProfile() {
@@ -884,17 +831,23 @@
 
                 riskProfileTitle.textContent = profile.title;
                 riskProfileText.textContent = profile.text;
-                riskProfile.className = `mt-4 p-4 bg-${profile.color}-50 rounded-lg border-l-4 border-${profile.color}-400 transition-all duration-500`;
-                riskProfileTitle.className = `font-bold text-${profile.color}-800`;
+                // Renk class'larını dinamik olarak ayarlayın
+                const colorMap = {
+                    'blue': { bg: 'bg-[#f0f8ff]', border: 'border-[#6daee2]', text: 'text-[#2e78b1]' },
+                    'teal': { bg: 'bg-teal-50', border: 'border-teal-400', text: 'text-teal-800' },
+                    'green': { bg: 'bg-green-50', border: 'border-green-400', text: 'text-green-800' },
+                    'orange': { bg: 'bg-orange-50', border: 'border-orange-400', text: 'text-orange-800' },
+                    'red': { bg: 'bg-red-50', border: 'border-red-400', text: 'text-red-800' }
+                };
+                
+                const selectedColors = colorMap[profile.color];
+                riskProfile.className = `mt-4 p-4 rounded-lg border-l-4 transition-all duration-300 w-full max-w-xl ${selectedColors.bg} ${selectedColors.border}`;
+                riskProfileTitle.className = `font-bold ${selectedColors.text}`;
             }
 
             riskSlider.addEventListener('input', updateRiskProfile);
             updateRiskProfile();
 
-            // Removed Intersection Observer logic as it's for sidebar navigation, not a blog post style
-            
-            // Removed mobile menu toggle logic as the sidebar is removed
-            
             const analizCtx = document.getElementById('analizChart').getContext('2d');
             new Chart(analizCtx, {
                 type: 'radar',
@@ -903,15 +856,15 @@
                     datasets: [{
                         label: 'Temel Analiz',
                         data: [9, 9, 8, 9, 8],
-                        backgroundColor: 'rgba(79, 70, 229, 0.2)', // Indigo
-                        borderColor: 'rgb(79, 70, 229)', // Indigo
-                        pointBackgroundColor: 'rgb(79, 70, 229)',
+                        backgroundColor: 'rgba(52, 152, 219, 0.2)', /* Hesapkolik mavisi */
+                        borderColor: '#3498db', /* Hesapkolik mavisi */
+                        pointBackgroundColor: '#3498db',
                     }, {
                         label: 'Teknik Analiz',
                         data: [4, 3, 5, 4, 4],
-                        backgroundColor: 'rgba(34, 197, 94, 0.2)', // Green
-                        borderColor: 'rgb(34, 197, 94)', // Green
-                        pointBackgroundColor: 'rgb(34, 197, 94)',
+                        backgroundColor: 'rgba(46, 204, 113, 0.2)', /* Hesapkolik yeşili */
+                        borderColor: '#2ecc71', /* Hesapkolik yeşili */
+                        pointBackgroundColor: '#2ecc71',
                     }]
                 },
                 options: {
@@ -923,7 +876,7 @@
                             callbacks: {
                                 label: function(context) {
                                     let label = context.dataset.label || '';
-                                     if (label) {
+                                    if (label) {
                                         label += ': ';
                                     }
                                     if (context.parsed.r !== null) {
@@ -971,11 +924,11 @@
                         label: 'Portföy Dağılımı',
                         data: [40, 20, 20, 15, 5],
                         backgroundColor: [
-                            '#6366f1', // Light Indigo
-                            '#818cf8', // Lighter Indigo
-                            '#a5b4fc', // Lightest Indigo
-                            '#f59e0b', // Amber (for Emtia)
-                            '#10b981' // Green (for Nakit)
+                            '#3498db', /* Hesapkolik Mavisi */
+                            '#6daee2', /* Hesapkolik Mavisi açık */
+                            '#2ecc71', /* Hesapkolik Yeşili */
+                            '#f39c12', /* Hesapkolik Turuncusu */
+                            '#95a5a6' /* Orta Gri */
                         ],
                         hoverOffset: 4
                     }]
@@ -991,7 +944,7 @@
                                     family: 'Poppins'
                                 }
                             }
-                         },
+                           },
                         title: { display: true, text: 'Örnek Çeşitlendirilmiş Portföy', font: { family: 'Poppins' } },
                         tooltip: {
                             bodyFont: { size: 14, family: 'Poppins' },
@@ -1000,55 +953,6 @@
                     }
                 }
             });
-
-            // Hesapkolik Header ve Footer yükleme (mevcut koddan alındı)
-            const isEnglishPage = window.location.pathname.startsWith('/en/');
-            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
-            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
- // Header Yükleme
-            fetch(headerPath)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
-                    }
-                    return response.text();
-                })
-                .then(data => {
-                    const headerPlaceholder = document.getElementById('header-placeholder');
-                    if (headerPlaceholder) {
-                        headerPlaceholder.innerHTML = data;
-                        const scriptElement = headerPlaceholder.querySelector('script');
-                        if (scriptElement) {
-                            const newScript = document.createElement('script');
-                            newScript.textContent = scriptElement.textContent;
-                            document.body.appendChild(newScript);
-                            scriptElement.remove();
-                        }
-                    }
-                })
-                .catch(error => console.error('Header yüklenirken hata oluştu:', error));
-
-            // Footer Yükleme
-            fetch(footerPath)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
-                    }
-                    return response.text();
-                })
-                .then(data => {
-                    const footerPlaceholder = document.getElementById('footer-placeholder');
-                    if (footerPlaceholder) {
-                        footerPlaceholder.innerHTML = data;
-                        const tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = data;
-                        const footerElement = tempDiv.querySelector('footer');
-                        if (footerElement) {
-                            footerPlaceholder.replaceWith(footerElement);
-                        }
-                    }
-                })
-                .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
         });
     </script>
 </body>
