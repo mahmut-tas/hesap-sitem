@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>AdSense Gelir Hesaplayıcı - Hesapkolik</title>
+    <title>AdSense Gelişmiş Gelir Hesaplayıcı - Hesapkolik</title>
     <link href="/css/style.css" rel="stylesheet"/>
     <link href="/css/header.css" rel="stylesheet"/>
-    <meta content="Web sitenizin aylık sayfa görüntülemelerini, tıklama oranını ve tıklama başına maliyetini girerek tahmini Google AdSense gelirinizi hesaplayın." name="description"/>
-    <meta content="adsense gelir hesaplama, google adsense, gelir tahmini, cpc, ctr, sayfa görüntüleme, web sitesi geliri" name="keywords"/>
+    <link href="/css/adsense-advanced-calculator.css" rel="stylesheet"/> <meta content="Web sitenizin bölgesini, içeriğini ve günlük tıklama sayısını girerek tahmini Google AdSense gelirinizi hesaplayın." name="description"/>
+    <meta content="adsense gelir hesaplama, google adsense, gelir tahmini, bölgeye göre gelir, kategoriye göre gelir, tıklama sayısı, web sitesi geliri" name="keywords"/>
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
@@ -26,60 +26,75 @@
     <main>
         <section class="ad-calculators-section">
             <div class="container">
-                <h1 class="main-title">Google AdSense Gelir Hesaplayıcı</h1>
+                <h1 class="main-title">Google AdSense Gelişmiş Gelir Hesaplayıcı</h1>
                 <p class="section-description">
-                    Web sitenizin aylık sayfa görüntülemelerini, tıklama oranını (CTR) ve tıklama başına maliyeti (CPC) girerek tahmini Google AdSense gelirinizi hesaplayın.
+                    Web sitenizin hedef kitlesinin **bölgesini**, içeriğinizin **kategorisini** ve tahmini **günlük tıklama sayısını** girerek potansiyel AdSense gelirinizi hesaplayın.
                 </p>
                 <div class="calculator-group">
                     <div class="calculator-card-wrapper">
                         <div class="calculator-header">
-                            <i class="fas fa-dollar-sign icon-small"></i>
-                            <h2>AdSense Gelir Hesapla</h2>
+                            <i class="fas fa-chart-line icon-small"></i>
+                            <h2>AdSense Gelir Tahmini</h2>
                         </div>
                         <div class="calculator-form-container">
-                            <form id="adsenseForm">
-                                <label for="page_views">Aylık Sayfa Görüntüleme:</label>
-                                <input id="page_views" name="page_views" placeholder="Örn: 100000" required="" type="number" min="100"/>
+                            <form id="adsenseAdvancedForm">
+                                <label for="region">Hedef Kitle Bölgesi:</label>
+                                <select id="region" name="region" required>
+                                    <option value="">Bölge Seçin</option>
+                                    <option value="north_america">Kuzey Amerika</option>
+                                    <option value="europe">Avrupa</option>
+                                    <option value="asia">Asya</option>
+                                    <option value="south_america">Güney Amerika</option>
+                                    <option value="africa">Afrika</option>
+                                    <option value="oceania">Okyanusya</option>
+                                    <option value="middle_east">Orta Doğu</option>
+                                </select>
 
-                                <label for="ctr">Tıklama Oranı (CTR) (%):</label>
-                                <input id="ctr" name="ctr" placeholder="Örn: 1.5 (1.5% için)" required="" type="number" min="0.01" max="100" step="0.01"/>
+                                <label for="category">İçerik Kategorisi:</label>
+                                <select id="category" name="category" required>
+                                    <option value="">Kategori Seçin</option>
+                                    <option value="finance">Finans & İş</option>
+                                    <option value="tech">Teknoloji & Yazılım</option>
+                                    <option value="health">Sağlık & Güzellik</option>
+                                    <option value="travel">Seyahat & Turizm</option>
+                                    <option value="education">Eğitim</option>
+                                    <option value="gaming">Oyun</option>
+                                    <option value="news">Haber & Medya</option>
+                                    <option value="entertainment">Eğlence</option>
+                                    <option value="lifestyle">Yaşam Tarzı</option>
+                                    <option value="other">Diğer</option>
+                                </select>
 
-                                <label for="cpc">Tıklama Başına Maliyet (CPC) ($):</label>
-                                <input id="cpc" name="cpc" placeholder="Örn: 0.25" required="" type="number" min="0.01" step="0.01"/>
+                                <label for="daily_clicks">Günlük Ortalama Reklam Tıklaması:</label>
+                                <input id="daily_clicks" name="daily_clicks" placeholder="Örn: 100" required="" type="number" min="1"/>
 
-                                <button type="submit">Gelir Hesapla</button>
+                                <button type="submit">Geliri Hesapla</button>
                             </form>
                             <div class="result-display" id="adsenseResult"></div>
                         </div>
                     </div>
                     <section class="info-section">
-                        <h3>Google AdSense Geliri Nedir ve Nasıl Hesaplanır?</h3>
-                        <p>
-                            <strong>Google AdSense</strong>, web sitesi yayıncılarının içeriklerine reklam yerleştirerek para kazanmalarını sağlayan bir programdır. Reklamlar genellikle sitenizin içeriğiyle alakalıdır ve ziyaretçileriniz reklamlara tıkladığında veya onları görüntülediğinde gelir elde edersiniz.
-                        </p>
-                        <p>
-                            AdSense gelirleri birçok faktöre bağlıdır:
-                        </p>
+                        <h3>AdSense Gelirlerini Etkileyen Faktörler</h3>
+                        <p>Google AdSense gelirleri karmaşık bir yapıya sahiptir ve birçok değişkene bağlıdır. Bu hesaplayıcı, en önemli faktörlerden bazılarını kullanarak tahmini bir gelir sunar:</p>
                         <ul>
                             <li>
-                                <strong>Aylık Sayfa Görüntüleme:</strong> Sitenizin bir ayda kaç kez görüntülendiği. Daha fazla görüntüleme, daha fazla reklam gösterimi anlamına gelir.
+                                <strong>Hedef Kitle Bölgesi:</strong> Reklamverenlerin farklı bölgelerdeki kullanıcılara verdikleri teklifler büyük ölçüde değişir. Genellikle Kuzey Amerika ve Avrupa'dan gelen trafik, diğer bölgelere göre daha yüksek CPC'ye (Tıklama Başına Maliyet) sahip olabilir.
                             </li>
                             <li>
-                                <strong>Tıklama Oranı (CTR - Click-Through Rate):</strong> Reklam gösterimlerine oranla kaç kişinin reklamlara tıkladığının yüzdesi. Yüksek bir CTR, daha ilgili reklamlar veya daha iyi reklam yerleşimi anlamına gelebilir.
+                                <strong>İçerik Kategorisi:</strong> Belirli nişler (örneğin, finans, teknoloji, sağlık) yüksek değerli anahtar kelimeler içerdiği için daha rekabetçi reklamlara ve dolayısıyla daha yüksek CPC'lere sahip olabilir. Eğlence veya haber gibi daha genel kategorilerde CPC'ler daha düşük olabilir.
                             </li>
                             <li>
-                                <strong>Tıklama Başına Maliyet (CPC - Cost-Per-Click):</strong> Bir reklam tıklandığında ne kadar gelir elde ettiğiniz. Bu miktar, reklamverenin ne kadar teklif verdiğine, rekabete ve içeriğinizin nişine göre büyük ölçüde değişir.
+                                <strong>Günlük Ortalama Reklam Tıklaması:</strong> Bu, sitenizdeki reklamların ne kadar etkili olduğunu gösterir. Tıklama sayısı doğrudan geliri etkileyen en önemli faktördür. Bu, sitenizin trafik hacmi ve kullanıcılarınızın reklamlara olan ilgisiyle doğrudan ilişkilidir.
+                            </li>
+                            <li>
+                                <strong>Diğer Faktörler:</strong> Reklam yerleşimi, reklam formatları, mevsimsel eğilimler, kullanıcı deneyimi, reklam engelleme yazılımları ve sitenizin mobil uyumluluğu gibi birçok başka faktör de gerçek gelirlerinizi etkiler.
                             </li>
                         </ul>
-                        <h4>AdSense Gelir Hesaplama Formülü:</h4>
                         <p class="formula-text">
-                            Tahmini Gelir = (Aylık Sayfa Görüntüleme / 1000) * (Tıklama Oranı / 100) * Tıklama Başına Maliyet * 1000
-                        </p>
-                        <p>
-                            Bu formül, her 1000 sayfa görüntüleme başına elde edilen geliri (RPM - Revenue Per Mille) baz alarak daha doğru bir tahmin sağlar.
+                            Tahmini Aylık Gelir = (Günlük Tıklama Sayısı * Bölge Katsayısı * Kategori Katsayısı) * Ortalama CPC * 30 Gün
                         </p>
                         <p class="disclaimer-text">
-                            Yukarıdaki hesaplayıcı ve formül, Google AdSense'ten elde edebileceğiniz potansiyel gelire ilişkin basit bir tahmindir. Gerçek gelirler; hedef kitlenizin coğrafi konumu, sitenizin nişi, reklam formatları, mevsimsel faktörler ve reklam engelleme yazılımları gibi birçok dinamik faktöre bağlı olarak önemli ölçüde değişiklik gösterebilir. En doğru veri için Google AdSense hesabınızdaki performans raporlarını kontrol etmelisiniz.
+                            Bu hesaplayıcıdaki katsayılar ve varsayılan CPC değerleri genelleştirilmiş tahminlerdir ve gerçek pazar koşullarını veya Google'ın iç algoritmalarını yansıtmayabilir. Google AdSense'ten elde edeceğiniz gerçek gelirler bu tahminlerden farklı olabilir. En doğru veri için her zaman kendi AdSense hesabınızdaki performans raporlarını kontrol etmelisiniz.
                         </p>
                     </section>
                 </div>
@@ -139,126 +154,5 @@
                 .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
         });
     </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-    const isEnglishPage = window.location.pathname.startsWith('/en/');
-
-    const texts = {
-        tr: {
-            calculateButtonText: 'Geliri Hesapla',
-            regionLabel: 'Hedef Kitle Bölgesi:',
-            categoryLabel: 'İçerik Kategorisi:',
-            dailyClicksLabel: 'Günlük Ortalama Reklam Tıklaması:',
-            selectRegion: 'Bölge Seçin',
-            selectCategory: 'Kategori Seçin',
-            placeholderDailyClicks: 'Örn: 100',
-            invalidInput: 'Lütfen tüm alanlar için geçerli değerler girin. Günlük tıklama sayısı pozitif olmalı ve bölge/kategori seçimi yapılmalıdır.',
-            estimatedMonthlyRevenue: 'Tahmini Aylık AdSense Geliriniz:'
-        },
-        en: {
-            calculateButtonText: 'Calculate Revenue',
-            regionLabel: 'Audience Region:',
-            categoryLabel: 'Content Category:',
-            dailyClicksLabel: 'Avg. Daily Ad Clicks:',
-            selectRegion: 'Select Region',
-            selectCategory: 'Select Category',
-            placeholderDailyClicks: 'e.g.: 100',
-            invalidInput: 'Please enter valid values for all fields. Daily clicks must be positive, and region/category must be selected.',
-            estimatedMonthlyRevenue: 'Estimated Monthly AdSense Revenue:'
-        }
-    };
-
-    const currentTexts = isEnglishPage ? texts.en : texts.tr;
-
-    // --- DOM Elements ---
-    const adsenseAdvancedForm = document.getElementById('adsenseAdvancedForm');
-    const regionSelect = document.getElementById('region');
-    const categorySelect = document.getElementById('category');
-    const dailyClicksInput = document.getElementById('daily_clicks');
-    const adsenseResultDiv = document.getElementById('adsenseResult');
-    const calculateButton = adsenseAdvancedForm.querySelector('button[type="submit"]');
-
-    // Populate dynamic text content
-    document.querySelector('label[for="region"]').textContent = currentTexts.regionLabel;
-    document.querySelector('label[for="category"]').textContent = currentTexts.categoryLabel;
-    document.querySelector('label[for="daily_clicks"]').textContent = currentTexts.dailyClicksLabel;
-    regionSelect.querySelector('option[value=""]').textContent = currentTexts.selectRegion;
-    categorySelect.querySelector('option[value=""]').textContent = currentTexts.selectCategory;
-    dailyClicksInput.placeholder = currentTexts.placeholderDailyClicks;
-    calculateButton.textContent = currentTexts.calculateButtonText;
-
-    // --- Estimated CPC Data (Example Values - These are HIGHLY simplified) ---
-    // In a real scenario, this data would come from a database or a more complex API.
-    const cpcData = {
-        // Average CPC by Region (hypothetical, based on general market knowledge)
-        regions: {
-            north_america: 0.80, // High
-            europe: 0.50,
-            asia: 0.20,
-            south_america: 0.15,
-            africa: 0.10,
-            oceania: 0.60,
-            middle_east: 0.25
-        },
-        // CPC Multiplier by Category (hypothetical, some niches are more competitive)
-        categories: {
-            finance: 1.8, // Very high
-            tech: 1.5,
-            health: 1.3,
-            travel: 1.1,
-            education: 1.0,
-            gaming: 0.7,
-            news: 0.6,
-            entertainment: 0.5,
-            lifestyle: 0.9,
-            other: 0.8
-        }
-    };
-
-    // --- AdSense Revenue Calculation Function ---
-    function calculateAdsenseRevenue(event) {
-        event.preventDefault(); // Prevent form submission and page reload
-
-        const selectedRegion = regionSelect.value;
-        const selectedCategory = categorySelect.value;
-        const dailyClicks = parseFloat(dailyClicksInput.value);
-
-        adsenseResultDiv.innerHTML = '';
-        adsenseResultDiv.style.display = 'none';
-
-        // --- Input Validation ---
-        if (!selectedRegion || !selectedCategory || isNaN(dailyClicks) || dailyClicks <= 0) {
-            adsenseResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
-            adsenseResultDiv.style.display = 'block';
-            return;
-        }
-
-        // Get base CPC for the region
-        const baseCpc = cpcData.regions[selectedRegion];
-        // Get category multiplier
-        const categoryMultiplier = cpcData.categories[selectedCategory];
-
-        if (baseCpc === undefined || categoryMultiplier === undefined) {
-            adsenseResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
-            adsenseResultDiv.style.display = 'block';
-            return;
-        }
-
-        // Calculate adjusted CPC
-        const adjustedCpc = baseCpc * categoryMultiplier;
-
-        // Calculate estimated monthly revenue (assuming 30 days in a month)
-        // Formula: Daily Clicks * Adjusted CPC * 30 days
-        const estimatedMonthlyRevenue = dailyClicks * adjustedCpc * 30;
-
-        // Display the result
-        adsenseResultDiv.innerHTML = `<p><strong>${currentTexts.estimatedMonthlyRevenue}</strong> <span class="result-value">$${estimatedMonthlyRevenue.toFixed(2)}</span></p>`;
-        adsenseResultDiv.style.display = 'block';
-    }
-
-    // Add event listener to the form
-    adsenseAdvancedForm.addEventListener('submit', calculateAdsenseRevenue);
-});
-    </script>
-    <script src="/js/adsense-calculator.js"></script> </body>
+    <script src="/js/adsense-advanced-calculator.js"></script> </body>
 </html>
