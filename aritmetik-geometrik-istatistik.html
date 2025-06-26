@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Sayı Hesaplayıcı - Kapsamlı Analiz</title>
+    <title>İstatistiksel Hesaplamalar - Kapsamlı Analiz</title>
     <link href="/css/style.css" rel="stylesheet"/>
     <link href="/css/footer.css" rel="stylesheet"/>
     <link href="/css/header.css" rel="stylesheet"/>
@@ -26,6 +26,17 @@
             margin-bottom: 30px;
             color: #333;
             font-size: 2.5em;
+        }
+
+        /* Ana Başlık Stilleri */
+        .main-title {
+            background-color: #3498db; /* Sitenizin mavi rengi */
+            color: white !important; /* Beyaz metin */
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            display: inline-block; /* Arka plan renginin sadece başlık kadar olmasını sağlar */
         }
 
         .category-buttons, .sub-category-buttons {
@@ -197,9 +208,17 @@
         }
         .calculation-steps-section h3 {
             color: #333;
-            margin-bottom: 20px;
+            margin-bottom: 15px; /* Başlık ile paragraf arasını açtım */
             text-align: center;
             font-size: 1.5em;
+        }
+        .calculation-steps-section h5 { /* Yeni başlık seviyesi için stil */
+            color: #555;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            border-bottom: 1px dotted #ccc;
+            padding-bottom: 5px;
         }
         .calculation-steps-section p {
             line-height: 1.6;
@@ -210,6 +229,7 @@
             list-style-type: decimal;
             padding-left: 25px;
             color: #555;
+            margin-bottom: 10px;
         }
         .calculation-steps-section ul li {
             margin-bottom: 8px;
@@ -241,7 +261,7 @@
     <main>
         <section class="calculator-section">
             <div class="container">
-                <h1 class="main-title">Sayı Hesaplayıcı</h1>
+                <h1 class="main-title" style="background-color: #3498db; color: white;">İstatistiksel Hesaplamalar</h1>
                 <p class="section-description" id="main-instruction">Yapmak istediğiniz analiz türünü seçin:</p>
 
                 <div class="category-buttons" id="main-category-buttons">
@@ -375,16 +395,16 @@
             // Metinler için dil desteği
             const texts = {
                 tr: {
-                    mainTitle: 'Sayı Hesaplayıcı',
+                    mainTitle: 'İstatistiksel Hesaplamalar',
                     mainInstruction: 'Yapmak istediğiniz analiz türünü seçin:',
                     categoryButton_centralTendency: 'Merkezi Eğilim Ölçüleri',
                     categoryButton_dispersion: 'Yayılım Ölçüleri',
                     defaultMessage: 'Yukarıdaki kategorilerden birini seçerek sayı analizine başlayın.',
                     backToCategories: 'Geri (Kategorilere Dön)',
-                    invalidNumberInput: 'Lütfen geçerli sayılar girin (virgülle ayırarak).',
-                    positiveNumbersOnly: 'Lütfen sadece pozitif sayılar girin.',
-                    atLeastTwoNumbers: 'Lütfen en az iki sayı girin.',
-                    noModeFound: 'Mod bulunamadı (Tüm sayılar tekil veya frekansları aynı).',
+                    invalidNumberInput: 'Lütfen hesaplama için geçerli sayılar girin (virgülle ayırarak).',
+                    positiveNumbersOnly: 'Geometrik ortalama için lütfen sadece pozitif sayılar girin.',
+                    atLeastTwoNumbers: 'Bu hesaplama için en az iki sayı girin.',
+                    noModeFound: 'Mod bulunamadı (Tüm sayılar tekil veya eşit sıklıkta).',
                     resultPrefix: 'Sonuç:',
                     calculateButtonText: 'Hesapla',
 
@@ -400,20 +420,26 @@
                     arithmeticMean_result: 'Aritmetik Ortalama:',
                     arithmeticMean_steps: `<h3>Nasıl Hesaplandı?</h3>
                         <ul>
-                            <li><strong>Adım 1:</strong> Girilen tüm sayıları toplayın.</li>
-                            <li><strong>Adım 2:</strong> Toplamı, sayıların adedine bölün.</li>
+                            <li><strong>Adım 1:</strong> Girilen tüm sayıları toplayın ($\\sum x_i$).</li>
+                            <li><strong>Adım 2:</strong> Toplamı, sayıların adedine (n) bölün.</li>
                             <li>Formül: $$\\bar{x} = \\frac{\\sum x_i}{n}$$</li>
-                        </ul>`,
+                        </ul>
+                        <h5>Ne İşe Yarar ve Nerelerde Kullanılır?</h5>
+                        <p><strong>Aritmetik ortalama</strong>, bir veri setindeki değerlerin toplamının veri sayısına bölünmesiyle elde edilen merkezi bir değerdir. Günlük hayatta en sık kullanılan ortalama türüdür.</p>
+                        <p><strong>Kullanım Alanları:</strong> Sınav notlarının ortalaması, aylık harcamaların ortalaması, sporcuların performans ortalamaları gibi birçok alanda kullanılır. Veri setinin genel eğilimini anlamak için idealdir.</p>`,
 
                     geometricMean_calcTitle: 'Geometrik Ortalama Hesaplama',
                     geometricMean_label: 'Sayıları virgülle ayırarak girin (örn: 2, 8, 16, 32). Sadece pozitif sayılar girin:',
                     geometricMean_result: 'Geometrik Ortalama:',
                     geometricMean_steps: `<h3>Nasıl Hesaplandı?</h3>
                         <ul>
-                            <li><strong>Adım 1:</strong> Girilen tüm pozitif sayıları birbiriyle çarpın.</li>
-                            <li><strong>Adım 2:</strong> Çarpım sonucunun, sayı adedi kadar dereceden kökünü alın.</li>
+                            <li><strong>Adım 1:</strong> Girilen tüm pozitif sayıları birbiriyle çarpın ($\\prod x_i$).</li>
+                            <li><strong>Adım 2:</strong> Çarpım sonucunun, sayı adedi (n) kadar dereceden kökünü alın.</li>
                             <li>Formül: $$G = \\sqrt[n]{x_1 \\cdot x_2 \\cdot \\ldots \\cdot x_n}$$</li>
-                        </ul>`,
+                        </ul>
+                        <h5>Ne İşe Yarar ve Nerelerde Kullanılır?</h5>
+                        <p><strong>Geometrik ortalama</strong>, özellikle oranların veya büyüme hızlarının ortalamasını almak için kullanılan bir merkezi eğilim ölçüsüdür. Logaritmik olarak dağılmış veriler veya finansal getiriler gibi durumlarda daha uygundur.</p>
+                        <p><strong>Kullanım Alanları:</strong> Yıllık bileşik büyüme oranları (CAGR), nüfus artış hızları, bakteri üremesi gibi katlanarak artan veya azalan süreçlerin ortalamasını hesaplamada etkilidir. Ayrıca bilimsel çalışmalarda ve mühendislikte kullanılır.</p>`,
 
                     medianMode_calcTitle: 'Medyan ve Mod Hesaplama',
                     medianMode_label: 'Sayıları virgülle ayırarak girin (örn: 5, 8, 12, 8, 15, 12, 8):',
@@ -421,9 +447,18 @@
                     mode_result: 'Mod:',
                     medianMode_steps: `<h3>Nasıl Hesaplandı?</h3>
                         <ul>
-                            <li><strong>Medyan:</strong> Sayılar küçükten büyüğe sıralandıktan sonra, ortadaki sayıdır. Eğer çift sayıda sayı varsa, ortadaki iki sayının ortalaması alınır.</li>
-                            <li><strong>Mod:</strong> Veri setinde en sık tekrar eden sayıdır. Bir veya birden fazla mod olabilir. Eğer her sayı eşit sıklıkta geçiyorsa mod yoktur.</li>
-                        </ul>`,
+                            <li><strong>Medyan:</strong> Sayılar küçükten büyüğe doğru sıralanır. Veri setinin tek sayıda elemanı varsa ortadaki sayı medyandır. Çift sayıda elemanı varsa, ortadaki iki sayının aritmetik ortalaması medyandır.</li>
+                            <li><strong>Mod:</strong> Veri setinde en sık tekrar eden sayıdır. Bir veri setinin bir modu (tek modlu), birden fazla modu (çok modlu) veya hiç modu olmayabilir (her sayının aynı sıklıkta geçmesi durumu).</li>
+                        </ul>
+                        <h5>Ne İşe Yarar ve Nerelerde Kullanılır?</h5>
+                        <p><strong>Medyan</strong>, aykırı değerlerden (çok büyük veya çok küçük değerler) daha az etkilenen bir merkezi eğilim ölçüsüdür, bu da onu çarpık dağılımlar için aritmetik ortalamadan daha temsili yapar.</p>
+                        <p><strong>Mod</strong>, bir veri setinde en yaygın olan değeri gösterir ve özellikle kategorik veriler için kullanışlıdır.</p>
+                        <p><strong>Kullanım Alanları:</strong>
+                            <ul>
+                                <li><strong>Medyan:</strong> Gayrimenkul fiyatları, maaşlar veya gelir dağılımları gibi aykırı değerlerin olabileceği ekonomik verilerin analizinde kullanılır.</li>
+                                <li><strong>Mod:</strong> En popüler ürün rengi, en çok tercih edilen eğitim alanı veya bir ankette en sık verilen cevap gibi kategorik verilerin analizinde yaygın olarak kullanılır.</li>
+                            </ul>
+                        </p>`,
 
                     // Yayılım Ölçüleri
                     dispersion_title: 'Yayılım Ölçüleri',
@@ -437,37 +472,45 @@
                     stdDev_result: 'Standart Sapma:',
                     varianceStdDev_steps: `<h3>Nasıl Hesaplandı?</h3>
                         <ul>
-                            <li><strong>Varyans:</strong> Her bir sayının aritmetik ortalamadan farkının karelerinin toplamı, veri setindeki eleman sayısına bölünerek bulunur. ($n$ veya $n-1$ örneklem/popülasyon durumuna göre)</li>
-                            <li><strong>Standart Sapma:</strong> Varyansın kareköküdür ve veri setindeki sayıların ortalamadan tipik olarak ne kadar saptığını gösterir.</li>
+                            <li><strong>Adım 1:</strong> Veri setinin aritmetik ortalamasını ($\\mu$) hesaplayın.</li>
+                            <li><strong>Adım 2:</strong> Her bir sayıdan ortalamayı çıkarın ve farkın karesini alın.</li>
+                            <li><strong>Adım 3:</strong> Bu kareli farkların toplamını, veri setindeki eleman sayısına (N) bölün (popülasyon varyansı için).</li>
+                            <li><strong>Standart Sapma:</strong> Varyansın karekökünü alın.</li>
                             <li>Formüller:
                                 <ul>
                                     <li>Varyans (Popülasyon): $$\\sigma^2 = \\frac{\\sum (x_i - \\mu)^2}{N}$$</li>
                                     <li>Standart Sapma (Popülasyon): $$\\sigma = \\sqrt{\\sigma^2}$$</li>
                                 </ul>
                             </li>
-                        </ul>`,
+                        </ul>
+                        <h5>Ne İşe Yarar ve Nerelerde Kullanılır?</h5>
+                        <p><strong>Varyans</strong> ve <strong>Standart Sapma</strong>, bir veri setindeki verilerin ortalamadan ne kadar yayıldığını, yani dağılımın genişliğini ölçen temel istatistiklerdir. Düşük değerler, verilerin ortalama etrafında toplandığını, yüksek değerler ise daha dağınık olduğunu gösterir.</p>
+                        <p><strong>Kullanım Alanları:</strong> Kalite kontrol süreçlerinde, finansal risk analizinde (hisse senedi getirilerinin oynaklığı), bilimsel deneylerde veri tutarlılığını değerlendirmede, anket sonuçlarının güvenilirliğini ölçmede yaygın olarak kullanılırlar. Örneğin, yatırımda standart sapma, risk seviyesinin bir göstergesidir.</p>`,
 
                     range_calcTitle: 'Açıklık (Range) Hesaplama',
                     range_label: 'Sayıları virgülle ayırarak girin (örn: 15, 7, 22, 3, 10):',
                     range_result: 'Açıklık (Range):',
                     range_steps: `<h3>Nasıl Hesaplandı?</h3>
                         <ul>
-                            <li><strong>Adım 1:</strong> Veri setindeki en büyük sayıyı bulun.</li>
-                            <li><strong>Adım 2:</strong> Veri setindeki en küçük sayıyı bulun.</li>
+                            <li><strong>Adım 1:</strong> Veri setindeki en büyük sayıyı (Maximum) bulun.</li>
+                            <li><strong>Adım 2:</strong> Veri setindeki en küçük sayıyı (Minimum) bulun.</li>
                             <li><strong>Adım 3:</strong> En büyük sayıdan en küçük sayıyı çıkarın.</li>
                             <li>Formül: $$R = Max(x_i) - Min(x_i)$$</li>
-                        </ul>`,
+                        </ul>
+                        <h5>Ne İşe Yarar ve Nerelerde Kullanılır?</h5>
+                        <p><strong>Açıklık (Range)</strong>, bir veri setindeki en büyük ve en küçük değer arasındaki farkı gösteren basit bir yayılım ölçüsüdür. Verilerin ne kadar geniş bir alana yayıldığına dair hızlı bir fikir verir.</p>
+                        <p><strong>Kullanım Alanları:</strong> Hava durumu analizlerinde günlük sıcaklık farklarını, üretim süreçlerinde ürün boyutlarının değişim aralığını veya bir mağazadaki ürün fiyatlarının yayılımını hızlıca görmek için kullanılır. Basitliği nedeniyle ilk analizlerde tercih edilebilir.</p>`,
                 },
                 en: {
-                    mainTitle: 'Number Calculator',
+                    mainTitle: 'Statistical Calculations',
                     mainInstruction: 'Select the type of analysis you want to perform:',
                     categoryButton_centralTendency: 'Measures of Central Tendency',
                     categoryButton_dispersion: 'Measures of Dispersion',
                     defaultMessage: 'Select a category above to start number analysis.',
                     backToCategories: 'Back to Categories',
                     invalidNumberInput: 'Please enter valid numbers (comma-separated).',
-                    positiveNumbersOnly: 'Please enter positive numbers only.',
-                    atLeastTwoNumbers: 'Please enter at least two numbers.',
+                    positiveNumbersOnly: 'Please enter positive numbers only for geometric mean.',
+                    atLeastTwoNumbers: 'Please enter at least two numbers for this calculation.',
                     noModeFound: 'No mode found (All numbers are unique or have the same frequency).',
                     resultPrefix: 'Result:',
                     calculateButtonText: 'Calculate',
@@ -484,20 +527,26 @@
                     arithmeticMean_result: 'Arithmetic Mean:',
                     arithmeticMean_steps: `<h3>How It's Calculated?</h3>
                         <ul>
-                            <li><strong>Step 1:</strong> Sum all the numbers entered.</li>
-                            <li><strong>Step 2:</strong> Divide the sum by the count of the numbers.</li>
+                            <li><strong>Step 1:</strong> Sum all the numbers entered ($\\sum x_i$).</li>
+                            <li><strong>Step 2:</strong> Divide the sum by the count of the numbers (n).</li>
                             <li>Formula: $$\\bar{x} = \\frac{\\sum x_i}{n}$$</li>
-                        </ul>`,
+                        </ul>
+                        <h5>What It Does and Where It's Used?</h5>
+                        <p>The <strong>arithmetic mean</strong> is a central value obtained by dividing the sum of values in a data set by the number of values. It is the most commonly used type of average in daily life.</p>
+                        <p><strong>Use Cases:</strong> It is used in many fields such as the average of exam scores, average monthly expenses, and average performance of athletes. It is ideal for understanding the general trend of a data set.</p>`,
 
                     geometricMean_calcTitle: 'Geometric Mean Calculation',
                     geometricMean_label: 'Enter numbers separated by commas (e.g., 2, 8, 16, 32). Enter positive numbers only:',
                     geometricMean_result: 'Geometric Mean:',
                     geometricMean_steps: `<h3>How It's Calculated?</h3>
                         <ul>
-                            <li><strong>Step 1:</strong> Multiply all the positive numbers together.</li>
+                            <li><strong>Step 1:</strong> Multiply all the positive numbers together ($\\prod x_i$).</li>
                             <li><strong>Step 2:</strong> Take the nth root of the product, where n is the count of the numbers.</li>
                             <li>Formula: $$G = \\sqrt[n]{x_1 \\cdot x_2 \\cdot \\ldots \\cdot x_n}$$</li>
-                        </ul>`,
+                        </ul>
+                        <h5>What It Does and Where It's Used?</h5>
+                        <p>The <strong>geometric mean</strong> is a measure of central tendency used especially for averaging ratios or growth rates. It is more suitable for logarithmically distributed data or financial returns.</p>
+                        <p><strong>Use Cases:</strong> It is effective in calculating the average of processes that increase or decrease exponentially, such as compound annual growth rates (CAGR), population growth rates, and bacterial reproduction. It is also used in scientific studies and engineering.</p>`,
 
                     medianMode_calcTitle: 'Median and Mode Calculation',
                     medianMode_label: 'Enter numbers separated by commas (e.g., 5, 8, 12, 8, 15, 12, 8):',
@@ -505,9 +554,18 @@
                     mode_result: 'Mode:',
                     medianMode_steps: `<h3>How It's Calculated?</h3>
                         <ul>
-                            <li><strong>Median:</strong> After sorting the numbers from smallest to largest, it is the middle number. If there is an even number of data points, it's the average of the two middle numbers.</li>
-                            <li><strong>Mode:</strong> The number(s) that appear most frequently in a data set. There can be one or more modes. If all numbers appear with the same frequency, there is no mode.</li>
-                        </ul>`,
+                            <li><strong>Median:</strong> Numbers are sorted from smallest to largest. If the data set has an odd number of elements, the middle number is the median. If it has an even number of elements, the median is the arithmetic mean of the two middle numbers.</li>
+                            <li><strong>Mode:</strong> The number(s) that appear most frequently in a data set. A data set can have one mode (unimodal), multiple modes (multimodal), or no mode (when all numbers appear with the same frequency).</li>
+                        </ul>
+                        <h5>What It Does and Where It's Used?</h5>
+                        <p>The <strong>median</strong> is a measure of central tendency less affected by outliers (very large or very small values), making it more representative than the arithmetic mean for skewed distributions.</p>
+                        <p>The <strong>mode</strong> indicates the most common value in a data set and is particularly useful for categorical data.</p>
+                        <p><strong>Use Cases:</strong>
+                            <ul>
+                                <li><strong>Median:</strong> Used in the analysis of economic data where outliers may exist, such as real estate prices, salaries, or income distributions.</li>
+                                <li><strong>Mode:</strong> Widely used in the analysis of categorical data, such as the most popular product color, the most preferred field of study, or the most frequent answer in a survey.</li>
+                            </ul>
+                        </p>`,
 
                     // Measures of Dispersion
                     dispersion_title: 'Measures of Dispersion',
@@ -521,26 +579,34 @@
                     stdDev_result: 'Standard Deviation:',
                     varianceStdDev_steps: `<h3>How It's Calculated?</h3>
                         <ul>
-                            <li><strong>Variance:</strong> The average of the squared differences from the mean. (using N for population variance)</li>
-                            <li><strong>Standard Deviation:</strong> The square root of the variance, indicating how much the numbers deviate from the average.</li>
+                            <li><strong>Step 1:</strong> Calculate the arithmetic mean ($\\mu$) of the data set.</li>
+                            <li><strong>Step 2:</strong> Subtract the mean from each number and square the difference.</li>
+                            <li><strong>Step 3:</strong> Sum these squared differences and divide by the number of elements (N) in the data set (for population variance).</li>
+                            <li><strong>Standard Deviation:</strong> Take the square root of the variance.</li>
                             <li>Formulas:
                                 <ul>
                                     <li>Variance (Population): $$\\sigma^2 = \\frac{\\sum (x_i - \\mu)^2}{N}$$</li>
                                     <li>Standard Deviation (Population): $$\\sigma = \\sqrt{\\sigma^2}$$</li>
                                 </ul>
                             </li>
-                        </ul>`,
+                        </ul>
+                        <h5>What It Does and Where It's Used?</h5>
+                        <p><strong>Variance</strong> and <strong>Standard Deviation</strong> are fundamental statistics that measure how spread out the data in a set is from the mean, indicating the width of the distribution. Lower values mean the data points are clustered around the mean, while higher values indicate more spread-out data.</p>
+                        <p><strong>Use Cases:</strong> They are widely used in quality control processes, financial risk analysis (volatility of stock returns), evaluating data consistency in scientific experiments, and assessing the reliability of survey results. For example, in investment, standard deviation is an indicator of the risk level.</p>`,
 
                     range_calcTitle: 'Range Calculation',
                     range_label: 'Enter numbers separated by commas (e.g., 15, 7, 22, 3, 10):',
                     range_result: 'Range:',
                     range_steps: `<h3>How It's Calculated?</h3>
                         <ul>
-                            <li><strong>Step 1:</strong> Find the largest number in the data set.</li>
-                            <li><strong>Step 2:</strong> Find the smallest number in the data set.</li>
+                            <li><strong>Step 1:</strong> Find the largest number (Maximum) in the data set.</li>
+                            <li><strong>Step 2:</strong> Find the smallest number (Minimum) in the data set.</li>
                             <li><strong>Step 3:</strong> Subtract the smallest number from the largest number.</li>
                             <li>Formula: $$R = Max(x_i) - Min(x_i)$$</li>
-                        </ul>`,
+                        </ul>
+                        <h5>What It Does and Where It's Used?</h5>
+                        <p>The <strong>Range</strong> is a simple measure of dispersion that shows the difference between the largest and smallest values in a data set. It gives a quick idea of how widely the data is spread.</p>
+                        <p><strong>Use Cases:</strong> It is used to quickly see daily temperature differences in weather analysis, the variation range of product dimensions in manufacturing processes, or the spread of product prices in a store. Due to its simplicity, it can be preferred in initial analyses.</p>`,
                 }
             };
 
@@ -567,7 +633,7 @@
             };
 
             // --- Update Initial Static Content ---
-            document.querySelector('.main-title').textContent = currentTexts.mainTitle;
+            // Başlık zaten HTML içinde stil ile ayarlandı, textContent güncellemesi gerekmez.
             mainInstruction.textContent = currentTexts.mainInstruction;
             defaultMessageDiv.querySelector('.info-text').textContent = currentTexts.defaultMessage;
             backToCategoriesButton.textContent = currentTexts.backToCategories;
@@ -689,13 +755,13 @@
                 resultDiv.innerHTML = htmlContent;
                 resultDiv.style.display = 'block';
 
-                // MathJax'i güncellemek için
+                stepsDiv.innerHTML = stepsHtmlContent;
+                stepsDiv.style.display = 'block';
+
+                // MathJax'i güncellemek için, HTML içeriği DOM'a eklendikten sonra çağırılmalı.
                 if (typeof MathJax !== 'undefined') {
                     MathJax.Hub.Queue(["Typeset", MathJax.Hub, stepsDiv]);
                 }
-
-                stepsDiv.innerHTML = stepsHtmlContent;
-                stepsDiv.style.display = 'block';
             }
 
             function showError(resultDivId, message) {
@@ -746,7 +812,7 @@
                     showError(resultDivId, currentTexts.invalidNumberInput);
                     return;
                 }
-                if (numbers.length < 2 && type !== 'median-mode') { // Mod ve medyan için tek sayı da anlamlı olabilir (medyan direkt o sayı olur, mod zaten tekse kendisi olur)
+                if (numbers.length < 2 && type !== 'median-mode' && type !== 'arithmetic-mean' && type !== 'geometric-mean') { // Mod ve medyan için tek sayı da anlamlı olabilir. Ortalama için de tek sayı anlamlı.
                     showError(resultDivId, currentTexts.atLeastTwoNumbers);
                     return;
                 }
@@ -798,12 +864,12 @@
                             if (frequencyMap[num] > maxFrequency) {
                                 maxFrequency = frequencyMap[num];
                                 modes = [Number(num)];
-                            } else if (frequencyMap[num] === maxFrequency && maxFrequency > 0) { // maxFrequency > 0 ekleyerek tekil durumlarda mod olmamasını sağlarız
+                            } else if (frequencyMap[num] === maxFrequency && maxFrequency > 0) {
                                 modes.push(Number(num));
                             }
                         }
 
-                        if (modes.length === numbers.length || maxFrequency <= 1) { // Eğer her sayı bir kez geçiyorsa veya tüm frekanslar 1 ise
+                        if (modes.length === numbers.length || maxFrequency <= 1) {
                             htmlContent += `<p><strong>${currentTexts.mode_result}</strong> ${currentTexts.noModeFound}</p>`;
                         } else {
                             htmlContent += `<p><strong>${currentTexts.mode_result}</strong> ${modes.join(', ')}</p>`;
