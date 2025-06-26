@@ -4,6 +4,7 @@ from datetime import datetime
 def create_sitemap(root_dir, base_url, output_file='sitemap.xml'):
     """
     Belirtilen bir kök dizindeki tüm HTML dosyalarını tarayarak bir XML site haritası oluşturur.
+    Oluşturulan URL sayısını da raporlar.
 
     Args:
         root_dir (str): HTML dosyalarının bulunduğu ana dizin (masaüstünüzdeki site klasörü).
@@ -59,7 +60,9 @@ def create_sitemap(root_dir, base_url, output_file='sitemap.xml'):
     try:
         with open(output_file, 'w', encoding='utf-8') as f:
             f.write('\n'.join(sitemap_content))
+        
         print(f"Site haritası başarıyla oluşturuldu: {output_file}")
+        print(f"Site haritasına {len(urls)} adet URL eklendi.") # URL sayısını burada bildiriyoruz
     except IOError as e:
         print(f"Hata: Site haritası dosyası yazılamadı: {e}")
 
