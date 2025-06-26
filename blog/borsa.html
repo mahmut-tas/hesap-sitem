@@ -7,11 +7,25 @@
     <meta name="description" content="Borsaya ilk adımını atmak isteyenler için kapsamlı rehber. Hisse senedi alım satımının temellerini, risk yönetimini ve analiz yöntemlerini sade bir dille öğrenin.">
     <meta name="keywords" content="borsa, hisse senedi, yatırım, borsa rehberi, borsa nasıl oynanır, temel analiz, teknik analiz, risk yönetimi, yatırım hesabı, stop loss, temettü, portföy, Hesapkolik">
     
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3655KNY8CP');
+    </script>
 
     <!-- Chosen Palette: Calm Harmony (Adapted to Hesapkolik style/colors) -->
     <!-- Application Structure Plan: Bu SPA, kullanıcıların karmaşık bilgileri blog post formatında kolayca sindirmesini sağlamak için tasarlanmıştır. Başlangıçta bir "Hero" bölümü ile dikkat çekilir. Her bir ana konu (Giriş, Temel Kavramlar, İlk Adımlar, Analiz, Risk Yönetimi, Hatalar, Kaynaklar) ayrı bir bölüm olarak sunulur. Etkileşimler, öğrenmeyi pekiştirmek için tasarlanmıştır: Terimler için filtrelenebilir bir sözlük (akordeon), analiz yöntemlerini karşılaştıran dinamik grafik (Radar Chart), riski kişiselleştiren bir kaydırıcı ve çeşitlendirmeyi gösteren bir donut grafik. Bu yapı, bir blog yazısının okunabilirliğini korurken interaktif öğrenme deneyimi sunar. Hesapkolik'in header ve footer'ı entegre edilerek marka bütünlüğü sağlanmıştır. -->
@@ -125,21 +139,8 @@
 </head>
 <body class="antialiased">
 
-    <!-- Hesapkolik Header -->
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <div class="text-2xl font-bold text-gray-800">Hesapkolik Blog</div>
-            <div class="hidden md:flex space-x-6">
-                <a href="#giris" class="text-gray-600 hover:text-[#3498db]">Giriş</a>
-                <a href="#terimler" class="text-gray-600 hover:text-[#3498db]">Terimler</a>
-                <a href="#ilk-adimlar" class="text-gray-600 hover:text-[#3498db]">İlk Adımlar</a>
-                <a href="#analiz" class="text-gray-600 hover:text-[#3498db]">Analiz</a>
-                <a href="#risk" class="text-gray-600 hover:text-[#3498db]">Risk Yönetimi</a>
-                <a href="#hatalar" class="text-gray-600 hover:text-[#3498db]">Sık Yapılan Hatalar</a>
-                <a href="#kaynaklar" class="text-gray-600 hover:text-[#3498db]">Kaynaklar</a>
-            </div>
-        </nav>
-    </header>
+    <!-- Header will be loaded here dynamically -->
+    <div id="header-placeholder"></div>
 
     <main>
         <section id="hero" class="py-20 hero-bg">
@@ -724,13 +725,8 @@
         </section>
     </main>
     
-    <!-- Hesapkolik Footer -->
-    <footer class="bg-gray-800 text-white py-8">
-        <div class="container mx-auto px-6 text-center">
-            <p>&copy; 2025 Hesapkolik Blog. Tüm Hakları Saklıdır.</p>
-            <p class="text-sm text-gray-400 mt-2">Bu içerik bilgilendirme amacıyla hazırlanmıştır ve yatırım tavsiyesi değildir.</p>
-        </div>
-    </footer>
+    <!-- Footer will be loaded here dynamically -->
+    <div id="footer-placeholder"></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -953,6 +949,59 @@
                     }
                 }
             });
+
+            // Hesapkolik Header ve Footer yükleme (mevcut koddan alındı)
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            // Header Yükleme
+            fetch(headerPath)
+               .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+                    }
+                    return response.text();
+                })
+               .then(data => {
+                    const headerPlaceholder = document.getElementById('header-placeholder');
+                    if (headerPlaceholder) {
+                        headerPlaceholder.innerHTML = data;
+                        const scriptElement = headerPlaceholder.querySelector('script');
+                        if (scriptElement) {
+                            const newScript = document.createElement('script');
+                            newScript.textContent = scriptElement.textContent;
+                            document.body.appendChild(newScript);
+                            scriptElement.remove();
+                        }
+                    }
+                })
+               .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+            // Footer Yükleme
+            fetch(footerPath)
+               .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+                    }
+                    return response.text();
+                })
+               .then(data => {
+                    const footerPlaceholder = document.getElementById('footer-placeholder');
+                    if (footerPlaceholder) {
+                        // Creating a temporary div to parse HTML content safely
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = data;
+                        const footerElement = tempDiv.querySelector('footer'); // Assuming the footer content is wrapped in a <footer> tag
+                        if (footerElement) {
+                            footerPlaceholder.replaceWith(footerElement);
+                        } else {
+                            // Fallback if no <footer> tag is found, just inject raw HTML
+                            footerPlaceholder.innerHTML = data;
+                        }
+                    }
+                })
+               .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
         });
     </script>
 </body>
