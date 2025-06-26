@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Gelişmiş Hesap Makinesi</title>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    <link href="/css/header.css" rel="stylesheet"/>
+    <meta content="Kapsamlı hesap makinesi: aritmetik, geometrik hesaplamalar, mod, medyan ve daha fazlası." name="description"/>
+    <meta content="hesap makinesi, aritmetik, geometrik, mod, medyan, istatistik, sayı hesaplama" name="keywords"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <style>
+        /* Bu CSS sadece bu sayfa için özeldir. İstersen style.css dosyana taşıyabilirsin. */
+        .calculator-section {
+            padding: 60px 0;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 2.5em;
+        }
+
+        .category-buttons, .sub-category-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .category-button, .sub-category-button {
+            background-color: #3498db; /* Mavi tonu */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen */
+            max-width: 250px;
+            text-align: center;
+            text-decoration: none;
+        }
+        @media (max-width: 768px) {
+            .category-button, .sub-category-button {
+                flex: 1 1 calc(50% - 30px);
+            }
+        }
+        @media (max-width: 480px) {
+            .category-button, .sub-category-button {
+                flex: 1 1 calc(100% - 30px);
+            }
+        }
+
+        .category-button:hover, .sub-category-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .category-button.active, .sub-category-button.active {
+            background-color: #2471a3;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .calculator-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 750px; /* Genişletilmiş alan */
+            margin: 0 auto;
+            text-align: left;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .category-section-content, .calculation-section {
+            display: none;
+            width: 100%;
+            text-align: left;
+        }
+        .category-section-content.active, .calculation-section.active {
+            display: block;
+        }
+
+        .category-section-content h3 {
+            color: #444;
+            margin-bottom: 20px;
+            font-size: 2em;
+            text-align: center;
+        }
+        .category-section-content p.info-text {
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.1em;
+            color: #666;
+        }
+
+        .calculation-section h4 {
+            color: #555;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            text-align: center;
+            border-bottom: 1px dashed #eee;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+
+        .calculation-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calculation-section input[type="number"],
+        .calculation-section input[type="text"],
+        .calculation-section select {
+            width: calc(100% - 20px);
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .calculation-section select {
+            width: 100%;
+        }
+
+        .calculation-section button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 20px auto 0 auto;
+        }
+        .calculation-section button:hover {
+            background-color: #2980b9;
+        }
+
+        .result-output {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-left: 5px solid #3498db;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            display: none;
+        }
+        .result-output strong {
+            color: #e74c3c;
+        }
+        .result-output p {
+            margin-bottom: 5px;
+        }
+        .result-output p:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-text {
+            font-size: 0.9em;
+            color: #777;
+            margin-top: 10px;
+        }
+        .calculation-steps-section {
+            margin-top: 40px;
+            background-color: #f2f2f2;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            text-align: left;
+            display: none;
+        }
+        .calculation-steps-section.active {
+            display: block;
+        }
+        .calculation-steps-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+        .calculation-steps-section p {
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .calculation-steps-section ul {
+            list-style-type: decimal;
+            padding-left: 25px;
+            color: #555;
+        }
+        .calculation-steps-section ul li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        .calculation-steps-section strong {
+            color: #000;
+        }
+
+        #backToCategories {
+            background-color: #f1c40f; /* Sarı tonu */
+            margin-top: 20px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 0.9em;
+            text-decoration: none;
+        }
+        #backToCategories:hover {
+            background-color: #e6b700;
+        }
+
+        .number-input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: flex-end;
+        }
+
+        .number-input-group input {
+            flex-grow: 1;
+            min-width: 100px;
+        }
+
+        .number-input-group button {
+            flex-shrink: 0;
+            margin: 0;
+            width: auto;
+            padding: 8px 15px;
+        }
+    </style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+<main>
+    <section class="calculator-section">
+        <div class="container">
+            <h1 class="main-title">Gelişmiş Hesap Makinesi</h1>
+            <p class="section-description" id="main-instruction">Yapmak istediğiniz hesaplama türünü seçin:</p>
+
+            <div class="category-buttons" id="main-category-buttons">
+                <button class="category-button" data-category="arithmetic">Aritmetik Hesaplamalar</button>
+                <button class="category-button" data-category="geometric">Geometrik Hesaplamalar</button>
+                <button class="category-button" data-category="statistics">İstatistiksel Analiz</button>
+            </div>
+
+            <div class="calculator-container" id="calculator-content-area">
+                <div class="category-section-content active" id="default-message">
+                    <p class="info-text">Yukarıdaki kategorilerden birini seçerek hesaplamalara başlayın.</p>
+                </div>
+
+                <div class="category-section-content" id="arithmetic-content">
+                    <h3>Aritmetik Hesaplamalar</h3>
+                    <p class="info-text">Birden fazla sayı üzerinde temel aritmetik işlemleri (toplama, çıkarma, çarpma, bölme) yapın.</p>
+                    <div class="sub-category-buttons">
+                        <button class="sub-category-button" data-calc="sum">Toplam</button>
+                        <button class="sub-category-button" data-calc="subtract">Çıkarma</button>
+                        <button class="sub-category-button" data-calc="multiply">Çarpma</button>
+                        <button class="sub-category-button" data-calc="divide">Bölme</button>
+                    </div>
+                </div>
+
+                <div class="category-section-content" id="geometric-content">
+                    <h3>Geometrik Hesaplamalar</h3>
+                    <p class="info-text">Geometrik şekillerin alan, çevre ve hacim gibi özelliklerini hesaplayın.</p>
+                    <div class="sub-category-buttons">
+                        <button class="sub-category-button" data-calc="circle-area">Daire Alanı</button>
+                        <button class="sub-category-button" data-calc="rectangle-area">Dikdörtgen Alanı</button>
+                        <button class="sub-category-button" data-calc="triangle-area">Üçgen Alanı</button>
+                        <button class="sub-category-button" data-calc="cylinder-volume">Silindir Hacmi</button>
+                    </div>
+                </div>
+
+                <div class="category-section-content" id="statistics-content">
+                    <h3>İstatistiksel Analiz</h3>
+                    <p class="info-text">Girilen sayıların mod, medyan, ortalama ve standart sapma gibi istatistiksel değerlerini bulun.</p>
+                    <div class="sub-category-buttons">
+                        <button class="sub-category-button" data-calc="mean-median-mode">Ortalama, Medyan, Mod</button>
+                        <button class="sub-category-button" data-calc="variance-stddev">Varyans ve Standart Sapma</button>
+                    </div>
+                </div>
+
+                <div class="calculation-section" id="sum-calc">
+                    <h4>Sayıların Toplamı</h4>
+                    <label for="numbersSum">Sayıları virgülle ayırarak girin (örn: 10,20,30):</label>
+                    <input type="text" id="numbersSum" required placeholder="Sayıları buraya girin"/>
+                    <button onclick="calculateArithmetic('sum')">Hesapla</button>
+                    <div class="result-output" id="sumResult"></div>
+                    <div class="calculation-steps-section" id="sumSteps"></div>
+                </div>
+
+                <div class="calculation-section" id="subtract-calc">
+                    <h4>Sayıların Farkı</h4>
+                    <label for="numbersSubtract">Sayıları virgülle ayırarak girin (örn: 100,20,5):</label>
+                    <input type="text" id="numbersSubtract" required placeholder="Sayıları buraya girin"/>
+                    <button onclick="calculateArithmetic('subtract')">Hesapla</button>
+                    <div class="result-output" id="subtractResult"></div>
+                    <div class="calculation-steps-section" id="subtractSteps"></div>
+                </div>
+
+                <div class="calculation-section" id="multiply-calc">
+                    <h4>Sayıların Çarpımı</h4>
+                    <label for="numbersMultiply">Sayıları virgülle ayırarak girin (örn: 2,3,4):</label>
+                    <input type="text" id="numbersMultiply" required placeholder="Sayıları buraya girin"/>
+                    <button onclick="calculateArithmetic('multiply')">Hesapla</button>
+                    <div class="result-output" id="multiplyResult"></div>
+                    <div class="calculation-steps-section" id="multiplySteps"></div>
+                </div>
+
+                <div class="calculation-section" id="divide-calc">
+                    <h4>Sayıların Bölümü</h4>
+                    <label for="numbersDivide">Bölünecek sayıyı ve bölenleri virgülle ayırarak girin (örn: 100,2,5):</label>
+                    <input type="text" id="numbersDivide" required placeholder="Sayıları buraya girin"/>
+                    <button onclick="calculateArithmetic('divide')">Hesapla</button>
+                    <div class="result-output" id="divideResult"></div>
+                    <div class="calculation-steps-section" id="divideSteps"></div>
+                </div>
+
+                <div class="calculation-section" id="circle-area-calc">
+                    <h4>Daire Alanı</h4>
+                    <label for="circleRadius">Yarıçap:</label>
+                    <input type="number" id="circleRadius" required min="0" step="any" placeholder="Yarıçapı girin"/>
+                    <button onclick="calculateGeometric('circle-area')">Hesapla</button>
+                    <div class="result-output" id="circle-areaResult"></div>
+                    <div class="calculation-steps-section" id="circle-areaSteps"></div>
+                </div>
+
+                <div class="calculation-section" id="rectangle-area-calc">
+                    <h4>Dikdörtgen Alanı</h4>
+                    <label for="rectangleWidth">Genişlik:</label>
+                    <input type="number" id="rectangleWidth" required min="0" step="any" placeholder="Genişliği girin"/>
+                    <label for="rectangleHeight">Yükseklik:</label>
+                    <input type="number" id="rectangleHeight" required min="0" step="any" placeholder="Yüksekliği girin"/>
+                    <button onclick="calculateGeometric('rectangle-area')">Hesapla</button>
+                    <div class="result-output" id="rectangle-areaResult"></div>
+                    <div class="calculation-steps-section" id="rectangle-areaSteps"></div>
+                </div>
+
+                <div class="calculation-section" id="triangle-area-calc">
+                    <h4>Üçgen Alanı</h4>
+                    <label for="triangleBase">Taban Uzunluğu:</label>
+                    <input type="number" id="triangleBase" required min="0" step="any" placeholder="Taban uzunluğunu girin"/>
+                    <label for="triangleHeight">Yükseklik:</label>
+                    <input type="number" id="triangleHeight" required min="0" step="any" placeholder="Yüksekliği girin"/>
+                    <button onclick="calculateGeometric('triangle-area')">Hesapla</button>
+                    <div class="result-output" id="triangle-areaResult"></div>
+                    <div class="calculation-steps-section" id="triangle-areaSteps"></div>
+                </div>
+
+                <div class="calculation-section" id="cylinder-volume-calc">
+                    <h4>Silindir Hacmi</h4>
+                    <label for="cylinderRadius">Yarıçap:</label>
+                    <input type="number" id="cylinderRadius" required min="0" step="any" placeholder="Yarıçapı girin"/>
+                    <label for="cylinderHeight">Yükseklik:</label>
+                    <input type="number" id="cylinderHeight" required min="0" step="any" placeholder="Yüksekliği girin"/>
+                    <button onclick="calculateGeometric('cylinder-volume')">Hesapla</button>
+                    <div class="result-output" id="cylinder-volumeResult"></div>
+                    <div class="calculation-steps-section" id="cylinder-volumeSteps"></div>
+                </div>
+
+                <div class="calculation-section" id="mean-median-mode-calc">
+                    <h4>Ortalama, Medyan, Mod Hesaplama</h4>
+                    <label for="numbersStats">Sayıları virgülle ayırarak girin (örn: 5,8,12,8,15,12,8):</label>
+                    <input type="text" id="numbersStats" required placeholder="Sayıları buraya girin"/>
+                    <button onclick="calculateStatistics('mean-median-mode')">Hesapla</button>
+                    <div class="result-output" id="mean-median-modeResult"></div>
+                    <div class="calculation-steps-section" id="mean-median-modeSteps"></div>
+                </div>
+
+                <div class="calculation-section" id="variance-stddev-calc">
+                    <h4>Varyans ve Standart Sapma Hesaplama</h4>
+                    <label for="numbersVarStdDev">Sayıları virgülle ayırarak girin (örn: 2,4,4,4,5,5,7,9):</label>
+                    <input type="text" id="numbersVarStdDev" required placeholder="Sayıları buraya girin"/>
+                    <button onclick="calculateStatistics('variance-stddev')">Hesapla</button>
+                    <div class="result-output" id="variance-stddevResult"></div>
+                    <div class="calculation-steps-section" id="variance-stddevSteps"></div>
+                </div>
+
+                <button class="category-button" id="backToCategories" style="display: none;">Geri (Kategorilere Dön)</button>
+            </div>
+        </div>
+    </section>
+</main>
+<div id="footer-placeholder"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mevcut header ve footer yükleme kodlarınızı buraya ekleyebilirsiniz.
+        // fetch('/header.html').then(response => response.text()).then(data => document.getElementById('header-placeholder').innerHTML = data);
+        // fetch('/footer.html').then(response => response.text()).then(data => document.getElementById('footer-placeholder').innerHTML = data);
+
+        const mainCategoryButtons = document.getElementById('main-category-buttons');
+        const mainInstruction = document.getElementById('main-instruction');
+        const calculatorContentArea = document.getElementById('calculator-content-area');
+        const defaultMessageDiv = document.getElementById('default-message');
+        const backToCategoriesButton = document.getElementById('backToCategories');
+
+        const categoryContents = {
+            'arithmetic': document.getElementById('arithmetic-content'),
+            'geometric': document.getElementById('geometric-content'),
+            'statistics': document.getElementById('statistics-content')
+        };
+
+        const calculationSections = {
+            'sum': document.getElementById('sum-calc'),
+            'subtract': document.getElementById('subtract-calc'),
+            'multiply': document.getElementById('multiply-calc'),
+            'divide': document.getElementById('divide-calc'),
+            'circle-area': document.getElementById('circle-area-calc'),
+            'rectangle-area': document.getElementById('rectangle-area-calc'),
+            'triangle-area': document.getElementById('triangle-area-calc'),
+            'cylinder-volume': document.getElementById('cylinder-volume-calc'),
+            'mean-median-mode': document.getElementById('mean-median-mode-calc'),
+            'variance-stddev': document.getElementById('variance-stddev-calc')
+        };
+
+        let currentCategory = null;
+
+        function showCategoryContent(category) {
+            Object.values(calculationSections).forEach(section => section.classList.remove('active'));
+            Object.values(categoryContents).forEach(content => content.classList.remove('active'));
+            defaultMessageDiv.classList.remove('active');
+            mainCategoryButtons.style.display = 'flex';
+            backToCategoriesButton.style.display = 'none';
+
+            if (category === 'default') {
+                defaultMessageDiv.classList.add('active');
+                mainCategoryButtons.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
+                mainInstruction.style.display = 'block';
+            } else {
+                categoryContents[category].classList.add('active');
+                mainCategoryButtons.querySelectorAll('.category-button').forEach(btn => {
+                    if (btn.dataset.category === category) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+                mainInstruction.style.display = 'none';
+            }
+            currentCategory = category;
+            document.querySelectorAll('.result-output').forEach(output => output.style.display = 'none');
+            document.querySelectorAll('.calculation-steps-section').forEach(steps => steps.style.display = 'none');
+        }
+
+        function showCalculationSection(calcType) {
+            Object.values(categoryContents).forEach(content => content.classList.remove('active'));
+            Object.values(calculationSections).forEach(section => section.classList.remove('active'));
+            defaultMessageDiv.classList.remove('active');
+            mainCategoryButtons.style.display = 'none';
+            mainInstruction.style.display = 'none';
+            backToCategoriesButton.style.display = 'block';
+
+            calculationSections[calcType].classList.add('active');
+            document.querySelectorAll('.result-output').forEach(output => output.style.display = 'none');
+            document.querySelectorAll('.calculation-steps-section').forEach(steps => steps.style.display = 'none');
+        }
+
+        document.querySelectorAll('.category-button').forEach(button => {
+            button.addEventListener('click', () => {
+                showCategoryContent(button.dataset.category);
+            });
+        });
+
+        document.querySelectorAll('.sub-category-button').forEach(button => {
+            button.addEventListener('click', () => {
+                showCalculationSection(button.dataset.calc);
+            });
+        });
+
+        backToCategoriesButton.addEventListener('click', () => {
+            showCategoryContent(currentCategory || 'default');
+        });
+
+        showCategoryContent('default'); // Sayfa yüklendiğinde varsayılan mesajı göster
+
+        // --- Yardımcı Fonksiyonlar ---
+        function parseNumbers(inputStr) {
+            return inputStr.split(',').map(Number).filter(n => !isNaN(n));
+        }
+
+        function displayResult(resultDivId, stepsDivId, htmlContent, stepsHtmlContent) {
+            const resultDiv = document.getElementById(resultDivId);
+            const stepsDiv = document.getElementById(stepsDivId);
+
+            resultDiv.innerHTML = htmlContent;
+            resultDiv.style.display = 'block';
+
+            stepsDiv.innerHTML = stepsHtmlContent;
+            stepsDiv.style.display = 'block';
+        }
+
+        function showError(resultDivId, message) {
+            const resultDiv = document.getElementById(resultDivId);
+            resultDiv.innerHTML = `<p class="error" style="color: red;">${message}</p>`;
+            resultDiv.style.display = 'block';
+            document.getElementById(resultDivId.replace('Result', 'Steps')).style.display = 'none';
+        }
+
+        // --- Aritmetik Hesaplama Fonksiyonları ---
+        window.calculateArithmetic = function(type) {
+            const inputId = `numbers${type.charAt(0).toUpperCase() + type.slice(1)}`;
+            const numbersStr = document.getElementById(inputId).value;
+            const numbers = parseNumbers(numbersStr);
+            const resultDivId = `${type}Result`;
+            const stepsDivId = `${type}Steps`;
+
+            if (numbers.length === 0) {
+                showError(resultDivId, 'Lütfen hesaplama için geçerli sayılar girin.');
+                return;
+            }
+
+            let result;
+            let stepsHtml = `<h3>Nasıl Hesaplandı?</h3><ul>`;
+
+            switch (type) {
+                case 'sum':
+                    result = numbers.reduce((a, b) => a + b, 0);
+                    stepsHtml += `<li><strong>Adım 1:</strong> Girilen tüm sayılar toplanır.</li>`;
+                    break;
+                case 'subtract':
+                    if (numbers.length < 2) {
+                        showError(resultDivId, 'Çıkarma işlemi için en az iki sayı girin.');
+                        return;
+                    }
+                    result = numbers.reduce((a, b) => a - b);
+                    stepsHtml += `<li><strong>Adım 1:</strong> İlk sayıdan diğer tüm sayılar sırasıyla çıkarılır.</li>`;
+                    break;
+                case 'multiply':
+                    result = numbers.reduce((a, b) => a * b, 1);
+                    stepsHtml += `<li><strong>Adım 1:</strong> Girilen tüm sayılar birbiriyle çarpılır.</li>`;
+                    break;
+                case 'divide':
+                    if (numbers.length < 2) {
+                        showError(resultDivId, 'Bölme işlemi için bölünecek sayı ve en az bir bölen girin.');
+                        return;
+                    }
+                    if (numbers.some((num, index) => index > 0 && num === 0)) {
+                        showError(resultDivId, 'Bölen sayılar sıfır olamaz!');
+                        return;
+                    }
+                    result = numbers.reduce((a, b) => a / b);
+                    stepsHtml += `<li><strong>Adım 1:</strong> İlk sayı, diğer tüm sayılara sırasıyla bölünür.</li>`;
+                    break;
+            }
+            stepsHtml += `</ul>`;
+
+            displayResult(resultDivId, stepsDivId, `<p><strong>Sonuç:</strong> ${result}</p>`, stepsHtml);
+        };
+
+        // --- Geometrik Hesaplama Fonksiyonları ---
+        window.calculateGeometric = function(type) {
+            let result;
+            let stepsHtml = `<h3>Nasıl Hesaplandı?</h3><ul>`;
+            const resultDivId = `${type}Result`;
+            const stepsDivId = `${type}Steps`;
+
+            switch (type) {
+                case 'circle-area':
+                    const radius = parseFloat(document.getElementById('circleRadius').value);
+                    if (isNaN(radius) || radius < 0) {
+                        showError(resultDivId, 'Lütfen geçerli bir yarıçap girin.');
+                        return;
+                    }
+                    result = Math.PI * radius * radius;
+                    stepsHtml += `<li><strong>Adım 1:</strong> Dairenin alanı $A = \pi r^2$ formülü ile hesaplanır. Burada $\\pi$ (Pi) yaklaşık olarak 3.14159'dur ve $r$ yarıçaptır.</li>`;
+                    break;
+                case 'rectangle-area':
+                    const width = parseFloat(document.getElementById('rectangleWidth').value);
+                    const height = parseFloat(document.getElementById('rectangleHeight').value);
+                    if (isNaN(width) || isNaN(height) || width < 0 || height < 0) {
+                        showError(resultDivId, 'Lütfen geçerli genişlik ve yükseklik değerleri girin.');
+                        return;
+                    }
+                    result = width * height;
+                    stepsHtml += `<li><strong>Adım 1:</strong> Dikdörtgenin alanı $A = Genişlik \times Yükseklik$ formülü ile hesaplanır.</li>`;
+                    break;
+                case 'triangle-area':
+                    const base = parseFloat(document.getElementById('triangleBase').value);
+                    const triangleHeight = parseFloat(document.getElementById('triangleHeight').value);
+                    if (isNaN(base) || isNaN(triangleHeight) || base < 0 || triangleHeight < 0) {
+                        showError(resultDivId, 'Lütfen geçerli taban ve yükseklik değerleri girin.');
+                        return;
+                    }
+                    result = 0.5 * base * triangleHeight;
+                    stepsHtml += `<li><strong>Adım 1:</strong> Üçgenin alanı $A = \\frac{1}{2} \times Taban \times Yükseklik$ formülü ile hesaplanır.</li>`;
+                    break;
+                case 'cylinder-volume':
+                    const cylRadius = parseFloat(document.getElementById('cylinderRadius').value);
+                    const cylHeight = parseFloat(document.getElementById('cylinderHeight').value);
+                    if (isNaN(cylRadius) || isNaN(cylHeight) || cylRadius < 0 || cylHeight < 0) {
+                        showError(resultDivId, 'Lütfen geçerli yarıçap ve yükseklik değerleri girin.');
+                        return;
+                    }
+                    result = Math.PI * cylRadius * cylRadius * cylHeight;
+                    stepsHtml += `<li><strong>Adım 1:</strong> Silindirin hacmi $V = \pi r^2 h$ formülü ile hesaplanır. Burada $\\pi$ (Pi) yaklaşık olarak 3.14159'dur, $r$ yarıçap ve $h$ yüksekliktir.</li>`;
+                    break;
+            }
+            stepsHtml += `</ul>`;
+
+            displayResult(resultDivId, stepsDivId, `<p><strong>Sonuç:</strong> ${result.toFixed(2)}</p>`, stepsHtml);
+        };
+
+        // --- İstatistiksel Analiz Fonksiyonları ---
+        window.calculateStatistics = function(type) {
+            const inputId = (type === 'mean-median-mode') ? 'numbersStats' : 'numbersVarStdDev';
+            const numbersStr = document.getElementById(inputId).value;
+            const numbers = parseNumbers(numbersStr).sort((a, b) => a - b); // Medyan için sıralama önemli
+            const resultDivId = `${type}Result`;
+            const stepsDivId = `${type}Steps`;
+
+            if (numbers.length === 0) {
+                showError(resultDivId, 'Lütfen istatistiksel analiz için geçerli sayılar girin.');
+                return;
+            }
+
+            let htmlContent = '';
+            let stepsHtml = `<h3>Nasıl Hesaplandı?</h3><ul>`;
+
+            switch (type) {
+                case 'mean-median-mode':
+                    // Ortalama (Mean)
+                    const sum = numbers.reduce((a, b) => a + b, 0);
+                    const mean = sum / numbers.length;
+                    htmlContent += `<p><strong>Ortalama (Mean):</strong> ${mean.toFixed(2)}</p>`;
+                    stepsHtml += `<li><strong>Ortalama (Mean):</strong> Tüm sayıların toplamı, sayıların adedine bölünerek bulunur.</li>`;
+
+                    // Medyan (Median)
+                    let median;
+                    const mid = Math.floor(numbers.length / 2);
+                    if (numbers.length % 2 === 0) {
+                        median = (numbers[mid - 1] + numbers[mid]) / 2;
+                    } else {
+                        median = numbers[mid];
+                    }
+                    htmlContent += `<p><strong>Medyan (Median):</strong> ${median.toFixed(2)}</p>`;
+                    stepsHtml += `<li><strong>Medyan (Median):</strong> Sayılar küçükten büyüğe sıralandıktan sonra, ortadaki sayıdır. Eğer çift sayıda sayı varsa, ortadaki iki sayının ortalaması alınır.</li>`;
+
+                    // Mod (Mode)
+                    const frequencyMap = {};
+                    numbers.forEach(num => {
+                        frequencyMap[num] = (frequencyMap[num] || 0) + 1;
+                    });
+
+                    let maxFrequency = 0;
+                    let modes = [];
+                    for (const num in frequencyMap) {
+                        if (frequencyMap[num] > maxFrequency) {
+                            maxFrequency = frequencyMap[num];
+                            modes = [Number(num)];
+                        } else if (frequencyMap[num] === maxFrequency && maxFrequency > 1) { // Birden fazla mod olabilir
+                            modes.push(Number(num));
+                        }
+                    }
+                    
+                    if (modes.length === numbers.length || maxFrequency === 1) { // Her sayı bir kez geçiyorsa mod yok
+                        htmlContent += `<p><strong>Mod (Mode):</strong> Mod bulunamadı (Tüm sayılar tekil veya frekansları aynı).</p>`;
+                        stepsHtml += `<li><strong>Mod (Mode):</strong> Veri setinde en sık tekrar eden sayıdır. Bir veya birden fazla mod olabilir. Eğer her sayı eşit sıklıkta geçiyorsa mod yoktur.</li>`;
+                    } else {
+                         htmlContent += `<p><strong>Mod (Mode):</strong> ${modes.join(', ')}</p>`;
+                         stepsHtml += `<li><strong>Mod (Mode):</strong> Veri setinde en sık tekrar eden sayıdır. Bir veya birden fazla mod olabilir.</li>`;
+                    }
+                    break;
+
+                case 'variance-stddev':
+                    // Ortalama (Variance ve StdDev için gerekli)
+                    const currentSum = numbers.reduce((a, b) => a + b, 0);
+                    const currentMean = currentSum / numbers.length;
+
+                    // Varyans (Variance)
+                    const squaredDifferences = numbers.map(num => Math.pow(num - currentMean, 2));
+                    const variance = squaredDifferences.reduce((a, b) => a + b, 0) / numbers.length;
+                    htmlContent += `<p><strong>Varyans (Variance):</strong> ${variance.toFixed(2)}</p>`;
+                    stepsHtml += `<li><strong>Varyans (Variance):</strong> Her bir sayının ortalamadan farkının karelerinin ortalamasıdır. Verilerin dağılımını gösterir.</li>`;
+
+                    // Standart Sapma (Standard Deviation)
+                    const standardDeviation = Math.sqrt(variance);
+                    htmlContent += `<p><strong>Standart Sapma (Standard Deviation):</strong> ${standardDeviation.toFixed(2)}</p>`;
+                    stepsHtml += `<li><strong>Standart Sapma (Standard Deviation):</strong> Varyansın kareköküdür ve veri setindeki sayıların ortalamadan ne kadar saptığını gösterir.</li>`;
+                    break;
+            }
+            stepsHtml += `</ul>`;
+
+            displayResult(resultDivId, stepsDivId, htmlContent, stepsHtml);
+        };
+    });
+</script>
+</body>
+</html>
