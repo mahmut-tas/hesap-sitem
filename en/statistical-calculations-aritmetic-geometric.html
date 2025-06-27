@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Statistical Calculations - Comprehensive Analysis</title>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    <link href="/css/header.css" rel="stylesheet"/>
+    <meta content="Calculate statistical values like arithmetic mean, geometric mean, mode, median, variance, and standard deviation for the entered numbers." name="description"/>
+    <meta content="arithmetic mean, geometric mean, mode, median, variance, standard deviation, statistical calculator, number analysis tool" name="keywords"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <style>
+        /* This CSS is specific to this page only. You can merge it with your style.css file. */
+        .calculator-section {
+            padding: 60px 0;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 2.5em;
+        }
+
+        /* Main Title Styles */
+        .main-title {
+            background-color: #3498db; /* Your site's blue color */
+            color: white !important; /* White text */
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            display: inline-block; /* Ensures background color only covers the title text */
+        }
+
+        .category-buttons, .sub-category-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .category-button, .sub-category-button {
+            background-color: #f1c40f; /* Main theme color */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            flex: 1 1 calc(33% - 30px); /* 3-column layout */
+            max-width: 280px; /* Button width increased */
+            text-align: center;
+            text-decoration: none;
+        }
+        @media (max-width: 768px) {
+            .category-button, .sub-category-button {
+                flex: 1 1 calc(50% - 30px);
+            }
+        }
+        @media (max-width: 480px) {
+            .category-button, .sub-category-button {
+                flex: 1 1 calc(100% - 30px);
+            }
+        }
+
+        .category-button:hover, .sub-category-button:hover {
+            background-color: #e6b700;
+            transform: translateY(-3px);
+        }
+
+        .category-button.active, .sub-category-button.active {
+            background-color: #d4ac00;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .calculator-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 750px;
+            margin: 0 auto;
+            text-align: left;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .category-section-content, .calculation-section {
+            display: none;
+            width: 100%;
+            text-align: left;
+        }
+        .category-section-content.active, .calculation-section.active {
+            display: block;
+        }
+
+        .category-section-content h3 {
+            color: #444;
+            margin-bottom: 20px;
+            font-size: 2em;
+            text-align: center;
+        }
+        .category-section-content p.info-text {
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.1em;
+            color: #666;
+        }
+
+        .calculation-section h4 {
+            color: #555;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            text-align: center;
+            border-bottom: 1px dashed #eee;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+
+        .calculation-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calculation-section input[type="text"] { /* Using text type for numbers */
+            width: calc(100% - 20px);
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .calculation-section button {
+            background-color: #f1c40f;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 20px auto 0 auto;
+        }
+        .calculation-section button:hover {
+            background-color: #d4ac00;
+        }
+
+        .result-output {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-left: 5px solid #f1c40f;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            display: none;
+        }
+        .result-output strong {
+            color: #2980b9; /* Blue tone for results */
+        }
+        .result-output p {
+            margin-bottom: 5px;
+        }
+        .result-output p:last-child {
+            margin-bottom: 0;
+        }
+        .result-output .error {
+            color: #e74c3c; /* Red for error messages */
+            font-weight: bold;
+        }
+
+        .info-text {
+            font-size: 0.9em;
+            color: #777;
+            margin-top: 10px;
+        }
+        .calculation-steps-section {
+            margin-top: 40px;
+            background-color: #f2f2f2;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            text-align: left;
+            display: none;
+        }
+        .calculation-steps-section.active {
+            display: block;
+        }
+        .calculation-steps-section h3 {
+            color: #333;
+            margin-bottom: 15px; /* Increased space between heading and paragraph */
+            text-align: center;
+            font-size: 1.5em;
+        }
+        .calculation-steps-section h5 { /* Style for new heading level */
+            color: #555;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            border-bottom: 1px dotted #ccc;
+            padding-bottom: 5px;
+        }
+        .calculation-steps-section p {
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .calculation-steps-section ul {
+            list-style-type: decimal;
+            padding-left: 25px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .calculation-steps-section ul li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        .calculation-steps-section strong {
+            color: #000;
+        }
+
+        #backToCategories {
+            background-color: #3498db; /* Different color for back button */
+            margin-top: 20px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 0.9em;
+            text-decoration: none;
+        }
+        #backToCategories:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="calculator-section">
+            <div class="container">
+                <h1 class="main-title" style="background-color: #3498db; color: white;">Statistical Calculations</h1>
+                <p class="section-description" id="main-instruction">Select the type of analysis you want to perform:</p>
+
+                <div class="category-buttons" id="main-category-buttons">
+                    <button class="category-button" data-category="central-tendency">Measures of Central Tendency</button>
+                    <button class="category-button" data-category="dispersion">Measures of Dispersion</button>
+                </div>
+
+                <div class="calculator-container" id="calculator-content-area">
+                    <div class="category-section-content active" id="default-message">
+                        <p class="info-text">Select a category above to start number analysis.</p>
+                    </div>
+
+                    <div class="category-section-content" id="central-tendency-content">
+                        <h3>Measures of Central Tendency</h3>
+                        <p class="info-text">Calculate values like mean, median, and mode that describe the central position of a data set.</p>
+                        <div class="sub-category-buttons">
+                            <button class="sub-category-button" data-calc="arithmetic-mean">Arithmetic Mean</button>
+                            <button class="sub-category-button" data-calc="geometric-mean">Geometric Mean</button>
+                            <button class="sub-category-button" data-calc="median-mode">Median and Mode</button>
+                        </div>
+                    </div>
+
+                    <div class="category-section-content" id="dispersion-content">
+                        <h3>Measures of Dispersion</h3>
+                        <p class="info-text">Calculate values like variance and standard deviation that show how spread out the values in a data set are.</p>
+                        <div class="sub-category-buttons">
+                            <button class="sub-category-button" data-calc="variance-stddev">Variance and Standard Deviation</button>
+                            <button class="sub-category-button" data-calc="range">Range</button>
+                        </div>
+                    </div>
+
+                    <div class="calculation-section" id="arithmetic-mean-calc">
+                        <h4>Arithmetic Mean Calculation</h4>
+                        <label for="numbersArithmeticMean">Enter numbers separated by commas (e.g., 10, 20, 30, 40):</label>
+                        <input type="text" id="numbersArithmeticMean" required placeholder="Enter numbers here"/>
+                        <button onclick="calculateStatisticalValue('arithmetic-mean')">Calculate</button>
+                        <div class="result-output" id="arithmetic-meanResult"></div>
+                        <div class="calculation-steps-section" id="arithmetic-meanSteps"></div>
+                    </div>
+
+                    <div class="calculation-section" id="geometric-mean-calc">
+                        <h4>Geometric Mean Calculation</h4>
+                        <label for="numbersGeometricMean">Enter numbers separated by commas (e.g., 2, 8, 16, 32). Enter positive numbers only:</label>
+                        <input type="text" id="numbersGeometricMean" required placeholder="Enter numbers here"/>
+                        <button onclick="calculateStatisticalValue('geometric-mean')">Calculate</button>
+                        <div class="result-output" id="geometric-meanResult"></div>
+                        <div class="calculation-steps-section" id="geometric-meanSteps"></div>
+                    </div>
+
+                    <div class="calculation-section" id="median-mode-calc">
+                        <h4>Median and Mode Calculation</h4>
+                        <label for="numbersMedianMode">Enter numbers separated by commas (e.g., 5, 8, 12, 8, 15, 12, 8):</label>
+                        <input type="text" id="numbersMedianMode" required placeholder="Enter numbers here"/>
+                        <button onclick="calculateStatisticalValue('median-mode')">Calculate</button>
+                        <div class="result-output" id="median-modeResult"></div>
+                        <div class="calculation-steps-section" id="median-modeSteps"></div>
+                    </div>
+
+                    <div class="calculation-section" id="variance-stddev-calc">
+                        <h4>Variance and Standard Deviation Calculation</h4>
+                        <label for="numbersVarianceStdDev">Enter numbers separated by commas (e.g., 2, 4, 4, 4, 5, 5, 7, 9):</label>
+                        <input type="text" id="numbersVarianceStdDev" required placeholder="Enter numbers here"/>
+                        <button onclick="calculateStatisticalValue('variance-stddev')">Calculate</button>
+                        <div class="result-output" id="variance-stddevResult"></div>
+                        <div class="calculation-steps-section" id="variance-stddevSteps"></div>
+                    </div>
+
+                    <div class="calculation-section" id="range-calc">
+                        <h4>Range Calculation</h4>
+                        <label for="numbersRange">Enter numbers separated by commas (e.g., 15, 7, 22, 3, 10):</label>
+                        <input type="text" id="numbersRange" required placeholder="Enter numbers here"/>
+                        <button onclick="calculateStatisticalValue('range')">Calculate</button>
+                        <div class="result-output" id="rangeResult"></div>
+                        <div class="calculation-steps-section" id="rangeSteps"></div>
+                    </div>
+
+                    <button class="category-button" id="backToCategories" style="display: none;">Back to Categories</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const isEnglishPage = window.location.pathname.startsWith('/en/'); // Language detection
+
+            // Header and Footer loading (As in your reference code)
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            fetch(headerPath)
+                .then(response => {
+                    if (!response.ok) throw new Error('Header network response was not ok: ' + response.statusText);
+                    return response.text();
+                })
+                .then(data => {
+                    const headerPlaceholder = document.getElementById('header-placeholder');
+                    if (headerPlaceholder) {
+                        headerPlaceholder.innerHTML = data;
+                        const scriptElement = headerPlaceholder.querySelector('script');
+                        if (scriptElement) {
+                            const newScript = document.createElement('script');
+                            newScript.textContent = scriptElement.textContent;
+                            document.body.appendChild(newScript);
+                            scriptElement.remove();
+                        }
+                    }
+                })
+                .catch(error => console.error('Header load error:', error));
+
+            fetch(footerPath)
+                .then(response => {
+                    if (!response.ok) throw new Error('Footer network response was not ok: ' + response.statusText);
+                    return response.text();
+                })
+                .then(data => {
+                    const footerPlaceholder = document.getElementById('footer-placeholder');
+                    if (footerPlaceholder) {
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = data;
+                        const footerElement = tempDiv.querySelector('footer');
+                        if (footerElement) {
+                            footerPlaceholder.replaceWith(footerElement);
+                        }
+                    }
+                })
+                .catch(error => console.error('Footer load error:', error));
+
+            // Language support for texts
+            const texts = {
+                tr: {
+                    mainTitle: 'İstatistiksel Hesaplamalar',
+                    mainInstruction: 'Yapmak istediğiniz analiz türünü seçin:',
+                    categoryButton_centralTendency: 'Merkezi Eğilim Ölçüleri',
+                    categoryButton_dispersion: 'Yayılım Ölçüleri',
+                    defaultMessage: 'Yukarıdaki kategorilerden birini seçerek sayı analizine başlayın.',
+                    backToCategories: 'Geri (Kategorilere Dön)',
+                    invalidNumberInput: 'Lütfen hesaplama için geçerli sayılar girin (virgülle ayırarak).',
+                    positiveNumbersOnly: 'Geometrik ortalama için lütfen sadece pozitif sayılar girin.',
+                    atLeastTwoNumbers: 'Bu hesaplama için en az iki sayı girin.',
+                    noModeFound: 'Mod bulunamadı (Tüm sayılar tekil veya eşit sıklıkta).',
+                    resultPrefix: 'Sonuç:',
+                    calculateButtonText: 'Hesapla',
+
+                    // Merkezi Eğilim Ölçüleri
+                    centralTendency_title: 'Merkezi Eğilim Ölçüleri',
+                    centralTendency_info: 'Bir veri setindeki merkezi konumu belirleyen ortalama, medyan, mod gibi değerleri hesaplayın.',
+                    subButton_arithmeticMean: 'Aritmetik Ortalama',
+                    subButton_geometricMean: 'Geometrik Ortalama',
+                    subButton_medianMode: 'Medyan ve Mod',
+
+                    arithmeticMean_calcTitle: 'Aritmetik Ortalama Hesaplama',
+                    arithmeticMean_label: 'Sayıları virgülle ayırarak girin (örn: 10, 20, 30, 40):',
+                    arithmeticMean_result: 'Aritmetik Ortalama:',
+                    arithmeticMean_steps: `<h3>Nasıl Hesaplandı?</h3>
+                        <ul>
+                            <li><strong>Adım 1:</strong> Girilen tüm sayıları toplayın ($\\sum x_i$).</li>
+                            <li><strong>Adım 2:</strong> Toplamı, sayıların adedine (n) bölün.</li>
+                            <li>Formül: $$\\bar{x} = \\frac{\\sum x_i}{n}$$</li>
+                        </ul>
+                        <h5>Ne İşe Yarar ve Nerelerde Kullanılır?</h5>
+                        <p><strong>Aritmetik ortalama</strong>, bir veri setindeki değerlerin toplamının veri sayısına bölünmesiyle elde edilen merkezi bir değerdir. Günlük hayatta en sık kullanılan ortalama türüdür.</p>
+                        <p><strong>Kullanım Alanları:</strong> Sınav notlarının ortalaması, aylık harcamaların ortalaması, sporcuların performans ortalamaları gibi birçok alanda kullanılır. Veri setinin genel eğilimini anlamak için idealdir.</p>`,
+
+                    geometricMean_calcTitle: 'Geometrik Ortalama Hesaplama',
+                    geometricMean_label: 'Sayıları virgülle ayırarak girin (örn: 2, 8, 16, 32). Sadece pozitif sayılar girin:',
+                    geometricMean_result: 'Geometrik Ortalama:',
+                    geometricMean_steps: `<h3>Nasıl Hesaplandı?</h3>
+                        <ul>
+                            <li><strong>Adım 1:</strong> Girilen tüm pozitif sayıları birbiriyle çarpın ($\\prod x_i$).</li>
+                            <li><strong>Adım 2:</strong> Çarpım sonucunun, sayı adedi (n) kadar dereceden kökünü alın.</li>
+                            <li>Formül: $$G = \\sqrt[n]{x_1 \\cdot x_2 \\cdot \\ldots \\cdot x_n}$$</li>
+                        </ul>
+                        <h5>Ne İşe Yarar ve Nerelerde Kullanılır?</h5>
+                        <p><strong>Geometrik ortalama</strong>, özellikle oranların veya büyüme hızlarının ortalamasını almak için kullanılan bir merkezi eğilim ölçüsüdür. Logaritmik olarak dağılmış veriler veya finansal getiriler gibi durumlarda daha uygundur.</p>
+                        <p><strong>Kullanım Alanları:</strong> Yıllık bileşik büyüme oranları (CAGR), nüfus artış hızları, bakteri üremesi gibi katlanarak artan veya azalan süreçlerin ortalamasını hesaplamada etkilidir. Ayrıca bilimsel çalışmalarda ve mühendislikte kullanılır.</p>`,
+
+                    medianMode_calcTitle: 'Medyan ve Mod Hesaplama',
+                    medianMode_label: 'Sayıları virgülle ayırarak girin (örn: 5, 8, 12, 8, 15, 12, 8):',
+                    median_result: 'Medyan:',
+                    mode_result: 'Mod:',
+                    medianMode_steps: `<h3>Nasıl Hesaplandı?</h3>
+                        <ul>
+                            <li><strong>Medyan:</strong> Sayılar küçükten büyüğe doğru sıralanır. Veri setinin tek sayıda elemanı varsa ortadaki sayı medyandır. Çift sayıda elemanı varsa, ortadaki iki sayının aritmetik ortalaması medyandır.</li>
+                            <li><strong>Mod:</strong> Veri setinde en sık tekrar eden sayıdır. Bir veri setinin bir modu (tek modlu), birden fazla modu (çok modlu) veya hiç modu olmayabilir (her sayının aynı sıklıkta geçmesi durumu).</li>
+                        </ul>
+                        <h5>Ne İşe Yarar ve Nerelerde Kullanılır?</h5>
+                        <p><strong>Medyan</strong>, aykırı değerlerden (çok büyük veya çok küçük değerler) daha az etkilenen bir merkezi eğilim ölçüsüdür, bu da onu çarpık dağılımlar için aritmetik ortalamadan daha temsili yapar.</p>
+                        <p><strong>Mod</strong>, bir veri setinde en yaygın olan değeri gösterir ve özellikle kategorik veriler için kullanışlıdır.</p>
+                        <p><strong>Kullanım Alanları:</strong>
+                            <ul>
+                                <li><strong>Medyan:</strong> Gayrimenkul fiyatları, maaşlar veya gelir dağılımları gibi aykırı değerlerin olabileceği ekonomik verilerin analizinde kullanılır.</li>
+                                <li><strong>Mod:</strong> En popüler ürün rengi, en çok tercih edilen eğitim alanı veya bir ankette en sık verilen cevap gibi kategorik verilerin analizinde yaygın olarak kullanılır.</li>
+                            </ul>
+                        </p>`,
+
+                    // Yayılım Ölçüleri
+                    dispersion_title: 'Yayılım Ölçüleri',
+                    dispersion_info: 'Bir veri setindeki değerlerin ne kadar yayıldığını gösteren varyans ve standart sapma gibi değerleri hesaplayın.',
+                    subButton_varianceStdDev: 'Varyans ve Standart Sapma',
+                    subButton_range: 'Açıklık (Range)',
+
+                    varianceStdDev_calcTitle: 'Varyans ve Standart Sapma Hesaplama',
+                    varianceStdDev_label: 'Sayıları virgülle ayırarak girin (örn: 2, 4, 4, 4, 5, 5, 7, 9):',
+                    variance_result: 'Varyans:',
+                    stdDev_result: 'Standart Sapma:',
+                    varianceStdDev_steps: `<h3>How It's Calculated?</h3>
+                        <ul>
+                            <li><strong>Adım 1:</strong> Veri setinin aritmetik ortalamasını ($\\mu$) hesaplayın.</li>
+                            <li><strong>Adım 2:</strong> Her bir sayıdan ortalamayı çıkarın ve farkın karesini alın.</li>
+                            <li><strong>Adım 3:</strong> Bu kareli farkların toplamını, veri setindeki eleman sayısına (N) bölün (popülasyon varyansı için).</li>
+                            <li><strong>Standart Sapma:</strong> Varyansın karekökünü alın.</li>
+                            <li>Formüller:
+                                <ul>
+                                    <li>Varyans (Popülasyon): $$\\sigma^2 = \\frac{\\sum (x_i - \\mu)^2}{N}$$</li>
+                                    <li>Standart Sapma (Popülasyon): $$\\sigma = \\sqrt{\\sigma^2}$$</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <h5>Ne İşe Yarar ve Nerelerde Kullanılır?</h5>
+                        <p><strong>Varyans</strong> ve <strong>Standart Sapma</strong>, bir veri setindeki verilerin ortalamadan ne kadar yayıldığını, yani dağılımın genişliğini ölçen temel istatistiklerdir. Düşük değerler, verilerin ortalama etrafında toplandığını, yüksek değerler ise daha dağınık olduğunu gösterir.</p>
+                        <p><strong>Kullanım Alanları:</strong> Kalite kontrol süreçlerinde, finansal risk analizinde (hisse senedi getirilerinin oynaklığı), bilimsel deneylerde veri tutarlılığını değerlendirmede, anket sonuçlarının güvenilirliğini ölçmede yaygın olarak kullanılırlar. Örneğin, yatırımda standart sapma, risk seviyesinin bir göstergesidir.</p>`,
+
+                    range_calcTitle: 'Açıklık (Range) Hesaplama',
+                    range_label: 'Sayıları virgülle ayırarak girin (örn: 15, 7, 22, 3, 10):',
+                    range_result: 'Açıklık (Range):',
+                    range_steps: `<h3>Nasıl Hesaplandı?</h3>
+                        <ul>
+                            <li><strong>Adım 1:</strong> Veri setindeki en büyük sayıyı (Maximum) bulun.</li>
+                            <li><strong>Adım 2:</strong> Veri setindeki en küçük sayıyı (Minimum) bulun.</li>
+                            <li><strong>Adım 3:</strong> En büyük sayıdan en küçük sayıyı çıkarın.</li>
+                            <li>Formül: $$R = Max(x_i) - Min(x_i)$$</li>
+                        </ul>
+                        <h5>Ne İşe Yarar ve Nerelerde Kullanılır?</h5>
+                        <p><strong>Açıklık (Range)</strong>, bir veri setindeki en büyük ve en küçük değer arasındaki farkı gösteren basit bir yayılım ölçüsüdür. Verilerin ne kadar geniş bir alana yayıldığına dair hızlı bir fikir verir.</p>
+                        <p><strong>Kullanım Alanları:</strong> Hava durumu analizlerinde günlük sıcaklık farklarını, üretim süreçlerinde ürün boyutlarının değişim aralığını veya bir mağazadaki ürün fiyatlarının yayılımını hızlıca görmek için kullanılır. Basitliği nedeniyle ilk analizlerde tercih edilebilir.</p>`,
+                },
+                en: {
+                    mainTitle: 'Statistical Calculations',
+                    mainInstruction: 'Select the type of analysis you want to perform:',
+                    categoryButton_centralTendency: 'Measures of Central Tendency',
+                    categoryButton_dispersion: 'Measures of Dispersion',
+                    defaultMessage: 'Select a category above to start number analysis.',
+                    backToCategories: 'Back to Categories',
+                    invalidNumberInput: 'Please enter valid numbers for calculation (comma-separated).',
+                    positiveNumbersOnly: 'Please enter positive numbers only for geometric mean.',
+                    atLeastTwoNumbers: 'Please enter at least two numbers for this calculation.',
+                    noModeFound: 'No mode found (All numbers are unique or have the same frequency).',
+                    resultPrefix: 'Result:',
+                    calculateButtonText: 'Calculate',
+
+                    // Measures of Central Tendency
+                    centralTendency_title: 'Measures of Central Tendency',
+                    centralTendency_info: 'Calculate values like mean, median, and mode that describe the central position of a data set.',
+                    subButton_arithmeticMean: 'Arithmetic Mean',
+                    subButton_geometricMean: 'Geometric Mean',
+                    subButton_medianMode: 'Median and Mode',
+
+                    arithmeticMean_calcTitle: 'Arithmetic Mean Calculation',
+                    arithmeticMean_label: 'Enter numbers separated by commas (e.g., 10, 20, 30, 40):',
+                    arithmeticMean_result: 'Arithmetic Mean:',
+                    arithmeticMean_steps: `<h3>How It's Calculated?</h3>
+                        <ul>
+                            <li><strong>Step 1:</strong> Sum all the numbers entered ($\\sum x_i$).</li>
+                            <li><strong>Step 2:</strong> Divide the sum by the count of the numbers (n).</li>
+                            <li>Formula: $$\\bar{x} = \\frac{\\sum x_i}{n}$$</li>
+                        </ul>
+                        <h5>What It Does and Where It's Used?</h5>
+                        <p>The <strong>arithmetic mean</strong> is a central value obtained by dividing the sum of values in a data set by the number of values. It is the most commonly used type of average in daily life.</p>
+                        <p><strong>Use Cases:</strong> It is used in many fields such as the average of exam scores, average monthly expenses, and average performance of athletes. It is ideal for understanding the general trend of a data set.</p>`,
+
+                    geometricMean_calcTitle: 'Geometric Mean Calculation',
+                    geometricMean_label: 'Enter numbers separated by commas (e.g., 2, 8, 16, 32). Enter positive numbers only:',
+                    geometricMean_result: 'Geometric Mean:',
+                    geometricMean_steps: `<h3>How It's Calculated?</h3>
+                        <ul>
+                            <li><strong>Step 1:</strong> Multiply all the positive numbers together ($\\prod x_i$).</li>
+                            <li><strong>Step 2:</strong> Take the nth root of the product, where n is the count of the numbers.</li>
+                            <li>Formula: $$G = \\sqrt[n]{x_1 \\cdot x_2 \\cdot \\ldots \\cdot x_n}$$</li>
+                        </ul>
+                        <h5>What It Does and Where It's Used?</h5>
+                        <p>The <strong>geometric mean</strong> is a measure of central tendency used especially for averaging ratios or growth rates. It is more suitable for logarithmically distributed data or financial returns.</p>
+                        <p><strong>Use Cases:</strong> It is effective in calculating the average of processes that increase or decrease exponentially, such as compound annual growth rates (CAGR), population growth rates, and bacterial reproduction. It is also used in scientific studies and engineering.</p>`,
+
+                    medianMode_calcTitle: 'Median and Mode Calculation',
+                    medianMode_label: 'Enter numbers separated by commas (e.g., 5, 8, 12, 8, 15, 12, 8):',
+                    median_result: 'Median:',
+                    mode_result: 'Mode:',
+                    medianMode_steps: `<h3>How It's Calculated?</h3>
+                        <ul>
+                            <li><strong>Median:</strong> Numbers are sorted from smallest to largest. If the data set has an odd number of elements, the middle number is the median. If it has an even number of elements, the median is the arithmetic mean of the two middle numbers.</li>
+                            <li><strong>Mode:</strong> The number(s) that appear most frequently in a data set. A data set can have one mode (unimodal), multiple modes (multimodal), or no mode (when all numbers appear with the same frequency).</li>
+                        </ul>
+                        <h5>What It Does and Where It's Used?</h5>
+                        <p>The <strong>median</strong> is a measure of central tendency less affected by outliers (very large or very small values), making it more representative than the arithmetic mean for skewed distributions.</p>
+                        <p>The <strong>mode</strong> indicates the most common value in a data set and is particularly useful for categorical data.</p>
+                        <p><strong>Use Cases:</strong>
+                            <ul>
+                                <li><strong>Median:</strong> Used in the analysis of economic data where outliers may exist, such as real estate prices, salaries, or income distributions.</li>
+                                <li><strong>Mode:</strong> Widely used in the analysis of categorical data, such as the most popular product color, the most preferred field of study, or the most frequent answer in a survey.</li>
+                            </ul>
+                        </p>`,
+
+                    // Measures of Dispersion
+                    dispersion_title: 'Measures of Dispersion',
+                    dispersion_info: 'Calculate values like variance and standard deviation that show how spread out the values in a data set are.',
+                    subButton_varianceStdDev: 'Variance and Standard Deviation',
+                    subButton_range: 'Range',
+
+                    varianceStdDev_calcTitle: 'Variance and Standard Deviation Calculation',
+                    varianceStdDev_label: 'Enter numbers separated by commas (e.g., 2, 4, 4, 4, 5, 5, 7, 9):',
+                    variance_result: 'Variance:',
+                    stdDev_result: 'Standard Deviation:',
+                    varianceStdDev_steps: `<h3>How It's Calculated?</h3>
+                        <ul>
+                            <li><strong>Step 1:</strong> Calculate the arithmetic mean ($\\mu$) of the data set.</li>
+                            <li><strong>Step 2:</strong> Subtract the mean from each number and square the difference.</li>
+                            <li><strong>Step 3:</strong> Sum these squared differences and divide by the number of elements (N) in the data set (for population variance).</li>
+                            <li><strong>Standard Deviation:</strong> Take the square root of the variance.</li>
+                            <li>Formulas:
+                                <ul>
+                                    <li>Variance (Population): $$\\sigma^2 = \\frac{\\sum (x_i - \\mu)^2}{N}$$</li>
+                                    <li>Standard Deviation (Population): $$\\sigma = \\sqrt{\\sigma^2}$$</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <h5>What It Does and Where It's Used?</h5>
+                        <p><strong>Variance</strong> and <strong>Standard Deviation</strong> are fundamental statistics that measure how spread out the data in a set is from the mean, indicating the width of the distribution. Lower values mean the data points are clustered around the mean, while higher values indicate more spread-out data.</p>
+                        <p><strong>Use Cases:</strong> They are widely used in quality control processes, financial risk analysis (volatility of stock returns), evaluating data consistency in scientific experiments, and assessing the reliability of survey results. For example, in investment, standard deviation is an indicator of the risk level.</p>`,
+
+                    range_calcTitle: 'Range Calculation',
+                    range_label: 'Enter numbers separated by commas (e.g., 15, 7, 22, 3, 10):',
+                    range_result: 'Range:',
+                    range_steps: `<h3>How It's Calculated?</h3>
+                        <ul>
+                            <li><strong>Step 1:</strong> Find the largest number (Maximum) in the data set.</li>
+                            <li><strong>Step 2:</strong> Find the smallest number (Minimum) in the data set.</li>
+                            <li><strong>Step 3:</strong> Subtract the smallest number from the largest number.</li>
+                            <li>Formula: $$R = Max(x_i) - Min(x_i)$$</li>
+                        </ul>
+                        <h5>What It Does and Where It's Used?</h5>
+                        <p>The <strong>Range</strong> is a simple measure of dispersion that shows the difference between the largest and smallest values in a data set. It gives a quick idea of how widely the data is spread.</p>
+                        <p><strong>Use Cases:</strong> It is used to quickly see daily temperature differences in weather analysis, the variation range of product dimensions in manufacturing processes, or the spread of product prices in a store. Due to its simplicity, it can be preferred in initial analyses.</p>`,
+                }
+            };
+
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // --- DOM Elements ---
+            const mainCategoryButtons = document.getElementById('main-category-buttons');
+            const mainInstruction = document.getElementById('main-instruction');
+            const calculatorContentArea = document.getElementById('calculator-content-area');
+            const defaultMessageDiv = document.getElementById('default-message');
+            const backToCategoriesButton = document.getElementById('backToCategories');
+
+            const categoryContents = {
+                'central-tendency': document.getElementById('central-tendency-content'),
+                'dispersion': document.getElementById('dispersion-content')
+            };
+
+            const calculationSections = {
+                'arithmetic-mean': document.getElementById('arithmetic-mean-calc'),
+                'geometric-mean': document.getElementById('geometric-mean-calc'),
+                'median-mode': document.getElementById('median-mode-calc'),
+                'variance-stddev': document.getElementById('variance-stddev-calc'),
+                'range': document.getElementById('range-calc')
+            };
+
+            // --- Update Initial Static Content ---
+            // Title is already set in HTML with style, no textContent update needed.
+            mainInstruction.textContent = currentTexts.mainInstruction;
+            defaultMessageDiv.querySelector('.info-text').textContent = currentTexts.defaultMessage;
+            backToCategoriesButton.textContent = currentTexts.backToCategories;
+
+            // Update category button texts
+            document.querySelector('.category-button[data-category="central-tendency"]').textContent = currentTexts.categoryButton_centralTendency;
+            document.querySelector('.category-button[data-category="dispersion"]').textContent = currentTexts.categoryButton_dispersion;
+
+            // Update category content headers and info texts
+            categoryContents['central-tendency'].querySelector('h3').textContent = currentTexts.centralTendency_title;
+            categoryContents['central-tendency'].querySelector('.info-text').textContent = currentTexts.centralTendency_info;
+            categoryContents['central-tendency'].querySelector('.sub-category-button[data-calc="arithmetic-mean"]').textContent = currentTexts.subButton_arithmeticMean;
+            categoryContents['central-tendency'].querySelector('.sub-category-button[data-calc="geometric-mean"]').textContent = currentTexts.subButton_geometricMean;
+            categoryContents['central-tendency'].querySelector('.sub-category-button[data-calc="median-mode"]').textContent = currentTexts.subButton_medianMode;
+
+            categoryContents['dispersion'].querySelector('h3').textContent = currentTexts.dispersion_title;
+            categoryContents['dispersion'].querySelector('.info-text').textContent = currentTexts.dispersion_info;
+            categoryContents['dispersion'].querySelector('.sub-category-button[data-calc="variance-stddev"]').textContent = currentTexts.subButton_varianceStdDev;
+            categoryContents['dispersion'].querySelector('.sub-category-button[data-calc="range"]').textContent = currentTexts.subButton_range;
+
+            // Update individual calculation section titles and labels
+            document.getElementById('arithmetic-mean-calc').querySelector('h4').textContent = currentTexts.arithmeticMean_calcTitle;
+            document.getElementById('arithmetic-mean-calc').querySelector('label[for="numbersArithmeticMean"]').textContent = currentTexts.arithmeticMean_label;
+            document.getElementById('arithmetic-mean-calc').querySelector('button').textContent = currentTexts.calculateButtonText;
+
+            document.getElementById('geometric-mean-calc').querySelector('h4').textContent = currentTexts.geometricMean_calcTitle;
+            document.getElementById('geometric-mean-calc').querySelector('label[for="numbersGeometricMean"]').textContent = currentTexts.geometricMean_label;
+            document.getElementById('geometric-mean-calc').querySelector('button').textContent = currentTexts.calculateButtonText;
+
+            document.getElementById('median-mode-calc').querySelector('h4').textContent = currentTexts.medianMode_calcTitle;
+            document.getElementById('median-mode-calc').querySelector('label[for="numbersMedianMode"]').textContent = currentTexts.medianMode_label;
+            document.getElementById('median-mode-calc').querySelector('button').textContent = currentTexts.calculateButtonText;
+
+            document.getElementById('variance-stddev-calc').querySelector('h4').textContent = currentTexts.varianceStdDev_calcTitle;
+            document.getElementById('variance-stddev-calc').querySelector('label[for="numbersVarianceStdDev"]').textContent = currentTexts.varianceStdDev_label;
+            document.getElementById('variance-stddev-calc').querySelector('button').textContent = currentTexts.calculateButtonText;
+
+            document.getElementById('range-calc').querySelector('h4').textContent = currentTexts.range_calcTitle;
+            document.getElementById('range-calc').querySelector('label[for="numbersRange"]').textContent = currentTexts.range_label;
+            document.getElementById('range-calc').querySelector('button').textContent = currentTexts.calculateButtonText;
+
+            // --- Navigation Logic (from your existing code) ---
+            let currentCategory = null;
+
+            function showCategoryContent(category) {
+                Object.values(calculationSections).forEach(section => section.classList.remove('active'));
+                Object.values(categoryContents).forEach(content => content.classList.remove('active'));
+                defaultMessageDiv.classList.remove('active');
+                mainCategoryButtons.style.display = 'flex';
+                backToCategoriesButton.style.display = 'none';
+
+                if (category === 'default') {
+                    defaultMessageDiv.classList.add('active');
+                    mainCategoryButtons.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
+                    mainInstruction.style.display = 'block';
+                } else {
+                    categoryContents[category].classList.add('active');
+                    mainCategoryButtons.querySelectorAll('.category-button').forEach(btn => {
+                        if (btn.dataset.category === category) {
+                            btn.classList.add('active');
+                        } else {
+                            btn.classList.remove('active');
+                        }
+                    });
+                    mainInstruction.style.display = 'none';
+                }
+                currentCategory = category;
+                // Clear all results and steps when switching views
+                document.querySelectorAll('.result-output').forEach(output => output.style.display = 'none');
+                document.querySelectorAll('.calculation-steps-section').forEach(steps => steps.style.display = 'none');
+            }
+
+            function showCalculationSection(calcType) {
+                Object.values(categoryContents).forEach(content => content.classList.remove('active'));
+                Object.values(calculationSections).forEach(section => section.classList.remove('active'));
+                defaultMessageDiv.classList.remove('active');
+                mainCategoryButtons.style.display = 'none';
+                mainInstruction.style.display = 'none';
+                backToCategoriesButton.style.display = 'block';
+
+                calculationSections[calcType].classList.add('active');
+                // Clear previous results on sub-calc switch
+                document.querySelectorAll('.result-output').forEach(output => output.style.display = 'none');
+                document.querySelectorAll('.calculation-steps-section').forEach(steps => steps.style.display = 'none');
+            }
+
+            document.querySelectorAll('.category-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    showCategoryContent(button.dataset.category);
+                });
+            });
+
+            document.querySelectorAll('.sub-category-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    showCalculationSection(button.dataset.calc);
+                });
+            });
+
+            backToCategoriesButton.addEventListener('click', () => {
+                showCategoryContent(currentCategory || 'default');
+            });
+
+            showCategoryContent('default'); // Initial load: show default message
+
+            // --- Helper Functions ---
+            function parseNumbers(inputStr) {
+                // Takes only numerical values, cleans spaces, separates by comma.
+                return inputStr.split(',')
+                               .map(s => s.trim()) // Remove leading/trailing spaces
+                               .filter(s => s !== '') // Filter out empty strings
+                               .map(Number)
+                               .filter(n => !isNaN(n)); // Filter out non-numbers
+            }
+
+            function displayResult(resultDivId, stepsDivId, htmlContent, stepsHtmlContent) {
+                const resultDiv = document.getElementById(resultDivId);
+                const stepsDiv = document.getElementById(stepsDivId);
+
+                resultDiv.innerHTML = htmlContent;
+                resultDiv.style.display = 'block';
+
+                stepsDiv.innerHTML = stepsHtmlContent;
+                stepsDiv.style.display = 'block';
+
+                // Should be called after HTML content is added to DOM for MathJax to render.
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.Hub.Queue(["Typeset", MathJax.Hub, stepsDiv]);
+                }
+            }
+
+            function showError(resultDivId, message) {
+                const resultDiv = document.getElementById(resultDivId);
+                resultDiv.innerHTML = `<p class="error">${message}</p>`;
+                resultDiv.style.display = 'block';
+                document.getElementById(resultDivId.replace('Result', 'Steps')).style.display = 'none';
+            }
+
+            // --- Statistical Calculation Functions ---
+            window.calculateStatisticalValue = function(type) {
+                let inputId;
+                let resultDivId;
+                let stepsDivId;
+
+                switch (type) {
+                    case 'arithmetic-mean':
+                        inputId = 'numbersArithmeticMean';
+                        resultDivId = 'arithmetic-meanResult';
+                        stepsDivId = 'arithmetic-meanSteps';
+                        break;
+                    case 'geometric-mean':
+                        inputId = 'numbersGeometricMean';
+                        resultDivId = 'geometric-meanResult';
+                        stepsDivId = 'geometric-meanSteps';
+                        break;
+                    case 'median-mode':
+                        inputId = 'numbersMedianMode';
+                        resultDivId = 'median-modeResult';
+                        stepsDivId = 'median-modeSteps';
+                        break;
+                    case 'variance-stddev':
+                        inputId = 'numbersVarianceStdDev';
+                        resultDivId = 'variance-stddevResult';
+                        stepsDivId = 'variance-stddevSteps';
+                        break;
+                    case 'range':
+                        inputId = 'numbersRange';
+                        resultDivId = 'rangeResult';
+                        stepsDivId = 'rangeSteps';
+                        break;
+                }
+
+                const numbersStr = document.getElementById(inputId).value;
+                const numbers = parseNumbers(numbersStr);
+
+                if (numbers.length === 0) {
+                    showError(resultDivId, currentTexts.invalidNumberInput);
+                    return;
+                }
+                if (numbers.length < 2 && type !== 'median-mode' && type !== 'arithmetic-mean' && type !== 'geometric-mean') { // Single number can be meaningful for mode and median. Also for mean.
+                    showError(resultDivId, currentTexts.atLeastTwoNumbers);
+                    return;
+                }
+                if (type === 'geometric-mean' && numbers.some(n => n <= 0)) {
+                    showError(resultDivId, currentTexts.positiveNumbersOnly);
+                    return;
+                }
+
+                let htmlContent = '';
+                let stepsHtml = '';
+
+                switch (type) {
+                    case 'arithmetic-mean':
+                        const sum = numbers.reduce((a, b) => a + b, 0);
+                        const arithmeticMean = sum / numbers.length;
+                        htmlContent = `<p><strong>${currentTexts.arithmeticMean_result}</strong> ${arithmeticMean.toFixed(4)}</p>`;
+                        stepsHtml = currentTexts.arithmeticMean_steps;
+                        break;
+
+                    case 'geometric-mean':
+                        const product = numbers.reduce((a, b) => a * b, 1);
+                        const geometricMean = Math.pow(product, 1 / numbers.length);
+                        htmlContent = `<p><strong>${currentTexts.geometricMean_result}</strong> ${geometricMean.toFixed(4)}</p>`;
+                        stepsHtml = currentTexts.geometricMean_steps;
+                        break;
+
+                    case 'median-mode':
+                        numbers.sort((a, b) => a - b); // Sort for median
+
+                        // Median
+                        let median;
+                        const mid = Math.floor(numbers.length / 2);
+                        if (numbers.length % 2 === 0) {
+                            median = (numbers[mid - 1] + numbers[mid]) / 2;
+                        } else {
+                            median = numbers[mid];
+                        }
+                        htmlContent += `<p><strong>${currentTexts.median_result}</strong> ${median.toFixed(4)}</p>`;
+
+                        // Mode
+                        const frequencyMap = {};
+                        numbers.forEach(num => {
+                            frequencyMap[num] = (frequencyMap[num] || 0) + 1;
+                        });
+
+                        let maxFrequency = 0;
+                        let modes = [];
+                        for (const num in frequencyMap) {
+                            if (frequencyMap[num] > maxFrequency) {
+                                maxFrequency = frequencyMap[num];
+                                modes = [Number(num)];
+                            } else if (frequencyMap[num] === maxFrequency && maxFrequency > 0) {
+                                modes.push(Number(num));
+                            }
+                        }
+
+                        if (modes.length === numbers.length || maxFrequency <= 1) {
+                            htmlContent += `<p><strong>${currentTexts.mode_result}</strong> ${currentTexts.noModeFound}</p>`;
+                        } else {
+                            htmlContent += `<p><strong>${currentTexts.mode_result}</strong> ${modes.join(', ')}</p>`;
+                        }
+                        stepsHtml = currentTexts.medianMode_steps;
+                        break;
+
+                    case 'variance-stddev':
+                        const sumForMean = numbers.reduce((a, b) => a + b, 0);
+                        const meanForVariance = sumForMean / numbers.length;
+
+                        const squaredDifferences = numbers.map(num => Math.pow(num - meanForVariance, 2));
+                        // Calculating population variance (dividing by n)
+                        const variance = squaredDifferences.reduce((a, b) => a + b, 0) / numbers.length;
+                        const standardDeviation = Math.sqrt(variance);
+
+                        htmlContent = `<p><strong>${currentTexts.variance_result}</strong> ${variance.toFixed(4)}</p>`;
+                        htmlContent += `<p><strong>${currentTexts.stdDev_result}</strong> ${standardDeviation.toFixed(4)}</p>`;
+                        stepsHtml = currentTexts.varianceStdDev_steps;
+                        break;
+
+                    case 'range':
+                        const minVal = Math.min(...numbers);
+                        const maxVal = Math.max(...numbers);
+                        const range = maxVal - minVal;
+
+                        htmlContent = `<p><strong>${currentTexts.range_result}</strong> ${range.toFixed(4)}</p>`;
+                        stepsHtml = currentTexts.range_steps;
+                        break;
+                }
+
+                displayResult(resultDivId, stepsDivId, htmlContent, stepsHtml);
+            };
+        });
+    </script>
+</body>
+</html>
