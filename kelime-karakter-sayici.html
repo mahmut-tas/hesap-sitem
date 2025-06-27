@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Metin Karakter ve Kelime Sayacı - Hesapkolik</title>
+    
+    <meta content="Yazdığınız veya yapıştırdığınız metindeki kelime, karakter (boşluklu/boşluksuz), paragraf sayısını ve tahmini okuma/konuşma sürelerini anında hesaplayın." name="description"/>
+    <meta content="metin sayacı, kelime sayacı, karakter sayacı, boşluksuz karakter, paragraf sayısı, okuma süresi, konuşma süresi, metin analizi, hesapkolik metin" name="keywords"/>
+    
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    
+    <style>
+        /* Genel Ayarlar ve Font */
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f7f6; /* Sade ve ferah bir arka plan */
+            color: #333; 
+            line-height: 1.6;
+        }
+        .container { 
+            max-width: 960px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Koyu tema başlık/altlık ile uyumlu */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Calculator Section */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff; /* Beyaz kart arka planı */
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50; /* Koyu metin rengi */
+            font-size: 2.2em;
+        }
+        .calc-wrapper { 
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 750px; /* Metin alanı için daha geniş */
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        /* Metin Alanı */
+        #text-input {
+            width: 100%;
+            min-height: 250px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1em;
+            box-sizing: border-box;
+            resize: vertical; /* Sadece dikeyde yeniden boyutlandırma */
+            font-family: 'Poppins', sans-serif; /* Fontu koru */
+            transition: border-color 0.3s ease;
+        }
+        #text-input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        /* Sonuç Ekranı */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            color: #2c3e50;
+            text-align: left;
+            background-color: #ecf0f1;
+            padding: 20px 25px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+            display: none; /* Varsayılan olarak gizli */
+            line-height: 1.8;
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* İki sütunlu düzen */
+            gap: 15px 30px; /* Satır ve sütun boşlukları */
+        }
+        .result-display strong {
+            color: #e74c3c;
+            font-weight: 700;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed #cfd9dc;
+            padding-bottom: 5px;
+        }
+        .result-item:last-child,
+        .result-item:nth-last-child(2) { /* Son iki öğe için alt çizgi olmasın */
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .result-value {
+            font-weight: 600;
+            color: #34495e;
+            font-size: 1.2em;
+        }
+
+
+        /* Açıklama bölümleri */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text { 
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1em;
+                grid-template-columns: 1fr; /* Tek sütunlu düzen */
+                gap: 10px;
+            }
+            .result-item {
+                padding-bottom: 10px;
+                border-bottom: 1px dashed #cfd9dc;
+            }
+            .result-item:last-child {
+                border-bottom: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            #text-input {
+                font-size: 1em;
+                padding: 10px;
+            }
+            .result-display {
+                font-size: 0.9em;
+                padding: 15px;
+            }
+            .result-value {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+    
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1 id="main-heading">Metin Karakter ve Kelime Sayacı</h1>
+                <p id="main-description">Yazdığınız veya yapıştırdığınız metindeki kelime, karakter, paragraf sayısını ve tahmini okuma/konuşma sürelerini anında hesaplayın.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper">
+                    <h3 id="calculator-title"><i class="fas fa-file-alt icon-small"></i> Metin Analizi Yapın</h3>
+                    <div class="calculator-form-container">
+                        <textarea id="text-input" placeholder="Metninizi buraya yazın veya yapıştırın..." rows="10"></textarea>
+                        
+                        <div class="result-display" id="textCounterResult">
+                            <div class="result-item"><strong>Kelime Sayısı:</strong> <span id="word-count" class="result-value">0</span></div>
+                            <div class="result-item"><strong>Karakter Sayısı (Boşluk Dahil):</strong> <span id="char-count-with-spaces" class="result-value">0</span></div>
+                            <div class="result-item"><strong>Karakter Sayısı (Boşluk Hariç):</strong> <span id="char-count-without-spaces" class="result-value">0</span></div>
+                            <div class="result-item"><strong>Paragraf Sayısı:</strong> <span id="paragraph-count" class="result-value">0</span></div>
+                            <div class="result-item"><strong>Tahmini Okuma Süresi:</strong> <span id="reading-time" class="result-value">0 dakika</span></div>
+                            <div class="result-item"><strong>Tahmini Konuşma Süresi:</strong> <span id="speaking-time" class="result-value">0 dakika</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3 id="info-section-title">Metin Analizinin Önemi</h3>
+            <p id="info-section-p1">
+                **Metin analiz araçları**, yazılarınızın uzunluğunu, yoğunluğunu ve okunabilirliğini anlamak için kritik öneme sahiptir. Blog yazarları, öğrenciler, editörler ve SEO uzmanları için bu tür bilgiler, içeriğin kalitesini artırmak ve hedeflenen kitleye ulaşmak için vazgeçilmezdir.
+            </p>
+            <h4>Neden Önemlidir?</h4>
+            <ul>
+                <li id="info-list-1">
+                    <strong>SEO Optimizasyonu:</strong> Arama motorları belirli bir kelime uzunluğuna sahip içerikleri daha değerli bulabilir. Kelime sayacı, SEO hedeflerinize ulaşmanıza yardımcı olur.
+                </li>
+                <li id="info-list-2">
+                    <strong>Okunabilirlik:</strong> Uzun cümleler veya paragraflar okunabilirliği düşürebilir. Paragraf ve kelime sayıları, metninizi daha akıcı hale getirmeniz için size fikir verir.
+                </li>
+                <li id="info-list-3">
+                    <strong>Zaman Yönetimi:</strong> Tahmini okuma ve konuşma süreleri, sunumlar veya blog yazıları için zaman planlaması yapmanıza yardımcı olur.
+                </li>
+                <li id="info-list-4">
+                    <strong>Akademik ve Profesyonel Yazım:</strong> Belirli kelime veya karakter sınırlarına uyma ihtiyacı olan ödevler, makaleler veya raporlar için hayati bir araçtır.
+                </li>
+                <li id="info-list-5">
+                    <strong>Sosyal Medya ve Reklam Metinleri:</strong> Karakter sınırlamaları olan platformlar (Twitter, SMS vb.) için metinlerinizi optimize etmenize yardımcı olur.
+                </li>
+            </ul>
+            <p class="disclaimer-text" id="disclaimer-text">
+                Bu metin sayacı, metin uzunluğu ve zaman tahminleri için standart algoritmalar kullanır. Kelime tanımı, özel karakterler veya biçimlendirmeler nedeniyle farklı sonuçlar verebilir. Tahmini okuma ve konuşma süreleri, ortalama hızlara dayanır ve kişiden kişiye farklılık gösterebilir.
+            </p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+            const texts = {
+                tr: {
+                    mainHeading: 'Metin Karakter ve Kelime Sayacı',
+                    mainDescription: 'Yazdığınız veya yapıştırdığınız metindeki kelime, karakter, paragraf sayısını ve tahmini okuma/konuşma sürelerini anında hesaplayın.',
+                    calculatorTitle: 'Metin Analizi Yapın',
+                    placeholderText: 'Metninizi buraya yazın veya yapıştırın...',
+                    wordCount: 'Kelime Sayısı:',
+                    charCountWithSpaces: 'Karakter Sayısı (Boşluk Dahil):',
+                    charCountWithoutSpaces: 'Karakter Sayısı (Boşluk Hariç):',
+                    paragraphCount: 'Paragraf Sayısı:',
+                    readingTime: 'Tahmini Okuma Süresi:',
+                    speakingTime: 'Tahmini Konuşma Süresi:',
+                    minutes: 'dakika',
+                    infoSectionTitle: 'Metin Analizinin Önemi',
+                    infoSectionP1: '**Metin analiz araçları**, yazılarınızın uzunluğunu, yoğunluğunu ve okunabilirliğini anlamak için kritik öneme sahiptir. Blog yazarları, öğrenciler, editörler ve SEO uzmanları için bu tür bilgiler, içeriğin kalitesini artırmak ve hedeflenen kitleye ulaşmak için vazgeçilmezdir.',
+                    whyImportantTitle: 'Neden Önemlidir?',
+                    infoList1: '<strong>SEO Optimizasyonu:</strong> Arama motorları belirli bir kelime uzunluğuna sahip içerikleri daha değerli bulabilir. Kelime sayacı, SEO hedeflerinize ulaşmanıza yardımcı olur.',
+                    infoList2: '<strong>Okunabilirlik:</strong> Uzun cümleler veya paragraflar okunabilirliği düşürebilir. Paragraf ve kelime sayıları, metninizi daha akıcı hale getirmeniz için size fikir verir.',
+                    infoList3: '<strong>Zaman Yönetimi:</strong> Tahmini okuma ve konuşma süreleri, sunumlar veya blog yazıları için zaman planlaması yapmanıza yardımcı olur.',
+                    infoList4: '<strong>Akademik ve Profesyonel Yazım:</strong> Belirli kelime veya karakter sınırlarına uyma ihtiyacı olan ödevler, makaleler veya raporlar için hayati bir araçtır.',
+                    infoList5: '<strong>Sosyal Medya ve Reklam Metinleri:</strong> Karakter sınırlamaları olan platformlar (Twitter, SMS vb.) için metinlerinizi optimize etmenize yardımcı olur.',
+                    disclaimerText: 'Bu metin sayacı, metin uzunluğu ve zaman tahminleri için standart algoritmalar kullanır. Kelime tanımı, özel karakterler veya biçimlendirmeler nedeniyle farklı sonuçlar verebilir. Tahmini okuma ve konuşma süreleri, ortalama hızlara dayanır ve kişiden kişiye farklılık gösterebilir.'
+                },
+                en: {
+                    mainHeading: 'Text Character and Word Counter',
+                    mainDescription: 'Instantly count words, characters (with/without spaces), paragraphs, and estimate reading/speaking times for your written or pasted text.',
+                    calculatorTitle: 'Analyze Your Text',
+                    placeholderText: 'Type or paste your text here...',
+                    wordCount: 'Word Count:',
+                    charCountWithSpaces: 'Character Count (Including Spaces):',
+                    charCountWithoutSpaces: 'Character Count (Excluding Spaces):',
+                    paragraphCount: 'Paragraph Count:',
+                    readingTime: 'Estimated Reading Time:',
+                    speakingTime: 'Estimated Speaking Time:',
+                    minutes: 'minutes',
+                    infoSectionTitle: 'Importance of Text Analysis',
+                    infoSectionP1: '**Text analysis tools** are crucial for understanding the length, density, and readability of your writing. For bloggers, students, editors, and SEO specialists, such information is indispensable for improving content quality and reaching the target audience.',
+                    whyImportantTitle: 'Why Is It Important?',
+                    infoList1: '<strong>SEO Optimization:</strong> Search engines may value content with a certain word length more. The word counter helps you achieve your SEO goals.',
+                    infoList2: '<strong>Readability:</strong> Long sentences or paragraphs can reduce readability. Word and paragraph counts give you ideas for making your text more fluid.',
+                    infoList3: '<strong>Time Management:</strong> Estimated reading and speaking times help you plan your time for presentations or blog posts.',
+                    infoList4: '<strong>Academic and Professional Writing:</strong> It is a vital tool for assignments, articles, or reports that need to adhere to specific word or character limits.',
+                    infoList5: '<strong>Social Media and Ad Copy:</strong> Helps you optimize your texts for platforms with character limits (Twitter, SMS, etc.).',
+                    disclaimerText: 'This text counter uses standard algorithms for text length and time estimations. Word definition may vary due to special characters or formatting. Estimated reading and speaking times are based on average speeds and may differ from person to person.'
+                }
+            };
+
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // Header ve Footer yükleme fonksiyonları
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // Metin alanını ve sonuç elementlerini al
+            const textInput = document.getElementById('text-input');
+            const wordCountSpan = document.getElementById('word-count');
+            const charCountWithSpacesSpan = document.getElementById('char-count-with-spaces');
+            const charCountWithoutSpacesSpan = document.getElementById('char-count-without-spaces');
+            const paragraphCountSpan = document.getElementById('paragraph-count');
+            const readingTimeSpan = document.getElementById('reading-time');
+            const speakingTimeSpan = document.getElementById('speaking-time');
+            const textCounterResultDiv = document.getElementById('textCounterResult');
+
+            // Metin alanına metin yazıldığında veya yapıştırıldığında çalışacak fonksiyon
+            textInput.addEventListener('input', updateCounts);
+
+            function updateCounts() {
+                const text = textInput.value;
+
+                // Kelime sayısı
+                const words = text.trim().split(/\s+/).filter(word => word.length > 0);
+                const wordCount = words.length;
+
+                // Karakter sayısı (boşluk dahil)
+                const charCountWithSpaces = text.length;
+
+                // Karakter sayısı (boşluk hariç)
+                const charCountWithoutSpaces = text.replace(/\s/g, '').length;
+
+                // Paragraf sayısı
+                const paragraphs = text.split(/\r\n|\r|\n/).filter(paragraph => paragraph.trim().length > 0);
+                const paragraphCount = paragraphs.length;
+                if (text.trim().length === 0) { // Eğer metin boşsa paragraf sayısı 0 olmalı
+                    paragraphCount = 0;
+                } else if (paragraphCount === 0 && text.trim().length > 0) { // En az bir kelime varsa ve hiç satır sonu yoksa 1 paragraf say
+                    paragraphCount = 1;
+                }
+
+                // Tahmini okuma süresi (ortalama 200 kelime/dakika)
+                const readingSpeed = 200; // kelime/dakika
+                const estimatedReadingTime = wordCount > 0 ? (wordCount / readingSpeed) : 0;
+                const readingMinutes = Math.floor(estimatedReadingTime);
+                const readingSeconds = Math.round((estimatedReadingTime - readingMinutes) * 60);
+                let readingTimeText = '';
+                if (readingMinutes > 0) {
+                    readingTimeText += `${readingMinutes} ${currentTexts.minutes}`;
+                }
+                if (readingSeconds > 0 || readingMinutes === 0) { // Saniye varsa veya dakika 0 ise saniyeyi göster
+                    if (readingMinutes > 0 && readingSeconds > 0) readingTimeText += ' ';
+                    readingTimeText += `${readingSeconds} saniye`;
+                }
+                if (readingTimeText === '') readingTimeText = `0 ${currentTexts.minutes}`;
+
+
+                // Tahmini konuşma süresi (ortalama 130 kelime/dakika)
+                const speakingSpeed = 130; // kelime/dakika
+                const estimatedSpeakingTime = wordCount > 0 ? (wordCount / speakingSpeed) : 0;
+                const speakingMinutes = Math.floor(estimatedSpeakingTime);
+                const speakingSeconds = Math.round((estimatedSpeakingTime - speakingMinutes) * 60);
+                let speakingTimeText = '';
+                if (speakingMinutes > 0) {
+                    speakingTimeText += `${speakingMinutes} ${currentTexts.minutes}`;
+                }
+                if (speakingSeconds > 0 || speakingMinutes === 0) { // Saniye varsa veya dakika 0 ise saniyeyi göster
+                    if (speakingMinutes > 0 && speakingSeconds > 0) speakingTimeText += ' ';
+                    speakingTimeText += `${speakingSeconds} saniye`;
+                }
+                if (speakingTimeText === '') speakingTimeText = `0 ${currentTexts.minutes}`;
+
+
+                // Sonuçları güncelle
+                wordCountSpan.textContent = wordCount;
+                charCountWithSpacesSpan.textContent = charCountWithSpaces;
+                charCountWithoutSpacesSpan.textContent = charCountWithoutSpaces;
+                paragraphCountSpan.textContent = paragraphCount;
+                readingTimeSpan.textContent = readingTimeText;
+                speakingTimeSpan.textContent = speakingTimeText;
+
+                // Metin boşsa sonuçları gizle, değilse göster
+                if (text.length === 0) {
+                    textCounterResultDiv.style.display = 'none';
+                } else {
+                    textCounterResultDiv.style.display = 'grid'; // CSS grid'i aktifleştir
+                }
+            }
+
+            // İlk yüklemede metin alanının içeriğine göre sayımları yap (eğer varsa)
+            updateCounts();
+
+            // Metinleri güncelle
+            document.getElementById('main-heading').textContent = currentTexts.mainHeading;
+            document.getElementById('main-description').textContent = currentTexts.mainDescription;
+            document.getElementById('calculator-title').innerHTML = `<i class="fas fa-file-alt icon-small"></i> ${currentTexts.calculatorTitle}`;
+            document.getElementById('text-input').setAttribute('placeholder', currentTexts.placeholderText);
+
+            document.querySelector('#word-count').previousElementSibling.textContent = currentTexts.wordCount;
+            document.querySelector('#char-count-with-spaces').previousElementSibling.textContent = currentTexts.charCountWithSpaces;
+            document.querySelector('#char-count-without-spaces').previousElementSibling.textContent = currentTexts.charCountWithoutSpaces;
+            document.querySelector('#paragraph-count').previousElementSibling.textContent = currentTexts.paragraphCount;
+            document.querySelector('#reading-time').previousElementSibling.textContent = currentTexts.readingTime;
+            document.querySelector('#speaking-time').previousElementSibling.textContent = currentTexts.speakingTime;
+            
+            document.getElementById('info-section-title').textContent = currentTexts.infoSectionTitle;
+            document.getElementById('info-section-p1').innerHTML = currentTexts.infoSectionP1;
+            document.querySelector('#info-section-title + p + h4').textContent = currentTexts.whyImportantTitle;
+            document.getElementById('info-list-1').innerHTML = currentTexts.infoList1;
+            document.getElementById('info-list-2').innerHTML = currentTexts.infoList2;
+            document.getElementById('info-list-3').innerHTML = currentTexts.infoList3;
+            document.getElementById('info-list-4').innerHTML = currentTexts.infoList4;
+            document.getElementById('info-list-5').innerHTML = currentTexts.infoList5;
+            document.getElementById('disclaimer-text').textContent = currentTexts.disclaimerText;
+        });
+    </script>
+</body>
+</html>
