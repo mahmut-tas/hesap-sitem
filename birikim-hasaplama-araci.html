@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Birikim Hesaplama Aracı - Hesapkolik</title>
+    
+    <meta content="Aylık düzenli yatırımlarınızın enflasyon etkisini de hesaba katarak gelecekteki toplam birikimini hesaplayın. Aylık bazda birikim tablosunu görüntüleyin." name="description"/>
+    <meta content="birikim hesaplama, birikim aracı, enflasyonlu birikim, aylık birikim, gelecekteki değer, para biriktirme, finans hesaplayıcı, hesapkolik birikim" name="keywords"/>
+    
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    
+    <style>
+        /* Genel Ayarlar ve Font */
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f7f6; /* Sade ve ferah bir arka plan */
+            color: #333; 
+            line-height: 1.6;
+        }
+        .container { 
+            max-width: 960px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Koyu tema başlık/altlık ile uyumlu */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Calculator Section */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff; /* Beyaz kart arka planı */
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50; /* Koyu metin rengi */
+            font-size: 2.2em;
+        }
+        .calc-wrapper { 
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 750px; /* Biraz daha geniş olabilir tablo için */
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        /* Form Elemanları */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"] {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        /* Form butonları */
+        .calculator-form-container button[type="submit"] {
+            background-color: #28a745; /* Onay yeşili */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button[type="submit"]:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Sonuç Ekranı */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+            display: none; /* Varsayılan olarak gizli */
+        }
+        .result-display .total-result-value {
+            color: #e74c3c;
+            font-size: 1.8em;
+            display: block;
+            margin-top: 10px;
+        }
+        .result-display .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        /* Birikim Tablosu Stilleri */
+        .savings-table-container {
+            margin-top: 30px;
+            overflow-x: auto; /* Küçük ekranlarda tablo kaydırma çubuğu */
+        }
+        .savings-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+            text-align: left;
+        }
+        .savings-table th, .savings-table td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+        }
+        .savings-table th {
+            background-color: #3498db;
+            color: white;
+            font-weight: 600;
+            white-space: nowrap; /* Başlıkların tek satırda kalmasını sağlar */
+        }
+        .savings-table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .savings-table tbody tr:hover {
+            background-color: #e8f0fe;
+        }
+
+        /* Açıklama bölümleri */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text { 
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1em;
+            }
+            .result-display .total-result-value {
+                font-size: 1.5em;
+            }
+            .savings-table th, .savings-table td {
+                padding: 10px 8px; /* Tablo hücrelerini küçült */
+            }
+            .savings-table {
+                font-size: 0.8em; /* Tablo fontunu küçült */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            .result-display {
+                font-size: 0.9em;
+                padding: 10px;
+            }
+            .result-display .total-result-value {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+    
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1 id="main-heading">Birikim Hesaplama Aracı</h1>
+                <p id="main-description">Aylık düzenli yatırımlarınızın enflasyon etkisini de hesaba katarak gelecekteki toplam birikimini hesaplayın.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper">
+                    <h3 id="calculator-title"><i class="fas fa-piggy-bank icon-small"></i> Birikim Hedefinizi Hesaplayın</h3>
+                    <div class="calculator-form-container">
+                        <form id="savingsCalculatorForm">
+                            <label for="initial-savings" id="initial-savings-label">Başlangıç Birikimi (TL):</label>
+                            <input id="initial-savings" type="number" min="0" value="0" step="0.01" required/>
+
+                            <label for="monthly-contribution" id="monthly-contribution-label">Aylık Katkı (TL):</label>
+                            <input id="monthly-contribution" type="number" min="0" value="1000" step="0.01" required/>
+
+                            <label for="investment-return" id="investment-return-label">Yıllık Ortalama Getiri Oranı (%):</label>
+                            <input id="investment-return" type="number" min="0" max="100" value="10" step="0.01" required/>
+
+                            <label for="inflation-rate" id="inflation-rate-label">Yıllık Ortalama Enflasyon Oranı (%):</label>
+                            <input id="inflation-rate" type="number" min="0" max="100" value="5" step="0.01" required/>
+
+                            <label for="investment-period" id="investment-period-label">Yatırım Süresi (Yıl):</label>
+                            <input id="investment-period" type="number" min="1" max="50" value="10" step="1" required/>
+
+                            <button type="submit" id="calculate-button">Birikimi Hesapla</button>
+                        </form>
+                        <div class="result-display" id="savingsResult"></div>
+                        <div class="savings-table-container" id="savingsTableContainer"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3 id="info-section-title">Birikim Hesaplamanın Önemi ve Enflasyonun Etkisi</h3>
+            <p id="info-section-p1">
+                **Birikim hesaplama**, finansal hedeflerinize ulaşmak için ne kadar para biriktirmeniz gerektiğini ve bu birikimin zaman içinde nasıl büyüyeceğini anlamanıza yardımcı olan kritik bir araçtır. Ancak, paranın zaman değerini ve enflasyonun alım gücü üzerindeki etkisini göz ardı etmemek hayati önem taşır.
+            </p>
+            <h4>Enflasyon Neden Önemlidir?</h4>
+            <ul>
+                <li id="info-list-1">
+                    <strong>Alım Gücü Kaybı:</strong> Enflasyon, paranın zaman içindeki değer kaybını ifade eder. Bugün 100 TL'ye alabileceğiniz bir ürün, enflasyon nedeniyle 10 yıl sonra 100 TL'ye alınamayabilir.
+                </li>
+                <li id="info-list-2">
+                    <strong>Gerçek Getiri:</strong> Yatırımlarınızdan elde ettiğiniz nominal getiri (faiz, kar payı vb.) ile enflasyon oranının farkı, paranzın "gerçek getirisini" gösterir. Eğer getiri oranınız enflasyonun altındaysa, aslında paranız eriyor demektir.
+                </li>
+                <li id="info-list-3">
+                    <strong>Doğru Hedef Belirleme:</strong> Enflasyon hesaba katılmadığında, gelecekteki hedefleriniz için yanlış miktarda para biriktirebilirsiniz. Örneğin, 10 yıl sonra almak istediğiniz bir evin maliyeti enflasyonla birlikte artacaktır.
+                </li>
+            </ul>
+            <h4>Birikim Hesaplamanın Temel Bileşenleri:</h4>
+            <ul>
+                <li id="components-list-1">
+                    <strong>Başlangıç Birikimi:</strong> Şu anda sahip olduğunuz para miktarı.
+                </li>
+                <li id="components-list-2">
+                    <strong>Aylık Katkı:</strong> Her ay düzenli olarak yapacağınız eklemeler.
+                </li>
+                <li id="components-list-3">
+                    <strong>Yıllık Ortalama Getiri Oranı:</strong> Birikimlerinizin yatırıldığı araçlardan (banka faizi, hisse senedi, fonlar vb.) beklediğiniz ortalama yıllık kazanç.
+                </li>
+                <li id="components-list-4">
+                    <strong>Yıllık Ortalama Enflasyon Oranı:</strong> Paranızın alım gücünü etkileyecek tahmini yıllık enflasyon oranı.
+                </li>
+                <li id="components-list-5">
+                    <strong>Yatırım Süresi:</strong> Birikim yapmayı planladığınız yıl sayısı.
+                </li>
+            </ul>
+            <p class="disclaimer-text" id="disclaimer-text">
+                Bu birikim hesaplama aracı, girilen varsayımlara dayalı bir tahmindir ve kesin finansal tavsiye niteliği taşımaz. Gelecekteki getiri ve enflasyon oranları piyasa koşullarına göre büyük ölçüde değişebilir. Yatırım kararları vermeden önce bir finans uzmanına danışmanız önerilir.
+            </p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Dil tespiti (Bu sayfa Türkçe olduğu için, her zaman 'tr' baz alınabilir.
+            // Ancak çok dilli bir yapı kullanılıyorsa, header'dan gelen isEnglishPage değeri kullanılır.)
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+            // Metinleri dile göre tanımlayan obje (Sadece Türkçe olduğu için 'tr' kısmı dolu)
+            const texts = {
+                tr: {
+                    mainHeading: 'Birikim Hesaplama Aracı',
+                    mainDescription: 'Aylık düzenli yatırımlarınızın enflasyon etkisini de hesaba katarak gelecekteki toplam birikimini hesaplayın.',
+                    calculatorTitle: 'Birikim Hedefinizi Hesaplayın',
+                    initialSavingsLabel: 'Başlangıç Birikimi (TL):',
+                    monthlyContributionLabel: 'Aylık Katkı (TL):',
+                    investmentReturnLabel: 'Yıllık Ortalama Getiri Oranı (%):',
+                    inflationRateLabel: 'Yıllık Ortalama Enflasyon Oranı (%):',
+                    investmentPeriodLabel: 'Yatırım Süresi (Yıl):',
+                    calculateButton: 'Birikimi Hesapla',
+                    invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin. Getiri ve Enflasyon oranı %0-100 arasında olmalıdır.',
+                    totalSavingsResult: 'Hesaplanan Toplam Birikim:',
+                    realValueResult: 'Enflasyon Düzeltilmiş Gerçek Değer:',
+                    tableMonth: 'Ay',
+                    tableYear: 'Yıl',
+                    tableStartBalance: 'Başlangıç Bakiyesi (TL)',
+                    tableMonthlyContribution: 'Aylık Katkı (TL)',
+                    tableInterestEarned: 'Kazanılan Getiri (TL)',
+                    tableEndBalance: 'Ay Sonu Bakiyesi (TL)',
+                    tableInflatedEndBalance: 'Ay Sonu Enflasyon Düzeltilmiş Bakiye (TL)',
+                    infoSectionTitle: 'Birikim Hesaplamanın Önemi ve Enflasyonun Etkisi',
+                    infoSectionP1: '**Birikim hesaplama**, finansal hedeflerinize ulaşmak için ne kadar para biriktirmeniz gerektiğini ve bu birikimin zaman içinde nasıl büyüyeceğini anlamanıza yardımcı olan kritik bir araçtır. Ancak, paranın zaman değerini ve enflasyonun alım gücü üzerindeki etkisini göz ardı etmemek hayati önem taşır.',
+                    inflationTitle: 'Enflasyon Neden Önemlidir?',
+                    inflationList1: '<strong>Alım Gücü Kaybı:</strong> Enflasyon, paranın zaman içindeki değer kaybını ifade eder. Bugün 100 TL\'ye alabileceğiniz bir ürün, enflasyon nedeniyle 10 yıl sonra 100 TL\'ye alınamayabilir.',
+                    inflationList2: '<strong>Gerçek Getiri:</strong> Yatırımlarınızdan elde ettiğiniz nominal getiri (faiz, kar payı vb.) ile enflasyon oranının farkı, paranzın "gerçek getirisini" gösterir. Eğer getiri oranınız enflasyonun altındaysa, aslında paranız eriyor demektir.',
+                    inflationList3: '<strong>Doğru Hedef Belirleme:</strong> Enflasyon hesaba katılmadığında, gelecekteki hedefleriniz için yanlış miktarda para biriktirebilirsiniz. Örneğin, 10 yıl sonra almak istediğiniz bir evin maliyeti enflasyonla birlikte artacaktır.',
+                    componentsTitle: 'Birikim Hesaplamanın Temel Bileşenleri:',
+                    componentsList1: '<strong>Başlangıç Birikimi:</strong> Şu anda sahip olduğunuz para miktarı.',
+                    componentsList2: '<strong>Aylık Katkı:</strong> Her ay düzenli olarak yapacağınız eklemeler.',
+                    componentsList3: '<strong>Yıllık Ortalama Getiri Oranı:</strong> Birikimlerinizin yatırıldığı araçlardan (banka faizi, hisse senedi, fonlar vb.) beklediğiniz ortalama yıllık kazanç.',
+                    componentsList4: '<strong>Yıllık Ortalama Enflasyon Oranı:</strong> Paranızın alım gücünü etkileyecek tahmini yıllık enflasyon oranı.',
+                    componentsList5: '<strong>Yatırım Süresi:</strong> Birikim yapmayı planladığınız yıl sayısı.',
+                    disclaimerText: 'Bu birikim hesaplama aracı, girilen varsayımlara dayalı bir tahmindir ve kesin finansal tavsiye niteliği taşımaz. Gelecekteki getiri ve enflasyon oranları piyasa koşullarına göre büyük ölçüde değişebilir. Yatırım kararları vermeden önce bir finans uzmanına danışmanız önerilir.'
+                },
+                en: {
+                    // İngilizce metinleri buraya eklemelisiniz eğer İngilizce versiyonunu da yapacaksanız
+                    // Örnek:
+                    mainHeading: 'Savings Calculator',
+                    mainDescription: 'Calculate your total future savings, considering the impact of inflation on your regular monthly contributions.',
+                    calculatorTitle: 'Calculate Your Savings Goal',
+                    initialSavingsLabel: 'Initial Savings (TL):',
+                    monthlyContributionLabel: 'Monthly Contribution (TL):',
+                    investmentReturnLabel: 'Annual Average Return Rate (%):',
+                    inflationRateLabel: 'Annual Average Inflation Rate (%):',
+                    investmentPeriodLabel: 'Investment Period (Years):',
+                    calculateButton: 'Calculate Savings',
+                    invalidInput: 'Please enter valid positive numbers for all fields. Return and Inflation rates must be between 0-100%.',
+                    totalSavingsResult: 'Calculated Total Savings:',
+                    realValueResult: 'Real Value Adjusted for Inflation:',
+                    tableMonth: 'Month',
+                    tableYear: 'Year',
+                    tableStartBalance: 'Starting Balance (TL)',
+                    tableMonthlyContribution: 'Monthly Contribution (TL)',
+                    tableInterestEarned: 'Interest Earned (TL)',
+                    tableEndBalance: 'End of Month Balance (TL)',
+                    tableInflatedEndBalance: 'End of Month Inflated Balance (TL)',
+                    infoSectionTitle: 'The Importance of Savings Calculation and the Impact of Inflation',
+                    infoSectionP1: '**Savings calculation** is a critical tool that helps you understand how much money you need to save to achieve your financial goals and how this saving will grow over time. However, it is vital not to overlook the time value of money and the impact of inflation on purchasing power.',
+                    inflationTitle: 'Why Is Inflation Important?',
+                    inflationList1: '<strong>Loss of Purchasing Power:</strong> Inflation refers to the decrease in the value of money over time. A product you can buy for 100 TL today may not be available for 100 TL in 10 years due to inflation.',
+                    inflationList2: '<strong>Real Return:</strong> The difference between your nominal return (interest, dividends, etc.) from investments and the inflation rate shows the "real return" of your money. If your return rate is below inflation, your money is actually eroding.',
+                    inflationList3: '<strong>Setting Accurate Goals:</strong> When inflation is not considered, you might save the wrong amount of money for your future goals. For example, the cost of a house you want to buy in 10 years will increase with inflation.',
+                    componentsTitle: 'Key Components of Savings Calculation:',
+                    componentsList1: '<strong>Initial Savings:</strong> The amount of money you currently possess.',
+                    componentsList2: '<strong>Monthly Contribution:</strong> Your regular monthly additions.',
+                    componentsList3: '<strong>Annual Average Return Rate:</strong> The average annual earnings you expect from your savings vehicles (bank interest, stocks, funds, etc.).',
+                    componentsList4: '<strong>Annual Average Inflation Rate:</strong> The estimated annual inflation rate that will affect your money\'s purchasing power.',
+                    componentsList5: '<strong>Investment Period:</strong> The number of years you plan to save.',
+                    disclaimerText: 'This savings calculator is an estimate based on the assumptions entered and does not constitute definitive financial advice. Future return and inflation rates can vary significantly depending on market conditions. It is recommended to consult a financial expert before making investment decisions.'
+                }
+            };
+
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // Header ve Footer yükleme fonksiyonları
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // Metinleri güncelle
+            document.getElementById('main-heading').textContent = currentTexts.mainHeading;
+            document.getElementById('main-description').textContent = currentTexts.mainDescription;
+            document.getElementById('calculator-title').innerHTML = `<i class="fas fa-piggy-bank icon-small"></i> ${currentTexts.calculatorTitle}`;
+            document.getElementById('initial-savings-label').textContent = currentTexts.initialSavingsLabel;
+            document.getElementById('monthly-contribution-label').textContent = currentTexts.monthlyContributionLabel;
+            document.getElementById('investment-return-label').textContent = currentTexts.investmentReturnLabel;
+            document.getElementById('inflation-rate-label').textContent = currentTexts.inflationRateLabel;
+            document.getElementById('investment-period-label').textContent = currentTexts.investmentPeriodLabel;
+            document.getElementById('calculate-button').textContent = currentTexts.calculateButton;
+            document.getElementById('info-section-title').textContent = currentTexts.infoSectionTitle;
+            document.getElementById('info-section-p1').innerHTML = currentTexts.infoSectionP1;
+            document.querySelector('#info-section-title + p + h4').textContent = currentTexts.inflationTitle;
+            document.getElementById('info-list-1').innerHTML = currentTexts.inflationList1;
+            document.getElementById('info-list-2').innerHTML = currentTexts.inflationList2;
+            document.getElementById('info-list-3').innerHTML = currentTexts.inflationList3;
+            document.querySelector('#info-section-title + p + h4 + ul + h4').textContent = currentTexts.componentsTitle;
+            document.getElementById('components-list-1').innerHTML = currentTexts.componentsList1;
+            document.getElementById('components-list-2').innerHTML = currentTexts.componentsList2;
+            document.getElementById('components-list-3').innerHTML = currentTexts.componentsList3;
+            document.getElementById('components-list-4').innerHTML = currentTexts.componentsList4;
+            document.getElementById('components-list-5').innerHTML = currentTexts.componentsList5;
+            document.getElementById('disclaimer-text').textContent = currentTexts.disclaimerText;
+
+
+            const savingsCalculatorForm = document.getElementById('savingsCalculatorForm');
+            const initialSavingsInput = document.getElementById('initial-savings');
+            const monthlyContributionInput = document.getElementById('monthly-contribution');
+            const investmentReturnInput = document.getElementById('investment-return');
+            const inflationRateInput = document.getElementById('inflation-rate');
+            const investmentPeriodInput = document.getElementById('investment-period');
+            const savingsResultDiv = document.getElementById('savingsResult');
+            const savingsTableContainer = document.getElementById('savingsTableContainer');
+
+            savingsCalculatorForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                savingsResultDiv.innerHTML = '';
+                savingsResultDiv.style.display = 'none';
+                savingsTableContainer.innerHTML = ''; // Tabloyu temizle
+
+                const initialSavings = parseFloat(initialSavingsInput.value);
+                const monthlyContribution = parseFloat(monthlyContributionInput.value);
+                const annualReturnRate = parseFloat(investmentReturnInput.value) / 100;
+                const annualInflationRate = parseFloat(inflationRateInput.value) / 100;
+                const investmentPeriodYears = parseInt(investmentPeriodInput.value);
+
+                // Input doğrulama
+                if (isNaN(initialSavings) || isNaN(monthlyContribution) || isNaN(annualReturnRate) || 
+                    isNaN(annualInflationRate) || isNaN(investmentPeriodYears) || 
+                    initialSavings < 0 || monthlyContribution < 0 || annualReturnRate < 0 || annualReturnRate > 1 ||
+                    annualInflationRate < 0 || annualInflationRate > 1 ||
+                    investmentPeriodYears < 1 || investmentPeriodYears > 50) {
+                    savingsResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                    savingsResultDiv.style.display = 'block';
+                    return;
+                }
+
+                const totalMonths = investmentPeriodYears * 12;
+                const monthlyReturnRate = annualReturnRate / 12;
+                const monthlyInflationRate = annualInflationRate / 12;
+
+                let currentBalance = initialSavings;
+                let totalInterestEarned = 0;
+                const monthlyData = [];
+
+                for (let month = 1; month <= totalMonths; month++) {
+                    const startingBalance = currentBalance;
+                    
+                    // Aylık katkı ekle
+                    currentBalance += monthlyContribution;
+
+                    // Kazanılan faiz (aylık bazda bileşik)
+                    const interestEarnedThisMonth = currentBalance * monthlyReturnRate;
+                    currentBalance += interestEarnedThisMonth;
+                    totalInterestEarned += interestEarnedThisMonth;
+
+                    // Enflasyon düzeltmesi (her ayın sonunda)
+                    // Önce nominal değeri tutalım, sonra enflasyon düzeltmesini yapalım
+                    const nominalEndBalance = currentBalance;
+                    const realEndBalance = nominalEndBalance / Math.pow((1 + monthlyInflationRate), month);
+
+                    monthlyData.push({
+                        month: month,
+                        year: Math.ceil(month / 12),
+                        startingBalance: startingBalance,
+                        monthlyContribution: monthlyContribution,
+                        interestEarned: interestEarnedThisMonth,
+                        endBalance: nominalEndBalance,
+                        inflatedEndBalance: realEndBalance
+                    });
+                }
+
+                // Toplam birikim (nominal)
+                const totalNominalSavings = currentBalance;
+
+                // Enflasyon düzeltmeli gerçek değer
+                const totalRealValue = totalNominalSavings / Math.pow((1 + annualInflationRate), investmentPeriodYears);
+
+                // Sonuçları göster
+                savingsResultDiv.innerHTML = `
+                    <p><strong>${currentTexts.totalSavingsResult}</strong> <span class="total-result-value">${totalNominalSavings.toFixed(2)} TL</span></p>
+                    <p><strong>${currentTexts.realValueResult}</strong> <span class="total-result-value">${totalRealValue.toFixed(2)} TL</span></p>
+                `;
+                savingsResultDiv.style.display = 'block';
+
+                // Tablo oluştur
+                const tableHtml = `
+                    <table class="savings-table">
+                        <thead>
+                            <tr>
+                                <th>${currentTexts.tableYear}</th>
+                                <th>${currentTexts.tableMonth}</th>
+                                <th>${currentTexts.tableStartBalance}</th>
+                                <th>${currentTexts.tableMonthlyContribution}</th>
+                                <th>${currentTexts.tableInterestEarned}</th>
+                                <th>${currentTexts.tableEndBalance}</th>
+                                <th>${currentTexts.tableInflatedEndBalance}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${monthlyData.map(data => `
+                                <tr>
+                                    <td>${data.year}</td>
+                                    <td>${data.month}</td>
+                                    <td>${data.startingBalance.toFixed(2)} TL</td>
+                                    <td>${data.monthlyContribution.toFixed(2)} TL</td>
+                                    <td>${data.interestEarned.toFixed(2)} TL</td>
+                                    <td>${data.endBalance.toFixed(2)} TL</td>
+                                    <td>${data.inflatedEndBalance.toFixed(2)} TL</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+                savingsTableContainer.innerHTML = tableHtml;
+            });
+        });
+    </script>
+</body>
+</html>
