@@ -749,6 +749,53 @@
                 checkFormValidity(); // Buton durumunu sıfırla
             }
         });
+
+        // Header ve Footer yükleme fonksiyonları
+function loadPartial(elementId, url) {
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                // HTTP hatası durumunda konsola detaylı bilgi yazdır
+                console.error(`HTTP error! Status: ${response.status} for ${url}. Response: ${response.statusText}`);
+                throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+            }
+            return response.text();
+        })
+        .then(html => {
+            const placeholder = document.getElementById(elementId);
+            if (placeholder) {
+                placeholder.innerHTML = html;
+                // Yüklenen HTML içindeki script etiketlerini yeniden çalıştır
+                const scripts = placeholder.querySelectorAll('script');
+                scripts.forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                    newScript.textContent = oldScript.textContent;
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+                console.log(`Successfully loaded ${url} into #${elementId}`); // Debug mesajı
+            } else {
+                console.warn(`Placeholder element with ID '${elementId}' not found for URL: ${url}`); // Placeholder bulunamadı uyarısı
+            }
+        })
+        .catch(error => {
+            console.error(`Error loading ${url}:`, error);
+            const placeholder = document.getElementById(elementId);
+            if (placeholder) {
+                placeholder.innerHTML = `<p style="color: red; text-align: center;">Hata: ${elementId} içeriği yüklenemedi.</p>`;
+            }
+        });
+}
+
+// Sayfa yüklendiğinde header ve footer'ı yükle
+document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    loadPartial('header-placeholder', headerPath);
+    loadPartial('footer-placeholder', footerPath);
+});
     </script>
 </body>
 </html>
