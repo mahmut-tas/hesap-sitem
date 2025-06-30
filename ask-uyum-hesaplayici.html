@@ -490,7 +490,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Dil ayarı (mevcut yapınızı korumak için eklendi, ancak bu dosya TR olarak tasarlandı)
             const isEnglishPage = window.location.pathname.startsWith('/en/');
 
             const texts = {
@@ -547,7 +546,6 @@
                         }
                     }
                 }
-                // İngilizce metinler de buraya eklenebilir, mevcut IQ testindeki gibi
             };
 
             const currentTexts = isEnglishPage ? texts.en : texts.tr;
@@ -564,13 +562,12 @@
             document.getElementById('resetLoveCalculator').textContent = currentTexts.resetButton;
             document.getElementById('info-section-title').textContent = currentTexts.infoSectionTitle;
             document.getElementById('info-section-p1').innerHTML = currentTexts.infoSectionP1;
-            document.querySelector('.info-section h4').textContent = currentTexts.aboutTestTitle; // H4 tag'inin ID'si yoktu, selector ile ulaşıldı
+            document.querySelector('.info-section h4').textContent = currentTexts.aboutTestTitle;
             document.getElementById('info-list-1').innerHTML = currentTexts.infoList1;
             document.getElementById('info-list-2').innerHTML = currentTexts.infoList2;
             document.getElementById('info-list-3').innerHTML = currentTexts.infoList3;
             document.getElementById('info-list-4').innerHTML = currentTexts.infoList4;
             document.getElementById('disclaimer-text').textContent = currentTexts.disclaimerText;
-
 
             const name1Input = document.getElementById('name1');
             const dob1Input = document.getElementById('dob1');
@@ -579,7 +576,7 @@
             const calculateButton = document.getElementById('calculateButton');
             const inputForm = document.getElementById('inputForm');
             const loveResultDisplay = document.getElementById('loveResultDisplay');
-            const resetLoveCalculatorButton = document.getElementById('resetLoveCalculator');
+            let resetLoveCalculatorButton = document.getElementById('resetLoveCalculator'); // Başlangıçta referansı al
 
             // Form validasyonu için inputları dinle
             [name1Input, dob1Input, name2Input, dob2Input].forEach(input => {
@@ -593,9 +590,14 @@
                                         name2Input.value.trim() !== '' &&
                                         dob2Input.value.trim() !== '';
 
-                const validDates = !isNaN(new Date(dob1Input.value)) && !isNaN(new Date(dob2Input.value));
+                // Tarihlerin geçerli olup olmadığını kontrol et
+                const isValidDate1 = !isNaN(new Date(dob1Input.value));
+                const isValidDate2 = !isNaN(new Date(dob2Input.value));
+
+                const validDates = isValidDate1 && isValidDate2;
 
                 calculateButton.disabled = !(allInputsFilled && validDates);
+                console.log(`Form Validity: allInputsFilled=${allInputsFilled}, validDates=${validDates}, buttonDisabled=${calculateButton.disabled}`); // Debug
             }
 
             // Sayfa yüklendiğinde buton durumunu kontrol et
@@ -603,7 +605,11 @@
 
 
             calculateButton.addEventListener('click', calculateLoveCompatibility);
+            // resetLoveCalculatorButton referansı, displayLoveResult içinde yeniden oluşturulduğu için
+            // olay dinleyiciyi her sonuç gösterildiğinde eklememiz gerekiyor.
+            // Bu nedenle, aşağıdaki satırı ilk yüklemede çağırıyoruz, ancak displayLoveResult içinde de olacak.
             resetLoveCalculatorButton.addEventListener('click', resetLoveCalculator);
+
 
             function calculateLoveCompatibility() {
                 const name1 = name1Input.value.trim();
@@ -613,17 +619,26 @@
 
                 if (!name1 || !dob1 || !name2 || !dob2) {
                     alert(currentTexts.validationError);
+                    console.error("Validation Error: All fields must be filled."); // Debug
+                    return;
+                }
+
+                const date1 = new Date(dob1);
+                const date2 = new Date(dob2);
+
+                if (isNaN(date1.getTime()) || isNaN(date2.getTime())) {
+                    alert(currentTexts.validationError);
+                    console.error("Validation Error: Invalid dates entered."); // Debug
                     return;
                 }
 
                 // Basit Numeroloji ve Astrolojik Etki Kombinasyonu
-                // İsimlerin numerolojik değerleri (ünlü bir numeroloji algoritması değil, basitleştirilmiş)
                 const calculateNameValue = (name) => {
                     let sum = 0;
                     for (let i = 0; i < name.length; i++) {
                         const charCode = name.toUpperCase().charCodeAt(i);
                         if (charCode >= 65 && charCode <= 90) { // A-Z arası harfler
-                            sum += (charCode - 64); // A=1, B=2, ... Z=26
+                            sum += (charCode - 64);
                         }
                     }
                     return sum;
@@ -632,19 +647,10 @@
                 const value1 = calculateNameValue(name1);
                 const value2 = calculateNameValue(name2);
 
-                // Doğum tarihlerinden yaş farkı ve gün farkı
-                const date1 = new Date(dob1);
-                const date2 = new Date(dob2);
-
-                if (isNaN(date1.getTime()) || isNaN(date2.getTime())) {
-                    alert(currentTexts.validationError);
-                    return;
-                }
-
                 const diffTime = Math.abs(date2.getTime() - date1.getTime());
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-                // Rastgeleliği artırmak için basit hash fonksiyonu
+                // Rastgelelik için basit hash fonksiyonu ve Pseudo Random Number Generator (PRNG)
                 const simpleHash = (str) => {
                     let hash = 0;
                     for (let i = 0; i < str.length; i++) {
@@ -655,34 +661,45 @@
                     return Math.abs(hash);
                 };
 
-                const seed = simpleHash(name1 + dob1 + name2 + dob2);
-                let rng = new Math.seedrandom(seed); // seedrandom kütüphanesi kullanılmadığı için burada basit bir Random yerine geçecek bir fonksiyon kullanılmalı
-
-                // Alternatif olarak basit bir XOR tabanlı RNG (seedrandom olmadan)
-                let currentSeed = seed;
+                let currentSeed = simpleHash(name1 + dob1 + name2 + dob2); // Her hesaplamada yeni seed
                 function simplePseudoRandom() {
                     currentSeed = (currentSeed * 9301 + 49297) % 233280;
                     return currentSeed / 233280;
                 }
 
-
-                // Uyumu hesaplama mantığı (eğlence amaçlı ve karmaşık olmayan bir algoritma)
                 let compatibilityScore = 0;
 
                 // İsim değerleri uyumu: İsim değerleri ne kadar yakınsa o kadar yüksek puan
                 const nameDiff = Math.abs(value1 - value2);
-                compatibilityScore += Math.max(0, 50 - nameDiff); // Max 50 puan
+                compatibilityScore += Math.max(0, 50 - Math.floor(nameDiff / 2)); // Fark arttıkça puan düşer, max 50 puan
 
                 // Doğum tarihi farkı (gün): Gün farkı az ise (aynı burç, aynı ay gibi) daha yüksek puan
-                // 365 gün üzerinden bir çember gibi düşünelim
-                const normalizedDayDiff = Math.min(diffDays % 365, 365 - (diffDays % 365));
-                compatibilityScore += Math.max(0, 50 - Math.floor(normalizedDayDiff / 7)); // Haftalarla azaldıkça puan düşer. Max 50 puan
+                // Yıl içindeki gün farkı (0-364 arası)
+                const dayOfYear1 = Math.floor((date1 - new Date(date1.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+                const dayOfYear2 = Math.floor((date2 - new Date(date2.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+                const dayOfYearDiff = Math.abs(dayOfYear1 - dayOfYear2);
+                
+                // 180 gün üzeri farkları da 365'ten çıkararak uyumu artırma (çember etkisi)
+                const normalizedDayOfYearDiff = Math.min(dayOfYearDiff, 365 - dayOfYearDiff);
+                compatibilityScore += Math.max(0, 40 - Math.floor(normalizedDayOfYearDiff / 9)); // Max 40 puan
 
+                // Yaş farkı: Yaş farkı çok büyük veya çok küçükse puanı etkile
+                const age1 = new Date().getFullYear() - date1.getFullYear();
+                const age2 = new Date().getFullYear() - date2.getFullYear();
+                const ageDifference = Math.abs(age1 - age2);
+                if (ageDifference <= 2) { // Çok yakın yaşlar
+                    compatibilityScore += 10;
+                } else if (ageDifference <= 5) { // Orta yaş farkı
+                    compatibilityScore += 5;
+                } else if (ageDifference > 10) { // Büyük yaş farkı
+                    compatibilityScore -= 5;
+                }
+                
                 // Ek rastgelelik ve benzersizlik katmak için
-                compatibilityScore += Math.floor(simplePseudoRandom() * 20); // 0-19 arası ek puan
+                compatibilityScore += Math.floor(simplePseudoRandom() * 15); // 0-14 arası ek puan
 
-                // Toplam puanı %'ye çevir (Max 120 puan üzerinden)
-                let finalPercentage = Math.min(100, Math.floor((compatibilityScore / 120) * 100));
+                // Puanı 0-100 arasına sıkıştır
+                let finalPercentage = Math.max(0, Math.min(100, Math.floor((compatibilityScore / 100) * 100))); // Max 100 puan üzerinden normalize
 
                 // Sonuçları eşleştir
                 let resultCategory;
@@ -699,6 +716,8 @@
                 } else {
                     resultCategory = currentTexts.results.unique;
                 }
+                console.log("Calculated Percentage:", finalPercentage); // Debug
+                console.log("Result Category:", resultCategory); // Debug
 
                 displayLoveResult(finalPercentage, resultCategory);
             }
@@ -716,7 +735,7 @@
                     </div>
                     <button class="reset-button" id="resetLoveCalculator">${currentTexts.resetButton}</button>
                     `;
-                // Yeni buton referansını tekrar al
+                // Sonuç gösterildiğinde, yeni oluşturulan butona olay dinleyiciyi tekrar ekle
                 document.getElementById('resetLoveCalculator').addEventListener('click', resetLoveCalculator);
             }
 
@@ -729,43 +748,6 @@
                 loveResultDisplay.style.display = 'none';
                 checkFormValidity(); // Buton durumunu sıfırla
             }
-
-            // Header ve Footer yükleme fonksiyonları (eğer harici dosyalardan yükleniyorsa)
-             function loadPartial(elementId, url) {
-                 fetch(url)
-                     .then(response => {
-                         if (!response.ok) {
-                             throw new Error(`HTTP error! status: ${response.status} for ${url}`);
-                         }
-                         return response.text();
-                     })
-                     .then(html => {
-                         const placeholder = document.getElementById(elementId);
-                         if (placeholder) {
-                             placeholder.innerHTML = html;
-                             const scripts = placeholder.querySelectorAll('script');
-                             scripts.forEach(oldScript => {
-                                 const newScript = document.createElement('script');
-                                 Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
-                                 newScript.textContent = oldScript.textContent;
-                                 oldScript.parentNode.replaceChild(newScript, oldScript);
-                             });
-                         }
-                     })
-                     .catch(error => {
-                         console.error(`Error loading ${url}:`, error);
-                         const placeholder = document.getElementById(elementId);
-                         if (placeholder) {
-                             placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
-                         }
-                     });
-             }
-
-             const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
-             const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
-
-             loadPartial('header-placeholder', headerPath);
-             loadPartial('footer-placeholder', footerPath);
         });
     </script>
 </body>
