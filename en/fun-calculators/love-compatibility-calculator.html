@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Love Compatibility Calculator - Hesapkolik</title>
+
+    <meta content="Calculate the love compatibility of your names and birth dates. Find out how compatible your love is! Fun and unique results." name="description"/>
+    <meta content="love compatibility, love calculation, name compatibility, birth date compatibility, love test, relationship test, fun love calculator, hesapkolik love" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <style>
+        /* General Settings and Font */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom right, #fce4ec, #e0f2f7); /* Pastel shades soft gradient */
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, #ff6b6b, #ee5282); /* Vibrant red-pink gradient */
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::before {
+            content: '❤️';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            font-size: 100px;
+            opacity: 0.1;
+            transform: rotate(-30deg);
+        }
+        .hero-section::after {
+            content: '✨';
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            font-size: 80px;
+            opacity: 0.1;
+            transform: rotate(40deg);
+        }
+        .hero-section h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .hero-section p {
+            font-size: 1.3em;
+            opacity: 0.95;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Calculator Section */
+        .calculator-section {
+            padding: 40px 0;
+            text-align: center;
+            flex-grow: 1; /* Allows content to fill the screen */
+        }
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            max-width: 600px;
+            margin: 30px auto;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #ff99bb; /* Romantic border */
+        }
+        .calc-wrapper::before, .calc-wrapper::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 153, 187, 0.1);
+            border-radius: 50%;
+            z-index: 0;
+            filter: blur(30px);
+        }
+        .calc-wrapper::before {
+            top: -30px;
+            left: -30px;
+        }
+        .calc-wrapper::after {
+            bottom: -30px;
+            right: -30px;
+        }
+
+        .calc-wrapper h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
+            color: #e91e63; /* Vibrant pink */
+            margin-bottom: 30px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        .icon-large {
+            margin-right: 10px;
+            color: #ff6b6b;
+            font-size: 1.2em;
+        }
+
+        /* Form Groups */
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 1.1em;
+        }
+        .input-group input[type="text"],
+        .input-group input[type="date"] {
+            width: calc(100% - 20px);
+            padding: 12px 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .input-group input[type="text"]:focus,
+        .input-group input[type="date"]:focus {
+            border-color: #ff6b6b;
+            box-shadow: 0 0 8px rgba(255, 107, 107, 0.4);
+            outline: none;
+        }
+        .input-group input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(40%) sepia(88%) saturate(2470%) hue-rotate(320deg) brightness(90%) contrast(100%); /* Pink calendar icon */
+        }
+
+        /* Buttons */
+        .calc-button {
+            width: 100%;
+            padding: 15px 20px;
+            background: linear-gradient(45deg, #ff6b6b, #ff99bb); /* Pink-Red gradient */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+        .calc-button:hover {
+            background: linear-gradient(45deg, #ee5282, #ff6b6b);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+        }
+        .calc-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(255, 107, 107, 0.4);
+        }
+        .calc-button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Result Display */
+        .result-display {
+            margin-top: 30px;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            padding: 30px 20px;
+            border-radius: 10px;
+            background-color: #fff0f5; /* Light pink background */
+            border: 2px dashed #ffb6c1; /* Heart-themed border */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: none; /* Hidden by default */
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .result-display::before {
+            content: '💖';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 40px;
+            opacity: 0.2;
+        }
+        .result-display::after {
+            content: '💕';
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 40px;
+            opacity: 0.2;
+        }
+
+        .result-display h4 {
+            font-family: 'Playfair Display', serif;
+            color: #e91e63;
+            font-size: 2em;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .result-display h4::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: #e91e63;
+            margin: 10px auto 0;
+            border-radius: 2px;
+        }
+
+        .result-display .match-score {
+            font-size: 4em;
+            color: #ff6b6b; /* Red */
+            margin: 20px 0;
+            font-weight: 800;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1);
+        }
+        .result-display .match-message {
+            font-size: 1.3em;
+            color: #6a052e; /* Dark maroon */
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        .result-detail {
+            background-color: #ffebee;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #ffcdd2;
+            color: #880e4f;
+            font-size: 0.95em;
+        }
+        .result-detail strong {
+            color: #c2185b;
+        }
+
+        .reset-button {
+            background-color: #8d6e63; /* Brown tone */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 25px;
+        }
+        .reset-button:hover {
+            background-color: #795548;
+        }
+
+        /* Info Section */
+        .info-section {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-top: 40px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+        }
+        .info-section h3 {
+            font-family: 'Playfair Display', serif;
+            color: #e91e63;
+            font-size: 2.2em;
+            margin-bottom: 25px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: none; /* Remove default bullet points */
+            padding: 0;
+            margin: 0 auto 20px auto;
+            max-width: 700px;
+            text-align: left;
+        }
+        .info-section ul li {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 12px;
+            line-height: 1.6;
+            color: #555;
+        }
+        .info-section ul li::before {
+            content: '⭐'; /* Fun icon */
+            position: absolute;
+            left: 0;
+            color: #ffc107; /* Yellow star */
+            font-size: 1.2em;
+            top: 0;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .disclaimer-text {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 30px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: center;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5em;
+            }
+            .hero-section p {
+                font-size: 1.1em;
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 2em;
+            }
+            .result-display .match-score {
+                font-size: 3em;
+            }
+            .result-display .match-message {
+                font-size: 1.1em;
+            }
+            .info-section h3 {
+                font-size: 1.8em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 40px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .hero-section p {
+                font-size: 1em;
+            }
+            .calc-wrapper {
+                padding: 20px 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.6em;
+            }
+            .input-group label {
+                font-size: 1em;
+            }
+            .input-group input[type="text"],
+            .input-group input[type="date"] {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+            .calc-button {
+                padding: 12px 15px;
+                font-size: 1em;
+            }
+            .result-display {
+                padding: 20px 15px;
+            }
+            .result-display h4 {
+                font-size: 1.6em;
+            }
+            .result-display .match-score {
+                font-size: 2.5em;
+            }
+            .result-display .match-message {
+                font-size: 1em;
+            }
+            .info-section h3 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div> <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1 id="main-heading">Love Compatibility Calculator</h1>
+                <p id="main-description">Discover the love compatibility between your names and birth dates. Interpret your relationship dynamics from a fun perspective!</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper">
+                    <h3 id="calculator-title"><i class="fas fa-heart icon-large"></i> Lovometer</h3>
+
+                    <div id="inputForm">
+                        <div class="input-group">
+                            <label for="name1">Your Name:</label>
+                            <input type="text" id="name1" placeholder="Your Name" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="dob1">Your Birth Date:</label>
+                            <input type="date" id="dob1" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="name2">Partner's Name:</label>
+                            <input type="text" id="name2" placeholder="Partner's Name" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="dob2">Partner's Birth Date:</label>
+                            <input type="date" id="dob2" required>
+                        </div>
+                        <button id="calculateButton" class="calc-button">Calculate Love Compatibility</button>
+                    </div>
+
+                    <div class="result-display" id="loveResultDisplay">
+                        <button class="reset-button" id="resetLoveCalculator">Try a New Compatibility</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3 id="info-section-title">Love Compatibility Calculations and Their Meaning</h3>
+            <p id="info-section-p1">
+                **Love Compatibility Calculators** are tools that typically use various methods like the numerological values of names or the astrological/numerological influences of birth dates to estimate the potential compatibility between two people for entertainment purposes. These tools offer a fun way to understand relationship dynamics or simply to satisfy your curiosity about how "compatible" you are with your partner.
+            </p>
+            <h4>About This Calculator:</h4>
+            <ul>
+                <li id="info-list-1">
+                    <strong>For Entertainment Purposes Only:</strong> This tool does not scientifically measure the complexities of real relationships. It provides a symbolic interpretation based solely on names and birth dates.
+                </li>
+                <li id="info-list-2">
+                    <strong>Positive Outlook:</strong> Our aim is always to provide positive or thought-provoking results to offer a nice perspective on your relationship. Remember, true compatibility is built with effort and understanding.
+                </li>
+                <li id="info-list-3">
+                    <strong>No Personal Data Storage:</strong> The names and birth dates you enter are not stored on our servers. The calculation is performed only in your browser and is cleared when the page is refreshed.
+                </li>
+                <li id="info-list-4">
+                    <strong>Try Again:</strong> Experiment with different names or birth dates to get varied results and keep the fun going!
+                </li>
+            </ul>
+            <p class="disclaimer-text" id="disclaimer-text">
+                This love compatibility calculator is a tool purely for entertainment and personal interest. The results you obtain do not reflect the depth, dynamics, or future of a real relationship. Love and relationships are complex matters, and such calculations, which lack a scientific basis, should only be used for having a good time. The success of a relationship is built on mutual understanding, communication, respect, and shared effort. Please do not take these results seriously and always consult a professional when making important decisions about your relationship.
+            </p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div> <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+            const texts = {
+                tr: { /* ... (Turkish texts as provided in your original code) ... */ },
+                en: {
+                    mainHeading: 'Love Compatibility Calculator',
+                    mainDescription: 'Discover the love compatibility between your names and birth dates. Interpret your relationship dynamics from a fun perspective!',
+                    calculatorTitle: 'Lovometer',
+                    name1Label: 'Your Name:',
+                    dob1Label: 'Your Birth Date:',
+                    name2Label: 'Partner\'s Name:',
+                    dob2Label: 'Partner\'s Birth Date:',
+                    calculateButton: 'Calculate Love Compatibility',
+                    resultHeading: 'Your Love Compatibility:',
+                    resetButton: 'Try a New Compatibility',
+                    infoSectionTitle: 'Love Compatibility Calculations and Their Meaning',
+                    infoSectionP1: '**Love Compatibility Calculators** are tools that typically use various methods like the numerological values of names or the astrological/numerological influences of birth dates to estimate the potential compatibility between two people for entertainment purposes. These tools offer a fun way to understand relationship dynamics or simply to satisfy your curiosity about how "compatible" you are with your partner.',
+                    aboutTestTitle: 'About This Calculator:',
+                    infoList1: '<strong>For Entertainment Purposes Only:</strong> This tool does not scientifically measure the complexities of real relationships. It provides a symbolic interpretation based solely on names and birth dates.',
+                    infoList2: '<strong>Positive Outlook:</strong> Our aim is always to provide positive or thought-provoking results to offer a nice perspective on your relationship. Remember, true compatibility is built with effort and understanding.',
+                    infoList3: '<strong>No Personal Data Storage:</strong> The names and birth dates you enter are not stored on our servers. The calculation is performed only in your browser and is cleared when the page is refreshed.',
+                    infoList4: '<strong>Try Again:</strong> Experiment with different names or birth dates to get varied results and keep the fun going!',
+                    disclaimerText: 'This love compatibility calculator is a tool purely for entertainment and personal interest. The results you obtain do not reflect the depth, dynamics, or future of a real relationship. Love and relationships are complex matters, and such calculations, which lack a scientific basis, should only be used for having a good time. The success of a relationship is built on mutual understanding, communication, respect, and shared effort. Please do not take these results seriously and always consult a professional when making important decisions about your relationship.',
+                    validationError: 'Please fill in all fields and enter valid birth dates.',
+                    results: {
+                        "perfect": {
+                            score: "95-100%",
+                            message: "The love between you two is like a magical melody. Passion, understanding, and deep connection are the cornerstones of your relationship. Together, you can overcome any challenge and always complete each other. You have a rare compatibility!",
+                            details: "<strong>Communication:</strong> Excellent. You can even communicate with your eyes. <strong>Passion:</strong> Intense and constant. The sparks never fade. <strong>Loyalty:</strong> Infinite. Your trust in each other is unshakable. <strong>Shared Goals:</strong> Two souls walking on the same path."
+                        },
+                        "strong": {
+                            score: "80-94%",
+                            message: "The compatibility between you is quite strong and solid. You have a deep understanding and sharing with each other. Small differences even add color to your relationship. You are moving towards a wonderful future together!",
+                            details: "<strong>Communication:</strong> Very good. Your openness is admirable. <strong>Passion:</strong> High. Romance and excitement are always present. <strong>Loyalty:</strong> Solid. Your commitment to each other is strong. <strong>Shared Goals:</strong> Compatible. You enjoy making plans together."
+                        },
+                        "good": {
+                            score: "60-79%",
+                            message: "Your love has a strong foundation and is quite compatible. You spend good times together and support each other. There may be minor issues, but you have the strength to overcome them. A promising relationship!",
+                            details: "<strong>Communication:</strong> Good. You overcome small misunderstandings sometimes. <strong>Passion:</strong> Balanced. You have both warm and calm moments. <strong>Loyalty:</strong> Reliable. You feel mutual commitment. <strong>Shared Goals:</strong> Positive. You are willing to grow together."
+                        },
+                        "moderate": {
+                            score: "40-59%",
+                            message: "Your love has both compatible and developing aspects. As you continue to discover and understand each other, your bond will strengthen. A brighter future awaits you with a little more effort and patience!",
+                            details: "<strong>Communication:</strong> Needs development. You might need more conversation and empathy. <strong>Passion:</strong> Variable. Sometimes intense, sometimes stagnant. <strong>Loyalty:</strong> Stable. General trust exists in commitment. <strong>Shared Goals:</strong> Differences exist. Finding common ground is important."
+                        },
+                        "developing": {
+                            score: "20-39%",
+                            message: "Your relationship may be in its early stages or your differences might be prominent. This is not an end, but a beginning! By spending more time and effort truly getting to know each other, you can unleash the potential.",
+                            details: "<strong>Communication:</strong> Challenging. Open and honest conversations are crucial. <strong>Passion:</strong> Fluctuating. Flare-ups and calm periods may occur. <strong>Loyalty:</strong> Being tested. Building trust is critical. <strong>Shared Goals:</strong> Diverse paths. Respect for individual goals is important."
+                        },
+                        "unique": {
+                            score: "0-19%",
+                            message: "Your compatibility is unique and extraordinary! Perhaps, like opposite poles attracting, your differences make your relationship interesting. This could mean you have a lot to learn from each other. Every love story is different!",
+                            details: "<strong>Communication:</strong> Unique. You should try unconventional ways. <strong>Passion:</strong> Mysterious. It can sometimes flare up unexpectedly. <strong>Loyalty:</strong> Flexible. Individual space is important. <strong>Shared Goals:</strong> Different paths. Individual goals should be respected."
+                        }
+                    }
+                }
+            };
+
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // Update texts
+            document.getElementById('main-heading').textContent = currentTexts.mainHeading;
+            document.getElementById('main-description').textContent = currentTexts.mainDescription;
+            document.getElementById('calculator-title').innerHTML = `<i class="fas fa-heart icon-large"></i> ${currentTexts.calculatorTitle}`;
+            document.querySelector('label[for="name1"]').textContent = currentTexts.name1Label;
+            document.querySelector('label[for="dob1"]').textContent = currentTexts.dob1Label;
+            document.querySelector('label[for="name2"]').textContent = currentTexts.name2Label;
+            document.querySelector('label[for="dob2"]').textContent = currentTexts.dob2Label;
+            document.getElementById('calculateButton').textContent = currentTexts.calculateButton;
+            document.getElementById('resetLoveCalculator').textContent = currentTexts.resetButton;
+            document.getElementById('info-section-title').textContent = currentTexts.infoSectionTitle;
+            document.getElementById('info-section-p1').innerHTML = currentTexts.infoSectionP1;
+            document.querySelector('.info-section h4').textContent = currentTexts.aboutTestTitle;
+            document.getElementById('info-list-1').innerHTML = currentTexts.infoList1;
+            document.getElementById('info-list-2').innerHTML = currentTexts.infoList2;
+            document.getElementById('info-list-3').innerHTML = currentTexts.infoList3;
+            document.getElementById('info-list-4').innerHTML = currentTexts.infoList4;
+            document.getElementById('disclaimer-text').textContent = currentTexts.disclaimerText;
+
+            const name1Input = document.getElementById('name1');
+            const dob1Input = document.getElementById('dob1');
+            const name2Input = document.getElementById('name2');
+            const dob2Input = document.getElementById('dob2');
+            const calculateButton = document.getElementById('calculateButton');
+            const inputForm = document.getElementById('inputForm');
+            const loveResultDisplay = document.getElementById('loveResultDisplay');
+            let resetLoveCalculatorButton = document.getElementById('resetLoveCalculator');
+
+            // PRNG global seed
+            let currentSeed;
+
+            // Simple Pseudo Random Number Generator
+            function simplePseudoRandom() {
+                currentSeed = (currentSeed * 9301 + 49297) % 233280;
+                return currentSeed / 233280;
+            }
+
+            // Function to check form validity
+            function checkFormValidity() {
+                const name1Val = name1Input.value.trim();
+                const dob1Val = dob1Input.value.trim();
+                const name2Val = name2Input.value.trim();
+                const dob2Val = dob2Input.value.trim();
+
+                const allInputsFilled = name1Val !== '' &&
+                                        dob1Val !== '' &&
+                                        name2Val !== '' &&
+                                        dob2Val !== '';
+
+                const isValidDate1 = dob1Val !== '' && !isNaN(new Date(dob1Val).getTime());
+                const isValidDate2 = dob2Val !== '' && !isNaN(new Date(dob2Val).getTime());
+
+                const validDates = isValidDate1 && isValidDate2;
+
+                calculateButton.disabled = !(allInputsFilled && validDates);
+                console.log(`[Form Check] allInputsFilled: ${allInputsFilled}, validDates: ${validDates}, buttonDisabled: ${calculateButton.disabled}`);
+            }
+
+            // Listen for input changes to enable/disable the button
+            [name1Input, dob1Input, name2Input, dob2Input].forEach(input => {
+                input.addEventListener('input', checkFormValidity);
+                input.addEventListener('change', checkFormValidity);
+            });
+
+            // Check button state on page load
+            checkFormValidity();
+
+            // Add event listener to calculate button
+            calculateButton.addEventListener('click', calculateLoveCompatibility);
+
+            // Add event listener to reset button (initial reference)
+            // Note: This button is recreated when results are displayed, so its event listener is re-attached in displayLoveResult.
+            resetLoveCalculatorButton.addEventListener('click', resetLoveCalculator);
+
+
+            function calculateLoveCompatibility() {
+                console.log("[Calculate] Button clicked.");
+                const name1 = name1Input.value.trim();
+                const dob1 = dob1Input.value;
+                const name2 = name2Input.value.trim();
+                const dob2 = dob2Input.value;
+
+                // Final validation check
+                if (!name1 || !dob1 || !name2 || !dob2 || isNaN(new Date(dob1).getTime()) || isNaN(new Date(dob2).getTime())) {
+                    alert(currentTexts.validationError);
+                    console.error("[Calculate Error] Validation failed: Missing or invalid inputs.");
+                    return;
+                }
+
+                const date1 = new Date(dob1);
+                const date2 = new Date(dob2);
+
+                // Simple Numerology and Astrological Effect Combination
+                const calculateNameValue = (name) => {
+                    let sum = 0;
+                    for (let i = 0; i < name.length; i++) {
+                        const charCode = name.toUpperCase().charCodeAt(i);
+                        if (charCode >= 65 && charCode <= 90) { // A-Z letters
+                            sum += (charCode - 64);
+                        }
+                    }
+                    return sum;
+                };
+
+                const value1 = calculateNameValue(name1);
+                const value2 = calculateNameValue(name2);
+                console.log(`[Calculate] Name Values: ${name1}=${value1}, ${name2}=${value2}`);
+
+                // Set PRNG seed based on inputs
+                const simpleHash = (str) => {
+                    let hash = 0;
+                    for (let i = 0; i < str.length; i++) {
+                        const char = str.charCodeAt(i);
+                        hash = ((hash << 5) - hash) + char;
+                        hash |= 0; // 32bit integer
+                    }
+                    return Math.abs(hash);
+                };
+                currentSeed = simpleHash(name1 + dob1 + name2 + dob2);
+                console.log(`[Calculate] Initial Seed: ${currentSeed}`);
+
+                let compatibilityScore = 0;
+
+                // Name value compatibility: Higher score if name values are closer
+                const nameDiff = Math.abs(value1 - value2);
+                compatibilityScore += Math.max(0, 50 - Math.floor(nameDiff / 2));
+                console.log(`[Calculate] Name Diff Score: ${compatibilityScore}`);
+
+                // Birth date difference (days): Higher score if day difference is small (e.g., same zodiac sign, same month)
+                // Day of year difference (0-364)
+                const dayOfYear1 = Math.floor((date1 - new Date(date1.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+                const dayOfYear2 = Math.floor((date2 - new Date(date2.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+                const dayOfYearDiff = Math.abs(dayOfYear1 - dayOfYear2);
+                
+                const normalizedDayOfYearDiff = Math.min(dayOfYearDiff, 365 - dayOfYearDiff); // "Circle" effect of the year
+                compatibilityScore += Math.max(0, 40 - Math.floor(normalizedDayOfYearDiff / 9));
+                console.log(`[Calculate] Day of Year Diff Score: ${compatibilityScore}`);
+
+                // Age difference: Affect score if age difference is too large or too small
+                const age1 = new Date().getFullYear() - date1.getFullYear();
+                const age2 = new Date().getFullYear() - date2.getFullYear();
+                const ageDifference = Math.abs(age1 - age2);
+                
+                if (ageDifference <= 2) { // Very close ages
+                    compatibilityScore += 10;
+                } else if (ageDifference <= 5) { // Moderate age difference
+                    compatibilityScore += 5;
+                } else if (ageDifference > 10) { // Large age difference
+                    compatibilityScore = Math.max(0, compatibilityScore - 5); // Prevent score from going below zero
+                }
+                console.log(`[Calculate] Age Diff Score: ${compatibilityScore}`);
+                
+                // Add randomness for uniqueness and fun
+                const randomBonus = Math.floor(simplePseudoRandom() * 15); // 0-14 bonus points
+                compatibilityScore += randomBonus;
+                console.log(`[Calculate] Random Bonus: ${randomBonus}, Total Score before norm: ${compatibilityScore}`);
+
+                // Normalize score to 0-100%
+                let finalPercentage = Math.max(0, Math.min(100, Math.floor((compatibilityScore / 100) * 100)));
+                console.log("Calculated Final Percentage:", finalPercentage);
+
+                // Match results to categories
+                let resultCategory;
+                if (finalPercentage >= 95) {
+                    resultCategory = currentTexts.results.perfect;
+                } else if (finalPercentage >= 80) {
+                    resultCategory = currentTexts.results.strong;
+                } else if (finalPercentage >= 60) {
+                    resultCategory = currentTexts.results.good;
+                } else if (finalPercentage >= 40) {
+                    resultCategory = currentTexts.results.moderate;
+                } else if (finalPercentage >= 20) {
+                    resultCategory = currentTexts.results.developing;
+                } else {
+                    resultCategory = currentTexts.results.unique;
+                }
+                console.log("Result Category:", resultCategory.message);
+
+                displayLoveResult(finalPercentage, resultCategory);
+            }
+
+            function displayLoveResult(percentage, resultCategory) {
+                inputForm.style.display = 'none';
+                loveResultDisplay.style.display = 'block';
+
+                loveResultDisplay.innerHTML = `
+                    <h4>${currentTexts.resultHeading}</h4>
+                    <div class="match-score">${percentage}%</div>
+                    <p class="match-message">${resultCategory.message}</p>
+                    <div class="result-detail">
+                        <p>${resultCategory.details}</p>
+                    </div>
+                    <button class="reset-button" id="resetLoveCalculator">${currentTexts.resetButton}</button>
+                    `;
+                // Re-attach event listener to the newly created button
+                document.getElementById('resetLoveCalculator').addEventListener('click', resetLoveCalculator);
+                console.log("[Display Result] Result displayed and reset button re-attached.");
+            }
+
+            function resetLoveCalculator() {
+                console.log("[Reset] Reset button clicked.");
+                name1Input.value = '';
+                dob1Input.value = '';
+                name2Input.value = '';
+                dob2Input.value = '';
+                inputForm.style.display = 'block';
+                loveResultDisplay.style.display = 'none';
+                checkFormValidity(); // Reset button state
+            }
+        });
+
+        // Header and Footer loading function (modified to support isEnglishPage logic)
+        function loadPartial(elementId, url) {
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        console.error(`HTTP error! Status: ${response.status} for ${url}. Response: ${response.statusText}`);
+                        throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    const placeholder = document.getElementById(elementId);
+                    if (placeholder) {
+                        // Create a temporary div to parse the loaded HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+
+                        // Check if the loaded content is a semantic element (like <header> or <footer>)
+                        // and replace the placeholder with it, otherwise just inject innerHTML
+                        const semanticElement = tempDiv.firstElementChild; 
+                        if (semanticElement && (semanticElement.tagName.toLowerCase() === 'header' || semanticElement.tagName.toLowerCase() === 'footer')) {
+                            placeholder.replaceWith(semanticElement); // Replace the div with the semantic element
+                            // Re-execute scripts within the newly inserted semantic element
+                            const scripts = semanticElement.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                document.body.appendChild(newScript);
+                                oldScript.remove(); 
+                            });
+                        } else {
+                            placeholder.innerHTML = html;
+                            // Re-execute scripts if just innerHTML is loaded (for cases where it's not a full semantic tag)
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                        console.log(`Successfully loaded ${url} into #${elementId}`);
+                    } else {
+                        console.warn(`Placeholder element with ID '${elementId}' not found for URL: ${url}`);
+                    }
+                })
+                .catch(error => {
+                    console.error(`Error loading ${url}:`, error);
+                    const placeholder = document.getElementById(elementId);
+                    if (placeholder) {
+                        placeholder.innerHTML = `<p style="color: red; text-align: center;">Error: Could not load ${elementId} content.</p>`;
+                    }
+                });
+        }
+
+        // Load header and footer when the page is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            // Assuming your header.html and footer.html files directly contain <header> and <footer> tags respectively.
+            // If they only contain the *content* to be placed inside a header/footer, adjust loadPartial accordingly.
+            loadPartial('header-placeholder', headerPath); // The loadPartial function now intelligently handles semantic elements
+            loadPartial('footer-placeholder', footerPath);
+        });
+    </script>
+</body>
+</html>
