@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Utility Tools & Calculators - Hesapkolik</title>
+
+    <meta content="Practical online tools and calculators to simplify your daily tasks and boost your productivity. Word counter, unit converter, random number generator, and more." name="description"/>
+    <meta content="utility tools, practical calculators, word counter, character counter, random number, color code converter, unit converter, online tools, hesapkolik" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    
+    <style>
+        /* Page-specific styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Clean and fresh background */
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1000px; /* Slightly wider */
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Matches dark theme header/footer */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Calculator Grid Section */
+        .calculator-grid-section {
+            padding: 50px 0;
+            text-align: center;
+            flex-grow: 1;
+            background-color: #ffffff; /* White card background */
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-grid-section h2 {
+            margin-bottom: 40px;
+            color: #2c3e50; /* Dark text color */
+            font-size: 2.2em;
+        }
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            justify-content: center;
+            align-items: stretch; /* Ensures cards have the same height */
+            max-width: 960px; /* Adjust grid width */
+            margin: 0 auto;
+        }
+        .calculator-card {
+            background-color: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 220px; /* Minimum card height */
+        }
+        .calculator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: #e74c3c; /* Color change on hover */
+        }
+
+        .calculator-card .icon-big {
+            font-size: 3.5em;
+            color: #3498db; /* Blue tone */
+            margin-bottom: 20px;
+            opacity: 0.8;
+            transition: color 0.3s ease;
+        }
+        .calculator-card:hover .icon-big {
+            color: #e74c3c; /* Icon color change on hover */
+        }
+
+        .calculator-card h3 {
+            font-size: 1.6em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .calculator-card p {
+            font-size: 0.95em;
+            color: #666;
+            flex-grow: 1; /* Allows text to fill available space */
+            margin-bottom: 20px;
+        }
+        .calculator-card .card-button {
+            display: inline-block;
+            background-color: #3498db; /* CTA button color */
+            color: white;
+            padding: 10px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .calculator-card .card-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        .calculator-card .card-button.disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Info Section */
+        .info-section {
+            background-color: #ffffff;
+            padding: 35px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-top: 40px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+        }
+        .info-section h3 {
+            color: #2c3e50; /* Different color for info heading */
+            font-size: 2em;
+            margin-bottom: 25px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: none; /* Remove default bullet points */
+            padding: 0;
+            margin: 0 auto 20px auto;
+            max-width: 700px;
+            text-align: left;
+        }
+        .info-section ul li {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 12px;
+            line-height: 1.6;
+            color: #555;
+        }
+        .info-section ul li::before {
+            content: '✅'; /* Fun icon */
+            position: absolute;
+            left: 0;
+            color: #27ae60; /* Green checkmark */
+            font-size: 1.2em;
+            top: 0;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .disclaimer-text {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 30px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: center;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5em;
+            }
+            .hero-section p {
+                font-size: 1.1em;
+            }
+            .calculator-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+            .calculator-card {
+                padding: 25px;
+            }
+            .calculator-card .icon-big {
+                font-size: 3em;
+            }
+            .calculator-card h3 {
+                font-size: 1.4em;
+            }
+            .calculator-card p {
+                font-size: 0.9em;
+            }
+            .info-section {
+                padding: 25px;
+            }
+            .info-section h3 {
+                font-size: 1.8em;
+            }
+        }
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 50px 15px;
+            }
+            .hero-section h1 {
+                font-size: 2em;
+            }
+            .hero-section p {
+                font-size: 1em;
+            }
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+            .calculator-card {
+                padding: 20px;
+            }
+            .calculator-card .icon-big {
+                font-size: 2.8em;
+            }
+            .calculator-card h3 {
+                font-size: 1.2em;
+            }
+            .calculator-card p {
+                font-size: 0.85em;
+            }
+            .info-section {
+                padding: 20px;
+            }
+            .info-section h3 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Utility Tools & Calculators</h1>
+                <p>Practical online tools to speed up your daily tasks, boost your productivity, and simplify your life.</p>
+            </div>
+        </section>
+
+        <section class="calculator-grid-section">
+            <div class="container">
+                <h2>Our Tools to Make Your Work Easier</h2>
+                <div class="calculator-grid">
+                    <div class="calculator-card">
+                        <i class="fas fa-font icon-big"></i>
+                        <h3>Word and Character Counter</h3>
+                        <p>Instantly find out the word, character, space, and line counts of your texts. Ideal for writers, students, and SEO specialists.</p>
+                        <a class="card-button" href="character-and-word-counter.html">Calculate</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-dice icon-big"></i>
+                        <h3>Random Number Generator</h3>
+                        <p>Generate random numbers within a specified range or create passwords. Useful for draws, games, or secure password creation.</p>
+                        <a class="card-button" href="random-number-generators.html">Generate</a>
+                    </div>
+                    
+                    <div class="calculator-card">
+                        <i class="fas fa-palette icon-big"></i>
+                        <h3>Color Code Converter</h3>
+                        <p>Easily convert between different color codes like RGB, HEX, HSL. A practical tool for designers and developers.</p>
+                        <a class="card-button" href="color-code-converter.html">Convert</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-exchange-alt icon-big"></i>
+                        <h3>Unit Converter</h3>
+                        <p>Convert various units of measurement including length, weight, volume, temperature, and more in seconds.</p>
+                        <a class="card-button" href="unit-converter.html">Convert</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-barcode icon-big"></i>
+                        <h3>QR Code Generator</h3>
+                        <p>Quickly convert texts, URLs, or contact information into QR codes.</p>
+                        <a class="card-button disabled" href="#">Coming Soon</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-ruler-combined icon-big"></i>
+                        <h3>Square Meter Calculator</h3>
+                        <p>Easily calculate the square meter measurement of walls, floors, or any area.</p>
+                        <a class="card-button disabled" href="#">Coming Soon</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-percentage icon-big"></i>
+                        <h3>Percentage Calculator</h3>
+                        <p>Perform simple and complex percentage calculations instantly. Ideal for discounts, increases, or ratios.</p>
+                        <a class="card-button disabled" href="#">Coming Soon</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-money-bill-wave icon-big"></i>
+                        <h3>VAT Calculator</h3>
+                        <p>Easily calculate the price of a product or service with or without VAT.</p>
+                        <a class="card-button disabled" href="#">Coming Soon</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-clock icon-big"></i>
+                        <h3>Time Zone Converter</h3>
+                        <p>Quickly find out the time differences between various cities or countries.</p>
+                        <a class="card-button disabled" href="#">Coming Soon</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-lock icon-big"></i>
+                        <h3>Password Generator</h3>
+                        <p>Increase your online security by creating strong and secure passwords.</p>
+                        <a class="card-button disabled" href="#">Coming Soon</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-text-width icon-big"></i>
+                        <h3>Text Case Converter</h3>
+                        <p>Easily convert texts to uppercase, lowercase, or title case.</p>
+                        <a class="card-button disabled" href="#">Coming Soon</a>
+                    </div>
+                    
+                    <div class="calculator-card">
+                        <i class="fas fa-qrcode icon-big"></i>
+                        <h3>Barcode Reader/Generator</h3>
+                        <p>Read barcodes or easily create your own barcodes.</p>
+                        <a class="card-button disabled" href="#">Coming Soon</a>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>Why Are Utility Tools Important?</h3>
+            <p>
+                In the digital age, we often encounter various small calculation or data conversion needs in our daily lives or professional tasks. Useful online tools and calculators are designed to meet these needs quickly, accurately, and easily. These tools save time and effort by eliminating the necessity of knowing complex formulas or performing manual conversions.
+            </p>
+            <ul>
+                <li>
+                    <strong>Time Saving:</strong> Provides instant results, eliminating time-consuming manual calculations or research.
+                </li>
+                <li>
+                    <strong>Error Reduction:</strong> Minimizes human errors through automated processes.
+                </li>
+                <li>
+                    <strong>Accessibility:</strong> Being easily accessible from anywhere with an internet connection offers a great advantage for immediate needs.
+                </li>
+                <li>
+                    <strong>Increased Productivity:</strong> Speeds up repetitive tasks, boosting both personal and professional productivity.
+                </li>
+                <li>
+                    <strong>Learning and Exploration:</strong> Helps in better understanding units, conversions, or concepts in various fields.
+                </li>
+            </ul>
+            <p class="disclaimer-text">
+                The tools and calculators provided on this page are for general use and informational purposes only. The results provided do not substitute for professional advice, legal, or financial consultation. Utmost care has been taken for the accuracy of calculations, but Hesapkolik cannot be held responsible for any errors or omissions. For any specific situation or important decision, it is always recommended to consult a professional expert in the relevant field.
+            </p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        // Header and Footer loading function (re-used from previous examples)
+        function loadPartial(elementId, url) {
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        console.error(`HTTP error! Status: ${response.status} for ${url}. Response: ${response.statusText}`);
+                        throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    const placeholder = document.getElementById(elementId);
+                    if (placeholder) {
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+                        const semanticElement = tempDiv.firstElementChild; 
+                        if (semanticElement && (semanticElement.tagName.toLowerCase() === 'header' || semanticElement.tagName.toLowerCase() === 'footer')) {
+                            placeholder.replaceWith(semanticElement); 
+                            const scripts = semanticElement.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                document.body.appendChild(newScript);
+                                oldScript.remove(); 
+                            });
+                        } else {
+                            placeholder.innerHTML = html;
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                        console.log(`Successfully loaded ${url} into #${elementId}`);
+                    } else {
+                        console.warn(`Placeholder element with ID '${elementId}' not found for URL: ${url}`);
+                    }
+                })
+                .catch(error => {
+                    console.error(`Error loading ${url}:`, error);
+                    const placeholder = document.getElementById(elementId);
+                    if (placeholder) {
+                        placeholder.innerHTML = `<p style="color: red; text-align: center;">Error: Could not load ${elementId} content.</p>`;
+                    }
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+        });
+    </script>
+</body>
+</html>
