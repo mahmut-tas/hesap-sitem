@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="tr">
+ <head>
+  <meta charset="utf-8"/>
+  <link href="/css/header.css" rel="stylesheet"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+    QR Kod Üretici - Hesapkolik
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+  <link href="/css/footer.css" rel="stylesheet"/>
+  <meta content="Kolayca QR kod oluşturun. Metin, URL veya herhangi bir bilgiyi QR koda dönüştürün." name="description"/>
+  <meta content="qr kod, qr kod üretici, online qr kod, qr code generator, hesapkolik qr" name="keywords"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+  <link href="../css/style.css" rel="stylesheet"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+  </script>
+  <style>
+    /* Mevcut stil kodlarınız buraya gelecek */
+    /* Bu sayfaya özel stil eklemeleri */
+        .calculator-form-container .input-group {
+            margin-bottom: 20px;
+        }
+        .calculator-form-container .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calculator-form-container .input-group input[type="text"],
+        .calculator-form-container .input-group textarea {
+            width: 100%;
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calculator-form-container .input-group input[type="text"]:focus,
+        .calculator-form-container .input-group textarea:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .calculator-form-container button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+        .qr-code-display {
+            margin-top: 25px;
+            text-align: center;
+            min-height: 150px; /* QR kod için minimum alan */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .qr-code-display canvas {
+            max-width: 100%;
+            height: auto;
+        }
+        .qr-code-display .error {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        /* Hero Section için header ile aynı arka plan */
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        /* Calculator Selection Section */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+  </style>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+  </script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3655KNY8CP');
+  </script>
+ </head>
+ <body>
+  <div id="header-placeholder">
+  </div>
+  <main>
+    <section class="hero-section">
+      <div class="container">
+        <h1>
+          QR Kod Üretici
+        </h1>
+        <p>
+          Metinlerinizi, URL'lerinizi veya herhangi bir bilgiyi anında QR koda dönüştürün.
+        </p>
+      </div>
+    </section>
+
+    <section class="calculator-selection-section">
+      <div class="container">
+        <div class="calc-wrapper" id="qr-generator-wrapper">
+          <h3>
+            <i class="fas fa-qrcode icon-small">
+            </i>
+            QR Kod Oluştur
+          </h3>
+          <div class="calculator-form-container">
+            <div class="input-group">
+              <label for="qrTextInput">
+                QR Koda Dönüştürülecek Metin / URL:
+              </label>
+              <textarea id="qrTextInput" rows="5" placeholder="Buraya QR koda dönüştürmek istediğiniz metni veya URL'yi girin..."></textarea>
+            </div>
+            <button id="generateQrBtn">
+              QR Kod Oluştur
+            </button>
+            <div class="qr-code-display" id="qrcode">
+              </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div id="footer-placeholder">
+  </div>
+
+  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const isEnglishPage = window.location.pathname.startsWith('/en/');
+      const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+      const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+      // Header Yükleme
+      fetch(headerPath)
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+              }
+              return response.text();
+          })
+          .then(data => {
+              const headerPlaceholder = document.getElementById('header-placeholder');
+              if (headerPlaceholder) {
+                  headerPlaceholder.innerHTML = data;
+
+                  // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                  const scriptElement = headerPlaceholder.querySelector('script');
+                  if (scriptElement) {
+                      const newScript = document.createElement('script');
+                      newScript.textContent = scriptElement.textContent;
+                      document.body.appendChild(newScript);
+                      scriptElement.remove();
+                  }
+              }
+          })
+          .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+      // Footer Yükleme
+      fetch(footerPath)
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+              }
+              return response.text();
+          })
+          .then(data => {
+              const footerPlaceholder = document.getElementById('footer-placeholder');
+              if (footerPlaceholder) {
+                  footerPlaceholder.innerHTML = data;
+                  const tempDiv = document.createElement('div');
+                  tempDiv.innerHTML = data;
+                  const footerElement = tempDiv.querySelector('footer');
+                  if (footerElement) {
+                      footerPlaceholder.replaceWith(footerElement);
+                  }
+              }
+          })
+          .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+    });
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const qrTextInput = document.getElementById('qrTextInput');
+        const generateQrBtn = document.getElementById('generateQrBtn');
+        const qrcodeContainer = document.getElementById('qrcode');
+
+        // QR kodu oluşturan fonksiyon
+        function generateQRCode() {
+            const text = qrTextInput.value.trim(); // Giriş metnini al ve boşlukları temizle
+
+            // Önceki QR kodu temizle
+            qrcodeContainer.innerHTML = '';
+
+            if (text === '') {
+                qrcodeContainer.innerHTML = '<p class="error">Lütfen QR koda dönüştürülecek bir metin veya URL girin.</p>';
+                return;
+            }
+
+            // QRCode.js kütüphanesini kullanarak QR kodu oluştur
+            new QRCode(qrcodeContainer, {
+                text: text,
+                width: 200,
+                height: 200,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        }
+
+        // Butona tıklama olayını dinle
+        generateQrBtn.addEventListener('click', generateQRCode);
+
+        // Enter tuşuna basıldığında da QR kod oluştur (isteğe bağlı)
+        qrTextInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Varsayılan Enter davranışını engelle (yeni satır eklemesini)
+                generateQRCode();
+            }
+        });
+    });
+  </script>
+ </body>
+</html>
