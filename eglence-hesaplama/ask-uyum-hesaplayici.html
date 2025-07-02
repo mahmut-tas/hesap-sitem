@@ -13,6 +13,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
 
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
     <style>
         /* Genel Ayarlar ve Font */
         body {
@@ -422,7 +426,7 @@
     </script>
 </head>
 <body>
-    <main>
+    <div id="header-placeholder"></div> <main>
         <section class="hero-section">
             <div class="container">
                 <h1 id="main-heading">Aşk Uyumu Hesaplayıcı</h1>
@@ -456,8 +460,7 @@
                     </div>
 
                     <div class="result-display" id="loveResultDisplay">
-                        <button class="reset-button" id="resetLoveCalculator">Yeni Bir Uyumu Dene</button>
-                    </div>
+                        </div>
                 </div>
             </div>
         </section>
@@ -488,7 +491,54 @@
         </section>
     </main>
 
-    <script>
+    <div id="footer-placeholder"></div> <script>
+        // Header ve Footer yükleme fonksiyonu
+        function loadPartial(elementId, url) {
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        console.error(`HTTP error! Status: ${response.status} for ${url}. Response: ${response.statusText}`);
+                        throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    const placeholder = document.getElementById(elementId);
+                    if (placeholder) {
+                        placeholder.innerHTML = html;
+                        // Yüklenen HTML içindeki script etiketlerini yeniden çalıştır
+                        const scripts = placeholder.querySelectorAll('script');
+                        scripts.forEach(oldScript => {
+                            const newScript = document.createElement('script');
+                            Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                            newScript.textContent = oldScript.textContent;
+                            oldScript.parentNode.replaceChild(newScript, oldScript);
+                        });
+                        console.log(`Successfully loaded ${url} into #${elementId}`); // Debug mesajı
+                    } else {
+                        console.warn(`Placeholder element with ID '${elementId}' not found for URL: ${url}`); // Placeholder bulunamadı uyarısı
+                    }
+                })
+                .catch(error => {
+                    console.error(`Error loading ${url}:`, error);
+                    const placeholder = document.getElementById(elementId);
+                    if (placeholder) {
+                        placeholder.innerHTML = `<p style="color: red; text-align: center;">Hata: ${elementId} içeriği yüklenemedi.</p>`;
+                    }
+                });
+        }
+
+        // Sayfa yüklendiğinde header ve footer'ı yükle
+        document.addEventListener('DOMContentLoaded', function() {
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+        });
+
+        // Ana uygulama script'i ayrı bir DOMContentLoaded bloğunda
         document.addEventListener('DOMContentLoaded', function() {
             const isEnglishPage = window.location.pathname.startsWith('/en/');
 
@@ -522,30 +572,31 @@
                         "strong": {
                             score: "80-94%",
                             message: "Aranızdaki uyum oldukça güçlü ve sağlam. Birbirinize karşı derin bir anlayışa ve paylaşıma sahipsiniz. Küçük farklılıklar ilişkinizi daha da renklendiriyor. Birlikte harika bir geleceğe doğru ilerliyorsunuz!",
-                            details: "<strong>İletişim:</strong> Çok iyi. Açık sözlülüğünüz takdire şayan. <strong>Tutku:</strong> Yüksek. Romantizm ve heyecan hep var. <strong>Sadakat:</strong> Sağlam. Birbirinize bağlılığınız güçlü. <strong>Ortak Hedeller:</strong> Uyumlu. Birlikte planlar yapmaktan keyif alıyorsunuz."
+                            details: "<strong>İletişim:</strong> Çok iyi. Açık sözlülüğünüz takdire şayan. <strong>Tutku:</strong> Yüksek. Romantizm ve heyecan hep var. <strong>Sadakat:</strong> Sağlam. Birbirinize bağlılığınız güçlü. <strong>Ortak Hedefler:</strong> Uyumlu. Birlikte planlar yapmaktan keyif alıyorsunuz."
                         },
                         "good": {
                             score: "60-79%",
                             message: "Aşkınız güçlü bir temele sahip ve oldukça uyumlu. Birlikte güzel zamanlar geçiriyor, birbirinize destek oluyorsunuz. Ufak tefek pürüzler olabilir ama bunları aşabilecek güce sahipsiniz. Gelecek vaat eden bir ilişki!",
-                            details: "<strong>İletişim:</strong> İyi. Bazen küçük yanlış anlaşılmalar olsa da üstesinden geliyorsunuz. <strong>Tutku:</strong> Denge. Hem sıcak hem de sakin anlarınız var. <strong>Sadakat:</strong> Güvenilir. Karşılıklı bağlılık hissediyorsunuz. <strong>Ortak Hedeller:</strong> Olumlu. Birlikte büyümeye isteklisiniz."
+                            details: "<strong>İletişim:</strong> İyi. Bazen küçük yanlış anlaşılmalar olsa da üstesinden geliyorsunuz. <strong>Tutku:</strong> Denge. Hem sıcak hem de sakin anlarınız var. <strong>Sadakat:</strong> Güvenilir. Karşılıklı bağlılık hissediyorsunuz. <strong>Ortak Hedefler:</strong> Olumlu. Birlikte büyümeye isteklisiniz."
                         },
                         "moderate": {
                             score: "40-59%",
                             message: "Aşkınızda hem uyumlu hem de gelişime açık yönler bulunuyor. Birbirinizi keşfetmeye ve anlamaya devam ettikçe bağınız daha da güçlenecektir. Biraz daha çaba ve sabırla daha parlak bir gelecek sizi bekliyor!",
-                            details: "<strong>İletişim:</strong> Gelişime açık. Daha fazla sohbet ve empatiye ihtiyaç duyabilirsiniz. <strong>Tutku:</strong> Değişken. Bazen yoğun, bazen durağan. <strong>Sadakat:</strong> İstikrarlı. Bağlılık konusunda genel bir güven var. <strong>Ortak Hedeller:</strong> Farklılıklar var. Ortak noktaları bulmak önemli."
+                            details: "<strong>İletişim:</strong> Gelişime açık. Daha fazla sohbet ve empatiye ihtiyaç duyabilirsiniz. <strong>Tutku:</strong> Değişken. Bazen yoğun, bazen durağan. <strong>Sadakat:</strong> İstikrarlı. Bağlılık konusunda genel bir güven var. <strong>Ortak Hedefler:</strong> Farklılıklar var. Ortak noktaları bulmak önemli."
                         },
                         "developing": {
                             score: "20-39%",
                             message: "İlişkiniz henüz başlangıç aşamasında ya da farklılıklarınız ön planda olabilir. Bu bir son değil, bir başlangıç! Birbirinizi gerçekten tanımak için daha fazla zaman ve çaba harcayarak potansiyeli ortaya çıkarabilirsiniz.",
-                            details: "<strong>İletişim:</strong> Zorlayıcı. Açık ve dürüst konuşmalar önem taşıyor. <strong>Tutku:</strong> Dalgalı. Alevlenmeler ve sakin dönemler yaşanabilir. <strong>Sadakat:</strong> Test ediliyor. Güven inşası kritik. <strong>Ortak Hedeller:</strong> Çeşitli. Birlikte yeni yollar keşfetmelisiniz."
+                            details: "<strong>İletişim:</strong> Zorlayıcı. Açık ve dürüst konuşmalar önem taşıyor. <strong>Tutku:</strong> Dalgalı. Alevlenmeler ve sakin dönemler yaşanabilir. <strong>Sadakat:</strong> Test ediliyor. Güven inşası kritik. <strong>Ortak Hedefler:</strong> Çeşitli. Birlikte yeni yollar keşfetmelisiniz."
                         },
                         "unique": {
                             score: "0-19%",
                             message: "Sizin uyumunuz eşsiz ve sıra dışı! Belki de zıt kutuplar birbirini çeker misali, farklılıklarınız ilişkinizi ilginç kılıyor. Bu, birbirinizden öğrenecek çok şeyiniz olduğu anlamına gelebilir. Her aşk hikayesi farklıdır!",
-                            details: "<strong>İletişim:</strong> Özgün. Alışılmadık yollar denemelisiniz. <strong>Tutku:</strong> Gizemli. Bazen beklenmedik anlarda parlayabilir. <strong>Sadakat:</strong> Esnek. Bireysel alanlar önemli. <strong>Ortak Hedeller:</strong> Farklı patikalar. Bireysel hedeflere saygı duyulmalı."
+                            details: "<strong>İletişim:</strong> Özgün. Alışılmadık yollar denemelisiniz. <strong>Tutku:</strong> Gizemli. Bazen beklenmedik anlarda parlayabilir. <strong>Sadakat:</strong> Esnek. Bireysel alanlar önemli. <strong>Ortak Hedefler:</strong> Farklı patikalar. Bireysel hedeflere saygı duyulmalı."
                         }
                     }
                 }
+                // İngilizce metinler buraya eklenecek
             };
 
             const currentTexts = isEnglishPage ? texts.en : texts.tr;
@@ -559,7 +610,8 @@
             document.querySelector('label[for="name2"]').textContent = currentTexts.name2Label;
             document.querySelector('label[for="dob2"]').textContent = currentTexts.dob2Label;
             document.getElementById('calculateButton').textContent = currentTexts.calculateButton;
-            document.getElementById('resetLoveCalculator').textContent = currentTexts.resetButton;
+            // resetLoveCalculator butonu dinamik olarak oluşturulduğu için burada ilk başta referans alıp güncellemiyoruz.
+            // Sadece info section'daki metinler için genel güncellemeleri yapıyoruz.
             document.getElementById('info-section-title').textContent = currentTexts.infoSectionTitle;
             document.getElementById('info-section-p1').innerHTML = currentTexts.infoSectionP1;
             document.querySelector('.info-section h4').textContent = currentTexts.aboutTestTitle;
@@ -576,8 +628,7 @@
             const calculateButton = document.getElementById('calculateButton');
             const inputForm = document.getElementById('inputForm');
             const loveResultDisplay = document.getElementById('loveResultDisplay');
-            let resetLoveCalculatorButton = document.getElementById('resetLoveCalculator'); // Başlangıçta referansı al
-
+            
             // Form validasyonu için inputları dinle
             [name1Input, dob1Input, name2Input, dob2Input].forEach(input => {
                 input.addEventListener('input', checkFormValidity);
@@ -591,25 +642,19 @@
                                         dob2Input.value.trim() !== '';
 
                 // Tarihlerin geçerli olup olmadığını kontrol et
-                const isValidDate1 = !isNaN(new Date(dob1Input.value));
-                const isValidDate2 = !isNaN(new Date(dob2Input.value));
+                const isValidDate1 = dob1Input.value.trim() === '' || !isNaN(new Date(dob1Input.value));
+                const isValidDate2 = dob2Input.value.trim() === '' || !isNaN(new Date(dob2Input.value));
 
                 const validDates = isValidDate1 && isValidDate2;
 
                 calculateButton.disabled = !(allInputsFilled && validDates);
-                console.log(`Form Validity: allInputsFilled=${allInputsFilled}, validDates=${validDates}, buttonDisabled=${calculateButton.disabled}`); // Debug
+                // console.log(`Form Validity: allInputsFilled=${allInputsFilled}, validDates=${validDates}, buttonDisabled=${calculateButton.disabled}`); // Debug
             }
 
             // Sayfa yüklendiğinde buton durumunu kontrol et
             checkFormValidity();
 
-
             calculateButton.addEventListener('click', calculateLoveCompatibility);
-            // resetLoveCalculatorButton referansı, displayLoveResult içinde yeniden oluşturulduğu için
-            // olay dinleyiciyi her sonuç gösterildiğinde eklememiz gerekiyor.
-            // Bu nedenle, aşağıdaki satırı ilk yüklemede çağırıyoruz, ancak displayLoveResult içinde de olacak.
-            resetLoveCalculatorButton.addEventListener('click', resetLoveCalculator);
-
 
             function calculateLoveCompatibility() {
                 const name1 = name1Input.value.trim();
@@ -619,7 +664,7 @@
 
                 if (!name1 || !dob1 || !name2 || !dob2) {
                     alert(currentTexts.validationError);
-                    console.error("Validation Error: All fields must be filled."); // Debug
+                    // console.error("Validation Error: All fields must be filled."); // Debug
                     return;
                 }
 
@@ -628,7 +673,7 @@
 
                 if (isNaN(date1.getTime()) || isNaN(date2.getTime())) {
                     alert(currentTexts.validationError);
-                    console.error("Validation Error: Invalid dates entered."); // Debug
+                    // console.error("Validation Error: Invalid dates entered."); // Debug
                     return;
                 }
 
@@ -646,9 +691,6 @@
 
                 const value1 = calculateNameValue(name1);
                 const value2 = calculateNameValue(name2);
-
-                const diffTime = Math.abs(date2.getTime() - date1.getTime());
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
                 // Rastgelelik için basit hash fonksiyonu ve Pseudo Random Number Generator (PRNG)
                 const simpleHash = (str) => {
@@ -716,8 +758,8 @@
                 } else {
                     resultCategory = currentTexts.results.unique;
                 }
-                console.log("Calculated Percentage:", finalPercentage); // Debug
-                console.log("Result Category:", resultCategory); // Debug
+                // console.log("Calculated Percentage:", finalPercentage); // Debug
+                // console.log("Result Category:", resultCategory); // Debug
 
                 displayLoveResult(finalPercentage, resultCategory);
             }
@@ -735,7 +777,7 @@
                     </div>
                     <button class="reset-button" id="resetLoveCalculator">${currentTexts.resetButton}</button>
                     `;
-                // Sonuç gösterildiğinde, yeni oluşturulan butona olay dinleyiciyi tekrar ekle
+                // Yeni oluşturulan butona olay dinleyiciyi ekle
                 document.getElementById('resetLoveCalculator').addEventListener('click', resetLoveCalculator);
             }
 
@@ -749,53 +791,6 @@
                 checkFormValidity(); // Buton durumunu sıfırla
             }
         });
-
-        // Header ve Footer yükleme fonksiyonları
-function loadPartial(elementId, url) {
-    fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                // HTTP hatası durumunda konsola detaylı bilgi yazdır
-                console.error(`HTTP error! Status: ${response.status} for ${url}. Response: ${response.statusText}`);
-                throw new Error(`HTTP error! status: ${response.status} for ${url}`);
-            }
-            return response.text();
-        })
-        .then(html => {
-            const placeholder = document.getElementById(elementId);
-            if (placeholder) {
-                placeholder.innerHTML = html;
-                // Yüklenen HTML içindeki script etiketlerini yeniden çalıştır
-                const scripts = placeholder.querySelectorAll('script');
-                scripts.forEach(oldScript => {
-                    const newScript = document.createElement('script');
-                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
-                    newScript.textContent = oldScript.textContent;
-                    oldScript.parentNode.replaceChild(newScript, oldScript);
-                });
-                console.log(`Successfully loaded ${url} into #${elementId}`); // Debug mesajı
-            } else {
-                console.warn(`Placeholder element with ID '${elementId}' not found for URL: ${url}`); // Placeholder bulunamadı uyarısı
-            }
-        })
-        .catch(error => {
-            console.error(`Error loading ${url}:`, error);
-            const placeholder = document.getElementById(elementId);
-            if (placeholder) {
-                placeholder.innerHTML = `<p style="color: red; text-align: center;">Hata: ${elementId} içeriği yüklenemedi.</p>`;
-            }
-        });
-}
-
-// Sayfa yüklendiğinde header ve footer'ı yükle
-document.addEventListener('DOMContentLoaded', function() {
-    const isEnglishPage = window.location.pathname.startsWith('/en/');
-    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
-    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
-
-    loadPartial('header-placeholder', headerPath);
-    loadPartial('footer-placeholder', footerPath);
-});
     </script>
 </body>
 </html>

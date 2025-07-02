@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Burç Uyum Testi - Hesapkolik</title>
+    
+    <meta content="Burçların uyumuna göre aşk, arkadaşlık ve iş hayatı uyumunuzu keşfedin. Eğlence amaçlıdır." name="description"/>
+    <meta content="burç uyumu, burç testi, aşk uyumu, arkadaşlık uyumu, burçlar, astroloji, eğlenceli test, hesapkolik burç" name="keywords"/>
+    
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    
+    <style>
+        /* Genel Ayarlar ve Font */
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f7f6; /* Sade ve ferah bir arka plan */
+            color: #333; 
+            line-height: 1.6;
+        }
+        .container { 
+            max-width: 960px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Koyu tema başlık/altlık ile uyumlu */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Calculator Section (Quiz Container) */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff; /* Beyaz kart arka planı */
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50; /* Koyu metin rengi */
+            font-size: 2.2em;
+        }
+        .calc-wrapper { 
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 700px;
+            margin: 30px auto;
+            text-align: left;
+            min-height: 400px; /* İçerik boş kalmasın */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        /* Quiz Specific Styles */
+        .quiz-container {
+            flex-grow: 1; /* Kontainerın tamamını kapla */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .question-counter {
+            text-align: right;
+            font-size: 0.9em;
+            color: #777;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 1.4em;
+            margin-bottom: 25px;
+            font-weight: 600;
+            color: #34495e;
+            text-align: center;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            font-size: 1.1em;
+            color: #555;
+            text-align: left; /* Seçenek metinleri sola hizalı */
+        }
+        .option-label:hover {
+            background-color: #eef;
+            border-color: #3498db;
+        }
+        .option-label input[type="radio"] {
+            margin-right: 15px;
+            transform: scale(1.3); /* Radio butonunu büyüt */
+            accent-color: #3498db; /* Chrome, Edge gibi tarayıcılarda rengini değiştir */
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .navigation-buttons button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            color: white;
+            font-weight: 600;
+        }
+
+        .navigation-buttons button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .navigation-buttons button.prev-button {
+            background-color: #f39c12; /* Turuncu */
+        }
+        .navigation-buttons button.prev-button:hover:not(:disabled) {
+            background-color: #e67e22;
+            transform: translateY(-2px);
+        }
+
+        .navigation-buttons button.next-button,
+        .navigation-buttons button.submit-button {
+            background-color: #28a745; /* Yeşil */
+        }
+        .navigation-buttons button.next-button:hover:not(:disabled),
+        .navigation-buttons button.submit-button:hover:not(:disabled) {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Result Display */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            padding: 25px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+            background-color: #ecf0f1;
+            display: none; /* Varsayılan olarak gizli */
+        }
+        .result-display h4 {
+            color: #3498db;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        .result-display .match-score {
+            font-size: 3em;
+            color: #e74c3c;
+            margin: 15px 0;
+            font-weight: 800;
+        }
+        .result-display .score-message {
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        .result-display .error-message {
+            color: #e74c3c;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        .result-display .reset-button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        .result-display .reset-button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Info Section */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text { 
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .question-text {
+                font-size: 1.2em;
+            }
+            .option-label {
+                font-size: 1em;
+            }
+            .result-display {
+                font-size: 1.1em;
+            }
+            .result-display .match-score {
+                font-size: 2.5em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            .question-text {
+                font-size: 1em;
+            }
+            .option-label {
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+            .navigation-buttons button {
+                font-size: 1em;
+                padding: 10px 15px;
+            }
+            .result-display {
+                font-size: 0.9em;
+                padding: 15px;
+            }
+            .result-display h4 {
+                font-size: 1.5em;
+            }
+            .result-display .match-score {
+                font-size: 2em;
+            }
+        }
+    </style>
+    
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1 id="main-heading">Burç Uyum Testi</h1>
+                <p id="main-description">Sizin ve partnerinizin burç uyumunu keşfedin! Aşk, arkadaşlık ve iş hayatında ne kadar uyumlu olduğunuzu bu eğlenceli testle öğrenin.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper">
+                    <h3 id="calculator-title"><i class="fas fa-star icon-small"></i> Burç Uyum Testi</h3>
+                    <div class="quiz-container">
+                        <div class="question-counter" id="questionCounter"></div>
+                        <div class="question-display">
+                            <p class="question-text" id="questionText"></p>
+                            <div class="options-container" id="optionsContainer">
+                            </div>
+                        </div>
+                        <div class="navigation-buttons">
+                            <button id="prevButton" class="prev-button" disabled>Önceki</button>
+                            <button id="nextButton" class="next-button">Sonraki</button>
+                            <button id="submitButton" class="submit-button" style="display: none;">Testi Bitir</button>
+                        </div>
+                    </div>
+                    <div class="result-display" id="quizResultDisplay">
+                        </div>
+                     <div class="already-taken-message" id="alreadyTakenMessage" style="display: none;">
+                        <p class="error-message">Bu testi daha önce çözdünüz. Testi sadece bir kez çözebilirsiniz.</p>
+                        <button class="reset-button" id="resetTestButton">Yeniden Çözmek İçin Tıklayın (DİKKAT: Bu testi sıfırlayacaktır)</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3 id="info-section-title">Burç Uyumları ve Astrolojinin Rehberliği</h3>
+            <p id="info-section-p1">
+                Astroloji, gök cisimlerinin konumlarının insan karakterleri ve olaylar üzerindeki potansiyel etkilerini inceleyen kadim bir bilimdir. **Burç uyumu**, kişilerin doğum haritalarındaki gezegen konumlarına ve elementlerine göre birbirleriyle olan potansiyel ilişkilerini değerlendirir. Bu test, genel burç özelliklerine dayanarak size eğlenceli bir uyum analizi sunmayı amaçlar.
+            </p>
+            <h4>Bu Test Hakkında:</h4>
+            <ul>
+                <li id="info-list-1">
+                    <strong>Eğlence Amaçlıdır:</strong> Bu test, resmi bir astrolojik analiz veya ilişki danışmanlığı değildir. Yalnızca burçların genel özelliklerine dayanarak size keyifli bir fikir vermek için tasarlanmıştır.
+                </li>
+                <li id="info-list-2">
+                    <strong>Genel Yorumlar:</strong> Burç uyumları, kişisel tercihleri ve deneyimleri yansıtmayan genel astrolojik yorumlara dayanır. Gerçek ilişkiler çok daha karmaşıktır ve birçok faktörden etkilenir.
+                </li>
+                <li id="info-list-3">
+                    <strong>Bir Kez Çözülebilir:</strong> Her kullanıcının testi bir kez çözmesi hedeflenmiştir. Tarayıcı önbelleğinizdeki verilerle bu kontrol sağlanır. (Ancak, tarayıcı verilerini temizleyerek veya farklı bir tarayıcı kullanarak tekrar çözmek mümkündür.)
+                </li>
+                <li id="info-list-4">
+                    <strong>Uyum Değerlendirmesi:</strong> Test sonucunuz, burcunuz ve partnerinizin burcu arasındaki tahmini uyum yüzdesi ve bu uyuma karşılık gelen basit bir açıklama ile sunulacaktır.
+                </li>
+            </ul>
+            <p class="disclaimer-text" id="disclaimer-text">
+                Bu burç uyum testi aracı yalnızca eğlence ve kişisel ilgi amaçlıdır. Profesyonel astroloji yorumlarının veya ilişki danışmanlığının yerini tutmaz. Elde ettiğiniz sonuçlar, gerçek ilişki uyumunuzun bilimsel bir göstergesi değildir ve herhangi bir resmi amaçla kullanılamaz. İlişkiniz hakkında daha fazla bilgi edinmek veya profesyonel rehberlik almak için daima lisanslı bir ilişki uzmanına veya deneyimli bir astroloğa danışmanız önerilir.
+            </p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+            // Metinler için dil desteği
+            const texts = {
+                tr: {
+                    mainHeading: 'Burç Uyum Testi',
+                    mainDescription: 'Sizin ve partnerinizin burç uyumunu keşfedin! Aşk, arkadaşlık ve iş hayatında ne kadar uyumlu olduğunuzu bu eğlenceli testle öğrenin.',
+                    calculatorTitle: 'Burç Uyum Testi',
+                    prevButton: 'Önceki',
+                    nextButton: 'Sonraki',
+                    submitButton: 'Testi Bitir',
+                    alreadyTakenMessage: 'Bu testi daha önce çözdünüz. Testi sadece bir kez çözebilirsiniz.',
+                    resetButton: 'Yeniden Çözmek İçin Tıklayın (DİKKAT: Bu testi sıfırlayacaktır)',
+                    resultHeading: 'Burç Uyum Sonucunuz:',
+                    scoreMessagePrefix: 'Burç Uyum Yüzdesi:',
+                    scoreMessages: {
+                        perfectMatch: 'Mükemmel bir uyum içindesiniz! İlişkiniz adeta gökyüzünde yazılmış gibi.', // 90-100
+                        greatMatch: 'Harika bir uyumunuz var! Aranızdaki bağ çok güçlü ve keyifli.', // 70-89
+                        goodMatch: 'İyi bir uyum söz konusu. Küçük farklılıklar ilişkinizi zenginleştirebilir.', // 50-69
+                        moderateMatch: 'Orta düzeyde bir uyum. Anlayış ve çaba ile harika bir ilişki kurabilirsiniz.', // 30-49
+                        challengingMatch: 'Uyumunuz biraz zorlayıcı olabilir. Ancak doğru iletişimle üstesinden gelebilirsiniz.', // < 30
+                    },
+                    infoSectionTitle: 'Burç Uyumları ve Astrolojinin Rehberliği',
+                    infoSectionP1: 'Astroloji, gök cisimlerinin konumlarının insan karakterleri ve olaylar üzerindeki potansiyel etkilerini inceleyen kadim bir bilimdir. **Burç uyumu**, kişilerin doğum haritalarındaki gezegen konumlarına ve elementlerine göre birbirleriyle olan potansiyel ilişkilerini değerlendirir. Bu test, genel burç özelliklerine dayanarak size eğlenceli bir uyum analizi sunmayı amaçlar.',
+                    aboutTestTitle: 'Bu Test Hakkında:',
+                    infoList1: '<strong>Eğlence Amaçlıdır:</strong> Bu test, resmi bir astrolojik analiz veya ilişki danışmanlığı değildir. Yalnızca burçların genel özelliklerine dayanarak size keyifli bir fikir vermek için tasarlanmıştır.',
+                    infoList2: '<strong>Genel Yorumlar:</strong> Burç uyumları, kişisel tercihleri ve deneyimleri yansıtmayan genel astrolojik yorumlara dayanır. Gerçek ilişkiler çok daha karmaşıktır ve birçok faktörden etkilenir.',
+                    infoList3: '<strong>Bir Kez Çözülebilir:</strong> Her kullanıcının testi bir kez çözmesi hedeflenmiştir. Tarayıcı önbelleğinizdeki verilerle bu kontrol sağlanır. (Ancak, tarayıcı verilerini temizleyerek veya farklı bir tarayıcı kullanarak tekrar çözmek mümkündür.)',
+                    infoList4: '<strong>Uyum Değerlendirmesi:</strong> Test sonucunuz, burcunuz ve partnerinizin burcu arasındaki tahmini uyum yüzdesi ve bu uyuma karşılık gelen basit bir açıklama ile sunulacaktır.',
+                    disclaimerText: 'Bu burç uyum testi aracı yalnızca eğlence ve kişisel ilgi amaçlıdır. Profesyonel astroloji yorumlarının veya ilişki danışmanlığının yerini tutmaz. Elde ettiğiniz sonuçlar, gerçek ilişki uyumunuzun bilimsel bir göstergesi değildir ve herhangi bir resmi amaçla kullanılamaz. İlişkiniz hakkında daha fazla bilgi edinmek veya profesyonel rehberlik almak için daima lisanslı bir ilişki uzmanına veya deneyimli bir astroloğa danışmanız önerilir.'
+                },
+                en: {
+                    mainHeading: 'Zodiac Compatibility Test',
+                    mainDescription: 'Discover your and your partner\'s zodiac compatibility! Find out how compatible you are in love, friendship, and work life with this fun test.',
+                    calculatorTitle: 'Zodiac Compatibility Test',
+                    prevButton: 'Previous',
+                    nextButton: 'Next',
+                    submitButton: 'Finish Test',
+                    alreadyTakenMessage: 'You have already completed this test. You can only take the test once.',
+                    resetButton: 'Click to Retake (CAUTION: This will reset the test data)',
+                    resultHeading: 'Your Zodiac Compatibility Result:',
+                    scoreMessagePrefix: 'Zodiac Compatibility Percentage:',
+                    scoreMessages: {
+                        perfectMatch: 'You are a perfect match! Your relationship seems written in the stars.',
+                        greatMatch: 'You have great compatibility! Your bond is very strong and enjoyable.',
+                        goodMatch: 'There is good compatibility. Small differences can enrich your relationship.',
+                        moderateMatch: 'Moderate compatibility. With understanding and effort, you can build a great relationship.',
+                        challengingMatch: 'Your compatibility might be challenging. However, with proper communication, you can overcome it.',
+                    },
+                    infoSectionTitle: 'Zodiac Compatibility and the Guidance of Astrology',
+                    infoSectionP1: 'Astrology is an ancient science that examines the potential effects of celestial bodies\' positions on human characters and events. **Zodiac compatibility** assesses the potential relationships between people based on the planetary positions and elements in their birth charts. This test aims to provide you with a fun compatibility analysis based on general zodiac characteristics.',
+                    aboutTestTitle: 'About This Test:',
+                    infoList1: '<strong>For Entertainment Purposes Only:</strong> This test is not a formal astrological analysis or relationship counseling. It is designed only to give you a fun idea based on general zodiac characteristics.',
+                    infoList2: '<strong>General Interpretations:</strong> Zodiac compatibility relies on general astrological interpretations that may not reflect personal preferences and experiences. Real relationships are much more complex and are influenced by many factors.',
+                    infoList3: '<strong>Can Be Taken Once:</strong> The goal is for each user to take the test once. This control is provided by data in your browser cache. (However, it is possible to retake the test by clearing browser data or using a different browser/incognito tab.)',
+                    infoList4: '<strong>Compatibility Assessment:</strong> Your test result will be presented with an estimated compatibility percentage between your zodiac sign and your partner\'s zodiac sign, along with a simple explanation corresponding to this compatibility.',
+                    disclaimerText: 'This zodiac compatibility test tool is for entertainment and personal interest purposes only. It does not replace professional astrological interpretations or relationship counseling. The results you obtain are not a scientific indicator of your actual relationship compatibility and cannot be used for any official purpose. It is always recommended to consult a licensed relationship expert or an experienced astrologer for more information about your relationship or for professional guidance.'
+                }
+            };
+
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // Header ve Footer yükleme fonksiyonları
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // Metinleri güncelle
+            document.getElementById('main-heading').textContent = currentTexts.mainHeading;
+            document.getElementById('main-description').textContent = currentTexts.mainDescription;
+            document.getElementById('calculator-title').innerHTML = `<i class="fas fa-star icon-small"></i> ${currentTexts.calculatorTitle}`;
+            document.getElementById('prevButton').textContent = currentTexts.prevButton;
+            document.getElementById('nextButton').textContent = currentTexts.nextButton;
+            document.getElementById('submitButton').textContent = currentTexts.submitButton;
+            document.getElementById('alreadyTakenMessage').querySelector('.error-message').textContent = currentTexts.alreadyTakenMessage;
+            document.getElementById('resetTestButton').textContent = currentTexts.resetButton;
+            document.getElementById('info-section-title').textContent = currentTexts.infoSectionTitle;
+            document.getElementById('info-section-p1').innerHTML = currentTexts.infoSectionP1;
+            document.querySelector('#info-section-title + p + h4').textContent = currentTexts.aboutTestTitle;
+            document.getElementById('info-list-1').innerHTML = currentTexts.infoList1;
+            document.getElementById('info-list-2').innerHTML = currentTexts.infoList2;
+            document.getElementById('info-list-3').innerHTML = currentTexts.infoList3;
+            document.getElementById('info-list-4').innerHTML = currentTexts.infoList4;
+            document.getElementById('disclaimer-text').textContent = currentTexts.disclaimerText;
+
+
+            // Burçlar
+            const zodiacSigns = [
+                "Koç", "Boğa", "İkizler", "Yengeç", "Aslan", "Başak",
+                "Terazi", "Akrep", "Yay", "Oğlak", "Kova", "Balık"
+            ];
+
+            // Burç uyum verileri (Örnek verilerdir, gerçek astrolojik uyumlar çok daha karmaşıktır)
+            // Anahtar: Benim burcum, Değer: { Partnerin burcu: Uyum yüzdesi (0-100) }
+            const compatibilityData = {
+                "Koç": {
+                    "Koç": 70, "Boğa": 40, "İkizler": 65, "Yengeç": 30, "Aslan": 90, "Başak": 35,
+                    "Terazi": 80, "Akrep": 50, "Yay": 85, "Oğlak": 30, "Kova": 75, "Balık": 25
+                },
+                "Boğa": {
+                    "Koç": 40, "Boğa": 75, "İkizler": 30, "Yengeç": 85, "Aslan": 50, "Başak": 90,
+                    "Terazi": 60, "Akrep": 80, "Yay": 25, "Oğlak": 95, "Kova": 45, "Balık": 70
+                },
+                "İkizler": {
+                    "Koç": 65, "Boğa": 30, "İkizler": 80, "Yengeç": 50, "Aslan": 70, "Başak": 40,
+                    "Terazi": 90, "Akrep": 25, "Yay": 60, "Oğlak": 35, "Kova": 85, "Balık": 45
+                },
+                "Yengeç": {
+                    "Koç": 30, "Boğa": 85, "İkizler": 50, "Yengeç": 70, "Aslan": 60, "Başak": 75,
+                    "Terazi": 40, "Akrep": 95, "Yay": 30, "Oğlak": 80, "Kova": 50, "Balık": 90
+                },
+                "Aslan": {
+                    "Koç": 90, "Boğa": 50, "İkizler": 70, "Yengeç": 60, "Aslan": 85, "Başak": 30,
+                    "Terazi": 75, "Akrep": 40, "Yay": 95, "Oğlak": 25, "Kova": 80, "Balık": 35
+                },
+                "Başak": {
+                    "Koç": 35, "Boğa": 90, "İkizler": 40, "Yengeç": 75, "Aslan": 30, "Başak": 80,
+                    "Terazi": 50, "Akrep": 65, "Yay": 20, "Oğlak": 90, "Kova": 30, "Balık": 70
+                },
+                "Terazi": {
+                    "Koç": 80, "Boğa": 60, "İkizler": 90, "Yengeç": 40, "Aslan": 75, "Başak": 50,
+                    "Terazi": 85, "Akrep": 30, "Yay": 70, "Oğlak": 45, "Kova": 95, "Balık": 60
+                },
+                "Akrep": {
+                    "Koç": 50, "Boğa": 80, "İkizler": 25, "Yengeç": 95, "Aslan": 40, "Başak": 65,
+                    "Terazi": 30, "Akrep": 75, "Yay": 35, "Oğlak": 85, "Kova": 55, "Balık": 90
+                },
+                "Yay": {
+                    "Koç": 85, "Boğa": 25, "İkizler": 60, "Yengeç": 30, "Aslan": 95, "Başak": 20,
+                    "Terazi": 70, "Akrep": 35, "Yay": 80, "Oğlak": 20, "Kova": 90, "Balık": 25
+                },
+                "Oğlak": {
+                    "Koç": 30, "Boğa": 95, "İkizler": 35, "Yengeç": 80, "Aslan": 25, "Başak": 90,
+                    "Terazi": 45, "Akrep": 85, "Yay": 20, "Oğlak": 70, "Kova": 40, "Balık": 75
+                },
+                "Kova": {
+                    "Koç": 75, "Boğa": 45, "İkizler": 85, "Yengeç": 50, "Aslan": 80, "Başak": 30,
+                    "Terazi": 95, "Akrep": 55, "Yay": 90, "Oğlak": 40, "Kova": 70, "Balık": 65
+                },
+                "Balık": {
+                    "Koç": 25, "Boğa": 70, "İkizler": 45, "Yengeç": 90, "Aslan": 35, "Başak": 70,
+                    "Terazi": 60, "Akrep": 90, "Yay": 25, "Oğlak": 75, "Kova": 65, "Balık": 80
+                }
+            };
+
+
+            const questions = [
+                {
+                    type: "select_my_sign",
+                    question: "Kendi burcunuzu seçin:",
+                    options: zodiacSigns,
+                    key: "mySign"
+                },
+                {
+                    type: "select_partner_sign",
+                    question: "Partnerinizin burcunu seçin:",
+                    options: zodiacSigns,
+                    key: "partnerSign"
+                },
+                {
+                    type: "multiple_choice",
+                    question: "İlişkilerde en çok neye değer verirsiniz?",
+                    options: ["Sadakat ve güven", "Heyecan ve macera", "Derin duygusal bağ", "Özgürlük ve bağımsızlık"],
+                    key: "valueInRelationship"
+                },
+                {
+                    type: "multiple_choice",
+                    question: "Çatışma durumlarında tepkiniz genellikle ne olur?",
+                    options: ["Hemen çözüm ararım", "Sakin kalmaya çalışırım", "Duygusal tepki veririm", "Geri çekilirim"],
+                    key: "conflictReaction"
+                },
+                {
+                    type: "multiple_choice",
+                    question: "Boş zamanlarınızı nasıl değerlendirmeyi tercih edersiniz?",
+                    options: ["Aktif sporlar veya hobiler", "Sakin ve huzurlu ortamlar", "Sosyal etkinlikler ve arkadaş buluşmaları", "Yeni şeyler keşfetmek ve öğrenmek"],
+                    key: "freeTime"
+                },
+                {
+                    type: "multiple_choice",
+                    question: "Geleceğe dair en büyük hayaliniz nedir?",
+                    options: ["Güvenli ve istikrarlı bir yaşam", "Tutkulu ve heyecan verici bir ilişki", "Başarılı bir kariyer ve toplumsal etki", "Kişisel gelişim ve özgürlük"],
+                    key: "futureDream"
+                }
+            ];
+
+            let currentQuestionIndex = 0;
+            let userSelections = {
+                mySign: null,
+                partnerSign: null,
+                valueInRelationship: null,
+                conflictReaction: null,
+                freeTime: null,
+                futureDream: null
+            };
+            
+            const quizContainer = document.querySelector('.quiz-container');
+            const questionCounterElement = document.getElementById('questionCounter');
+            const questionTextElement = document.getElementById('questionText');
+            const optionsContainerElement = document.getElementById('optionsContainer');
+            const prevButton = document.getElementById('prevButton');
+            const nextButton = document.getElementById('nextButton');
+            const submitButton = document.getElementById('submitButton');
+            const quizResultDisplay = document.getElementById('quizResultDisplay');
+            const alreadyTakenMessageDiv = document.getElementById('alreadyTakenMessage');
+            const resetTestButton = document.getElementById('resetTestButton');
+
+            const TEST_TAKEN_KEY = 'zodiacTestTaken';
+            const USER_ANSWERS_KEY = 'zodiacUserAnswers';
+
+            // Testin daha önce çözülüp çözülmediğini kontrol et
+            if (localStorage.getItem(TEST_TAKEN_KEY) === 'true') {
+                quizContainer.style.display = 'none';
+                alreadyTakenMessageDiv.style.display = 'block';
+            } else {
+                quizContainer.style.display = 'block';
+                alreadyTakenMessageDiv.style.display = 'none';
+                
+                // Kayıtlı cevapları yükle (eğer varsa)
+                const storedAnswers = localStorage.getItem(USER_ANSWERS_KEY);
+                if (storedAnswers) {
+                    userSelections = JSON.parse(storedAnswers);
+                    // İlk boş cevaba gitmek için currentQuestionIndex'i ayarla
+                    const firstUnansweredIndex = questions.findIndex(q => userSelections[q.key] === null);
+                    if (firstUnansweredIndex !== -1) {
+                        currentQuestionIndex = firstUnansweredIndex;
+                    } else {
+                        currentQuestionIndex = questions.length -1; // Hepsi cevaplıysa son soruya git
+                    }
+                }
+                displayQuestion(); // Test başlamadıysa ilk soruyu göster
+            }
+
+            resetTestButton.addEventListener('click', function() {
+                localStorage.removeItem(TEST_TAKEN_KEY);
+                localStorage.removeItem(USER_ANSWERS_KEY);
+                location.reload(); // Sayfayı yenile
+            });
+
+            function displayQuestion() {
+                const questionData = questions[currentQuestionIndex];
+                questionCounterElement.textContent = `${currentQuestionIndex + 1} / ${questions.length}`;
+                questionTextElement.textContent = questionData.question;
+                optionsContainerElement.innerHTML = ''; // Önceki seçenekleri temizle
+
+                questionData.options.forEach((option, index) => {
+                    const optionLabel = document.createElement('label');
+                    optionLabel.classList.add('option-label');
+                    const optionInput = document.createElement('input');
+                    optionInput.type = 'radio';
+                    optionInput.name = 'question' + currentQuestionIndex;
+                    optionInput.value = option;
+
+                    // Eğer kullanıcı daha önce bu soruyu cevaplamışsa seçeneği işaretle
+                    if (userSelections[questionData.key] === option) {
+                        optionInput.checked = true;
+                    }
+
+                    optionInput.addEventListener('change', (event) => {
+                        userSelections[questionData.key] = event.target.value;
+                        localStorage.setItem(USER_ANSWERS_KEY, JSON.stringify(userSelections)); // Cevapları kaydet
+                        updateNavigationButtons();
+                    });
+
+                    optionLabel.appendChild(optionInput);
+                    optionLabel.appendChild(document.createTextNode(option));
+                    optionsContainerElement.appendChild(optionLabel);
+                });
+
+                updateNavigationButtons();
+            }
+
+            function updateNavigationButtons() {
+                prevButton.disabled = currentQuestionIndex === 0;
+                
+                // Mevcut soru cevaplanmamışsa Next/Submit butonu disable olsun
+                const isCurrentQuestionAnswered = userSelections[questions[currentQuestionIndex].key] !== null;
+                nextButton.disabled = !isCurrentQuestionAnswered;
+                submitButton.disabled = !isCurrentQuestionAnswered; 
+
+                if (currentQuestionIndex === questions.length - 1) {
+                    nextButton.style.display = 'none';
+                    submitButton.style.display = 'block';
+                } else {
+                    nextButton.style.display = 'block';
+                    submitButton.style.display = 'none';
+                }
+            }
+
+            function calculateResult() {
+                const mySign = userSelections.mySign;
+                const partnerSign = userSelections.partnerSign;
+                let compatibilityScore = 0;
+                let message = '';
+
+                if (mySign && partnerSign && compatibilityData[mySign] && compatibilityData[mySign][partnerSign]) {
+                    compatibilityScore = compatibilityData[mySign][partnerSign];
+                } else {
+                    // Eğer burç seçimi yapılmadıysa veya uyum tablosunda yoksa varsayılan bir değer verilebilir
+                    compatibilityScore = 50; 
+                }
+
+                // Ek sorulara göre skoru ayarla
+                // Bu kısım daha sofistike bir puanlama algoritması gerektirir, 
+                // şimdilik basit bir örnek bırakıyorum.
+                // Gerçek bir uygulama için her seçeneğe puan atanmalı ve toplanmalıdır.
+
+                // Örnek: "Sadakat ve güven" seçimi uyum skorunu artırabilir.
+                if (userSelections.valueInRelationship === "Sadakat ve güven") {
+                    compatibilityScore += 5;
+                }
+                // Örnek: "Hemen çözüm ararım" seçimi uyum skorunu artırabilir.
+                if (userSelections.conflictReaction === "Hemen çözüm ararım") {
+                    compatibilityScore += 3;
+                }
+
+                // Skor sınırlandırması
+                compatibilityScore = Math.max(0, Math.min(100, compatibilityScore));
+
+
+                if (compatibilityScore >= 90) {
+                    message = currentTexts.scoreMessages.perfectMatch;
+                } else if (compatibilityScore >= 70) {
+                    message = currentTexts.scoreMessages.greatMatch;
+                } else if (compatibilityScore >= 50) {
+                    message = currentTexts.scoreMessages.goodMatch;
+                } else if (compatibilityScore >= 30) {
+                    message = currentTexts.scoreMessages.moderateMatch;
+                } else {
+                    message = currentTexts.scoreMessages.challengingMatch;
+                }
+                
+                quizContainer.style.display = 'none'; // Quiz'i gizle
+                quizResultDisplay.innerHTML = `
+                    <h4>${currentTexts.resultHeading}</h4>
+                    <p class="score-message">${currentTexts.scoreMessagePrefix}</p>
+                    <div class="match-score">%${compatibilityScore}</div>
+                    <p class="score-message"><strong>${mySign}</strong> ve <strong>${partnerSign}</strong> burçları arasındaki uyum:</p>
+                    <p class="score-message">${message}</p>
+                `;
+                quizResultDisplay.style.display = 'block'; // Sonucu göster
+
+                localStorage.setItem(TEST_TAKEN_KEY, 'true'); // Testin çözüldüğünü işaretle
+                localStorage.removeItem(USER_ANSWERS_KEY); // Cevapları temizle
+            }
+
+            prevButton.addEventListener('click', () => {
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    displayQuestion();
+                }
+            });
+
+            nextButton.addEventListener('click', () => {
+                if (currentQuestionIndex < questions.length - 1) {
+                    currentQuestionIndex++;
+                    displayQuestion();
+                }
+            });
+
+            submitButton.addEventListener('click', calculateResult);
+
+            // Sayfa yüklendiğinde metinleri güncelle ve testi başlat (eğer alınmadıysa)
+            document.getElementById('main-heading').textContent = currentTexts.mainHeading;
+            document.getElementById('main-description').textContent = currentTexts.mainDescription;
+            document.getElementById('calculator-title').innerHTML = `<i class="fas fa-star icon-small"></i> ${currentTexts.calculatorTitle}`;
+            document.getElementById('prevButton').textContent = currentTexts.prevButton;
+            document.getElementById('nextButton').textContent = currentTexts.nextButton;
+            document.getElementById('submitButton').textContent = currentTexts.submitButton;
+            document.getElementById('alreadyTakenMessage').querySelector('.error-message').textContent = currentTexts.alreadyTakenMessage;
+            document.getElementById('resetTestButton').textContent = currentTexts.resetButton;
+            document.getElementById('info-section-title').textContent = currentTexts.infoSectionTitle;
+            document.getElementById('info-section-p1').innerHTML = currentTexts.infoSectionP1;
+            document.querySelector('#info-section-title + p + h4').textContent = currentTexts.aboutTestTitle;
+            document.getElementById('info-list-1').innerHTML = currentTexts.infoList1;
+            document.getElementById('info-list-2').innerHTML = currentTexts.infoList2;
+            document.getElementById('info-list-3').innerHTML = currentTexts.infoList3;
+            document.getElementById('info-list-4').innerHTML = currentTexts.infoList4;
+            document.getElementById('disclaimer-text').textContent = currentTexts.disclaimerText;
+
+            // İlk yüklemede navigasyon butonlarını güncelle
+            updateNavigationButtons(); 
+        });
+    </script>
+</body>
+</html>
