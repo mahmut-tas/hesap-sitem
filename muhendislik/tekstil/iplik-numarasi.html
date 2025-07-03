@@ -1,542 +1,748 @@
 <!DOCTYPE html>
 <html lang="tr">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>
-   İplik Numarası Hesaplama - Hesapkolik
-  </title>
-  <link href="/css/style.css" rel="stylesheet"/>
-  <link href="/css/footer.css" rel="stylesheet"/>
-  <link href="/css/header.css" rel="stylesheet"/>
-  <meta content="Farklı iplik numarası sistemleri (Tex, Denye, Ne, Nm vb.) arasında dönüşüm ve hesaplama aracı. İplik numarası ve inceliğiyle ilgili tüm hesaplamalar." name="description"/>
-  <meta content="iplik numarası, iplik inceliği, tex hesaplama, denye hesaplama, ne hesaplama, nm hesaplama, iplik dönüşüm, tekstil mühendisliği hesaplamaları, hesapkolik tekstil" name="keywords"/>
-  <link href="../../css/style.css" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com" rel="preconnect"/>
-  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
-  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
-  </script>
-  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
-  </script>
-  <script>
-   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>İplik Numarası Hesaplama - Hesapkolik</title>
 
-  gtag('config', 'G-3655KNY8CP');
-  </script>
- </head>
- <!-- Google tag (gtag.js) -->
- <body>
-  <div id="header-placeholder">
-  </div>
-  <main>
-   <section class="health-calculators-section">
-    <div class="container">
-     <h1 class="main-title">
-      İplik Numarası Hesaplayıcı
-     </h1>
-     <p class="section-description">
-      İplik numarası, tekstilde ipliğin inceliğini veya kalınlığını ifade eden önemli bir özelliktir. Farklı iplik numarası sistemleri (Tex, Denye, Ne, Nm vb.) arasında kolayca dönüşüm yapabilir, ipliğin inceliği veya kalınlığına göre diğer sistemlerdeki karşılıklarını hesaplayabilirsiniz.
-     </p>
-     <div class="calculator-group">
-      <div class="calculator-card-wrapper">
-       <div class="calculator-header">
-        <i class="fas fa-ruler-combined icon-small">
-        </i>
-        <h2>
-         İplik Numarası Dönüşümü
-        </h2>
-       </div>
-       <div class="calculator-form-container">
-        <form id="iplikNumarasiForm">
-         <div class="input-with-unit">
-          <label for="inputNumber">
-           İplik Numarası Değeri:
-          </label>
-          <input id="inputNumber" min="0" required="" step="any" type="number"/>
-         </div>
-         <div class="input-with-unit">
-          <label for="inputSystem">
-           Giriş Sistemi:
-          </label>
-          <select id="inputSystem">
-           <option value="tex">
-            Tex (g/1000m)
-           </option>
-           <option value="denye">
-            Denye (g/9000m)
-           </option>
-           <option value="ne">
-            Ne (Pamuk Numarası - 840 yard/lb)
-           </option>
-           <option value="nm">
-            Nm (Metrik Numara - m/g)
-           </option>
-           <option value="dtex">
-            dTex (g/10000m)
-           </option>
-          </select>
-         </div>
-         <button onclick="hesaplaIplikNumarasi()" type="button">
-          Hesapla
-         </button>
-        </form>
-        <div class="result-display" id="resultBox">
-         <h3>
-          Sonuçlar:
-         </h3>
-         <p>
-          <strong>
-           Tex:
-          </strong>
-          <span id="resultTex">
-          </span>
-         </p>
-         <p>
-          <strong>
-           Denye:
-          </strong>
-          <span id="resultDenye">
-          </span>
-         </p>
-         <p>
-          <strong>
-           Ne (Pamuk Numarası):
-          </strong>
-          <span id="resultNe">
-          </span>
-         </p>
-         <p>
-          <strong>
-           Nm (Metrik Numara):
-          </strong>
-          <span id="resultNm">
-          </span>
-         </p>
-         <p>
-          <strong>
-           dTex:
-          </strong>
-          <span id="resultDtex">
-          </span>
-         </p>
-        </div>
-        <p class="small-text">
-         Bu hesaplayıcı, iplik numarası sistemleri arasındaki temel dönüşümleri sağlar. Daha karmaşık senaryolar ve spesifik elyaf tipleri için endüstriyel standartlara başvurulması önerilir.
-        </p>
-       </div>
-      </div>
-      <section class="info-section">
-       <h3>
-        İplik Numarası Sistemleri Hakkında Bilgi
-       </h3>
-       <p>
-        <strong>
-         İplik numarası
-        </strong>
-        , tekstilde ipliğin inceliğini veya kalınlığını ifade eden önemli bir özelliktir. İplik numarası, genellikle ipliğin belirli bir uzunluğunun ağırlığına (doğrudan sistemler) veya belirli bir ağırlığının uzunluğuna (dolaylı sistemler) göre ifade edilir.
-       </p>
-       <p>
-        İplik numarası, üretim süreçlerinde (eğirme, dokuma, örme), kalite kontrolde ve nihai ürün özelliklerinin belirlenmesinde kritik bir parametredir. Doğru iplik numarası seçimi, kumaşın mukavemeti, tuşesi ve genel performansı üzerinde büyük etkiye sahiptir.
-       </p>
-       <h4>
-        Doğrudan İplik Numarası Sistemleri (Uzunluk Sabit, Ağırlık Değişken)
-       </h4>
-       <ul>
-        <li>
-         <strong>
-          Tex:
-         </strong>
-         1000 metre ipliğin gram cinsinden ağırlığı. Tex numarası yükseldikçe iplik kalınlaşır. (g/1000m)
-         <span class="formula-text">
-          Tex = (Ağırlık (g) / Uzunluk (km))
-         </span>
-        </li>
-        <li>
-         <strong>
-          Denye:
-         </strong>
-         9000 metre ipliğin gram cinsinden ağırlığı. Genellikle filament (sentetik) ipliklerde kullanılır. Denye yükseldikçe iplik kalınlaşır. (g/9000m)
-         <span class="formula-text">
-          Denye = (Ağırlık (g) / Uzunluk (km)) * 9
-         </span>
-        </li>
-        <li>
-         <strong>
-          dTex (desitex):
-         </strong>
-         10.000 metre ipliğin gram cinsinden ağırlığı. Daha hassas ölçümler için kullanılır. (g/10000m)
-         <span class="formula-text">
-          dTex = (Ağırlık (g) / Uzunluk (km)) * 10
-         </span>
-        </li>
-       </ul>
-       <h4>
-        Dolaylı İplik Numarası Sistemleri (Ağırlık Sabit, Uzunluk Değişken)
-       </h4>
-       <ul>
-        <li>
-         <strong>
-          Ne (Pamuk Numarası - English Cotton Count):
-         </strong>
-         1 pound ağırlığındaki ipliğin 840 yardlık çile sayısıyla ifade edilir. Ne numarası yükseldikçe iplik incelir. Genellikle pamuk ipliklerinde kullanılır. (çile/lb)
-         <span class="formula-text">
-          Ne = (Uzunluk (yard) / 840) / Ağırlık (lb)
-         </span>
-        </li>
-        <li>
-         <strong>
-          Nm (Metrik Numara):
-         </strong>
-         1 gram ağırlığındaki ipliğin metre cinsinden uzunluğu. Nm numarası yükseldikçe iplik incelir. Genellikle yün ve sentetik ipliklerde kullanılır. (m/g)
-         <span class="formula-text">
-          Nm = Uzunluk (m) / Ağırlık (g)
-         </span>
-        </li>
-       </ul>
-       <h4>
-        Dönüşüm Tablosu (Örnek)
-       </h4>
-       <table>
-        <thead>
-         <tr>
-          <th>
-           Sistem
-          </th>
-          <th>
-           Tex
-          </th>
-          <th>
-           Denye
-          </th>
-          <th>
-           Ne
-          </th>
-          <th>
-           Nm
-          </th>
-          <th>
-           dTex
-          </th>
-         </tr>
-        </thead>
-        <tbody>
-         <tr>
-          <td>
-           **1 Tex**
-          </td>
-          <td>
-           1
-          </td>
-          <td>
-           9
-          </td>
-          <td>
-           590.54 / Tex
-          </td>
-          <td>
-           1000 / Tex
-          </td>
-          <td>
-           10
-          </td>
-         </tr>
-         <tr>
-          <td>
-           **1 Denye**
-          </td>
-          <td>
-           1 / 9
-          </td>
-          <td>
-           1
-          </td>
-          <td>
-           5314.96 / Denye
-          </td>
-          <td>
-           9000 / Denye
-          </td>
-          <td>
-           10 / 9
-          </td>
-         </tr>
-         <tr>
-          <td>
-           **1 Ne**
-          </td>
-          <td>
-           590.54 / Ne
-          </td>
-          <td>
-           5314.96 / Ne
-          </td>
-          <td>
-           1
-          </td>
-          <td>
-           1693.6 / Ne
-          </td>
-          <td>
-           5905.4 / Ne
-          </td>
-         </tr>
-         <tr>
-          <td>
-           **1 Nm**
-          </td>
-          <td>
-           1000 / Nm
-          </td>
-          <td>
-           9000 / Nm
-          </td>
-          <td>
-           1693.6 / Nm
-          </td>
-          <td>
-           1
-          </td>
-          <td>
-           10000 / Nm
-          </td>
-         </tr>
-         <tr>
-          <td>
-           **1 dTex**
-          </td>
-          <td>
-           1 / 10
-          </td>
-          <td>
-           9 / 10
-          </td>
-          <td>
-           59.054 / dTex
-          </td>
-          <td>
-           100 / dTex
-          </td>
-          <td>
-           1
-          </td>
-         </tr>
-        </tbody>
-       </table>
-       <p class="disclaimer-text">
-        Bu hesaplayıcı ve bilgiler genel amaçlıdır. Endüstriyel uygulamalarda hassas ölçümler ve standartlar esastır. Hesaplamalarınızda herhangi bir sorun veya hata ile karşılaşırsanız, lütfen bize
-        <a href="../../iletisim.html">
-         iletişim
-        </a>
-        sayfamızdan ulaşın.
-       </p>
-      </section>
-     </div>
-    </div>
-   </section>
-  </main>
-  <div id="footer-placeholder">
-  </div>
-  <script>
-   document.addEventListener('DOMContentLoaded', function() {
-    const isEnglishPage = window.location.pathname.startsWith('/en/');
-    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
-    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+    <meta content="Farklı iplik numarası sistemleri (Tex, Denye, Ne, Nm vb.) arasında dönüşüm ve hesaplama aracı. İplik numarası ve inceliğiyle ilgili tüm hesaplamalar." name="description"/>
+    <meta content="iplik numarası, iplik inceliği, tex hesaplama, denye hesaplama, ne hesaplama, nm hesaplama, iplik dönüşüm, tekstil mühendisliği hesaplamaları, hesapkolik tekstil" name="keywords"/>
 
-    // Header Yükleme
-    fetch(headerPath)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <style>
+        /* Genel Ayarlar ve Font */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Sade ve ferah bir arka plan */
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Koyu tema başlık/altlık ile uyumlu */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Bölümü */
+        .calculator-section { /* Yeni isim */
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff;
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 { /* Yeni başlık stili */
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        /* Form Elemanları */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .input-with-unit-group, .input-with-unit { /* Bu iki sınıfı birleştirdim */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .input-with-unit-group label, .input-with-unit label {
+            flex-basis: auto;
+            width: 100%;
+            margin-bottom: 0;
+            text-align: left;
+        }
+        .input-with-unit-group input[type="number"], .input-with-unit-group select,
+        .input-with-unit input[type="number"], .input-with-unit select {
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+        .form-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        /* Form butonları */
+        .calculator-form-container button[type="submit"] {
+            background-color: #28a745; /* Onay yeşili */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button[type="submit"]:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Sonuç Ekranı */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+            display: none; /* Varsayılan olarak gizli */
+        }
+        .result-display .result-value {
+            color: #e74c3c;
+        }
+        .result-display .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+        .result-display p { /* Sonuç paragrafı için düzeltme */
+            padding: 0;
+            margin: 5px 0;
+            text-align: center;
+            font-size: 1.2em; /* Biraz küçültelim */
+            line-height: 1.4;
+        }
+        .result-display h3 {
+            font-size: 1.8em; /* H3 boyutunu küçültelim */
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #2c3e50; /* Kırmızı olmasın */
+        }
+
+
+        /* Açıklama bölümleri */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .info-section li .formula-text { /* Liste içindeki formül metnine özel stil */
+            display: block; /* Yeni satırda başlasın */
+            margin-top: 5px;
+            margin-bottom: 5px;
+            font-size: 1em; /* Liste içindeki formül daha küçük olabilir */
+            padding: 5px 10px;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        /* Yeni Karbon Ayak İzi başlık stili */
+        .calc-wrapper h4 {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+            text-align: left; /* Başlıkların sola hizalanması */
+        }
+        .calculator-form-container p.small-text { /* Form içindeki küçük metin */
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9em;
+            text-align: left;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        table th {
+            background-color: #f2f2f2;
+            font-weight: 600;
+            color: #333;
+        }
+        table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
             }
-            return response.text();
-        })
-        .then(data => {
-            const headerPlaceholder = document.getElementById('header-placeholder');
-            if (headerPlaceholder) {
-                headerPlaceholder.innerHTML = data;
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1.4em;
+            }
+            .input-with-unit-group, .input-with-unit {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+            }
+            .input-with-unit-group label, .input-with-unit label {
+                margin-bottom: 5px;
+                text-align: left;
+            }
+            .input-with-unit-group input[type="number"], .input-with-unit-group select,
+            .input-with-unit input[type="number"], .input-with-unit select {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+             table {
+                font-size: 0.8em; /* Tablo font boyutunu küçült */
+            }
+            table th, table td {
+                padding: 6px; /* Tablo hücre boşluğunu küçült */
+            }
+        }
 
-                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
-                const scriptElement = headerPlaceholder.querySelector('script');
-                if (scriptElement) {
-                    const newScript = document.createElement('script');
-                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
-                    document.body.appendChild(newScript);
-                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            .result-display {
+                font-size: 1em;
+                padding: 15px;
+            }
+            .result-display .result-value {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>İplik Numarası Hesaplayıcı</h1>
+                <p>İplik numarası, tekstilde ipliğin inceliğini veya kalınlığını ifade eden önemli bir özelliktir. Farklı iplik numarası sistemleri (Tex, Denye, Ne, Nm vb.) arasında kolayca dönüşüm yapabilir, ipliğin inceliği veya kalınlığına göre diğer sistemlerdeki karşılıklarını hesaplayabilirsiniz.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper active-calc" id="calculator-iplikNumarasi">
+                    <h3><i class="fas fa-ruler-combined icon-small"></i> İplik Numarası Dönüşümü</h3>
+                    <div class="calculator-form-container">
+                        <form id="iplikNumarasiForm">
+                            <div class="input-with-unit-group">
+                                <label for="inputNumber">İplik Numarası Değeri:</label>
+                                <input id="inputNumber" min="0" placeholder="Örn: 50" required="" step="any" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="inputSystem">Giriş Sistemi:</label>
+                                <select id="inputSystem" required>
+                                    <option value="tex">Tex (g/1000m)</option>
+                                    <option value="denye">Denye (g/9000m)</option>
+                                    <option value="ne">Ne (Pamuk Numarası - 840 yard/lb)</option>
+                                    <option value="nm">Nm (Metrik Numara - m/g)</option>
+                                    <option value="dtex">dTex (g/10000m)</option>
+                                </select>
+                            </div>
+                            <button type="submit">Hesapla</button>
+                        </form>
+                        <div class="result-display" id="resultBox">
+                            <h3>Sonuçlar:</h3>
+                            <p><strong>Tex:</strong> <span class="result-value" id="resultTex"></span></p>
+                            <p><strong>Denye:</strong> <span class="result-value" id="resultDenye"></span></p>
+                            <p><strong>Ne (Pamuk Numarası):</strong> <span class="result-value" id="resultNe"></span></p>
+                            <p><strong>Nm (Metrik Numara):</strong> <span class="result-value" id="resultNm"></span></p>
+                            <p><strong>dTex:</strong> <span class="result-value" id="resultDtex"></span></p>
+                        </div>
+                        <div class="calc-explanation">
+                            <p class="small-text">Bu hesaplayıcı, iplik numarası sistemleri arasındaki temel dönüşümleri sağlar. Daha karmaşık senaryolar ve belirli elyaf türleri için endüstriyel standartlara başvurulması önerilir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>İplik Numarası Sistemleri Hakkında Bilgi</h3>
+            <p><strong>İplik numarası</strong>, tekstilde ipliğin inceliğini veya kalınlığını ifade eden önemli bir özelliktir. İplik numarası, genellikle ipliğin belirli bir uzunluğunun ağırlığına (doğrudan sistemler) veya belirli bir ağırlığının uzunluğuna (dolaylı sistemler) göre ifade edilir.</p>
+            <p>İplik numarası, üretim süreçlerinde (eğirme, dokuma, örme), kalite kontrolde ve nihai ürün özelliklerinin belirlenmesinde kritik bir parametredir. Doğru iplik numarası seçimi, kumaşın mukavemeti, tuşesi ve genel performansı üzerinde büyük etkiye sahiptir.</p>
+            <h4>Doğrudan İplik Numarası Sistemleri (Uzunluk Sabit, Ağırlık Değişken)</h4>
+            <ul>
+                <li>
+                    <strong>Tex:</strong> 1000 metre ipliğin gram cinsinden ağırlığı. Tex numarası yükseldikçe iplik kalınlaşır. (g/1000m)
+                    <span class="formula-text">
+                        $$\text{Tex} = \frac{\text{Ağırlık (g)}}{\text{Uzunluk (km)}}$$
+                    </span>
+                </li>
+                <li>
+                    <strong>Denye:</strong> 9000 metre ipliğin gram cinsinden ağırlığı. Genellikle filament (sentetik) ipliklerde kullanılır. Denye yükseldikçe iplik kalınlaşır. (g/9000m)
+                    <span class="formula-text">
+                        $$\text{Denye} = \frac{\text{Ağırlık (g)}}{\text{Uzunluk (km)}} \times 9$$
+                    </span>
+                </li>
+                <li>
+                    <strong>dTex (desitex):</strong> 10.000 metre ipliğin gram cinsinden ağırlığı. Daha hassas ölçümler için kullanılır. (g/10000m)
+                    <span class="formula-text">
+                        $$\text{dTex} = \frac{\text{Ağırlık (g)}}{\text{Uzunluk (km)}} \times 10$$
+                    </span>
+                </li>
+            </ul>
+            <h4>Dolaylı İplik Numarası Sistemleri (Ağırlık Sabit, Uzunluk Değişken)</h4>
+            <ul>
+                <li>
+                    <strong>Ne (Pamuk Numarası - English Cotton Count):</strong> 1 pound ağırlığındaki ipliğin 840 yardlık çile sayısıyla ifade edilir. Ne numarası yükseldikçe iplik incelir. Genellikle pamuk ipliklerinde kullanılır. (çile/lb)
+                    <span class="formula-text">
+                        $$\text{Ne} = \frac{\text{Uzunluk (yard)} / 840}{\text{Ağırlık (lb)}}$$
+                    </span>
+                </li>
+                <li>
+                    <strong>Nm (Metrik Numara):</strong> 1 gram ağırlığındaki ipliğin metre cinsinden uzunluğu. Nm numarası yükseldikçe iplik incelir. Genellikle yün ve sentetik ipliklerde kullanılır. (m/g)
+                    <span class="formula-text">
+                        $$\text{Nm} = \frac{\text{Uzunluk (m)}}{\text{Ağırlık (g)}}$$
+                    </span>
+                </li>
+            </ul>
+            <h4>Dönüşüm Tablosu (Örnek)</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sistem</th>
+                        <th>Tex</th>
+                        <th>Denye</th>
+                        <th>Ne</th>
+                        <th>Nm</th>
+                        <th>dTex</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>1 Tex</strong></td><td>1</td><td>9</td><td>590.54 / Tex</td><td>1000 / Tex</td><td>10</td></tr>
+                    <tr><td><strong>1 Denye</strong></td><td>1 / 9</td><td>1</td><td>5314.96 / Denye</td><td>9000 / Denye</td><td>10 / 9</td></tr>
+                    <tr><td><strong>1 Ne</strong></td><td>590.54 / Ne</td><td>5314.96 / Ne</td><td>1</td><td>1693.6 / Ne</td><td>5905.4 / Ne</td></tr>
+                    <tr><td><strong>1 Nm</strong></td><td>1000 / Nm</td><td>9000 / Nm</td><td>1693.6 / Nm</td><td>1</td><td>10000 / Nm</td></tr>
+                    <tr><td><strong>1 dTex</strong></td><td>1 / 10</td><td>9 / 10</td><td>59.054 / dTex</td><td>100 / dTex</td><td>1</td></tr>
+                </tbody>
+            </table>
+            <p class="disclaimer-text">Bu hesaplayıcı ve bilgiler genel amaçlıdır. Endüstriyel uygulamalarda hassas ölçümler ve standartlar esastır. Hesaplamalarınızda herhangi bir sorun veya hata ile karşılaşırsanız, lütfen bize <a href="../../iletisim.html">iletişim</a> sayfamızdan ulaşın.</p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header ve Footer yükleme fonksiyonları
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            // Yüklenen HTML içindeki script etiketlerini bul ve çalıştır
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // URL'ye göre header ve footer yükleme
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // Metinleri dile göre tanımlayan bir obje
+            const texts = {
+                tr: {
+                    mainHeading: 'İplik Numarası Hesaplayıcı',
+                    mainDescription: 'İplik numarası, tekstilde ipliğin inceliğini veya kalınlığını ifade eden önemli bir özelliktir. Farklı iplik numarası sistemleri (Tex, Denye, Ne, Nm vb.) arasında kolayca dönüşüm yapabilir, ipliğin inceliği veya kalınlığına göre diğer sistemlerdeki karşılıklarını hesaplayabilirsiniz.',
+                    calculatorTitle: 'İplik Numarası Dönüşümü',
+                    inputNumberLabel: 'İplik Numarası Değeri:',
+                    inputSystemLabel: 'Giriş Sistemi:',
+                    optionTex: 'Tex (g/1000m)',
+                    optionDenye: 'Denye (g/9000m)',
+                    optionNe: 'Ne (Pamuk Numarası - 840 yard/lb)',
+                    optionNm: 'Nm (Metrik Numara - m/g)',
+                    optionDtex: 'dTex (g/10000m)',
+                    calculateButton: 'Hesapla',
+                    invalidInput: 'Lütfen geçerli bir iplik numarası değeri girin (pozitif sayı).',
+                    resultTitle: 'Sonuçlar:',
+                    texLabel: 'Tex:',
+                    denyeLabel: 'Denye:',
+                    neLabel: 'Ne (Pamuk Numarası):',
+                    nmLabel: 'Nm (Metrik Numara):',
+                    dtexLabel: 'dTex:',
+                    explanation: 'Bu hesaplayıcı, iplik numarası sistemleri arasındaki temel dönüşümleri sağlar. Daha karmaşık senaryolar ve belirli elyaf türleri için endüstriyel standartlara başvurulması önerilir.',
+
+                    infoSectionTitle: 'İplik Numarası Sistemleri Hakkında Bilgi',
+                    infoSectionP1: '<strong>İplik numarası</strong>, tekstilde ipliğin inceliğini veya kalınlığını ifade eden önemli bir özelliktir. İplik numarası, genellikle ipliğin belirli bir uzunluğunun ağırlığına (doğrudan sistemler) veya belirli bir ağırlığının uzunluğuna (dolaylı sistemler) göre ifade edilir.',
+                    infoSectionP2: 'İplik numarası, üretim süreçlerinde (eğirme, dokuma, örme), kalite kontrolde ve nihai ürün özelliklerinin belirlenmesinde kritik bir parametredir. Doğru iplik numarası seçimi, kumaşın mukavemeti, tuşesi ve genel performansı üzerinde büyük etkiye sahiptir.',
+                    infoSectionH4_1: 'Doğrudan İplik Numarası Sistemleri (Uzunluk Sabit, Ağırlık Değişken)',
+                    infoSectionList1_1: '<strong>Tex:</strong> 1000 metre ipliğin gram cinsinden ağırlığı. Tex numarası yükseldikçe iplik kalınlaşır. (g/1000m)<span class="formula-text">$$\\text{Tex} = \\frac{\\text{Ağırlık (g)}}{\\text{Uzunluk (km)}}$$</span>',
+                    infoSectionList1_2: '<strong>Denye:</strong> 9000 metre ipliğin gram cinsinden ağırlığı. Genellikle filament (sentetik) ipliklerde kullanılır. Denye yükseldikçe iplik kalınlaşır. (g/9000m)<span class="formula-text">$$\\text{Denye} = \\frac{\\text{Ağırlık (g)}}{\\text{Uzunluk (km)}} \\times 9$$</span>',
+                    infoSectionList1_3: '<strong>dTex (desitex):</strong> 10.000 metre ipliğin gram cinsinden ağırlığı. Daha hassas ölçümler için kullanılır. (g/10000m)<span class="formula-text">$$\\text{dTex} = \\frac{\\text{Ağırlık (g)}}{\\text{Uzunluk (km)}} \\times 10$$</span>',
+                    infoSectionH4_2: 'Dolaylı İplik Numarası Sistemleri (Ağırlık Sabit, Uzunluk Değişken)',
+                    infoSectionList2_1: '<strong>Ne (Pamuk Numarası - English Cotton Count):</strong> 1 pound ağırlığındaki ipliğin 840 yardlık çile sayısıyla ifade edilir. Ne numarası yükseldikçe iplik incelir. Genellikle pamuk ipliklerinde kullanılır. (çile/lb)<span class="formula-text">$$\\text{Ne} = \\frac{\\text{Uzunluk (yard)} / 840}{\\text{Ağırlık (lb)}}$$</span>',
+                    infoSectionList2_2: '<strong>Nm (Metrik Numara):</strong> 1 gram ağırlığındaki ipliğin metre cinsinden uzunluğu. Nm numarası yükseldikçe iplik incelir. Genellikle yün ve sentetik ipliklerde kullanılır. (m/g)<span class="formula-text">$$\\text{Nm} = \\frac{\\text{Uzunluk (m)}}{\\text{Ağırlık (g)}}$$</span>',
+                    infoSectionH4_3: 'Dönüşüm Tablosu (Örnek)',
+                    disclaimerText: 'Bu hesaplayıcı ve bilgiler genel amaçlıdır. Endüstriyel uygulamalarda hassas ölçümler ve standartlar esastır. Hesaplamalarınızda herhangi bir sorun veya hata ile karşılaşırsanız, lütfen bize <a href="../../iletisim.html">iletişim</a> sayfamızdan ulaşın.'
+                },
+                en: {
+                    mainHeading: 'Yarn Count Calculator',
+                    mainDescription: 'Yarn count is an important property in textiles that expresses the fineness or thickness of the yarn. You can easily convert between different yarn count systems (Tex, Denier, Ne, Nm, etc.) and calculate their equivalents based on the fineness or thickness of the yarn.',
+                    calculatorTitle: 'Yarn Count Conversion',
+                    inputNumberLabel: 'Yarn Count Value:',
+                    inputSystemLabel: 'Input System:',
+                    optionTex: 'Tex (g/1000m)',
+                    optionDenye: 'Denier (g/9000m)',
+                    optionNe: 'Ne (Cotton Count - 840 yards/lb)',
+                    optionNm: 'Nm (Metric Number - m/g)',
+                    optionDtex: 'dTex (g/10000m)',
+                    calculateButton: 'Calculate',
+                    invalidInput: 'Please enter a valid yarn count value (positive number).',
+                    resultTitle: 'Results:',
+                    texLabel: 'Tex:',
+                    denyeLabel: 'Denier:',
+                    neLabel: 'Ne (Cotton Count):',
+                    nmLabel: 'Nm (Metric Number):',
+                    dtexLabel: 'dTex:',
+                    explanation: 'This calculator provides basic conversions between yarn count systems. For more complex scenarios and specific fiber types, it is recommended to consult industry standards.',
+
+                    infoSectionTitle: 'Information About Yarn Count Systems',
+                    infoSectionP1: '<strong>Yarn count</strong> is an important property in textiles that expresses the fineness or thickness of the yarn. Yarn count is generally expressed based on the weight of a specific length of yarn (direct systems) or the length of a specific weight of yarn (indirect systems).',
+                    infoSectionP2: 'Yarn count is a critical parameter in production processes (spinning, weaving, knitting), quality control, and determining final product properties. Correct yarn count selection has a significant impact on fabric strength, hand-feel, and overall performance.',
+                    infoSectionH4_1: 'Direct Yarn Count Systems (Length Constant, Weight Variable)',
+                    infoSectionList1_1: '<strong>Tex:</strong> The weight in grams of 1000 meters of yarn. As the Tex number increases, the yarn becomes thicker. (g/1000m)<span class="formula-text">$$\\text{Tex} = \\frac{\\text{Weight (g)}}{\\text{Length (km)}}$$</span>',
+                    infoSectionList1_2: '<strong>Denier:</strong> The weight in grams of 9000 meters of yarn. Generally used for filament (synthetic) yarns. As Denier increases, the yarn becomes thicker. (g/9000m)<span class="formula-text">$$\\text{Denier} = \\frac{\\text{Weight (g)}}{\\text{Length (km)}} \\times 9$$</span>',
+                    infoSectionList1_3: '<strong>dTex (decitex):</strong> The weight in grams of 10,000 meters of yarn. Used for more precise measurements. (g/10000m)<span class="formula-text">$$\\text{dTex} = \\frac{\\text{Weight (g)}}{\\text{Length (km)}} \\times 10$$</span>',
+                    infoSectionH4_2: 'Indirect Yarn Count Systems (Weight Constant, Length Variable)',
+                    infoSectionList2_1: '<strong>Ne (Cotton Count - English Cotton Count):</strong> Expressed by the number of 840-yard hanks per 1 pound of yarn. As the Ne number increases, the yarn becomes finer. Generally used for cotton yarns. (hanks/lb)<span class="formula-text">$$\\text{Ne} = \\frac{\\text{Length (yard)} / 840}{\\text{Weight (lb)}}$$</span>',
+                    infoSectionList2_2: '<strong>Nm (Metric Number):</strong> The length in meters of 1 gram of yarn. As the Nm number increases, the yarn becomes finer. Generally used for wool and synthetic yarns. (m/g)<span class="formula-text">$$\\text{Nm} = \\frac{\\text{Length (m)}}{\\text{Weight (g)}}$$</span>',
+                    infoSectionH4_3: 'Conversion Table (Example)',
+                    disclaimerText: 'This calculator and information are for general purposes. In industrial applications, precise measurements and standards are essential. If you encounter any problems or errors in your calculations, please contact us via our <a href="../../contact.html">contact</a> page.'
+                }
+            };
+
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // DOM Elements
+            const iplikNumarasiForm = document.getElementById('iplikNumarasiForm');
+            const inputNumber = document.getElementById('inputNumber');
+            const inputSystem = document.getElementById('inputSystem');
+            const resultBox = document.getElementById('resultBox');
+            const calculateButton = iplikNumarasiForm.querySelector('button[type="submit"]'); // Changed to type="submit" for consistency
+
+            // Result display spans
+            const resultTex = document.getElementById('resultTex');
+            const resultDenye = document.getElementById('resultDenye');
+            const resultNe = document.getElementById('resultNe');
+            const resultNm = document.getElementById('resultNm');
+            const resultDtex = document.getElementById('resultDtex');
+
+            // Update main heading and description
+            document.querySelector('.hero-section h1').textContent = currentTexts.mainHeading;
+            document.querySelector('.hero-section p').textContent = currentTexts.mainDescription;
+
+            // Update calculator section heading and labels
+            document.querySelector('#calculator-iplikNumarasi h3').innerHTML = `<i class="fas fa-ruler-combined icon-small"></i> ${currentTexts.calculatorTitle}`;
+            document.getElementById('inputNumber').previousElementSibling.textContent = currentTexts.inputNumberLabel;
+            document.getElementById('inputSystem').previousElementSibling.textContent = currentTexts.inputSystemLabel;
+            document.querySelector('#inputSystem option[value="tex"]').textContent = currentTexts.optionTex;
+            document.querySelector('#inputSystem option[value="denye"]').textContent = currentTexts.optionDenye;
+            document.querySelector('#inputSystem option[value="ne"]').textContent = currentTexts.optionNe;
+            document.querySelector('#inputSystem option[value="nm"]').textContent = currentTexts.optionNm;
+            document.querySelector('#inputSystem option[value="dtex"]').textContent = currentTexts.optionDtex;
+            calculateButton.textContent = currentTexts.calculateButton;
+
+            // Update result box header and labels
+            resultBox.querySelector('h3').textContent = currentTexts.resultTitle;
+            resultBox.querySelector('p:nth-of-type(1) strong').textContent = currentTexts.texLabel;
+            resultBox.querySelector('p:nth-of-type(2) strong').textContent = currentTexts.denyeLabel;
+            resultBox.querySelector('p:nth-of-type(3) strong').textContent = currentTexts.neLabel;
+            resultBox.querySelector('p:nth-of-type(4) strong').textContent = currentTexts.nmLabel;
+            resultBox.querySelector('p:nth-of-type(5) strong').textContent = currentTexts.dtexLabel;
+
+            // Update calculator explanation text
+            document.querySelector('.calc-explanation p.small-text').textContent = currentTexts.explanation;
+
+            // Bilgi Bölümü Metin Güncelleme
+            function updateInfoSectionContent() {
+                document.querySelector('.info-section h3').textContent = currentTexts.infoSectionTitle;
+                document.querySelector('.info-section p:nth-of-type(1)').innerHTML = currentTexts.infoSectionP1;
+                document.querySelector('.info-section p:nth-of-type(2)').innerHTML = currentTexts.infoSectionP2;
+                document.querySelector('.info-section h4:nth-of-type(1)').textContent = currentTexts.infoSectionH4_1;
+
+                const ul1 = document.querySelector('.info-section ul:nth-of-type(1)');
+                if (ul1) {
+                    ul1.innerHTML = `
+                        <li>${currentTexts.infoSectionList1_1}</li>
+                        <li>${currentTexts.infoSectionList1_2}</li>
+                        <li>${currentTexts.infoSectionList1_3}</li>
+                    `;
+                }
+
+                document.querySelector('.info-section h4:nth-of-type(2)').textContent = currentTexts.infoSectionH4_2;
+                const ul2 = document.querySelector('.info-section ul:nth-of-type(2)');
+                if (ul2) {
+                    ul2.innerHTML = `
+                        <li>${currentTexts.infoSectionList2_1}</li>
+                        <li>${currentTexts.infoSectionList2_2}</li>
+                    `;
+                }
+                document.querySelector('.info-section h4:nth-of-type(3)').textContent = currentTexts.infoSectionH4_3;
+                document.querySelector('.info-section .disclaimer-text').innerHTML = currentTexts.disclaimerText;
+            }
+            updateInfoSectionContent(); // Sayfa yüklendiğinde bilgi bölümünü güncelle
+
+            // --- Conversion Logic ---
+            function convertToTex(value, system) {
+                switch (system) {
+                    case 'tex':
+                        return value;
+                    case 'denye':
+                        return value / 9;
+                    case 'ne':
+                        return 590.54 / value; // Tex = 590.54 / Ne
+                    case 'nm':
+                        return 1000 / value;
+                    case 'dtex':
+                        return value / 10;
+                    default:
+                        return 0;
                 }
             }
-        })
-        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
 
-    // Footer Yükleme
-    fetch(footerPath)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
-            }
-            return response.text();
-        })
-        .then(data => {
-            const footerPlaceholder = document.getElementById('footer-placeholder');
-            if (footerPlaceholder) {
-                footerPlaceholder.innerHTML = data;
-                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = data;
-                const footerElement = tempDiv.querySelector('footer');
-                if (footerElement) {
-                    footerPlaceholder.replaceWith(footerElement);
+            function convertFromTex(texValue, targetSystem) {
+                if (texValue === 0 || isNaN(texValue)) return 0; // Prevent division by zero or NaN results
+
+                switch (targetSystem) {
+                    case 'tex':
+                        return texValue;
+                    case 'denye':
+                        return texValue * 9;
+                    case 'ne':
+                        return 590.54 / texValue;
+                    case 'nm':
+                        return 1000 / texValue;
+                    case 'dtex':
+                        return texValue * 10;
+                    default:
+                        return 0;
                 }
             }
-        })
-        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
-});
-  </script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-    // Language detection: Assume English if URL starts with '/en/', otherwise Turkish
-    const isEnglishPage = window.location.pathname.startsWith('/en/');
 
-    // Text strings object for dynamic content
-    const texts = {
-        tr: {
-            calculateButtonText: 'Hesapla',
-            invalidInput: 'Lütfen geçerli bir iplik numarası değeri girin.',
-            resultTitle: 'Sonuçlar:',
-            texLabel: 'Tex:',
-            denyeLabel: 'Denye:',
-            neLabel: 'Ne (Pamuk Numarası):',
-            nmLabel: 'Nm (Metrik Numara):',
-            dtexLabel: 'dTex:',
-            explanation: 'Bu hesaplayıcı, iplik numarası sistemleri arasında temel dönüşümler sağlar. Daha karmaşık senaryolar ve belirli elyaf türleri için endüstri standartlarına başvurulması önerilir.'
-        },
-        en: {
-            calculateButtonText: 'Calculate',
-            invalidInput: 'Please enter a valid yarn count value.',
-            resultTitle: 'Results:',
-            texLabel: 'Tex:',
-            denyeLabel: 'Denier:',
-            neLabel: 'Ne (Cotton Count):',
-            nmLabel: 'Nm (Metric Number):',
-            dtexLabel: 'dTex:',
-            explanation: 'This calculator provides basic conversions between yarn count systems. For more complex scenarios and specific fiber types, it is recommended to consult industry standards.'
-        }
-    };
+            // --- Calculation Function ---
+            iplikNumarasiForm.addEventListener('submit', function(event) {
+                event.preventDefault();
 
-    // Select active language texts
-    const currentTexts = isEnglishPage ? texts.en : texts.tr;
+                let value = parseFloat(inputNumber.value);
+                let system = inputSystem.value;
 
-    // --- DOM Elements ---
-    const iplikNumarasiForm = document.getElementById('iplikNumarasiForm');
-    const inputNumber = document.getElementById('inputNumber');
-    const inputSystem = document.getElementById('inputSystem');
-    const resultBox = document.getElementById('resultBox');
-    const calculateButton = iplikNumarasiForm.querySelector('button[type="button"]');
+                // Clear previous results and hide result box initially
+                resultTex.textContent = '';
+                resultDenye.textContent = '';
+                resultNe.textContent = '';
+                resultNm.textContent = '';
+                resultDtex.textContent = '';
+                resultBox.style.display = 'none';
 
-    // Result display spans
-    const resultTex = document.getElementById('resultTex');
-    const resultDenye = document.getElementById('resultDenye');
-    const resultNe = document.getElementById('resultNe');
-    const resultNm = document.getElementById('resultNm');
-    const resultDtex = document.getElementById('resultDtex');
+                // --- Input Validation ---
+                if (isNaN(value) || value <= 0) {
+                    resultBox.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                    resultBox.style.display = 'block';
+                    return;
+                }
 
-    // Update button text and explanation text based on language
-    if (calculateButton) {
-        calculateButton.textContent = currentTexts.calculateButtonText;
-    }
+                // Convert the input value to a common base (Tex)
+                const baseTex = convertToTex(value, system);
 
-    const explanationParagraph = resultBox.nextElementSibling; // The <p class="small-text"> after resultBox
-    if (explanationParagraph && explanationParagraph.className === 'small-text') {
-        explanationParagraph.textContent = currentTexts.explanation;
-    }
+                // Convert from Tex to all other systems
+                resultTex.textContent = convertFromTex(baseTex, 'tex').toFixed(2);
+                resultDenye.textContent = convertFromTex(baseTex, 'denye').toFixed(2);
+                resultNe.textContent = convertFromTex(baseTex, 'ne').toFixed(2);
+                resultNm.textContent = convertFromTex(baseTex, 'nm').toFixed(2);
+                resultDtex.textContent = convertFromTex(baseTex, 'dtex').toFixed(2);
 
-    // Update result box header and labels
-    const resultBoxHeader = resultBox.querySelector('h3');
-    if (resultBoxHeader) {
-        resultBoxHeader.textContent = currentTexts.resultTitle;
-    }
-    resultBox.querySelector('p:nth-of-type(1) strong').textContent = currentTexts.texLabel;
-    resultBox.querySelector('p:nth-of-type(2) strong').textContent = currentTexts.denyeLabel;
-    resultBox.querySelector('p:nth-of-type(3) strong').textContent = currentTexts.neLabel;
-    resultBox.querySelector('p:nth-of-type(4) strong').textContent = currentTexts.nmLabel;
-    resultBox.querySelector('p:nth-of-type(5) strong').textContent = currentTexts.dtexLabel;
-
-
-    // --- Conversion Logic ---
-    function convertToTex(value, system) {
-        switch (system) {
-            case 'tex':
-                return value;
-            case 'denye':
-                return value / 9;
-            case 'ne':
-                return 590.54 / value;
-            case 'nm':
-                return 1000 / value;
-            case 'dtex':
-                return value / 10;
-            default:
-                return 0;
-        }
-    }
-
-    function convertFromTex(texValue, targetSystem) {
-        switch (targetSystem) {
-            case 'tex':
-                return texValue;
-            case 'denye':
-                return texValue * 9;
-            case 'ne':
-                return 590.54 / texValue;
-            case 'nm':
-                return 1000 / texValue;
-            case 'dtex':
-                return texValue * 10;
-            default:
-                return 0;
-        }
-    }
-
-    // --- Calculation Function ---
-    window.hesaplaIplikNumarasi = function() {
-        let value = parseFloat(inputNumber.value);
-        let system = inputSystem.value;
-
-        // Clear previous results
-        resultTex.textContent = '';
-        resultDenye.textContent = '';
-        resultNe.textContent = '';
-        resultNm.textContent = '';
-        resultDtex.textContent = '';
-        resultBox.style.display = 'none'; // Hide results until valid input
-
-        // --- Input Validation ---
-        if (isNaN(value) || value <= 0) {
-            alert(currentTexts.invalidInput);
-            return;
-        }
-
-        // Convert the input value to a common base (Tex)
-        const baseTex = convertToTex(value, system);
-
-        // Convert from Tex to all other systems
-        resultTex.textContent = convertFromTex(baseTex, 'tex').toFixed(2);
-        resultDenye.textContent = convertFromTex(baseTex, 'denye').toFixed(2);
-        resultNe.textContent = convertFromTex(baseTex, 'ne').toFixed(2);
-        resultNm.textContent = convertFromTex(baseTex, 'nm').toFixed(2);
-        resultDtex.textContent = convertFromTex(baseTex, 'dtex').toFixed(2);
-
-        resultBox.style.display = 'block'; // Show the result box
-    };
-
-    // Initial setup for the result box title
-    if (resultBoxHeader) {
-        resultBoxHeader.textContent = currentTexts.resultTitle;
-    }
-});
-  </script>
- </body>
+                resultBox.style.display = 'block'; // Show the result box
+            });
+        });
+    </script>
+</body>
 </html>
