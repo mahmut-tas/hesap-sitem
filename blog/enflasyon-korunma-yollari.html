@@ -4,126 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Artan Gıda Fiyatlarına Karşı Akıllı Alışveriş Taktikleri | Hesapkolik Blog</title>
-    <meta name="description" content="Türkiye'de artan gıda enflasyonuna karşı cebinizi korumak için akıllı alışveriş taktikleri ve birikimlerinizi değerlendirme yolları.">
-    <meta name="keywords" content="gıda enflasyonu, akıllı alışveriş, tasarruf, enflasyondan korunma, Türkiye enflasyon, bütçe yönetimi, yatırım, Hesapkolik">
+    <meta name="description" content="Türkiye'de artan gıda enflasyonuna karşı cebinizi korumak için akıllı alışveriş taktikleri ve birikimlerinizi değerlendirme yolları."/>
+    <meta name="keywords" content="gıda enflasyonu, akıllı alışveriş, tasarruf, enflasyondan korunma, Türkiye enflasyon, bütçe yönetimi, yatırım, Hesapkolik"/>
 
-    <link href="/css/header.css" rel="stylesheet"/>
-    <link href="/css/style.css" rel="stylesheet"/>
-    <link href="/css/footer.css" rel="stylesheet"/>
-
-    <link href="https://fonts.googleapis.com" rel="preconnect"/>
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
-
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'], /* Consistent with previous Canvas */
+                    },
+                    colors: {
+                        primary: '#34495e', /* Dark blue, compatible with header/footer */
+                        secondary: '#e74c3c', /* Red accent */
+                        background: '#f4f7f6', /* Light gray background */
+                        card: '#ffffff', /* White card background */
+                        textDark: '#2c3e50', /* Dark text */
+                        textLight: '#666', /* Lighter text */
+                        accentBlue: '#3498db', /* Hesapkolik blue for interactive elements */
+                        accentGreen: '#2ecc71', /* Hesapkolik green for CTAs/savings */
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
-    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script async crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
     <script>
-      window.dataLayer = window.dataLayer || []; // Fixed: empty array for dataLayer
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-3655KNY8CP');
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
     </script>
 
     <style>
-        /* Hesapkolik ana stilini korumak için bazı temel CSS varsayılanlarını ayarladım */
-        body {
-            font-family: 'Poppins', sans-serif; /* Hesapkolik ana fontu */
-            background-color: #f8f7f4; /* Hesapkolik ana arka plan rengi */
-            color: #333; /* Hesapkolik ana metin rengi */
+        /* Custom styles for Chart.js font consistency */
+        canvas {
+            font-family: 'Inter', sans-serif !important;
         }
-
-        /* Başlıklar ve alt başlıklar için Hesapkolik'in ana sayfadaki stillerine benzer düzenlemeler */
-       .section-title {
-            font-size: 2.2em; /* style.css'deki h2 boyutu */
-            color: #2c3e50; /* style.css'deki h2 rengi */
-            text-align: center;
-            margin-bottom: 40px;
-            padding-top: 20px; /* Bölümler arasında biraz boşluk */
-        }
-       .section-subtitle {
-            font-size: 1.1em; /* style.css'deki p'ye yakın bir boyut */
-            text-align: center;
-            color: #666; /* style.css'deki p rengi */
-            max-width: 800px; /* Metin için daha geniş alan */
-            margin-left: auto;
-            margin-right: auto;
-            margin-bottom: 30px;
-        }
-
-        /* Kartlar için Hesapkolik ana sayfa stili */
-       .card {
-            background-color: #ffffff;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Hafif gölge */
-            border: 1px solid #ddd; /* İnce kenarlık */
-            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Yumuşak geçiş efektleri */
-        }
-       .card:hover {
-            transform: translateY(-2px); /* Hafif yukarı kalkma */
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12); /* Biraz daha belirgin gölge */
-        }
-
-        /* Hero bölümü için Hesapkolik ana sayfa stili */
-       .hero {
-            background-color: #3498db; /* Hesapkolik ana hero rengi */
-            color: white;
-            text-align: center;
-            padding: 80px 20px;
-        }
-       .hero h1 { /* Başlık font-size'ını blog başlığına uygun ayarladım */
-            font-size: 2.8em;
-            margin-bottom: 20px;
-        }
-       .hero p {
-            font-size: 1.2em;
-            margin-bottom: 30px;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-       .hero.cta-button {
-            display: inline-block;
-            background-color: #2ecc71; /* Ana sayfadaki yeşil buton rengi */
-            color: white;
-            padding: 15px 30px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-       .hero.cta-button:hover {
-            background-color: #27ae60;
-            transform: translateY(-2px);
-        }
-
-        /* Chart Container Styling (Adapted from BMI template, allowing wider charts) */
-       .chart-container {
+        .chart-container {
             position: relative;
             width: 100%;
-            max-width: 600px; /* Allowing a bit wider for radar/bar */
+            max-width: 600px;
             margin-left: auto;
             margin-right: auto;
             height: auto;
-            aspect-ratio: 1 / 1; /* For radar, bar can be more flexible */
+            aspect-ratio: 1 / 1;
         }
-        /* Specific height for savings chart to avoid it being too small */
-       .savings-chart-container {
-            height: 300px; /* Fixed height for savings chart */
+        .savings-chart-container {
+            height: 300px;
             max-height: 400px;
-            aspect-ratio: auto; /* Override aspect-ratio for bar chart */
+            aspect-ratio: auto;
         }
-
-        /* Range slider thumb stilleri (Hesapkolik mavi rengine ayarlandı) */
+        /* Range slider thumb styles */
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
             width: 24px;
             height: 24px;
-            background: #3498db; /* Hesapkolik mavi */
+            background: var(--tw-colors-accentBlue); /* Using Tailwind var for consistency */
             cursor: pointer;
             border-radius: 50%;
             border: 4px solid #fff;
@@ -132,195 +77,181 @@
         input[type="range"]::-moz-range-thumb {
             width: 24px;
             height: 24px;
-            background: #3498db; /* Hesapkolik mavi */
+            background: var(--tw-colors-accentBlue);
             cursor: pointer;
             border-radius: 50%;
             border: 4px solid #fff;
             box-shadow: 0 0 5px rgba(0,0,0,0.2);
         }
-
-        /* Specific styles for interactive elements (adapted from previous version) */
-       .interactive-card { transition: transform 0.2s, box-shadow 0.2s; }
-       .interactive-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
-       .active-card { border-color: #2ecc71; transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); } /* Hesapkolik yeşili */
-
-       .tab-btn { transition: color 0.2s, border-color 0.2s; }
-       .active-tab { color: #3498db; border-bottom-color: #3498db; } /* Hesapkolik mavisi */
-
-
-        /* Responsive Ayarlamalar */
-        @media (max-width: 768px) {
-           .hero h1 {
-                font-size: 2.2em;
-            }
-           .hero p {
-                font-size: 1em;
-            }
-           .section-title {
-                font-size: 1.8em;
-            }
-           .section-subtitle {
-                font-size: 1em;
-            }
-        }
-        @media (max-width: 480px) {
-           .hero h1 {
-                font-size: 1.8em;
-            }
-           .hero p {
-                font-size: 0.9em;
-            }
-           .section-title {
-                font-size: 1.6em;
-            }
-        }
     </style>
 </head>
-<body class="antialiased">
+<body class="bg-background text-textLight leading-relaxed font-sans antialiased">
 
     <div id="header-placeholder"></div>
 
     <main>
-        <section id="hero" class="py-20 bg-blue-600">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight">
-                    <span class="text-green-300">Cebinizi Koruyun:</span> Akıllı Alışveriş ve Enflasyondan Korunma Rehberi
+        <section class="hero-section bg-primary text-white py-20 text-center shadow-lg">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                    <span class="text-accentGreen">Cebinizi Koruyun:</span> Akıllı Alışveriş ve Enflasyondan Korunma Rehberi
                 </h1>
-                <p class="mt-6 text-xl text-white max-w-3xl mx-auto">
+                <p class="text-lg md:text-xl opacity-90 max-w-3xl mx-auto">
                     Türkiye'de artan gıda fiyatlarına karşı bütçenizi yönetmek ve birikimlerinizi enflasyona karşı korumak için pratik taktikler.
                 </p>
-                <a href="#giris" class="mt-8 inline-block bg-green-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-green-600 transition-transform transform hover:scale-105">Rehberi Keşfet</a>
+                <a href="#giris" class="mt-8 inline-block bg-accentGreen text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-green-600 transition-transform transform hover:scale-105">Rehberi Keşfet</a>
             </div>
         </section>
 
-        <section id="giris" class="py-16 md:py-24">
+        <section id="giris" class="content-section py-12 bg-card border-b border-gray-200">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="section-title">Giriş: Enflasyon Gölgesinde Gıda Fiyatları ve Cebimizdeki Etkisi</h2>
-                <p class="section-subtitle">
-                    Türkiye ekonomisi, son yıllarda artan enflasyonist baskılarla mücadele etmektedir. Bu durum, özellikle gıda fiyatlarında yaşanan yükselişlerle hanehalkı bütçeleri üzerinde doğrudan ve hissedilir bir etki yaratmaktadır.
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-textDark text-center">Giriş: Enflasyon Gölgesinde Gıda Fiyatları ve Cebimizdeki Etkisi</h2>
+                <p class="text-base text-gray-600 mb-10 text-justify max-w-4xl mx-auto">
+                    Türkiye ekonomisi, son yıllarda artan enflasyonist baskılarla mücadele etmektedir. Bu durum, özellikle gıda fiyatlarında yaşanan yükselişlerle hanehalkı bütçeleri üzerinde doğrudan ve hissedilir bir etki yaratmaktadır. Bu bölümde, Türkiye'deki gıda enflasyonunun güncel durumunu, temel nedenlerini ve satın alma gücümüz üzerindeki yansımalarını detaylı bir şekilde inceleyeceğiz.
                 </p>
-                <div class="grid md:grid-cols-2 gap-8 items-start">
-                    <div class="card">
-                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Türkiye'de Gıda Enflasyonunun Güncel Durumu ve Hissedilen Gerçeklik</h3>
-                        <p class="text-slate-600 mb-4">
-                            Türkiye İstatistik Kurumu (TÜİK) verilerine göre, 2024 yılının ilk yarısında yıllık resmi enflasyon (TÜFE) %67,1 ile %75,45 arasında seyretmiştir. Ancak, gıda enflasyonu bu genel oranın üzerinde gerçekleşmiş, resmi gıda enflasyonu %68,08 ile %71,1 seviyelerinde açıklanmıştır. Daha da önemlisi, dar gelirli hanehalkları için hissedilen gıda enflasyonu, aynı dönemde %110 ile %121 gibi çok daha yüksek oranlara ulaşmıştır. Bu büyük fark, enflasyonun adeta görünmez bir vergi gibi işlediğini ve özellikle toplumun en kırılgan kesimlerini orantısız bir şekilde etkilediğini ortaya koymaktadır. [1]
+
+                <section class="info-section bg-card p-6 md:p-8 rounded-xl shadow-md border border-gray-200 text-left mt-8">
+                    <h3 class="text-2xl md:text-3xl font-bold text-secondary mb-6 text-center">Türkiye'de Gıda Enflasyonunun Güncel Durumu ve Hissedilen Gerçeklik</h3>
+                    <div class="grid md:grid-cols-2 gap-8 items-start">
+                        <div class="card p-6 rounded-lg shadow-sm border border-gray-100">
+                            <h4 class="text-xl font-bold text-textDark mb-4">Resmi Veriler ve Hissedilen Fark</h4>
+                            <p class="text-textLight mb-4 text-justify">
+                                Türkiye İstatistik Kurumu (TÜİK) verilerine göre, 2024 yılının ilk yarısında yıllık resmi enflasyon (TÜFE) %67,1 ile %75,45 arasında seyretmiştir. Ancak, gıda enflasyonu bu genel oranın üzerinde gerçekleşmiş, resmi gıda enflasyonu %68,08 ile %71,1 seviyelerinde açıklanmıştır. Daha da önemlisi, dar gelirli hanehalkları için hissedilen gıda enflasyonu, aynı dönemde %110 ile %121 gibi çok daha yüksek oranlara ulaşmıştır. Bu büyük fark, enflasyonun adeta görünmez bir vergi gibi işlediğini ve özellikle toplumun en kırılgan kesimlerini orantısız bir şekilde etkilediğini açıkça ortaya koymaktadır. Bu durum, temel gıda maddelerine erişimde zorluklar yaşanmasına ve beslenme kalitesinin düşmesine yol açabilmektedir. [1]
+                            </p>
+                        </div>
+                        <div class="card p-6 rounded-lg shadow-sm border border-gray-100">
+                            <h4 class="text-xl font-bold text-textDark mb-4">Uzun Vadeli Perspektif ve Satın Alma Gücü Aşınması</h4>
+                            <p class="text-textLight text-justify">
+                                Uzun vadeli perspektiften bakıldığında, durumun geçici bir dalgalanma olmaktan öte, köklü bir yapısal sorun olduğu anlaşılmaktadır. Resmi verilere göre, 2003/2005'ten bu yana ortalama fiyatlar 18 ila 22,8 kat artarken, gıda fiyatları ise 27 ila 32,9 kat gibi astronomik oranlarda yükselmiştir. Bu uzun süreli ve katlanarak artan fiyat artışları, ortalama vatandaşın satın alma gücünde sürekli bir aşınmaya işaret etmektedir. Özellikle sabit gelirli vatandaşlar ve emekliler, bu durumdan en çok etkilenen kesimler arasında yer almaktadır. Gıda fiyatlarındaki bu kontrolsüz yükseliş, hanehalklarının temel ihtiyaçlarını karşılama kapasitesini ciddi şekilde zorlamaktadır. [1]
+                            </p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-2xl md:text-3xl font-bold text-secondary mb-6 mt-12 text-center">Gıda Enflasyonunun Temel Nedenleri: Küresel ve Yerel Dinamikler</h3>
+                    <div class="grid md:grid-cols-2 gap-8 items-start">
+                        <div class="card p-6 rounded-lg shadow-sm border border-gray-100">
+                            <h4 class="text-xl font-bold text-textDark mb-4">Küresel Etkenler</h4>
+                            <p class="text-textLight mb-4 text-justify">
+                                Gıda enflasyonunun ardında yatan nedenler karmaşık bir yapıya sahiptir ve hem küresel hem de yerel dinamiklerden beslenmektedir. Küresel çapta iklim değişikliği, kuraklık, sel gibi aşırı hava olayları tarımsal üretimi doğrudan etkileyerek arz sıkıntıları yaratmaktadır. Enerji fiyatlarındaki dalgalanmalar, gıda üretim ve dağıtım maliyetlerini artırmaktadır. Rusya-Ukrayna krizi gibi jeopolitik gelişmeler ise, özellikle buğday, ayçiçek yağı ve gübre gibi temel ürünlerin tedarik zincirlerinde aksaklıklara yol açarak dünya genelinde gıda fiyatları üzerinde ciddi baskı oluşturmaktadır. Bu küresel faktörler, Türkiye gibi dışa bağımlı ülkelerde gıda enflasyonunu daha da derinleştirmektedir. [2, 3]
+                            </p>
+                        </div>
+                        <div class="card p-6 rounded-lg shadow-sm border border-gray-100">
+                            <h4 class="text-xl font-bold text-textDark mb-4">Yerel Etkenler</h4>
+                            <p class="text-textLight text-justify">
+                                Yerel dinamikler, bu artışları daha da şiddetlendirmektedir. Don ve kuraklık gibi olumsuz hava koşulları tarımsal üretimi olumsuz etkilerken, yükselen döviz kuru tarımsal girdi maliyetlerini (gübre, tohum, ilaç, yakıt vb.) artırmaktadır. Üretimden tüketime kadar uzanan tedarik zincirindeki aksaklıklar, aracılık maliyetleri ve depolama sorunları da fiyat artışlarına katkıda bulunmaktadır. Covid-19 küresel salgınının tarımsal arzı azaltması ve tedarik zincirini bozması da önemli faktörler arasında yer almıştır. Ayrıca, tarımsal politikalar, desteklemeler ve piyasa düzenlemelerindeki eksiklikler de yerel gıda enflasyonunun kronikleşmesinde rol oynamaktadır. [2, 4, 5]
+                            </p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-2xl md:text-3xl font-bold text-secondary mb-6 mt-12 text-center">Satın Alma Gücümüzdeki Azalma ve Hanehalkı Bütçesine Yansımaları</h3>
+                    <div class="card p-6 rounded-lg shadow-sm border border-gray-100">
+                        <h4 class="text-xl font-bold text-textDark mb-4">Bütçe Üzerindeki Yük ve Tüketici Güveni</h4>
+                        <p class="text-textLight mb-4 text-justify">
+                            Gıda enflasyonundaki bu yükselişler, tüketicilerin satın alma gücü üzerinde doğrudan bir etki yaratmaktadır. Gelişmekte olan ülkelerde, gıda fiyatları Tüketici Fiyat Endeksi (TÜFE) içinde ortalama %30 gibi önemli bir ağırlığa sahiptir. Türkiye'deki hanehalkı tüketim harcamaları incelendiğinde, özellikle kalabalık ailelerde gıda ve alkolsüz içecek harcamalarının bütçedeki payının oldukça yüksek olduğu görülmektedir. Örneğin, 6 ve daha fazla kişiden oluşan hanehalkları, harcamalarının %24,7'sini gıda ve alkolsüz içeceklere ayırmaktadır. Bu durum, gıda fiyatlarındaki her artışın, özellikle dar ve orta gelirli ailelerin bütçelerinde büyük bir delik açtığı anlamına gelmektedir. [6]
                         </p>
-                        <p class="text-slate-600">
-                            Uzun vadeli perspektiften bakıldığında, durumun geçici bir dalgalanma olmaktan öte, köklü bir yapısal sorun olduğu anlaşılmaktadır. Resmi verilere göre, 2003/2005'ten bu yana ortalama fiyatlar 18 ila 22,8 kat artarken, gıda fiyatları ise 27 ila 32,9 kat gibi astronomik oranlarda yükselmiştir. Bu uzun süreli ve katlanarak artan fiyat artışları, ortalama vatandaşın satın alma gücünde sürekli bir aşınmaya işaret etmektedir. [1]
+                        <p class="text-textLight text-justify">
+                            Tüketici güveni, bu ekonomik ortamda tarihi düşük seviyelere gerilemiştir. Bu düşüş, sadece finansal bir zorluğun ötesinde, tüketicilerin ekonomik geleceğe dair derin bir güvensizlik hissettiğini göstermektedir. Enflasyonist beklentilerin yüksekliği, tasarrufların reel değerini eritmekte ve satın alma gücündeki aşınmayı artırmaktadır. Tüketiciler, gelecekte fiyatların daha da artacağı beklentisiyle bugün daha fazla harcama yapma eğilimine girebilir veya tam tersi, belirsizlik nedeniyle harcamalarını kısabilirler. Bu durum, ekonomik aktiviteyi ve genel refahı olumsuz etkilemektedir. [7, 8]
                         </p>
                     </div>
-                    <div class="card">
-                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Gıda Enflasyonunun Temel Nedenleri: Küresel ve Yerel Dinamikler</h3>
-                        <p class="text-slate-600 mb-4">
-                            Gıda enflasyonunun ardında yatan nedenler karmaşık bir yapıya sahiptir ve hem küresel hem de yerel dinamiklerden beslenmektedir. Küresel çapta iklim değişikliği, enerji fiyatlarındaki dalgalanmalar ve Rusya-Ukrayna krizi gibi jeopolitik gelişmeler, gıda ve gübre tedarik zincirlerinde aksaklıklara yol açarak fiyatlar üzerinde baskı oluşturmaktadır. [2, 3]
-                        </p>
-                        <p class="text-slate-600">
-                            Yerel dinamikler, bu artışları daha da şiddetlendirmektedir. Don ve kuraklık gibi olumsuz hava koşulları tarımsal üretimi olumsuz etkilerken, yükselen döviz kuru tarımsal girdi maliyetlerini (gübre, yakıt vb.) artırmaktadır. Covid-19 küresel salgınının tarımsal arzı azaltması ve tedarik zincirini bozması da önemli faktörler arasında yer almıştır. [2, 4, 5]
-                        </p>
+                </section>
+            </div>
+        </section>
+
+        <section id="alisveris-taktikleri" class="content-section py-12 bg-card border-b border-gray-200">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-textDark text-center">Akıllı Alışveriş Taktikleri: Gıda Harcamalarınızı Kontrol Altına Alın</h2>
+                <p class="text-base text-gray-600 mb-10 text-justify max-w-4xl mx-auto">Enflasyonist ortamda gıda harcamalarını yönetmek, bilinçli ve stratejik adımlar atmayı gerektirmektedir. İşte bütçenizi korumanıza yardımcı olacak etkili alışveriş taktikleri:</p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
+                    <div class="infographic-card p-6">
+                        <h3 class="text-xl font-bold text-textDark mb-4 flex items-center justify-center"><i class="fas fa-clipboard-list text-accentBlue mr-3 text-2xl"></i> Planlı Alışverişin Gücü</h3>
+                        <p class="text-textLight text-justify">Detaylı bir alışveriş listesi hazırlamak ve bu listeye bağlı kalmak, gereksiz harcamaları önlemenin ilk adımıdır. Acil ve öncelikli ürünleri belirlemek, fiyat değişimlerini göz önünde bulundurarak hangi ürünleri ne zaman alacağınıza karar vermek ve gıdaların tüketim sürelerini dikkate alarak israfı minimize etmek önemlidir. Haftalık veya aylık menü planlaması yapmak da bu süreci kolaylaştırır. [9]</p>
                     </div>
-                    <div class="card md:col-span-2">
-                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Satın Alma Gücümüzdeki Azalma ve Hanehalkı Bütçesine Yansımaları</h3>
-                        <p class="text-slate-600 mb-4">
-                            Gıda enflasyonundaki bu yükselişler, tüketicilerin satın alma gücü üzerinde doğrudan bir etki yaratmaktadır. Gelişmekte olan ülkelerde, gıda fiyatları Tüketici Fiyat Endeksi (TÜFE) içinde ortalama %30 gibi önemli bir ağırlığa sahiptir. [2] Türkiye'deki hanehalkı tüketim harcamaları incelendiğinde, özellikle kalabalık ailelerde gıda ve alkolsüz içecek harcamalarının bütçedeki payının oldukça yüksek olduğu görülmektedir. Örneğin, 6 ve daha fazla kişiden oluşan hanehalkları, harcamalarının %24,7'sini gıda ve alkolsüz içeceklere ayırmaktadır. [6]
-                        </p>
-                        <p class="text-slate-600">
-                            Tüketici güveni, bu ekonomik ortamda tarihi düşük seviyelere gerilemiştir. Bu düşüş, sadece finansal bir zorluğun ötesinde, tüketicilerin ekonomik geleceğe dair derin bir güvensizlik hissettiğini göstermektedir. Enflasyonist beklentilerin yüksekliği, tasarrufların reel değerini eritmekte ve satın alma gücündeki aşınmayı artırmaktadır. [7, 8]
-                        </p>
+                    <div class="infographic-card p-6">
+                        <h3 class="text-xl font-bold text-textDark mb-4 flex items-center justify-center"><i class="fas fa-balance-scale text-accentBlue mr-3 text-2xl"></i> Fiyat Karşılaştırma Sanatı</h3>
+                        <p class="text-textLight text-justify">Satın alınacak ürünleri farklı satış noktaları ve marketlerde karşılaştırmak, önemli tasarruflar sağlayabilir. Büyük zincir marketlerin yanı sıra yerel bakkalları, semt pazarlarını ve indirim marketlerini de değerlendirmek faydalıdır. Online alışveriş siteleri ve market karşılaştırma platformları (Marketfiyati.org.tr [10], Akakce.com/market [11]) bu konuda büyük avantajlar sunmaktadır. Kampanyaları ve indirimleri takip etmek de bütçenize katkı sağlar. [9, 12, 13]</p>
+                    </div>
+                    <div class="infographic-card p-6">
+                        <h3 class="text-xl font-bold text-textDark mb-4 flex items-center justify-center"><i class="fas fa-leaf text-accentBlue mr-3 text-2xl"></i> Alternatiflere Yönelme</h3>
+                        <p class="text-textLight text-justify">Yerli, mevsimsel ve yerel ürünleri tercih etmek, hem daha uygun fiyatlı hem de daha sağlıklı ve lezzetli alternatifler sunar. Mevsiminde yetişen ürünler genellikle daha bol ve ucuzdur. Köy pazarları ve gıda kooperatifleri, doğrudan üreticiden ürün alarak aracı maliyetlerini ortadan kaldırdığı için iyi seçeneklerdir. Bakliyat gibi dayanıklı ürünlerde toplu alımlar da indirimler sağlayabilir, ancak dikkatli planlama ve doğru saklama koşulları gerektirir. [9, 14, 15, 16, 17, 18, 19, 20]</p>
+                    </div>
+                    <div class="infographic-card p-6">
+                        <h3 class="text-xl font-bold text-textDark mb-4 flex items-center justify-center"><i class="fas fa-trash-alt text-accentBlue mr-3 text-2xl"></i> Gıda İsrafını Önleme</h3>
+                        <p class="text-textLight text-justify">Gıda israfını azaltmak, paradan tasarruf etmenin en etkili yollarından biridir. Satın aldığınız yiyecekleri doğru şekilde saklamak (buzdolabı düzeni, hava almayan kaplar), artan yemekleri yaratıcı tariflerle değerlendirmek ve ihtiyaçtan fazla gıda almaktan kaçınmak önemlidir. Son kullanma tarihlerine dikkat etmek ve "ilk giren ilk çıkar" prensibini uygulamak da israfı azaltmaya yardımcı olur. [9, 21, 22, 23, 24]</p>
+                    </div>
+                    <div class="infographic-card p-6">
+                        <h3 class="text-xl font-bold text-textDark mb-4 flex items-center justify-center"><i class="fas fa-shopping-cart text-accentBlue mr-3 text-2xl"></i> Alışveriş Hatalarından Kaçınma</h3>
+                        <p class="text-textLight text-justify">Aç karnına alışveriş yapmaktan kaçınmak, dürtüsel satın alımları engeller. Sadece fiyat avantajına odaklanarak kaliteden ve besin değerinden ödün vermemek önemlidir. Üretim yeri ve kalitesi belirli olmayan besinler sadece fiyat avantajından dolayı satın alınmamalıdır. Ayrıca, marketlerdeki düzenlemelerin tüketicileri daha fazla harcamaya teşvik ettiğini unutmamak ve bu tuzaklara düşmemek için bilinçli olmak gerekir. [9, 25, 26]</p>
+                    </div>
+                    <div class="infographic-card p-6">
+                        <h3 class="text-xl font-bold text-textDark mb-4 flex items-center justify-center"><i class="fas fa-chart-line text-accentBlue mr-3 text-2xl"></i> Bütçe Takibi ve Analizi</h3>
+                        <p class="text-textLight text-justify">Harcamalarınızı düzenli olarak takip etmek, nereye ne kadar para harcadığınızı görmenizi sağlar. Bir bütçe oluşturmak ve buna sadık kalmak, gıda harcamalarınızı kontrol altında tutmanın en temel yoludur. Hesapkolik gibi bütçe takip araçları veya basit bir defter-kalem yöntemiyle harcamalarınızı kaydederek, tasarruf edebileceğiniz alanları kolayca tespit edebilirsiniz. Bu sayede, finansal sağlığınızı iyileştirebilirsiniz.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="alisveris-taktikleri" class="py-16 md:py-24 bg-white">
+        <section id="interaktif-araclar" class="content-section py-12 bg-card border-b border-gray-200">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="section-title">Akıllı Alışveriş Taktikleri: Gıda Harcamalarınızı Kontrol Altına Alın</h2>
-                <p class="section-subtitle">Enflasyonist ortamda gıda harcamalarını yönetmek, bilinçli ve stratejik adımlar atmayı gerektirmektedir.</p>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
-                    <div class="card">
-                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Planlı Alışverişin Gücü</h3>
-                        <p class="text-slate-600">Detaylı bir alışveriş listesi hazırlamak ve bu listeye bağlı kalmak, acil ve öncelikli ürünleri belirlemek, fiyat değişimlerini göz önünde bulundurmak ve gıdaların tüketim sürelerini dikkate almak önemlidir. [9]</p>
-                    </div>
-                    <div class="card">
-                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Fiyat Karşılaştırma Sanatı</h3>
-                        <p class="text-slate-600">Satın alınacak ürünleri farklı satış noktaları ve marketlerde karşılaştırmak, önemli tasarruflar sağlayabilir. Online alışveriş siteleri ve market karşılaştırma platformları (Marketfiyati.org.tr [10], Akakce.com/market [11]) bu konuda büyük avantajlar sunmaktadır. [9, 12, 13]</p>
-                    </div>
-                    <div class="card">
-                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Alternatiflere Yönelme</h3>
-                        <p class="text-slate-600">Yerli, mevsimsel ve yerel ürünleri tercih etmek, daha uygun fiyatlı, sağlıklı ve lezzetli alternatifler sunar. Köy pazarları ve gıda kooperatifleri iyi seçeneklerdir. Toplu alımlar da indirimler sağlayabilir, ancak dikkatli planlama gerektirir. [9, 14, 15, 16, 17, 18, 19, 20]</p>
-                    </div>
-                    <div class="card">
-                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Gıda İsrafını Önleme</h3>
-                        <p class="text-slate-600">Gıda israfını azaltmak, paradan tasarruf etmenin en etkili yollarından biridir. Yiyecekleri doğru şekilde saklamak, artan yemekleri değerlendirmek ve ihtiyaçtan fazla gıda almaktan kaçınmak önemlidir. [9, 21, 22, 23, 24]</p>
-                    </div>
-                    <div class="card">
-                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Alışveriş Hatalarından Kaçınma</h3>
-                        <p class="text-slate-600">Aç karnına alışveriş yapmaktan kaçınmak ve sadece fiyat avantajına odaklanarak kaliteden ödün vermemek, gereksiz harcamaların önüne geçebilir. Üretim yeri ve kalitesi belirli olmayan besinler sadece fiyat avantajından dolayı satın alınmamalıdır. [9, 25, 26]</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="interaktif-araclar" class="py-16 md:py-24">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="section-title">Enflasyon Rehberi: Etkileşimli Araçlar</h2>
-                <p class="section-subtitle">
-                    Türkiye'deki gıda enflasyonu verilerini inceleyin, gıda israfından ne kadar tasarruf edebileceğinizi hesaplayın ve temel ekonomik kavramları öğrenin.
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-textDark text-center">Enflasyon Rehberi: Etkileşimli Araçlar</h2>
+                <p class="text-base text-gray-600 mb-10 text-justify max-w-4xl mx-auto">
+                    Türkiye'deki gıda enflasyonu verilerini inceleyin, gıda israfından ne kadar tasarruf edebileceğinizi hesaplayın ve temel ekonomik kavramları öğrenin. Bu interaktif araçlar, finansal okuryazarlığınızı artırmanıza ve daha bilinçli kararlar almanıza yardımcı olacaktır.
                 </p>
-                <div class="card p-2">
+                <div class="card p-2 rounded-xl shadow-md border border-gray-200">
                     <div class="border-b border-gray-200">
                         <nav id="tabs" class="flex flex-wrap justify-center -mb-px">
+                            <!-- Tab buttons will be rendered here by JS -->
                         </nav>
                     </div>
                     <div id="tab-content" class="p-4 md:p-6">
+                        <!-- Tab content will be rendered here by JS -->
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="enflasyondan-korunma" class="py-16 md:py-24 bg-white">
+        <section id="enflasyondan-korunma" class="content-section py-12 bg-card border-b border-gray-200">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="section-title">Enflasyondan Korunma Yolları: Birikimlerinizi Değerlendirme Stratejileri</h2>
-                <p class="section-subtitle">
-                    Gıda harcamalarını akıllıca yönetmek kadar önemli olan bir diğer konu da, birikimlerin enflasyon karşısında değer kaybetmesini engellemektir.
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-textDark text-center">Enflasyondan Korunma Yolları: Birikimlerinizi Değerlendirme Stratejileri</h2>
+                <p class="text-base text-gray-600 mb-10 text-justify max-w-4xl mx-auto">
+                    Gıda harcamalarını akıllıca yönetmek kadar önemli olan bir diğer konu da, birikimlerin enflasyon karşısında değer kaybetmesini engellemektir. Yüksek enflasyon ortamında paranın satın alma gücü hızla eridiği için, birikimlerinizi doğru yatırım araçlarına yönlendirmek hayati önem taşır.
                 </p>
                 <div class="grid md:grid-cols-2 gap-8 items-start mb-12">
-                    <div class="card">
-                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Yatırım Portföyü Çeşitlendirme</h3>
-                        <p class="text-slate-600 mb-2">Parayı enflasyona karşı korumanın en etkili yollarından biri, çeşitlendirilmiş bir yatırım portföyü oluşturmaktır. Farklı varlık sınıflarına yatırım yaparak riskleri dağıtmak, portföyün enflasyonun olumsuz etkilerine karşı daha dirençli olmasını sağlar. [27, 28, 29]</p>
-                        <p class="text-slate-600">Bir yatırım portföyü oluşturulurken, enflasyona dayanıklı sektörlerin hisselerinden oluşan bir sepet, altın ve döviz yatırımı, enflasyona endeksli tahviller ve vadeli mevduatlar ile enflasyona karşı koruma sağlayan fonlar gibi farklı araçlar arasında dengeli bir dağılım yapılabilir. [28]</p>
+                    <div class="infographic-card p-6">
+                        <h3 class="text-xl font-bold text-textDark mb-4 flex items-center justify-center"><i class="fas fa-layer-group text-accentBlue mr-3 text-2xl"></i> Yatırım Portföyü Çeşitlendirme</h3>
+                        <p class="text-textLight mb-2 text-justify">Parayı enflasyona karşı korumanın en etkili yollarından biri, çeşitlendirilmiş bir yatırım portföyü oluşturmaktır. Farklı varlık sınıflarına yatırım yaparak riskleri dağıtmak, portföyün enflasyonun olumsuz etkilerine karşı daha dirençli olmasını sağlar. Tek bir varlık sınıfına bağlı kalmak yerine, farklı piyasa koşullarına uyum sağlayabilecek bir yapı kurmak, uzun vadede getiriyi maksimize etmeye yardımcı olur. [27, 28, 29]</p>
+                        <p class="text-textLight text-justify">Bir yatırım portföyü oluşturulurken, enflasyona dayanıklı sektörlerin hisselerinden oluşan bir sepet (örneğin, gıda, enerji, perakende gibi temel ihtiyaç sektörleri), altın ve döviz yatırımı, enflasyona endeksli tahviller ve vadeli mevduatlar ile enflasyona karşı koruma sağlayan fonlar gibi farklı araçlar arasında dengeli bir dağılım yapılabilir. Profesyonel bir finans danışmanından destek almak, kişisel risk toleransınıza ve hedeflerinize uygun bir portföy oluşturmanızda faydalı olacaktır. [28]</p>
                     </div>
-                    <div class="card">
-                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Enflasyona Endeksli Varlıklar</h3>
-                        <ul class="list-disc list-inside space-y-2 text-slate-600 ml-4">
-                            <li><b>Altın ve Değerli Metaller:</b> Enflasyon dönemlerinde değer kazanma eğiliminde olan güvenli bir liman olarak kabul edilir. [27, 28, 30]</li>
-                            <li><b>Gayrimenkul Yatırımları:</b> Enflasyona karşı uzun vadeli koruma sağlayabilir. Mülk değerleri ve kira gelirleri genellikle enflasyon oranına paralel olarak artış gösterebilir, ancak Türkiye'deki kira artış sınırlamaları dikkate alınmalıdır. [27, 30]</li>
-                            <li><b>Hisse Senetleri:</b> Şirketler maliyet artışlarını fiyatlarına yansıtarak enflasyonun etkilerini telafi edebilirler. Özellikle temel ihtiyaçlar ve enerji gibi sektörlerdeki şirketler avantajlı olabilir. [27, 28, 30]</li>
-                            <li><b>Enflasyona Endeksli Tahviller ve Yatırım Fonları:</b> Getirileri enflasyon oranına bağlı olarak ayarlanır, reel getiri elde etme imkanı sunar. [27, 28]</li>
+                    <div class="infographic-card p-6">
+                        <h3 class="text-xl font-bold text-textDark mb-4 flex items-center justify-center"><i class="fas fa-chart-pie text-accentBlue mr-3 text-2xl"></i> Enflasyona Endeksli Varlıklar</h3>
+                        <ul class="list-disc list-inside space-y-2 text-textLight ml-4">
+                            <li><b>Altın ve Değerli Metaller:</b> Enflasyon dönemlerinde değer kazanma eğiliminde olan güvenli bir liman olarak kabul edilir. Tarihsel olarak, altın enflasyona karşı iyi bir koruma sağlamıştır. Fiziksel altın alımı veya altın fonları aracılığıyla yatırım yapılabilir. [27, 28, 30]</li>
+                            <li><b>Gayrimenkul Yatırımları:</b> Enflasyona karşı uzun vadeli koruma sağlayabilir. Mülk değerleri ve kira gelirleri genellikle enflasyon oranına paralel olarak artış gösterebilir. Ancak, Türkiye'deki kira artış sınırlamaları ve piyasa koşulları dikkate alınmalıdır. Gayrimenkul, likiditesi düşük bir varlık olduğu için uzun vadeli düşünen yatırımcılar için daha uygundur. [27, 30]</li>
+                            <li><b>Hisse Senetleri:</b> Şirketler maliyet artışlarını fiyatlarına yansıtarak enflasyonun etkilerini telafi edebilirler. Özellikle temel ihtiyaçlar, enerji, telekomünikasyon gibi sektörlerdeki şirketler enflasyonist ortamlarda daha dirençli olabilir. Ancak hisse senedi yatırımı piyasa dalgalanmalarına açık olduğu için risk içerir. [27, 28, 30]</li>
+                            <li><b>Enflasyona Endeksli Tahviller ve Yatırım Fonları:</b> Getirileri enflasyon oranına bağlı olarak ayarlanır, bu da reel getiri elde etme imkanı sunar. Bu tür fonlar, özellikle enflasyonun yüksek seyrettiği dönemlerde yatırımcılar için cazip olabilir. Devlet tahvilleri veya özel sektör tahvilleri aracılığıyla bu tür yatırımlar yapılabilir. [27, 28]</li>
                         </ul>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="sonuc" class="py-16 md:py-24">
+        <section id="sonuc" class="content-section py-12 bg-card">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="section-title">Sonuç ve Öneriler</h2>
-                <p class="section-subtitle">
-                    Türkiye'deki mevcut ekonomik koşullar altında, bireylerin finansal refahlarını korumak için proaktif ve stratejik bir yaklaşım benimsemesi gerekmektedir.
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-textDark text-center">Sonuç ve Öneriler</h2>
+                <p class="text-base text-gray-600 mb-10 text-justify max-w-4xl mx-auto">
+                    Türkiye'deki mevcut ekonomik koşullar altında, bireylerin finansal refahlarını korumak için proaktif ve stratejik bir yaklaşım benimsemesi gerekmektedir. Hem günlük harcamaları akıllıca yönetmek hem de birikimleri enflasyona karşı korumak, bu zorlu süreçte finansal dayanıklılık inşa etmenin anahtarıdır.
                 </p>
-                <div class="card max-w-4xl mx-auto">
-                    <p class="text-slate-600 mb-4">
+                <div class="card p-6 rounded-xl shadow-md border border-gray-200 max-w-4xl mx-auto">
+                    <p class="text-textLight mb-4 text-justify">
                         Türkiye'de artan gıda fiyatları ve genel enflasyon, hanehalkı bütçeleri üzerinde ciddi bir baskı oluşturmakta, özellikle dar gelirli kesimlerin satın alma gücünü hızla eritmektedir. Resmi enflasyon rakamları ile bireylerin günlük yaşamda hissettiği gerçeklik arasındaki büyük fark, bu ekonomik mücadelenin boyutunu açıkça ortaya koymaktadır. [1]
                     </p>
-                    <p class="text-slate-600 mb-4">
+                    <p class="text-textLight mb-4 text-justify">
                         Bu zorlu ekonomik ortamda finansal dayanıklılık inşa etmek için iki temel strateji benimsenmelidir:
                     </p>
-                    <ul class="list-disc list-inside space-y-2 text-slate-600 ml-4 mb-4">
-                        <li><b>Günlük Gıda Harcamalarını Akıllıca Yönetmek:</b> Planlı alışveriş, fiyat karşılaştırması, alternatif kaynaklara yönelme (yerel, mevsimsel, toplu alım), gıda israfını önleme ve bilinçli tüketim alışkanlıkları edinme. [9, 10, 11, 14, 15, 16, 17, 18, 19, 21, 25, 12, 13, 20, 22, 23, 24, 26]</li>
-                        <li><b>Birikimleri Enflasyona Karşı Korumak ve Değerlendirmek:</b> Çeşitlendirilmiş bir yatırım portföyü oluşturma ve enflasyona endeksli varlıklara (altın, gayrimenkul, hisse senetleri, enflasyona endeksli tahviller, yatırım fonları) yatırım yapma. [27, 28, 29, 30]</li>
+                    <ul class="list-disc list-inside space-y-2 text-textLight ml-4 mb-4">
+                        <li><b>Günlük Gıda Harcamalarını Akıllıca Yönetmek:</b> Planlı alışveriş, fiyat karşılaştırması, alternatif kaynaklara yönelme (yerel, mevsimsel, toplu alım), gıda israfını önleme ve bilinçli tüketim alışkanlıkları edinme. Bu taktikler, kısa vadede bütçenizi rahatlatırken, uzun vadede sürdürülebilir bir finansal yaşam tarzı oluşturmanıza yardımcı olur. [9, 10, 11, 14, 15, 16, 17, 18, 19, 21, 25, 12, 13, 20, 22, 23, 24, 26]</li>
+                        <li><b>Birikimleri Enflasyona Karşı Korumak ve Değerlendirmek:</b> Çeşitlendirilmiş bir yatırım portföyü oluşturma ve enflasyona endeksli varlıklara (altın, gayrimenkul, hisse senetleri, enflasyona endeksli tahviller, yatırım fonları) yatırım yapma. Bu stratejiler, birikimlerinizin reel değerini koruyarak gelecekteki finansal hedeflerinize ulaşmanızı destekler. [27, 28, 29, 30]</li>
                     </ul>
-                    <p class="text-slate-600">
-                        Bu rehberde sunulan taktikler, tüketicilerin bu zorlu süreçte cebini korumasına ve finansal kontrollerini yeniden kazanmasına yardımcı olmayı amaçlamaktadır.
+                    <p class="text-textLight text-justify">
+                        Bu rehberde sunulan taktikler, tüketicilerin bu zorlu süreçte cebini korumasına ve finansal kontrollerini yeniden kazanmasına yardımcı olmayı amaçlamaktadır. Unutmayın ki, finansal okuryazarlık ve bilinçli kararlar, her ekonomik koşulda refahınızı artırmanın en güçlü araçlarıdır.
                     </p>
                 </div>
                 <div class="mt-8 text-sm text-gray-500 max-w-4xl mx-auto">
@@ -362,28 +293,24 @@
                 </div>
             </div>
         </section>
-
-        </main>
+    </main>
 
     <div id="footer-placeholder"></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const appData = {
-                // Fixed: tabs defined as an array of objects
                 tabs: [
                     { id: 'inflation-data', name: 'Enflasyon Verileri' },
                     { id: 'waste-calculator', name: 'İsraf Hesaplayıcı' },
                     { id: 'concepts', name: 'Temel Kavramlar' }
                 ],
-                // Fixed: Removed incorrect array accessors like [1]
                 inflationData: [
                     { period: 'Mart 2024', official_cpi: '%68,80', official_food: '%70,4', low_income_food: '%111' },
                     { period: 'Haziran 2024', official_cpi: '%71,60', official_food: '%68,08', low_income_food: '%121' },
                     { period: 'Mayıs 2024', official_cpi: '%75,45', official_food: '%70,1', low_income_food: '%110' },
                     { period: 'Kasım 2024', official_cpi: '%47,09', official_food: '%48,57', low_income_food: '%86,2' }
                 ],
-                // Fixed: concepts defined as an array of objects
                 concepts: [
                     { title: 'Satın Alma Gücü', description: 'Bir para biriminin belirli bir miktar mal veya hizmeti satın alma yeteneğidir. Enflasyon yükseldikçe, paranın satın alma gücü azalır. [2, 8, 32]' },
                     { title: 'Portföy Çeşitlendirme', description: 'Yatırım riskini azaltmak amacıyla farklı varlık sınıflarına (hisse senedi, altın, gayrimenkul, tahvil vb.) yatırım yapma stratejisidir. Enflasyonist ortamlarda birikimlerin değerini korumak için önemlidir. [27, 28, 29]' }
@@ -393,12 +320,11 @@
             const tabsContainer = document.getElementById('tabs');
             const tabContentContainer = document.getElementById('tab-content');
 
-            // Default to the first tab's ID for activeTabId
             let activeTabId = appData.tabs.length > 0 ? appData.tabs[0].id : '';
 
             function renderTabs() {
                 tabsContainer.innerHTML = appData.tabs.map(tab => `
-                    <button data-tab-id="${tab.id}" class="tab-btn text-gray-500 hover:text-blue-600 font-semibold py-3 px-4 md:px-6 border-b-2 border-transparent ${tab.id === activeTabId ? 'active-tab' : ''}">
+                    <button data-tab-id="${tab.id}" class="tab-btn text-gray-500 hover:text-accentBlue font-semibold py-3 px-4 md:px-6 border-b-2 border-transparent ${tab.id === activeTabId ? 'text-accentBlue border-accentBlue' : ''}">
                         ${tab.name}
                     </button>
                 `).join('');
@@ -410,8 +336,12 @@
                 if (!button) return;
 
                 activeTabId = button.dataset.tabId;
-                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active-tab'));
-                button.classList.add('active-tab');
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('text-accentBlue', 'border-accentBlue');
+                    btn.classList.add('text-gray-500', 'hover:text-accentBlue');
+                });
+                button.classList.add('text-accentBlue', 'border-accentBlue');
+                button.classList.remove('text-gray-500', 'hover:text-accentBlue');
                 renderTabContent();
             }
 
@@ -468,17 +398,17 @@
                         <div class="space-y-4">
                             <div>
                                 <label for="weeklyWaste" class="block text-sm font-medium text-gray-700">Haftalık Tahmini Gıda İsrafınız (TL)</label>
-                                <input type="number" id="weeklyWaste" value="50" min="0" step="5" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-600 focus:border-blue-600 sm:text-sm">
+                                <input type="number" id="weeklyWaste" value="50" min="0" step="5" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-accentBlue focus:border-accentBlue sm:text-sm">
                             </div>
                             <div>
                                 <label for="reductionPercentage" class="block text-sm font-medium text-gray-700">İsrafı Azaltma Hedefiniz (%)</label>
-                                <input type="range" id="reductionPercentage" min="0" max="100" value="20" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" style="accent-color: #3498db;">
-                                <div class="text-center font-medium text-blue-600"><span id="reductionValue">20</span>%</div>
+                                <input type="range" id="reductionPercentage" min="0" max="100" value="20" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" style="accent-color: var(--tw-colors-accentBlue);">
+                                <div class="text-center font-medium text-accentBlue"><span id="reductionValue">20</span>%</div>
                             </div>
                         </div>
                         <div>
                             <div class="chart-container savings-chart-container"><canvas id="wasteSavingsChart"></canvas></div>
-                            <div id="waste-savings-result" class="text-center mt-4 font-semibold text-lg text-blue-600"></div>
+                            <div id="waste-savings-result" class="text-center mt-4 font-semibold text-lg text-accentBlue"></div>
                         </div>
                     </div>
                 `;
@@ -500,18 +430,17 @@
                     const annualSavings = annualWaste * (reductionPercentage / 100);
                     const remainingWasteCost = annualWaste - annualSavings;
 
-                    resultEl.innerHTML = `Yıllık Potansiyel Tasarrufunuz: <span class="text-green-600">${annualSavings.toFixed(2)} TL</span>`;
+                    resultEl.innerHTML = `Yıllık Potansiyel Tasarrufunuz: <span class="text-accentGreen">${annualSavings.toFixed(2)} TL</span>`;
 
                     if (wasteChart) wasteChart.destroy();
                     wasteChart = new Chart(ctx, {
                         type: 'bar',
                         data: {
-                            // Fixed: labels and datasets defined as arrays
                             labels: ['Yıllık İsraf Maliyeti', 'Potansiyel Tasarruf', 'Kalan İsraf Maliyeti'],
                             datasets: [{
-                                label: 'Maliyet', // Added a label for the dataset
+                                label: 'Maliyet',
                                 data: [annualWaste, annualSavings, remainingWasteCost],
-                                backgroundColor: ['#E07A5F', '#2ecc71', '#F2CC8F'], // Red (Waste), Green (Savings), Orange (Remaining)
+                                backgroundColor: ['#E07A5F', '#2ecc71', '#F2CC8F'],
                                 borderWidth: 1
                             }]
                         },
@@ -522,18 +451,18 @@
                             plugins: {
                                 legend: { display: false },
                                 tooltip: {
-                                    bodyFont: { size: 14, family: 'Poppins' },
+                                    bodyFont: { size: 14, family: 'Inter' }, /* Changed to Inter */
                                     titleFont: { size: 0 }
                                 }
                             },
                             scales: {
                                 x: {
                                     beginAtZero: true,
-                                    title: { display: true, text: 'Yıllık Maliyet (TL)', font: { family: 'Poppins' } },
-                                    ticks: { font: { family: 'Poppins' } }
+                                    title: { display: true, text: 'Yıllık Maliyet (TL)', font: { family: 'Inter' } }, /* Changed to Inter */
+                                    ticks: { font: { family: 'Inter' } } /* Changed to Inter */
                                 },
                                 y: {
-                                    ticks: { font: { family: 'Poppins' } }
+                                    ticks: { font: { family: 'Inter' } } /* Changed to Inter */
                                 }
                             }
                         }
@@ -554,9 +483,9 @@
                     <p class="text-center text-gray-600 mb-8">Enflasyon ve finansal yönetimle ilgili temel kavramları öğrenin.</p>
                     <div class="space-y-6">
                         ${appData.concepts.map(concept => `
-                            <div class="card p-4">
-                                <h4 class="text-xl font-bold text-slate-800">${concept.title}</h4>
-                                <p class="mt-2 text-gray-600">${concept.description}</p>
+                            <div class="card p-6 rounded-lg shadow-sm border border-gray-100">
+                                <h4 class="text-xl font-bold text-textDark mb-2">${concept.title}</h4>
+                                <p class="mt-2 text-textLight text-justify">${concept.description}</p>
                             </div>
                         `).join('')}
                     </div>
@@ -578,49 +507,47 @@
             // Header Yükleme
             fetch(headerPath)
                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
-                    }
-                    return response.text();
-                })
+                   if (!response.ok) {
+                       throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+                   }
+                   return response.text();
+               })
                .then(data => {
-                    const headerPlaceholder = document.getElementById('header-placeholder');
-                    if (headerPlaceholder) {
-                        headerPlaceholder.innerHTML = data;
-                        const scriptElement = headerPlaceholder.querySelector('script');
-                        if (scriptElement) {
-                            const newScript = document.createElement('script');
-                            newScript.textContent = scriptElement.textContent;
-                            document.body.appendChild(newScript);
-                            scriptElement.remove();
-                        }
-                    }
-                })
+                   const headerPlaceholder = document.getElementById('header-placeholder');
+                   if (headerPlaceholder) {
+                       headerPlaceholder.innerHTML = data;
+                       const scriptElement = headerPlaceholder.querySelector('script');
+                       if (scriptElement) {
+                           const newScript = document.createElement('script');
+                           newScript.textContent = scriptElement.textContent;
+                           document.body.appendChild(newScript);
+                           scriptElement.remove();
+                       }
+                   }
+               })
                .catch(error => console.error('Header yüklenirken hata oluştu:', error));
 
             // Footer Yükleme
             fetch(footerPath)
                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
-                    }
-                    return response.text();
-                })
+                   if (!response.ok) {
+                       throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+                   }
+                   return response.text();
+               })
                .then(data => {
-                    const footerPlaceholder = document.getElementById('footer-placeholder');
-                    if (footerPlaceholder) {
-                        // Creating a temporary div to parse HTML content safely
-                        const tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = data;
-                        const footerElement = tempDiv.querySelector('footer'); // Assuming the footer content is wrapped in a <footer> tag
-                        if (footerElement) {
-                            footerPlaceholder.replaceWith(footerElement);
-                        } else {
-                            // Fallback if no <footer> tag is found, just inject raw HTML
-                            footerPlaceholder.innerHTML = data;
-                        }
-                    }
-                })
+                   const footerPlaceholder = document.getElementById('footer-placeholder');
+                   if (footerPlaceholder) {
+                       const tempDiv = document.createElement('div');
+                       tempDiv.innerHTML = data;
+                       const footerElement = tempDiv.querySelector('footer');
+                       if (footerElement) {
+                           footerPlaceholder.replaceWith(footerElement);
+                       } else {
+                           footerPlaceholder.innerHTML = data;
+                       }
+                   }
+               })
                .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
         });
     </script>
