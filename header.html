@@ -469,8 +469,6 @@
             } else if (currentPath === '/') { // Anasayfa özel durumu
                 newPath = '/en/';
             }
-            // Not: Eğer zaten İngilizce bir sayfadaysak ve 'EN' butonuna basılırsa,
-            // newPath mevcut path olarak kalır ve yönlendirme yapılmaz. Bu beklenen davranıştır.
         } else if (targetLang === 'tr') {
             // İngilizce bir URL'deysek, Türkçe karşılığını ara
             if (reverseUrlMap[currentPath]) {
@@ -478,8 +476,6 @@
             } else if (currentPath === '/en/' || currentPath === '/en/index.html') { // İngilizce anasayfa özel durumu
                 newPath = '/';
             }
-            // Not: Eğer zaten Türkçe bir sayfadaysak ve 'TR' butonuna basılırsa,
-            // newPath mevcut path olarak kalır ve yönlendirme yapılmaz. Bu beklenen davranıştır.
         }
 
         // Eğer yeni bir yol belirlendiyse, yönlendirme yap
@@ -488,10 +484,8 @@
         } else {
             console.warn(`Dil geçişi için uygun URL bulunamadı veya zaten doğru dilde: ${currentPath} -> ${targetLang}`);
         }
-        
+
         // Aktif dilin görsel olarak vurgulanması
-        // Bu kısım, sayfa yenilendikten sonra DOMContentLoaded içinde çalışacağı için burada set etmeye gerek yok.
-        // Ancak, anlık geri bildirim için yine de bırakılabilir.
         document.querySelectorAll('.language-switcher a').forEach(link => {
             if (link.textContent.toLowerCase() === targetLang) {
                 link.classList.add('active-lang');
@@ -502,42 +496,38 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        // Dropdown menü davranışları
-        const dropdowns = document.querySelectorAll('.dropdown');
+        // Dropdown menü davranışları (Bu kısım artık CSS tarafından yönetildiği için yorum satırı yapıldı)
+        // const dropdowns = document.querySelectorAll('.dropdown');
+        // dropdowns.forEach(dropdown => {
+        //     dropdown.addEventListener('mouseenter', function() {
+        //         const dropdownContent = this.querySelector('.dropdown-content');
+        //         if (dropdownContent) {
+        //             dropdownContent.style.display = 'block';
+        //         }
+        //     });
+        //     dropdown.addEventListener('mouseleave', function() {
+        //         const dropdownContent = this.querySelector('.dropdown-content');
+        //         if (dropdownContent) {
+        //             dropdownContent.style.display = 'none';
+        //         }
+        //     });
+        // });
 
-        dropdowns.forEach(dropdown => {
-            dropdown.addEventListener('mouseenter', function() {
-                const dropdownContent = this.querySelector('.dropdown-content');
-                if (dropdownContent) {
-                    dropdownContent.style.display = 'block';
-                }
-            });
-
-            dropdown.addEventListener('mouseleave', function() {
-                const dropdownContent = this.querySelector('.dropdown-content');
-                if (dropdownContent) {
-                    dropdownContent.style.display = 'none';
-                }
-            });
-        });
-
-        const submenus = document.querySelectorAll('.dropdown-submenu');
-
-        submenus.forEach(submenu => {
-            submenu.addEventListener('mouseenter', function() {
-                const submenuContent = this.querySelector('.submenu-content');
-                if (submenuContent) {
-                    submenuContent.style.display = 'block';
-                }
-            });
-
-            submenu.addEventListener('mouseleave', function() {
-                const submenuContent = this.querySelector('.submenu-content');
-                if (submenuContent) {
-                    submenuContent.style.display = 'none';
-                }
-            });
-        });
+        // const submenus = document.querySelectorAll('.dropdown-submenu');
+        // submenus.forEach(submenu => {
+        //     submenu.addEventListener('mouseenter', function() {
+        //         const submenuContent = this.querySelector('.submenu-content');
+        //         if (submenuContent) {
+        //             submenuContent.style.display = 'block';
+        //         }
+        //     });
+        //     submenu.addEventListener('mouseleave', function() {
+        //         const submenuContent = this.querySelector('.submenu-content');
+        //         if (submenuContent) {
+        //             submenuContent.style.display = 'none';
+        //         }
+        //     });
+        // });
 
         // Sayfa yüklendiğinde aktif dili belirle ve vurgula
         const currentPath = window.location.pathname;
