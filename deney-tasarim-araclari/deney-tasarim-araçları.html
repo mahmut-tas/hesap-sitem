@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Deney Tasarım Araçları - Hesapkolik</title>
+
+    <meta content="Bilimsel ve mühendislik deneylerinizi optimize etmek için Taguchi tasarımı, faktöriyel deneyler, ANOVA ve regresyon analizleri gibi güçlü deney tasarım araçları. Hesapkolik." name="description"/>
+    <meta content="deney tasarımı, taguchi tasarımı, faktöriyel deney, anova, regresyon analizi, istatistiksel araçlar, proses optimizasyonu, kalite kontrol, hesapkolik deney" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    
+    <style>
+        /* Bu sayfaya özel stil eklemeleri */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Sade ve ferah bir arka plan */
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1000px; /* Biraz daha geniş olabilir */
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Koyu tema başlık/altlık ile uyumlu */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Calculator Grid Section */
+        .calculator-grid-section {
+            padding: 50px 0;
+            text-align: center;
+            flex-grow: 1;
+            background-color: #ffffff; /* Beyaz kart arka planı */
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-grid-section h2 {
+            margin-bottom: 40px;
+            color: #2c3e50; /* Koyu metin rengi */
+            font-size: 2.2em;
+        }
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            justify-content: center;
+            align-items: stretch; /* Kartların aynı yüksekliğe sahip olmasını sağlar */
+            max-width: 960px; /* Grid genişliğini ayarlayın */
+            margin: 0 auto;
+        }
+        .calculator-card {
+            background-color: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative; /* İkonların konumlandırılması için */
+            overflow: hidden; /* Taşmayı önlemek için */
+            min-height: 220px; /* Kartların minimum yüksekliği */
+        }
+        .calculator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: #e74c3c; /* Hover'da renk değişimi */
+        }
+
+        .calculator-card .icon-big {
+            font-size: 3.5em;
+            color: #e74c3c; /* Başlıklarda kullanılan kırmızı */
+            margin-bottom: 20px;
+            opacity: 0.8;
+            transition: color 0.3s ease;
+        }
+        .calculator-card:hover .icon-big {
+            color: #3498db; /* Hover'da ikon rengi değişimi */
+        }
+
+        .calculator-card h3 {
+            font-size: 1.6em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .calculator-card p {
+            font-size: 0.95em;
+            color: #666;
+            flex-grow: 1; /* Açıklama metninin boş alanı doldurmasını sağlar */
+            margin-bottom: 20px;
+        }
+        .calculator-card .card-button {
+            display: inline-block;
+            background-color: #e74c3c; /* CTA butonu rengi */
+            color: white;
+            padding: 10px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .calculator-card .card-button:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+        .calculator-card .card-button.disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Bilgi Bölümü */
+        .info-section {
+            background-color: #ffffff;
+            padding: 35px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-top: 40px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+        }
+        .info-section h3 {
+            color: #3498db; /* Bilgi başlığı için farklı renk */
+            font-size: 2em;
+            margin-bottom: 25px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: none; /* Varsayılan madde işaretini kaldır */
+            padding: 0;
+            margin: 0 auto 20px auto;
+            max-width: 700px;
+            text-align: left;
+        }
+        .info-section ul li {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 12px;
+            line-height: 1.6;
+            color: #555;
+        }
+        .info-section ul li::before {
+            content: '📊'; /* Eğlenceli bir ikon */
+            position: absolute;
+            left: 0;
+            color: #27ae60; /* Yeşil ikon */
+            font-size: 1.2em;
+            top: 0;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .disclaimer-text {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 30px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: center;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5em;
+            }
+            .hero-section p {
+                font-size: 1.1em;
+            }
+            .calculator-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+            .calculator-card {
+                padding: 25px;
+            }
+            .calculator-card .icon-big {
+                font-size: 3em;
+            }
+            .calculator-card h3 {
+                font-size: 1.4em;
+            }
+            .calculator-card p {
+                font-size: 0.9em;
+            }
+            .info-section {
+                padding: 25px;
+            }
+            .info-section h3 {
+                font-size: 1.8em;
+            }
+        }
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 50px 15px;
+            }
+            .hero-section h1 {
+                font-size: 2em;
+            }
+            .hero-section p {
+                font-size: 1em;
+            }
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+            .calculator-card {
+                padding: 20px;
+            }
+            .calculator-card .icon-big {
+                font-size: 2.8em;
+            }
+            .calculator-card h3 {
+                font-size: 1.2em;
+            }
+            .calculator-card p {
+                font-size: 0.85em;
+            }
+            .info-section {
+                padding: 20px;
+            }
+            .info-section h3 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Deney Tasarım Araçları</h1>
+                <p>Bilimsel ve mühendislik deneylerinizi planlayın, analiz edin ve optimize edin.</p>
+            </div>
+        </section>
+
+        <section class="calculator-grid-section">
+            <div class="container">
+                <h2>İstatistiksel Deney Tasarımı Araçları</h2>
+                <div class="calculator-grid">
+                    <div class="calculator-card">
+                        <i class="fas fa-tags icon-big"></i>
+                        <h3>Taguchi Tasarımı Oluşturucu</h3>
+                        <p>Deneyleriniz için optimum Taguchi orthogonal dizilerini kolayca oluşturun ve kalite mühendisliği prensiplerini uygulayın.</p>
+                        <a class="card-button disabled" href="#">Yakında</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-cubes icon-big"></i>
+                        <h3>Faktöriyel Deney Tasarım Aracı</h3>
+                        <p>Birden fazla faktörün etkilerini aynı anda incelemek için tam veya kısmi faktöriyel deneyler tasarlayın.</p>
+                        <a class="card-button disabled" href="#">Yakında</a>
+                    </div>
+                    
+                    <div class="calculator-card">
+                        <i class="fas fa-chart-area icon-big"></i>
+                        <h3>Yanıt Yüzeyi Metodolojisi (RSM)</h3>
+                        <p>Proseslerinizi optimize etmek ve optimum koşulları belirlemek için yanıt yüzeyi tasarım şemaları oluşturun.</p>
+                        <a class="card-button disabled" href="#">Yakında</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-chart-bar icon-big"></i>
+                        <h3>ANOVA (Varyans Analizi) Hesaplayıcı</h3>
+                        <p>Deney verilerinizdeki grup farklılıklarını istatistiksel olarak analiz edin ve anlamlı sonuçlar elde edin.</p>
+                        <a class="card-button disabled" href="#">Yakında</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-chart-line icon-big"></i>
+                        <h3>Regresyon Analizi Aracı</h3>
+                        <p>Değişkenler arasındaki ilişkileri modelleyin ve gelecekteki değerleri tahmin etmek için regresyon denklemleri oluşturun.</p>
+                        <a class="card-button disabled" href="#">Yakında</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-calculator icon-big"></i>
+                        <h3>Örneklem Büyüklüğü Hesaplayıcı</h3>
+                        <p>Araştırmalarınız için istatistiksel olarak yeterli minimum örneklem büyüklüğünü belirleyin.</p>
+                        <a class="card-button disabled" href="#">Yakında</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-vial icon-big"></i>
+                        <h3>Hipotez Testi Hesaplayıcı</h3>
+                        <p>Z-testi, t-testi ve Ki-kare gibi yaygın hipotez testlerini yaparak istatistiksel kararlar alın.</p>
+                        <a class="card-button disabled" href="#">Yakında</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-cogs icon-big"></i>
+                        <h3>Kontrol Grafikleri Oluşturucu</h3>
+                        <p>Proseslerinizin istatistiksel kontrol altında olup olmadığını görselleştirmek için kontrol grafikleri çizin.</p>
+                        <a class="card-button disabled" href="#">Yakında</a>
+                    </div>
+                    
+                    <div class="calculator-card">
+                        <i class="fas fa-sitemap icon-big"></i>
+                        <h3>Pareto Analizi Aracı</h3>
+                        <p>Verilerinizdeki en önemli sorunları veya faktörleri belirleyerek kaynaklarınızı etkin bir şekilde odaklayın.</p>
+                        <a class="card-button disabled" href="#">Yakında</a>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>Deney Tasarım Araçları Neden Önemli?</h3>
+            <p>
+                Deney Tasarımı (DOE - Design of Experiments), mühendislik, bilim ve istatistikte, bir sistem veya süreç üzerindeki çeşitli faktörlerin etkilerini sistematik olarak incelemek için kullanılan güçlü bir metodolojidir. Doğru tasarlanmış deneyler, daha az kaynakla (zaman, maliyet, malzeme) daha fazla bilgi edinmeyi ve optimum süreç koşullarını veya ürün tasarımlarını belirlemeyi sağlar.
+            </p>
+            <ul>
+                <li>
+                    <strong>Verimlilik:</strong> Aynı anda birden fazla faktörü değerlendirerek zaman ve maliyetten tasarruf sağlar.
+                </li>
+                <li>
+                    <strong>Optimizasyon:</strong> Ürün veya süreç performansını en üst düzeye çıkarmak için ideal koşulları belirler.
+                </li>
+                <li>
+                    <strong>Problem Çözme:</strong> Sorunların temel nedenlerini belirlemede ve çözümler geliştirmede yardımcı olur.
+                </li>
+                <li>
+                    <strong>Kalite Geliştirme:</strong> Proses varyasyonunu azaltarak ve ürün kalitesini artırarak daha tutarlı sonuçlar sağlar.
+                </li>
+                <li>
+                    <strong>Karar Verme:</strong> Veriye dayalı kararlar almak için sağlam istatistiksel kanıtlar sunar.
+                </li>
+            </ul>
+            <p class="disclaimer-text">
+                Bu sayfada sunulan deney tasarım araçları ve hesaplayıcılar bilgilendirme amaçlıdır. Profesyonel bilimsel veya mühendislik uygulamalarında kullanılmadan önce, kullanıcıların ilgili metodolojiler hakkında yeterli bilgiye sahip olmaları ve sonuçları alanında uzman bir profesyonel ile doğrulamaları şiddetle tavsiye edilir. Hesapkolik, bu araçların kullanımından kaynaklanabilecek doğrudan veya dolaylı zararlardan sorumlu değildir.
+            </p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        // Header ve Footer yükleme fonksiyonu
+        function loadPartial(elementId, url, isSemantik = false) {
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        console.error(`HTTP error! Status: ${response.status} for ${url}. Response: ${response.statusText}`);
+                        throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    const placeholder = document.getElementById(elementId);
+                    if (placeholder) {
+                        if (isSemantik) {
+                            // Semantik etiketleri (header/footer) doğrudan DOM'a eklemek için
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = html;
+                            const semanticElement = tempDiv.firstElementChild; // İlk elementin header/footer olmasını bekliyoruz
+                            if (semanticElement) {
+                                placeholder.replaceWith(semanticElement);
+
+                                // Eğer semantik element içinde script varsa onu da çalıştır
+                                const scripts = semanticElement.querySelectorAll('script');
+                                scripts.forEach(oldScript => {
+                                    const newScript = document.createElement('script');
+                                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                    newScript.textContent = oldScript.textContent;
+                                    document.body.appendChild(newScript);
+                                    oldScript.remove(); // Orijinal script etiketini kaldır
+                                });
+                            }
+                        } else {
+                            placeholder.innerHTML = html;
+                            // Yüklenen HTML içindeki script etiketlerini yeniden çalıştır
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                        console.log(`Successfully loaded ${url} into #${elementId}`);
+                    } else {
+                        console.warn(`Placeholder element with ID '${elementId}' not found for URL: ${url}`);
+                    }
+                })
+                .catch(error => {
+                    console.error(`Error loading ${url}:`, error);
+                    const placeholder = document.getElementById(elementId);
+                    if (placeholder) {
+                        placeholder.innerHTML = `<p style="color: red; text-align: center;">Hata: ${elementId} içeriği yüklenemedi.</p>`;
+                    }
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            // Header'ı yükle. Eğer header.html doğrudan <header> etiketi içeriyorsa isSemantik: true olmalı.
+            // Sizin örneklerinizde doğrudan <header> etiketi içeriyor gibi görünüyor, bu yüzden true yaptım.
+            loadPartial('header-placeholder', headerPath, true); 
+            
+            // Footer'ı yükle. Benzer şekilde, eğer footer.html doğrudan <footer> etiketi içeriyorsa isSemantik: true olmalı.
+            loadPartial('footer-placeholder', footerPath, true);
+        });
+    </script>
+</body>
+</html>
