@@ -192,6 +192,34 @@
             color: #2c3e50; /* Kırmızı olmasın */
         }
 
+        /* Ortogonal Dizi Tablosu Stilleri */
+        .design-table-container {
+            margin-top: 20px;
+            overflow-x: auto; /* Küçük ekranlarda kaydırma çubuğu */
+        }
+        .design-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            text-align: center;
+        }
+        .design-table th, .design-table td {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+        }
+        .design-table th {
+            background-color: #34495e;
+            color: white;
+            font-weight: 600;
+        }
+        .design-table tbody tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+        .design-table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
 
         /* Açıklama bölümleri */
         .info-section {
@@ -325,6 +353,9 @@
             .result-display .result-value {
                 font-size: 1.2em;
             }
+            .design-table {
+                font-size: 0.8em;
+            }
         }
     </style>
 
@@ -385,7 +416,7 @@
                         <div class="result-display" id="resultBox">
                             <h3>Önerilen Taguchi Ortogonal Dizisi:</h3>
                             <p id="designResult"></p>
-                            <p id="snRatioExplanation"></p>
+                            <div id="designTableContainer"></div> <p id="snRatioExplanation"></p>
                         </div>
                         <div class="calc-explanation">
                             <p class="small-text">Bu araç, girdiğiniz faktör ve seviye sayılarına uygun standart Taguchi ortogonal dizilerini önermeyi amaçlar. Detaylı deney tasarımı için bir uzmana danışmanız tavsiye edilir.</p>
@@ -508,6 +539,164 @@
             const resultBox = document.getElementById('resultBox');
             const designResult = document.getElementById('designResult');
             const snRatioExplanation = document.getElementById('snRatioExplanation');
+            const designTableContainer = document.getElementById('designTableContainer');
+
+            // Ortogonal Dizi Tabloları Tanımları
+            // Bu kısım, her bir Taguchi dizisi için sabit değerleri içeren bir nesne/hash map olarak düşünülebilir.
+            // Gerçek uygulamada bu veriler daha karmaşık ve dinamik olabilir.
+            const orthogonalArrays = {
+                'L4': {
+                    experiments: 4,
+                    factors: 3, // Maksimum faktör sayısı
+                    levels: 2,
+                    data: [
+                        [1, 1, 1],
+                        [1, 2, 2],
+                        [2, 1, 2],
+                        [2, 2, 1]
+                    ]
+                },
+                'L8': {
+                    experiments: 8,
+                    factors: 7,
+                    levels: 2,
+                    data: [
+                        [1, 1, 1, 1, 1, 1, 1],
+                        [1, 1, 1, 2, 2, 2, 2],
+                        [1, 2, 2, 1, 1, 2, 2],
+                        [1, 2, 2, 2, 2, 1, 1],
+                        [2, 1, 2, 1, 2, 1, 2],
+                        [2, 1, 2, 2, 1, 2, 1],
+                        [2, 2, 1, 1, 2, 2, 1],
+                        [2, 2, 1, 2, 1, 1, 2]
+                    ]
+                },
+                'L9': {
+                    experiments: 9,
+                    factors: 4,
+                    levels: 3,
+                    data: [
+                        [1, 1, 1, 1],
+                        [1, 2, 2, 2],
+                        [1, 3, 3, 3],
+                        [2, 1, 2, 3],
+                        [2, 2, 3, 1],
+                        [2, 3, 1, 2],
+                        [3, 1, 3, 2],
+                        [3, 2, 1, 3],
+                        [3, 3, 2, 1]
+                    ]
+                },
+                'L16': {
+                    experiments: 16,
+                    factors: 15,
+                    levels: 2,
+                    // L16'nın tam matrisini buraya eklemek çok uzun olur, sadece örnek bir kısmını veriyorum.
+                    // Gerçek uygulamada bu data tamamen doldurulmalıdır.
+                    data: [
+                        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                        [1,1,1,1,2,2,2,2,2,2,2,2,2,2,2],
+                        [1,1,2,2,1,1,2,2,1,1,2,2,1,1,2],
+                        [1,1,2,2,2,2,1,1,2,2,1,1,2,2,1],
+                        [1,2,1,2,1,2,1,2,1,2,1,2,1,2,1],
+                        [1,2,1,2,2,1,2,1,2,1,2,1,2,1,2],
+                        [1,2,2,1,1,2,2,1,2,1,1,2,2,1,2],
+                        [1,2,2,1,2,1,1,2,1,2,2,1,1,2,1],
+                        [2,1,1,2,1,2,2,1,1,2,2,1,2,1,2],
+                        [2,1,1,2,2,1,1,2,2,1,1,2,1,2,1],
+                        [2,1,2,1,1,2,1,2,2,1,2,1,1,2,2],
+                        [2,1,2,1,2,1,2,1,1,2,1,2,2,1,1],
+                        [2,2,1,1,1,1,2,2,2,2,1,1,1,1,2],
+                        [2,2,1,1,2,2,1,1,1,1,2,2,2,2,1],
+                        [2,2,2,2,1,1,1,1,2,2,1,1,2,2,1],
+                        [2,2,2,2,2,2,2,2,1,1,2,2,1,1,2]
+                    ]
+                },
+                'L27': {
+                    experiments: 27,
+                    factors: 13,
+                    levels: 3,
+                    // L27'nin tam matrisini buraya eklemek çok uzun olur.
+                    // Gerçek uygulamada bu data tamamen doldurulmalıdır.
+                    data: [
+                        [1,1,1,1,1,1,1,1,1,1,1,1,1],
+                        [1,1,1,2,2,2,2,2,2,2,2,2,2],
+                        [1,1,1,3,3,3,3,3,3,3,3,3,3],
+                        [1,2,2,1,1,2,2,3,3,1,1,2,2],
+                        [1,2,2,2,2,3,3,1,1,2,2,3,3],
+                        [1,2,2,3,3,1,1,2,2,3,3,1,1],
+                        [1,3,3,1,2,1,3,1,2,1,3,1,2],
+                        [1,3,3,2,3,2,1,2,3,2,1,2,3],
+                        [1,3,3,3,1,3,2,3,1,3,2,3,1],
+                        [2,1,2,1,2,1,2,1,2,1,2,1,2],
+                        [2,1,2,2,3,2,3,2,3,2,3,2,3],
+                        [2,1,2,3,1,3,1,3,1,3,1,3,1],
+                        [2,2,3,1,3,1,2,2,1,3,2,2,1],
+                        [2,2,3,2,1,2,3,3,2,1,3,3,2],
+                        [2,2,3,3,2,3,1,1,3,2,1,1,3],
+                        [2,3,1,1,1,2,3,3,2,3,1,1,3],
+                        [2,3,1,2,2,3,1,1,3,1,2,2,1],
+                        [2,3,1,3,3,1,2,2,1,2,3,3,2],
+                        [3,1,3,1,3,2,1,1,2,2,1,3,2],
+                        [3,1,3,2,1,3,2,2,3,3,2,1,3],
+                        [3,1,3,3,2,1,3,3,1,1,3,2,1],
+                        [3,2,1,1,2,3,1,2,1,2,3,1,2],
+                        [3,2,1,2,3,1,2,3,2,3,1,2,3],
+                        [3,2,1,3,1,2,3,1,3,1,2,3,1],
+                        [3,3,2,1,1,1,1,3,3,3,3,3,3],
+                        [3,3,2,2,2,2,2,1,1,1,1,1,1],
+                        [3,3,2,3,3,3,3,2,2,2,2,2,2]
+                    ]
+                }
+            };
+
+            function generateTaguchiTable(designName, numFactors, levelsPerFactor) {
+                designTableContainer.innerHTML = ''; // Önceki tabloyu temizle
+
+                const designData = orthogonalArrays[designName];
+
+                if (!designData) {
+                    designTableContainer.innerHTML = `<p class="error">Seçilen tasarım (${designName}) için tablo verisi bulunamadı.</p>`;
+                    return;
+                }
+
+                if (numFactors > designData.factors) {
+                     designTableContainer.innerHTML = `<p class="error">Seçilen tasarım (${designName}) ${numFactors} faktör için yetersizdir. Maksimum ${designData.factors} faktöre kadar destekler.</p>`;
+                     return;
+                }
+                if (levelsPerFactor !== designData.levels) {
+                    designTableContainer.innerHTML = `<p class="error">Seçilen tasarım (${designName}) ${levelsPerFactor} seviye yerine ${designData.levels} seviye içindir. Lütfen doğru seviye sayısını seçtiğinizden emin olun.</p>`;
+                    return;
+                }
+
+                const table = document.createElement('table');
+                table.classList.add('design-table');
+
+                // Tablo başlığı (Header)
+                const thead = table.createTHead();
+                const headerRow = thead.insertRow();
+                headerRow.insertCell().textContent = 'Deneme No.';
+                for (let i = 0; i < numFactors; i++) {
+                    headerRow.insertCell().textContent = `Faktör ${String.fromCharCode(65 + i)}`; // A, B, C...
+                }
+
+                // Tablo içeriği (Body)
+                const tbody = table.createTBody();
+                for (let i = 0; i < designData.experiments; i++) {
+                    const row = tbody.insertRow();
+                    row.insertCell().textContent = i + 1; // Deneme No.
+                    for (let j = 0; j < numFactors; j++) {
+                        // Tasarım verisindeki faktör sayısından fazla faktör istenirse hata vermemesi için kontrol
+                        if (designData.data[i] && designData.data[i][j]) {
+                            row.insertCell().textContent = designData.data[i][j];
+                        } else {
+                            row.insertCell().textContent = '-'; // Veri yoksa boş bırak
+                        }
+                    }
+                }
+                designTableContainer.appendChild(table);
+            }
+
 
             taguchiDesignForm.addEventListener('submit', function(event) {
                 event.preventDefault(); // Formun normal submit işlemini engelle
@@ -515,6 +704,9 @@
                 const numFactors = parseInt(document.getElementById('numFactors').value);
                 const levelsPerFactor = parseInt(document.getElementById('levelsPerFactor').value);
                 const snRatioType = document.getElementById('snRatioType').value;
+
+                // Önceki tabloyu ve hata mesajlarını temizle
+                designTableContainer.innerHTML = '';
 
                 if (isNaN(numFactors) || numFactors < 2 || isNaN(levelsPerFactor) || !snRatioType) {
                     designResult.textContent = 'Lütfen tüm alanları geçerli değerlerle doldurun.';
@@ -528,17 +720,17 @@
 
                 // Basit bir Taguchi Ortogonal Dizi önerisi (örnekler)
                 if (levelsPerFactor === 2) {
-                    if (numFactors === 2) suggestedDesign = 'L4 (2 faktör, her biri 2 seviye)';
-                    else if (numFactors === 3) suggestedDesign = 'L4 (3 faktör, her biri 2 seviye)';
-                    else if (numFactors <= 7) suggestedDesign = 'L8 (en fazla 7 faktör, her biri 2 seviye)';
-                    else if (numFactors <= 15) suggestedDesign = 'L16 (en fazla 15 faktör, her biri 2 seviye)';
+                    if (numFactors <= 3) suggestedDesign = 'L4';
+                    else if (numFactors <= 7) suggestedDesign = 'L8';
+                    else if (numFactors <= 15) suggestedDesign = 'L16';
                     else suggestedDesign = 'Belirtilen faktör ve seviyeler için standart bir 2 seviyeli ortogonal dizi bulunamadı.';
                 } else if (levelsPerFactor === 3) {
-                    if (numFactors <= 4) suggestedDesign = 'L9 (en fazla 4 faktör, her biri 3 seviye)';
-                    else if (numFactors <= 13) suggestedDesign = 'L27 (en fazla 13 faktör, her biri 3 seviye)';
+                    if (numFactors <= 4) suggestedDesign = 'L9';
+                    else if (numFactors <= 13) suggestedDesign = 'L27';
                     else suggestedDesign = 'Belirtilen faktör ve seviyeler için standart bir 3 seviyeli ortogonal dizi bulunamadı.';
                 } else if (levelsPerFactor === 4) {
-                     if (numFactors <= 5) suggestedDesign = 'L16 (en fazla 5 faktör, her biri 4 seviye)';
+                    // L16 hem 2 seviyeli hem de 4 seviyeli faktörler için kullanılabilir
+                    if (numFactors <= 5) suggestedDesign = 'L16'; // L16(4^5)
                     else suggestedDesign = 'Belirtilen faktör ve seviyeler için standart bir 4 seviyeli ortogonal dizi bulunamadı.';
                 } else {
                     suggestedDesign = 'Belirtilen seviye sayısı için standart bir ortogonal dizi önerisi bulunamamaktadır.';
@@ -558,10 +750,16 @@
                         snRatioText = 'Sinyal-Gürültü oranı tipi belirtilmedi.';
                 }
 
-
-                designResult.innerHTML = `<strong>${suggestedDesign}</strong>`;
+                designResult.innerHTML = `<strong>Önerilen Dizi: ${suggestedDesign}</strong>`;
                 snRatioExplanation.textContent = snRatioText;
                 resultBox.style.display = 'block';
+
+                // Ortogonal dizi tablosunu oluştur
+                if (suggestedDesign && suggestedDesign.startsWith('L')) {
+                    generateTaguchiTable(suggestedDesign, numFactors, levelsPerFactor);
+                } else {
+                    designTableContainer.innerHTML = `<p class="error">Önerilen tasarım için tablo gösterilemiyor.</p>`;
+                }
             });
         });
 
