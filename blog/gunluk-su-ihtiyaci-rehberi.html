@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Günlük Su İhtiyacı Rehberi | Hesapkolik Blog</title>
+    <meta name="description" content="Kişiselleştirilmiş günlük su ihtiyacınızı hesaplayın. Suyun faydaları, eksikliği ve doğru tüketim yöntemleri hakkında detaylı bilgi edinin. Sağlıklı yaşam yolculuğunuzda size rehberlik edecek interaktif bir araç.">
+    <meta name="keywords" content="su, günlük su ihtiyacı, su faydaları, dehidrasyon, sağlıklı yaşam, hidrasyon, Hesapkolik">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f8f7f4; color: #333; }
+        
+        .hero-bg { background: linear-gradient(45deg, #3498db 0%, #2e78b1 100%); } /* Hesapkolik mavi */
+        
+        .section-title { font-size: 2.2em; font-weight: 700; text-align: center; color: #2c3e50; margin-bottom: 40px; padding-top: 20px; }
+        .section-subtitle { font-size: 1.1em; text-align: center; color: #666; max-width: 800px; margin: 0 auto 30px auto; }
+        
+        .card { background-color: #ffffff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); border: 1px solid #ddd; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12); }
+
+        .tab-btn { transition: color 0.3s ease, border-color 0.3s ease; }
+        .tab-btn.active { color: #3498db; border-bottom-color: #3498db; } /* Hesapkolik mavisi */
+        .filter-btn.active { background-color: #3498db; color: white; border-color: #3498db; }
+
+        .chart-container { position: relative; width: 100%; max-width: 550px; margin-left: auto; margin-right: auto; height: 350px; }
+        @media (min-width: 768px) { .chart-container { height: 450px; } }
+        
+        .form-input {
+            margin-top: 0.25rem;
+            display: block;
+            width: 100%;
+            border-radius: 0.375rem;
+            border: 1px solid #d1d5db; /* gray-300 */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem; /* sm:text-sm */
+            line-height: 1.25rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .form-input:focus {
+            border-color: #3498db; /* Hesapkolik blue */
+            --tw-ring-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.25); /* Hesapkolik blue with transparency */
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2em; }
+            .hero p { font-size: 1em; }
+            .section-title { font-size: 1.8em; }
+            .section-subtitle { font-size: 1em; }
+        }
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 1.8em; }
+            .hero p { font-size: 0.9em; }
+            .section-title { font-size: 1.6em; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section id="hero" class="hero-bg text-white py-20">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">Canlı Kalmanın Kaynağı: Günlük Su İhtiyacı Rehberi</h1>
+                <p class="mt-4 text-xl text-gray-200 max-w-3xl mx-auto">Vücudunuzun ne kadar suya ihtiyacı olduğunu öğrenin, suyun faydalarını ve doğru hidrasyonun önemini interaktif araçlarımızla keşfedin. Sağlıklı bir yaşam için suyun gücünü kullanın.</p>
+                <a href="#calculator" class="mt-8 inline-block bg-white text-[#3498db] font-bold py-3 px-8 rounded-full text-lg hover:bg-gray-100 transition-transform transform hover:scale-105">Rehberi Keşfet ↓</a>
+            </div>
+        </section>
+
+        <section id="calculator" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title">Günlük Su İhtiyacınızı Hesaplayın</h2>
+                <p class="section-subtitle">Vücudunuzun yaşına, kilonuza ve aktivite seviyenize göre ne kadar suya ihtiyacı olduğunu öğrenmek için aşağıdaki bilgileri doldurun. Kişiselleştirilmiş bir öneri alacaksınız.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start max-w-5xl mx-auto">
+                    <div class="card p-6 md:p-8">
+                        <form id="water-form">
+                            <div class="space-y-6">
+                                <div>
+                                    <label for="age" class="block text-sm font-medium text-gray-700">Yaş</label>
+                                    <input type="number" id="age" name="age" required class="form-input" placeholder="Örn: 30">
+                                </div>
+                                <div>
+                                    <label for="weight" class="block text-sm font-medium text-gray-700">Kilo (kg)</label>
+                                    <input type="number" id="weight" name="weight" required class="form-input" placeholder="Örn: 70">
+                                </div>
+                                <div>
+                                    <label for="activity" class="block text-sm font-medium text-gray-700">Fiziksel Aktivite Düzeyi</label>
+                                    <select id="activity" name="activity" class="form-input">
+                                        <option value="sedentary">Hareketsiz (Ofis işi)</option>
+                                        <option value="light">Hafif Aktif (Haftada 1-3 gün egzersiz)</option>
+                                        <option value="moderate">Orta Derecede Aktif (Haftada 3-5 gün egzersiz)</option>
+                                        <option value="very">Çok Aktif (Haftada 6-7 gün egzersiz)</option>
+                                        <option value="extra">Ekstra Aktif (Ağır sporcu, fiziksel iş)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="climate" class="block text-sm font-medium text-gray-700">İklim Koşulları</label>
+                                    <select id="climate" name="climate" class="form-input">
+                                        <option value="normal">Normal</option>
+                                        <option value="hot">Sıcak / Nemli</option>
+                                        <option value="cold">Soğuk</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mt-8">
+                                <button type="submit" class="w-full bg-[#3498db] text-white font-bold py-3 px-4 rounded-lg hover:bg-[#2e78b1] transition duration-300">Hesapla</button>
+                            </div>
+                            <div id="form-message" class="mt-4 text-red-600 text-center hidden"></div>
+                        </form>
+                    </div>
+
+                    <div id="result-container" class="text-center card p-6 md:p-8 flex flex-col justify-center items-center h-full">
+                        <div id="result-placeholder">
+                            <h3 class="text-2xl font-semibold text-gray-700">Sonucunuz Burada Gösterilecek</h3>
+                            <p class="mt-2 text-gray-500">Lütfen formu doldurup "Hesapla" düğmesine basın.</p>
+                        </div>
+                        <div id="result-display" class="hidden">
+                            <p class="text-lg text-gray-600">Önerilen Günlük Su Alımınız:</p>
+                            <p id="water-result" class="text-5xl md:text-6xl font-bold text-[#3498db] my-4">2.5 Litre</p>
+                            <p id="result-text" class="text-gray-600 max-w-sm mx-auto">Bu miktar, vücudunuzun optimum düzeyde çalışması ve genel sağlığınızın korunması için gereklidir. Gün boyunca düzenli olarak su içmeyi unutmayın.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-12">
+                    <div class="chart-container">
+                        <canvas id="waterChart"></canvas>
+                    </div>
+                    <p class="text-center mt-4 text-sm text-gray-500">Grafik, farklı gruplar için ortalama su ihtiyaçlarını göstermektedir. Hesaplanan sonucunuz grafikte vurgulanacaktır.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="what-is-water" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title">Su: Yaşamın Kaynağı</h2>
+                <p class="section-subtitle">Vücudumuzun yaklaşık %60'ı sudan oluşur ve her bir hücremiz, dokumuz ve organımız suya bağımlıdır. Su, sadece susuzluğumuzu gidermekle kalmaz, sayısız hayati fonksiyonda merkezi bir rol oynar.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+                    <div class="card p-6 text-center">
+                        <div class="text-4xl mb-4">💧</div>
+                        <h3 class="font-semibold text-xl mb-2 text-gray-800">Besin Taşıma</h3>
+                        <p class="text-gray-600">Besinleri ve oksijeni hücrelere taşır, atıkları uzaklaştırır.</p>
+                    </div>
+                    <div class="card p-6 text-center">
+                        <div class="text-4xl mb-4">🌡️</div>
+                        <h3 class="font-semibold text-xl mb-2 text-gray-800">Vücut Sıcaklığı</h3>
+                        <p class="text-gray-600">Terleme yoluyla vücut sıcaklığının düzenlenmesine yardımcı olur.</p>
+                    </div>
+                    <div class="card p-6 text-center">
+                        <div class="text-4xl mb-4">🤸</div>
+                        <h3 class="font-semibold text-xl mb-2 text-gray-800">Eklem Yağlama</h3>
+                        <p class="text-gray-600">Eklemlerin ve dokuların kayganlığını sağlayarak sürtünmeyi azaltır.</p>
+                    </div>
+                    <div class="card p-6 text-center">
+                        <div class="text-4xl mb-4">🧠</div>
+                        <h3 class="font-semibold text-xl mb-2 text-gray-800">Beyin Fonksiyonu</h3>
+                        <p class="text-gray-600">Beyin fonksiyonlarının optimal çalışması için hayati önem taşır.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="benefits-risks" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title">Suyun Gücü: Faydaları ve Dehidrasyon Riskleri</h2>
+                <p class="section-subtitle">Yeterli su tüketimi genel sağlığımız için kritik öneme sahiptir. Ancak su eksikliği, vücudumuzda ciddi sorunlara yol açabilir.</p>
+                <div class="flex justify-center mb-8">
+                    <div class="flex space-x-2 p-1 bg-gray-200 rounded-lg">
+                        <button class="tab-btn px-6 py-2 text-sm font-medium rounded-md transition border-b-2 border-transparent active" data-tab="benefits">Faydaları</button>
+                        <button class="tab-btn px-6 py-2 text-sm font-medium rounded-md transition border-b-2 border-transparent" data-tab="risks">Dehidrasyon Riskleri</button>
+                    </div>
+                </div>
+
+                <div id="benefits" class="tab-content max-w-6xl mx-auto">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="card p-6"><h3 class="font-semibold text-lg mb-2 text-gray-800">🌟 Enerji ve Konsantrasyon</h3><p class="text-gray-600">Yeterli hidrasyon, fiziksel ve zihinsel performansı artırır.</p></div>
+                        <div class="card p-6"><h3 class="font-semibold text-lg mb-2 text-gray-800">🚽 Sindirim ve Boşaltım</h3><p class="text-gray-600">Besinlerin sindirilmesine ve atık maddelerin vücuttan atılmasına yardımcı olur.</p></div>
+                        <div class="card p-6"><h3 class="font-semibold text-lg mb-2 text-gray-800">⚖️ Kilo Yönetimi</h3><p class="text-gray-600">Tokluk hissi vererek gereksiz kalori alımını azaltmaya yardımcı olabilir.</p></div>
+                        <div class="card p-6"><h3 class="font-semibold text-lg mb-2 text-gray-800">✨ Cilt Sağlığı</h3><p class="text-gray-600">Cildin elastikiyetini korur, daha sağlıklı ve parlak görünmesini sağlar.</p></div>
+                        <div class="card p-6"><h3 class="font-semibold text-lg mb-2 text-gray-800">💪 Kas Fonksiyonu</h3><p class="text-gray-600">Kas kramplarını önler ve kasların düzgün çalışmasını destekler.</p></div>
+                        <div class="card p-6"><h3 class="font-semibold text-lg mb-2 text-gray-800">❤️ Kalp Sağlığı</h3><p class="text-gray-600">Kan basıncını düzenlemeye ve kan dolaşımını iyileştirmeye yardımcı olur.</p></div>
+                    </div>
+                </div>
+
+                <div id="risks" class="tab-content hidden max-w-6xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-2xl font-bold text-red-600 mb-4">Dehidrasyon (Su Eksikliği)</h3>
+                            <div class="space-y-4">
+                                <div class="card p-4 border-l-4 border-red-500"><h4 class="font-semibold text-gray-800">Baş Ağrısı ve Yorgunluk</h4><p class="text-sm text-gray-600">Hafif dehidrasyonda bile sık görülen belirtilerdir.</p></div>
+                                <div class="card p-4 border-l-4 border-red-500"><h4 class="font-semibold text-gray-800">Konsantrasyon Zorluğu</h4><p class="text-sm text-gray-600">Zihinsel bulanıklık ve dikkat eksikliği yaşanabilir.</p></div>
+                                <div class="card p-4 border-l-4 border-red-500"><h4 class="font-semibold text-gray-800">Sindirim Sorunları</h4><p class="text-sm text-gray-600">Kabızlık gibi sindirim sistemi rahatsızlıklarına yol açabilir.</p></div>
+                                <div class="card p-4 border-l-4 border-red-500"><h4 class="font-semibold text-gray-800">Ağız Kuruluğu ve Koyu İdrar</h4><p class="text-sm text-gray-600">En yaygın dehidrasyon belirtilerindendir.</p></div>
+                                <div class="card p-4 border-l-4 border-red-500"><h4 class="font-semibold text-gray-800">Böbrek Taşı Riski</h4><p class="text-sm text-gray-600">Kronik dehidrasyon böbrek taşı oluşum riskini artırır.</p></div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-orange-600 mb-4">Aşırı Su Tüketimi (Nadirdir)</h3>
+                            <div class="space-y-4">
+                                <div class="card p-4 border-l-4 border-orange-500"><h4 class="font-semibold text-gray-800">Hiponatremi (Düşük Sodyum)</h4><p class="text-sm text-gray-600">Vücuttaki sodyum seviyelerinin tehlikeli derecede düşmesi.</p></div>
+                                <div class="card p-4 border-l-4 border-orange-500"><h4 class="font-semibold text-gray-800">Beyin Şişmesi</h4><p class="text-sm text-gray-600">Aşırı su alımı hücrelerin şişmesine, özellikle beyin hücrelerinin şişmesine neden olabilir.</p></div>
+                                <div class="card p-4 border-l-4 border-orange-500"><h4 class="font-semibold text-gray-800">Böbrek Yükü</h4><p class="text-sm text-gray-600">Böbreklerin fazla suyu süzmek için daha fazla çalışmasına neden olur.</p></div>
+                                <div class="card p-4 border-l-4 border-orange-500"><h4 class="font-semibold text-gray-800">Kas Zayıflığı ve Kramplar</h4><p class="text-sm text-gray-600">Elektrolit dengesizliği nedeniyle oluşabilir.</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tips" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title">Günlük Su Tüketimini Artırma İpuçları</h2>
+                <p class="section-subtitle">Daha fazla su içmeyi alışkanlık haline getirmek, düşündüğünüzden daha kolay olabilir. İşte size yardımcı olacak bazı pratik ipuçları:</p>
+                <div id="tips-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                    <div class="card p-6 text-center flex flex-col items-center">
+                        <div class="text-4xl mb-4">⏰</div>
+                        <h3 class="font-semibold text-xl mb-2 text-gray-800">Hatırlatıcılar Kurun</h3>
+                        <p class="text-gray-600">Telefonunuza veya akıllı saatinize düzenli aralıklarla su içme hatırlatıcıları ekleyin.</p>
+                    </div>
+                    <div class="card p-6 text-center flex flex-col items-center">
+                        <div class="text-4xl mb-4">ボトル</div>
+                        <h3 class="font-semibold text-xl mb-2 text-gray-800">Yanınızda Su Şişesi Taşıyın</h3>
+                        <p class="text-gray-600">Gittiğiniz her yere tekrar kullanılabilir bir su şişesi götürerek kolay erişim sağlayın.</p>
+                    </div>
+                    <div class="card p-6 text-center flex flex-col items-center">
+                        <div class="text-4xl mb-4">🍋</div>
+                        <h3 class="font-semibold text-xl mb-2 text-gray-800">Suyunuza Lezzet Katın</h3>
+                        <p class="text-gray-600">Limon, salatalık, nane veya meyve dilimleri ekleyerek suyunuza doğal bir tat verin.</p>
+                    </div>
+                    <div class="card p-6 text-center flex flex-col items-center">
+                        <div class="text-4xl mb-4">🍎</div>
+                        <h3 class="font-semibold text-xl mb-2 text-gray-800">Su İçeriği Yüksek Gıdalar</h3>
+                        <p class="text-gray-600">Karpuz, salatalık, çilek gibi su oranı yüksek meyve ve sebzeleri tüketin.</p>
+                    </div>
+                    <div class="card p-6 text-center flex flex-col items-center">
+                        <div class="text-4xl mb-4">☕</div>
+                        <h3 class="font-semibold text-xl mb-2 text-gray-800">Her İçecekten Sonra Su</h3>
+                        <p class="text-gray-600">Kahve, çay veya gazlı içecek tükettikten sonra bir bardak su için.</p>
+                    </div>
+                    <div class="card p-6 text-center flex flex-col items-center">
+                        <div class="text-4xl mb-4">🎯</div>
+                        <h3 class="font-semibold text-xl mb-2 text-gray-800">Küçük Hedefler Belirleyin</h3>
+                        <p class="text-gray-600">Günde ulaşılabilir hedefler (örn. her saat başı bir bardak) koyarak başlayın.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const waterForm = document.getElementById('water-form');
+            const resultPlaceholder = document.getElementById('result-placeholder');
+            const resultDisplay = document.getElementById('result-display');
+            const waterResult = document.getElementById('water-result');
+            const resultText = document.getElementById('result-text');
+            const formMessage = document.getElementById('form-message');
+
+            waterForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                
+                const age = parseInt(document.getElementById('age').value);
+                const weight = parseFloat(document.getElementById('weight').value);
+                const activity = document.getElementById('activity').value;
+                const climate = document.getElementById('climate').value;
+
+                formMessage.classList.add('hidden'); // Clear previous messages
+
+                if (isNaN(age) || isNaN(weight) || age <= 0 || weight <= 0) {
+                    formMessage.textContent = 'Lütfen geçerli yaş ve kilo bilgisi girin.';
+                    formMessage.classList.remove('hidden');
+                    return;
+                }
+
+                // Basit bir su ihtiyacı hesaplama formülü (literatürde çeşitli yaklaşımlar bulunur)
+                // Genel kural: her 1 kg vücut ağırlığı için 30-40 ml su
+                let minWater = weight * 30; // ml
+                let maxWater = weight * 40; // ml
+
+                // Yaş faktörü
+                if (age < 18) { // Çocuk ve ergenler için biraz daha yüksek olabilir
+                    minWater *= 1.1;
+                    maxWater *= 1.2;
+                } else if (age >= 65) { // Yaşlılarda susuzluk hissi azalabilir, dikkatli olunmalı
+                    minWater *= 0.9;
+                    maxWater *= 1.0;
+                }
+
+                // Aktivite düzeyi faktörü
+                switch(activity) {
+                    case 'light': 
+                        minWater += 200; // Ekstra 200 ml
+                        maxWater += 400; // Ekstra 400 ml
+                        break;
+                    case 'moderate': 
+                        minWater += 500;
+                        maxWater += 750;
+                        break;
+                    case 'very': 
+                        minWater += 750;
+                        maxWater += 1000;
+                        break;
+                    case 'extra': 
+                        minWater += 1000;
+                        maxWater += 1500;
+                        break;
+                }
+
+                // İklim koşulları faktörü
+                switch(climate) {
+                    case 'hot':
+                        minWater += 500;
+                        maxWater += 1000;
+                        break;
+                    case 'cold':
+                        // Soğukta terleme azalsa da solunumla su kaybı artabilir, çok az fark
+                        break;
+                }
+
+                const minLiters = (minWater / 1000).toFixed(1);
+                const maxLiters = (maxWater / 1000).toFixed(1);
+                
+                waterResult.textContent = `${minLiters}-${maxLiters} Litre`;
+                resultPlaceholder.classList.add('hidden');
+                resultDisplay.classList.remove('hidden');
+
+                resultText.textContent = `Bu miktar, vücudunuzun optimum düzeyde çalışması ve genel sağlığınızın korunması için gereklidir. Gün boyunca düzenli olarak su içmeyi unutmayın. Özellikle ${activity === 'extra' ? 'yoğun fiziksel aktivite yapıyorsanız' : activity === 'hot' ? 'sıcak iklimde yaşıyorsanız' : ''} alımınızı artırmayı düşünebilirsiniz.`;
+
+
+                updateChart(age, activity, climate, (parseFloat(minLiters) + parseFloat(maxLiters)) / 2);
+            });
+
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    tabContents.forEach(content => {
+                        if (content.id === button.dataset.tab) {
+                            content.classList.remove('hidden');
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            // Chart.js implementation
+            const ctx = document.getElementById('waterChart').getContext('2d');
+            let waterChart;
+
+            const chartData = {
+                labels: ['Çocuklar (4-8 Yaş)', 'Ergenler (14-18 Yaş)', 'Yetişkinler (Hareketsiz)', 'Yetişkinler (Aktif)', 'Yaşlılar (65+)', 'Yoğun Sporcular'],
+                datasets: [{
+                    label: 'Ortalama Su İhtiyacı (Litre)',
+                    data: [1.5, 2.3, 2.5, 3.5, 2.0, 4.0], // Örnek Litre değerleri
+                    backgroundColor: '#d1d5db', // gray-300 for default
+                    borderColor: '#9ca3af', // gray-400 for default
+                    borderWidth: 1,
+                    borderRadius: 5
+                }]
+            };
+
+            function initChart() {
+                 if (waterChart) {
+                    waterChart.destroy();
+                 }
+                waterChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Farklı Gruplara Göre Günlük Ortalama Su İhtiyacı',
+                                font: {
+                                    size: 18,
+                                    family: 'Poppins'
+                                },
+                                color: '#2c3e50'
+                            },
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += context.parsed.y + 'L';
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Litre',
+                                    font: {
+                                        family: 'Poppins'
+                                    },
+                                    color: '#333'
+                                },
+                                ticks: {
+                                    font: {
+                                        family: 'Poppins'
+                                    },
+                                    color: '#333'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    font: {
+                                        family: 'Poppins'
+                                    },
+                                    color: '#333',
+                                    callback: function(value, index, values) {
+                                        const label = this.getLabelForValue(value);
+                                        const words = label.split(' ');
+                                        const lines = [];
+                                        let currentLine = '';
+                                        words.forEach(word => {
+                                            if ((currentLine + word).length <= 16) { // Max 16 chars per line
+                                                currentLine += (currentLine ? ' ' : '') + word;
+                                            } else {
+                                                lines.push(currentLine);
+                                                currentLine = word;
+                                            }
+                                        });
+                                        lines.push(currentLine);
+                                        return lines;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateChart(age, activity, climate, userWater) {
+                let userCategoryIndex = -1;
+
+                if (age >= 4 && age <= 8) userCategoryIndex = 0;
+                else if (age >= 14 && age <= 18) userCategoryIndex = 1;
+                else if (age > 18 && age < 65 && activity === 'sedentary') userCategoryIndex = 2; 
+                else if (age > 18 && age < 65 && activity !== 'sedentary') userCategoryIndex = 3;
+                else if (age >= 65) userCategoryIndex = 4;
+                
+                if(activity === 'extra') userCategoryIndex = 5;
+
+                const defaultColor = '#d1d5db'; // gray-300
+                const highlightColor = '#3498db'; // Hesapkolik blue
+                const newColors = chartData.labels.map((_, index) => 
+                    index === userCategoryIndex ? highlightColor : defaultColor
+                );
+                
+                waterChart.data.datasets[0].backgroundColor = newColors;
+                waterChart.data.datasets[0].borderColor = newColors.map(c => c === highlightColor ? '#2e78b1' : '#9ca3af'); // Darker blue for border
+                
+                if(userCategoryIndex !== -1) {
+                    waterChart.data.datasets[0].data[userCategoryIndex] = userWater;
+                }
+
+                waterChart.update();
+            }
+
+            initChart();
+        });
+
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            // Header Yükleme
+            fetch(headerPath)
+               .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+                    }
+                    return response.text();
+                })
+               .then(data => {
+                    const headerPlaceholder = document.getElementById('header-placeholder');
+                    if (headerPlaceholder) {
+                        headerPlaceholder.innerHTML = data;
+                        const scriptElement = headerPlaceholder.querySelector('script');
+                        if (scriptElement) {
+                            const newScript = document.createElement('script');
+                            newScript.textContent = scriptElement.textContent;
+                            document.body.appendChild(newScript);
+                            scriptElement.remove();
+                        }
+                    }
+                })
+               .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+            // Footer Yükleme
+            fetch(footerPath)
+               .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+                    }
+                    return response.text();
+                })
+               .then(data => {
+                    const footerPlaceholder = document.getElementById('footer-placeholder');
+                    if (footerPlaceholder) {
+                        // Creating a temporary div to parse HTML content safely
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = data;
+                        const footerElement = tempDiv.querySelector('footer'); // Assuming the footer content is wrapped in a <footer> tag
+                        if (footerElement) {
+                            footerPlaceholder.replaceWith(footerElement);
+                        } else {
+                            // Fallback if no <footer> tag is found, just inject raw HTML
+                            footerPlaceholder.innerHTML = data;
+                        }
+                    }
+                })
+               .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+    </script>
+</body>
+</html>
