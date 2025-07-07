@@ -11,8 +11,7 @@
     
     <link href="/css/header.css" rel="stylesheet"/>
     <link href="/css/style.css" rel="stylesheet"/>
-    
-    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link href="/css/footer.css" rel="stylesheet"/> <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2eExNlV/KFNB6sY/3gHYcZLKXFwBqj1+f1oK3w1K/pPq6f2X5f5F5F5F5F5==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -266,13 +265,11 @@
         transform: translateY(-5px);
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
       }
-      .blog-post-card img {
-        width: 80px;
-        height: 80px;
+      /* Blog kartlarında icon kullandığımız için img yerine icon için boyutlandırma */
+      .blog-post-card .icon {
+        font-size: 3em; /* Font Awesome ikonları için boyut */
+        color: #3498db; /* İkon rengi */
         margin-bottom: 15px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid #ddd;
       }
       .blog-post-card h3 {
         font-size: 1.5em;
@@ -448,7 +445,7 @@
               Günlük Hayat Hesaplamaları
             </h3>
             <p>
-              Günlük yaşam maliyetlerinizi anlamak ve yönetmek için pratik hesaplamalar.
+              Günlük yaşam maliyetlerinizi anlamak ve yönetmek ve yönetmek için pratik hesaplamalar.
             </p>
             <a class="card-button" href="/gunluk hayat hesaplamalari/gunluk-hayat-hesaplamalari.html">
               Hesapla
@@ -487,7 +484,7 @@
         <div style="text-align: center; margin-top: 30px; margin-bottom: 50px;">
           <a class="cta-button" href="/blog/blog-index.html" style="background-color: #8e44ad;">Tüm Blog Yazılarını Gör</a>
         </div>
-        </div>
+      </div>
     </main>
     <div id="footer-placeholder">
     </div>
@@ -544,6 +541,34 @@
             });
     }
 
+    // Blog Yazıları Verisi - Sadece gösterilmesi istenen 4 yazıdan son 3'ü listelenecek
+    const blogPosts = [
+        { title: 'Günlük Su İhtiyacı Hesaplama Rehberi', description: 'Kişiselleştirilmiş günlük su ihtiyacınızı hesaplayın. Suyun faydaları, eksikliği ve doğru tüketim yöntemleri hakkında detaylı bilgi edinin. Sağlıklı yaşam yolculuğunuzda size rehberlik edecek interaktif bir araç.', icon: '<i class="fa-solid fa-dna"></i>', url: '/blog/gunluk-su-ihtiyaci-rehberi.html' },
+        { title: 'Günlük Protein İhtiyacı Rehberi', description: 'Kişiselleştirilmiş günlük protein ihtiyacınızı hesaplayın. Protein nedir, faydaları, riskleri ve en iyi kaynakları hakkında detaylı bilgi edinin.', icon: '<i class="fa-solid fa-dna"></i>', url: '/blog/protein-ihtiyaci-rehberi.html' },
+        { title: 'HbA1c Değerini Anlamak', description: 'Diyabet yönetiminin temel taşı olan HbA1cyi, tanıdaki önemini ve kan şekeri kontrolünüz üzerindeki etkilerini interaktif bir şekilde keşfedin.', icon: '<i class="fa-solid fa-droplet"></i>', url: '/blog/hba1c.html' },
+        { title: 'Ozempic ve Metformin Karşılaştırması: Tip 2 Diyabet Yönetimi', description: 'Tip 2 diyabet tedavisinde kullanılan Ozempic (Semaglutide) ve Metformin ilaçlarının etki mekanizmaları, avantajları, yan etkileri ve kullanım alanları detaylı karşılaştırması.', icon: '<i class="fa-solid fa-hand-holding-droplet"></i>', url: '/blog/ozempic-metformin-tip2-diyabet.html' },
+    ];
+
+    // Blog yazılarını HTML'e ekleyen fonksiyon
+    function displayBlogPosts() {
+        const blogGrid = document.querySelector('.blog-post-grid');
+        if (!blogGrid) return; // Grid elementi bulunamazsa dur
+
+        // Diziyi ters çevirip son 3 yazıyı al (en yeni 3 yazı)
+        const recentPosts = blogPosts.slice(-3); // Son 3 elemanı alır
+
+        recentPosts.forEach(post => {
+            const card = document.createElement('div');
+            card.classList.add('blog-post-card');
+            card.innerHTML = `
+                ${post.icon ? `<div class="icon">${post.icon}</div>` : ''} <h3>${post.title}</h3>
+                <p>${post.description}</p>
+                <a class="card-button" href="${post.url}">Devamını Oku</a>
+            `;
+            blogGrid.appendChild(card);
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const isEnglishPage = window.location.pathname.startsWith('/en/');
         const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
@@ -551,7 +576,10 @@
 
         loadPartial('header-placeholder', headerPath, true);
         loadPartial('footer-placeholder', footerPath, true);
+
+        // Sayfa yüklendiğinde blog yazılarını göster
+        displayBlogPosts();
     });
-</script>
-    </body>
+    </script>
+  </body>
 </html>
