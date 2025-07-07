@@ -485,5 +485,67 @@
     </main>
     <div id="footer-placeholder">
     </div>
+    <script>
+    // Header ve Footer yükleme fonksiyonu
+    function loadPartial(elementId, url, isSemantik = false) {
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    console.error(`HTTP error! Status: ${response.status} for ${url}. Response: ${response.statusText}`);
+                    throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                }
+                return response.text();
+            })
+            .then(html => {
+                const placeholder = document.getElementById(elementId);
+                if (placeholder) {
+                    if (isSemantik) {
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+                        const semanticElement = tempDiv.firstElementChild;
+                        if (semanticElement) {
+                            placeholder.replaceWith(semanticElement);
+                            const scripts = semanticElement.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                document.body.appendChild(newScript);
+                                oldScript.remove();
+                            });
+                        }
+                    } else {
+                        placeholder.innerHTML = html;
+                        const scripts = placeholder.querySelectorAll('script');
+                        scripts.forEach(oldScript => {
+                            const newScript = document.createElement('script');
+                            Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                            newScript.textContent = oldScript.textContent;
+                            oldScript.parentNode.replaceChild(newScript, oldScript);
+                        });
+                    }
+                    console.log(`Successfully loaded ${url} into #${elementId}`);
+                } else {
+                    console.warn(`Placeholder element with ID '${elementId}' not found for URL: ${url}`);
+                }
+            })
+            .catch(error => {
+                console.error(`Error loading ${url}:`, error);
+                const placeholder = document.getElementById(elementId);
+                if (placeholder) {
+                    placeholder.innerHTML = `<p style="color: red; text-align: center;">Hata: ${elementId} içeriği yüklenemedi.</p>`;
+                }
+            });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+        const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+        const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+        loadPartial('header-placeholder', headerPath, true);
+        loadPartial('footer-placeholder', footerPath, true);
+    });
+</script>
     </body>
 </html>
