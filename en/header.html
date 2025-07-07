@@ -163,4 +163,180 @@
             <a href="#" onclick="switchLanguage('en'); return false;">EN</a>
         </div>
     </div>
+    
+    <script>
+        // URL haritası: İngilizce URL'lerin Türkçe karşılıklarını tutar
+        // Site haritanızdaki tüm İngilizce URL'leri buraya eklemeniz önemlidir.
+        // Bu harita, İngilizce URL yolunu Türkçe URL yoluna eşler.
+        const urlMapEnToTr = {
+            '/en/statistical-calculations-aritmetic-geometric.html': '/aritmetik-geometrik-istatistik.html',
+            '/en/privacy-policy.html': '/gizlilik-politikasi.html',
+            '/en/about-us.html': '/hakkimizda.html',
+            '/en/contact.html': '/iletisim.html',
+            '/en/index.html': '/index.html',
+            '/en/terms-of-use.html': '/kullanim-sartlari.html',
+            '/en/engineering-calculations.html': '/muhendislik-hesaplamalari.html',
+            '/en/health-calculations.html': '/saglik-hesaplamalari.html',
+            // Blog sayfaları - Sitemap'ten doğrudan eşleşenler
+            '/en/blog/adsense-gelir.html': '/blog/adsense-gelir.html', // Bu URL sitemap'te TR olarak vardı, EN karşılığı yoktu. Düzeltildi.
+            '/en/blog/ampul-secimi.html': '/blog/ampul-secimi.html', // Sitemap'te EN karşılığı yoktu. Düzeltildi.
+            '/en/blog/arac.html': '/blog/arac.html', // Sitemap'te EN karşılığı yoktu. Düzeltildi.
+            '/en/blog/blog-index.html': '/blog/blog-index.html', // Sitemap'te EN karşılığı yoktu. Düzeltildi.
+            '/en/blog/bmi.html': '/blog/bmi.html', // Sitemap'te EN karşılığı yoktu. Düzeltildi.
+            '/en/blog/borsa.html': '/blog/borsa.html', // Sitemap'te EN karşılığı yoktu. Düzeltildi.
+            '/en/blog/diyabet-fayda.html': '/blog/diyabet-fayda.html', // Sitemap'te EN karşılığı yoktu. Düzeltildi.
+            '/en/blog/enflasyon-korunma-yollari.html': '/blog/enflasyon-korunma-yollari.html', // Sitemap'te EN karşılığı yoktu. Düzeltildi.
+            '/en/blog/ev-cephe-secim-rehberi.html': '/blog/ev-cephe-secim-rehberi.html', // Sitemap'te EN karşılığı yoktu. Düzeltildi.
+            '/en/blog/gunluk-su-ihtiyaci-rehberi.html': '/blog/gunluk-su-ihtiyaci-rehberi.html', // Sitemap'te EN karşılığı yoktu. Düzeltildi.
+            '/en/blog/hba1c.html': '/blog/hba1c.html', // Sitemap'te EN karşılığı yoktu. Düzeltildi.
+            '/en/blog/ikinci-el-ev-alim-rehberi.html': '/blog/ikinci-el-ev-alim-rehberi.html', // Sitemap'te EN karşılığı yoktu. Düzeltildi.
+            '/en/blog/isi-transfer.html': '/blog/isi-transfer.html', // Sitemap'te EN karşılığı yoktu. Düzeltildi.
+            '/en/blog/ozempic-metformin-tip2-diyabet.html': '/blog/ozempic-metformin-tip2-diyabet.html', // Sitemap'te EN karşılığı yoktu. Düzeltildi.
+            '/en/blog/protein-ihtiyaci-rehberi.html': '/blog/protein-ihtiyaci-rehberi.html', // Sitemap'te EN karşılığı yoktu. Düzeltildi.
+            
+            // Deney Tasarım Araçları
+            '/en/desing-of-experiments/design-of-experiments.html': '/deney-tasarim-araclari/deney-tasarim-araçları.html',
+            '/en/desing-of-experiments/factorial-experimental-design.html': '/deney-tasarim-araclari/faktoriyel-deneysel-tasarim.html',
+            '/en/desing-of-experiments/response-surface-metodology-calculator.html': '/deney-tasarim-araclari/yanit-yuzey-metodolojisi-olusturma.html', // Sitemap'te yazım hatası düzeltildi
+            '/en/desing-of-experiments/taguchi-design-generator.html': '/deney-tasarim-araclari/taguchi-tasarim-olusturucu.html',
+            
+            // Eğitim Hesaplamaları
+            '/en/education/education-calculations.html': '/egitim/egitim-hesaplamalari.html',
+            '/en/education/gmat-calculation.html': '/egitim/gmat-hesaplama.html',
+            '/en/education/gpa-calculation.html': '/egitim/gpa-hesaplama.html',
+            '/en/education/gre-calculation.html': '/egitim/gre-hesaplama.html',
+            '/en/education/ielts-calculation.html': '/egitim/ielts-hesaplama.html',
+            '/en/education/toefl-calculation.html': '/egitim/toefl-hesaplama.html',
+
+            // Eğlenceli Hesaplamalar
+            '/en/fun-calculators/love-compatibility-calculator.html': '/eglence-hesaplama/ask-uyum-hesaplayici.html',
+            '/en/fun-calculators/iq-calculation-tool.html': '/eglence-hesaplama/iq-hesaplama-araci.html',
+            '/en/fun-calculators/fun-calculators-and-tests.html': '/eglence-hesaplama/eglenceli-hesaplamalar.html',
+            '/en/fun-calculators/horoscope-compatibility-calculator.html': '/eglence-hesaplama/burc-uyumu-hesaplayici.html', // Sitemap'te yoktu, menüde vardı.
+
+            // Sağlık Hesaplamaları
+            '/en/health/bmi-calculator.html': '/saglik/bmi-hesaplayici.html',
+            '/en/health/body-fat-calculation.html': '/saglik/vucut-yag-hesaplama.html',
+            '/en/health/daily-calorie-needs-calculator.html': '/saglik/gunluk-kalori-ihtiyaci-hesaplayici.html',
+            '/en/health/daily-carbohydrate-needs.html': '/saglik/gunluk-karbonhidrat-ihtiyaci.html',
+            '/en/health/daily-protein-needs.html': '/saglik/gunluk-protein-ihtiyaci.html',
+            '/en/health/daily-water-intake.html': '/saglik/gunluk-su-ihtiyaci.html',
+            '/en/health/ideal-weight-calculator.html': '/saglik/ideal-kilo-hesaplayici.html',
+            '/en/health/menstrual-cycle-tracker.html': '/saglik/adet-dongusu-takibi.html',
+            '/en/health/step-calorie-calculator.html': '/saglik/adim-kalori-hesaplayici.html',
+            '/en/health/target-heart-rate-zone.html': '/saglik/hedef-nabiz-bolgesi.html',
+            '/en/health/diabetes-calculator.html': '/saglik/diyabet-hesaplayici.html', // Sitemap'te EN karşılığı yoktu.
+
+            // Faydalı Araçlar ve Hesaplayıcılar
+            '/en/usefull-tools-calculators/character-and-word-counter.html': '/faydali-araclar/kelime-karakter-sayici.html',
+            '/en/usefull-tools-calculators/color-code-converter.html': '/faydali-araclar/renk-donusum-araci.html',
+            '/en/usefull-tools-calculators/qr-code-generator.html': '/faydali-araclar/qr-kod-uretici.html',
+            '/en/usefull-tools-calculators/random-number-generators.html': '/faydali-araclar/random-number-generator.html',
+            '/en/usefull-tools-calculators/unit-converter.html': '/faydali-araclar/birim-cevirici.html',
+            '/en/usefull-tools-calculators/useful-tools-calculators.html': '/faydali-araclar/faydali-araclar-hesaplayicilar.html',
+
+            // Finans ve Ekonomi
+            '/en/finance-economy/adsense-earning-calculator.html': '/finans-ekonomi/adsense-hesaplayici.html',
+            '/en/finance-economy/ecommerce-profit-calculator.html': '/finans-ekonomi/e-ticaret-kar-hesaplama.html',
+            '/en/finance-economy/finance-economy.html': '/finans-ekonomi/finans-ekonomi-hesaplamalari.html',
+            '/en/finance-economy/interest-calculator.html': '/finans-ekonomi/faiz-hesaplayici.html',
+            '/en/finance-economy/percentage-calculator.html': '/finans-ekonomi/yuzde-hesaplayici.html',
+            '/en/finance-economy/savings-calculator.html': '/finans-ekonomi/birikim-hasaplama-araci.html',
+
+            // Günlük Hayat Hesaplamaları
+            '/en/daily-life-calculations/age-calculator.html': '/gunluk hayat hesaplamalari/yas-hesaplayici.html',
+            '/en/daily-life-calculations/carbon-footprint-calculator.html': '/gunluk hayat hesaplamalari/karbon-hesaplama.html',
+            '/en/daily-life-calculations/daily-life-calculations.html': '/gunluk hayat hesaplamalari/gunluk-hayat-hesaplamalari.html',
+            '/en/daily-life-calculations/electric-vehicle-charging-cost.html': '/gunluk hayat hesaplamalari/elektrikli-arac-sarj-maliyeti.html',
+            '/en/daily-life-calculations/fuel-consumption-calculator.html': '/gunluk hayat hesaplamalari/yakit-tuketimi-hesaplayici.html',
+            '/en/daily-life-calculations/kitchen-unit-calculator.html': '/gunluk hayat hesaplamalari/mutfak-donusturucu.html',
+
+            // Mühendislik Hesaplamaları - Çevre, Elektrik Elektronik
+            '/en/engineering/environmental/environment-muh.html': '/muhendislik/cevre/cevre-muh.html',
+            '/en/engineering/electrical-electronic/electrical-electronic.html': '/muhendislik/elektrik-elektronik/elektrik-elektronik.html',
+            
+            // Mühendislik Hesaplamaları - İnşaat
+            '/en/engineering/civil/brick-block-wall.html': '/muhendislik/insaat/tugla-blok-duvar.html',
+            '/en/engineering/civil/concrete-volume-materials.html': '/muhendislik/insaat/beton-hacmi-malzeme.html',
+            '/en/engineering/civil/insaat-muh.html': '/muhendislik/insaat/insaat-muh.html',
+            '/en/engineering/civil/paint-quantity-calculator.html': '/muhendislik/insaat/boya-miktari-hesaplayici.html',
+            '/en/engineering/civil/tile-ceramic.html': '/muhendislik/insaat/fayans-seramik.html',
+
+            // Mühendislik Hesaplamaları - Kimya
+            '/en/engineering/chemical/chemical-engineering.html': '/muhendislik/kimya/kimya-muhendisligi.html',
+            '/en/engineering/chemical/density-calculation.html': '/muhendislik/kimya/yogunluk-hesaplama.html',
+            '/en/engineering/chemical/Energy Balance Calculation.html': '/muhendislik/kimya/enerji-denkligi.html',
+            '/en/engineering/chemical/gas-density.html': '/muhendislik/kimya/gaz-yogunlugu.html',
+            '/en/engineering/chemical/heat-transfer.html': '/muhendislik/kimya/isi-transferi.html',
+            '/en/engineering/chemical/mass-balance.html': '/muhendislik/kimya/kutle-denkligi.html',
+            '/en/engineering/chemical/molarity-calculation.html': '/muhendislik/kimya/molarite-hesaplama.html',
+            '/en/engineering/chemical/percentage-mass-calculation.html': '/muhendislik/kimya/yuzde-kutle-hesaplama.html',
+            '/en/engineering/chemical/ph-calculation.html': '/muhendislik/kimya/ph-hesaplama.html',
+            '/en/engineering/chemical/reactor-volume.html': '/muhendislik/kimya/reaktor-hacmi.html',
+
+            // Mühendislik Hesaplamaları - Makine
+            '/en/engineering/mechanical/bending-stress.html': '/muhendislik/makine/egilme-gerilmesi.html',
+            '/en/engineering/mechanical/buckling-load.html': '/muhendislik/makine/burkulma-yuku.html',
+            '/en/engineering/mechanical/cooling-load.html': '/muhendislik/makine/sogutma-yuku.html',
+            '/en/engineering/mechanical/hardness-conversion.html': '/muhendislik/makine/sertlik-donusumu.html',
+            '/en/engineering/mechanical/heat-exchanger-lmtd.html': '/muhendislik/makine/isi-esanjörü-lmtd.html',
+            '/en/engineering/mechanical/mechanical-engineering.html': '/muhendislik/makine/makine-muhendisligi.html',
+            '/en/engineering/mechanical/normal-stress.html': '/muhendislik/makine/normal-gerilme.html',
+            '/en/engineering/mechanical/pump-power.html': '/muhendislik/makine/pompa-gucu.html',
+            '/en/engineering/mechanical/reynolds-number.html': '/muhendislik/makine/reynolds-sayisi.html',
+            '/en/engineering/mechanical/safety-factor.html': '/muhendislik/makine/emniyet-faktoru.html',
+            '/en/engineering/mechanical/shear-stress.html': '/muhendislik/makine/kesme-gerilme.html',
+            '/en/engineering/mechanical/torsionstress.html': '/muhendislik/makine/burulma.gerilmesi.html',
+
+            // Mühendislik Hesaplamaları - Tekstil
+            '/en/engineering/textile/dye-recipe.html': '/muhendislik/tekstil/boya-recetesi.html',
+            '/en/engineering/textile/fabric-shrinkage-rate.html': '/muhendislik/tekstil/kumas-cekme-orani.html',
+            '/en/engineering/textile/fabric-tightness.html': '/muhendislik/tekstil/kumas-sikiligi.html',
+            '/en/engineering/textile/fabric-waste.html': '/muhendislik/tekstil/kumas-fire.html',
+            '/en/engineering/textile/fabric-weight.html': '/muhendislik/tekstil/kumas-gramaji.html',
+            '/en/engineering/textile/fiber-blend.html': '/muhendislik/tekstil/elyaf-karisim.html',
+            '/en/engineering/textile/print-paste.html': '/muhendislik/tekstil/baski-pati.html',
+            '/en/engineering/textile/textile-engineering.html': '/muhendislik/tekstil/tekstil-muhendisligi.html',
+            '/en/engineering/textile/warp-weft-amount.html': '/muhendislik/tekstil/cozgu-atki-miktari.html',
+            '/en/engineering/textile/weaving-efficiency.html': '/muhendislik/tekstil/dokuma-verimlilik.html',
+            '/en/engineering/textile/yarn-count.html': '/muhendislik/tekstil/iplik-numarasi.html',
+            '/en/engineering/textile/yarn-length.html': '/muhendislik/tekstil/iplik-uzunlugu.html',
+        };
+
+        // switchLanguage fonksiyonu: Dil değiştirme işlemini yönetir.
+        function switchLanguage(lang) {
+            const currentPath = window.location.pathname.replace(/\/$/, ""); // Sonundaki '/' varsa kaldır
+            let newPath = '';
+
+            if (lang === 'tr') { // İngilizce sayfadan Türkçe'ye geçiş
+                if (!currentPath.startsWith('/en/')) {
+                    return; // Zaten Türkçe'de ise bir şey yapma
+                }
+
+                // URL haritasında mevcut İngilizce URL'nin Türkçe karşılığını ara
+                if (urlMapEnToTr[currentPath]) {
+                    newPath = urlMapEnToTr[currentPath];
+                } else if (currentPath === '/en' || currentPath === '/en/') {
+                    newPath = '/'; // İngilizce ana sayfadan Türkçe ana sayfaya
+                } else {
+                    // Eşleşme bulunamazsa veya özel durumlar için varsayılan olarak Türkçe ana sayfaya yönlendir
+                    console.warn(`[EN Header] URL haritasında Türkçe karşılık bulunamadı: ${currentPath}. Türkçe ana sayfaya yönlendiriliyor.`);
+                    newPath = '/';
+                }
+            } else if (lang === 'en') { // Türkçe sayfadan İngilizce'ye geçiş (bu durumda İngilizce header'dasınız)
+                if (currentPath.startsWith('/en/')) {
+                    return; // Zaten İngilizce'de ise bir şey yapma, butona basmak bir şey değiştirmemeli.
+                }
+                // Bu kısım teorik olarak hiç çalışmamalı, çünkü EN header'ı sadece EN sayfalarda yüklenir.
+                // Eğer bir hata olur ve TR sayfada EN header yüklenirse (ki olmamalı),
+                // bu durum düşündürücü olur ve muhtemelen ana sayfaya yönlendirme en güvenli yoldur.
+                console.warn("[EN Header] EN butonuna basıldı ama zaten İngilizce sayfada olmalısınız veya URL eşleşmiyor. Ana sayfaya yönlendiriliyor.");
+                newPath = '/en/'; // İngilizce ana sayfaya yönlendir
+            } else {
+                console.warn('Geçersiz dil kodu:', lang);
+                return;
+            }
+            window.location.href = newPath; // Yeni URL'ye yönlendir
+        }
+    </script>
 </header>
