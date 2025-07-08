@@ -16,21 +16,22 @@ jobs:
     - name: Replace API Key in HTML
       run: |
         # API anahtarını GitHub Secrets'tan al
-        # Not: secrets.Maps_API_KEY olarak adlandırılan secret'ı kullanıyoruz.
-        # GitHub deponuzun Settings > Secrets and variables > Actions bölümünde bu secret'ın tanımlı olduğundan emin olun.
+        # GitHub deponuzun Settings > Secrets and variables > Actions bölümünde
+        # 'Maps_API_KEY' adında bir secret tanımlı olduğundan emin olun.
         API_KEY="${{ secrets.MAPS_API_KEY }}"
         
-        # HTML dosyasını oku ve 'key=' parametresi içindeki yer tutucuyu gerçek API anahtarıyla değiştir.
-        # Bu, API anahtarının doğru yere enjekte edilmesini sağlar.
-        sed -i "s|key=YOUR_Maps_API_KEY_PLACEHOLDER|key=${API_KEY}|g" rota-hesaplayici.html
+        # HTML dosyasını oku ve 'src' özniteliği içindeki 'key=' parametresinin yer tutucusunu
+        # gerçek API anahtarıyla değiştir. Bu, tam eşleşmeyi garanti eder.
+        # 'YOUR_Maps_API_KEY_PLACEHOLDER' metninin HTML dosyanızdakiyle birebir aynı olduğundan emin olun.
+        # Bu sed komutu, 'key=' ile başlayan ve 'libraries=' ile biten kısmı hedefleyecektir.
+        sed -i "s|key=YOUR_Maps_API_KEY_PLACEHOLDER&libraries=places|key=${API_KEY}&libraries=places|g" rota-hesaplayici.html
 
         # Değişiklikleri görmek isterseniz (opsiyonel)
+        # Bu satırın yorumunu kaldırarak workflow günlüklerinde HTML dosyasının son halini görebilirsiniz.
         # cat rota-hesaplayici.html
         
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./ # HTML dosyanızın bulunduğu dizin (muhtemelen depo kökü)
-        # Eğer HTML dosyanız başka bir alt klasördeyse, örneğin 'dist'
-        # publish_dir: ./dist
+        publish_dir: ./ # rota-hesaplayici.html kök dizinde olduğu için bu doğru
