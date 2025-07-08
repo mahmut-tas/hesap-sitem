@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Toplam Çözgü ve Atkı Miktarı Hesaplama - Hesapkolik</title>
+
+    <meta content="Belirli bir kumaş metrajı için toplam çözgü ve atkı ipliği miktarını (kg) hesaplayın. Üretim planlaması, iplik siparişi ve maliyet analizi için pratik bir araç." name="description"/>
+    <meta content="çözgü miktarı, atkı miktarı, iplik tüketimi, kumaş üretimi, iplik hesaplama, dokuma, tekstil mühendisliği, hesapkolik tekstil" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <style>
+        /* Genel Ayarlar ve Font */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Sade ve ferah bir arka plan */
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Koyu tema başlık/altlık ile uyumlu */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Bölümü */
+        .calculator-section { /* Yeni isim */
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff;
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 { /* Yeni başlık stili */
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        /* Form Elemanları */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .input-with-unit-group { /* Yeni düzen için bu sınıfı kullandık */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .input-with-unit-group label {
+            flex-basis: auto;
+            width: 100%;
+            margin-bottom: 0;
+            text-align: left;
+        }
+        .input-with-unit-group input[type="number"] {
+            width: 100%;
+            margin-bottom: 0;
+        }
+         .input-with-unit-group select {
+            width: 100%;
+            margin-bottom: 0; /* Align with input style */
+        }
+        .input-with-unit { /* Eski input-with-unit yerine input-with-unit-group yapısı kullanıldı */
+            display: flex;
+            flex-direction: column; /* Label ve input/select'i alt alta sırala */
+            align-items: flex-start; /* İçerikleri sola hizala */
+            gap: 8px; /* Etiket ve input arasında boşluk */
+            margin-bottom: 20px;
+        }
+        .input-with-unit label {
+            flex-basis: auto; /* Etiketin içeriğine göre genişlemesini sağla, sıkışmayı engelle */
+            width: 100%; /* Tam genişlik kaplamasını sağla */
+            margin-bottom: 0; /* Üstteki 8px gap yeterli */
+            text-align: left; /* Metni sola hizala */
+        }
+        .input-with-unit input[type="number"] {
+            width: 100%; /* Input ve select tam genişlik kaplasın */
+            margin-bottom: 0; /* Üstteki 8px gap yeterli */
+        }
+
+        .form-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        /* Form butonları */
+        .calculator-form-container button[type="button"] {
+            background-color: #28a745; /* Onay yeşili */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button[type="button"]:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Sonuç Ekranı */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+            display: none; /* Varsayılan olarak gizli */
+        }
+        .result-display .result-value {
+            color: #e74c3c;
+        }
+        .result-display .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        /* Açıklama bölümleri */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        /* Yeni Karbon Ayak İzi başlık stili */
+        .calc-wrapper h4 {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+            text-align: left; /* Başlıkların sola hizalanması */
+        }
+        .calculator-form-container p.small-text { /* Form içindeki küçük metin */
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1.4em;
+            }
+            .input-with-unit-group, .input-with-unit {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+            }
+            .input-with-unit-group label, .input-with-unit label {
+                margin-bottom: 5px;
+                text-align: left;
+            }
+            .input-with-unit-group input[type="number"], .input-with-unit-group select,
+            .input-with-unit input[type="number"], .input-with-unit select {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            .result-display {
+                font-size: 1em;
+                padding: 15px;
+            }
+            .result-display .result-value {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Toplam Çözgü ve Atkı Miktarı Hesaplayıcı</h1>
+                <p>Belirli bir kumaş üretimi için ne kadar çözgü ve atkı ipliğine ihtiyacınız olduğunu bu hesaplayıcı ile kolayca belirleyebilirsiniz.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper active-calc" id="calculator-yarnConsumption">
+                    <h3><i class="fas fa-splotch icon-small"></i> İplik Miktarlarını Hesapla</h3>
+                    <div class="calculator-form-container">
+                        <form id="yarnConsumptionForm">
+                            <p class="small-text">Lütfen kumaş ve iplik bilgilerini girin:</p>
+                            <h4>Kumaş Bilgileri</h4>
+                            <div class="input-with-unit-group">
+                                <label for="fabricLength">Üretilecek Kumaş Uzunluğu (metre):</label>
+                                <input id="fabricLength" min="0.01" placeholder="Örn: 1000" required="" step="0.01" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="fabricWidth">Mamul Kumaş Eni (cm):</label>
+                                <input id="fabricWidth" min="0.1" placeholder="Örn: 150" required="" step="0.1" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="warpDensity">Çözgü Sıklığı (tel/cm):</label>
+                                <input id="warpDensity" min="0.1" placeholder="Örn: 30" required="" step="0.1" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="weftDensity">Atkı Sıklığı (tel/cm):</label>
+                                <input id="weftDensity" min="0.1" placeholder="Örn: 28" required="" step="0.1" type="number"/>
+                            </div>
+                            <hr class="form-divider"/>
+                            <h4>İplik Bilgileri (Ortalama)</h4>
+                            <div class="input-with-unit-group">
+                                <label for="warpYarnCount">Çözgü İplik Numarası:</label>
+                                <div style="display: flex; width: 100%; gap: 10px;">
+                                    <input id="warpYarnCount" min="0.01" placeholder="Örn: 50" required="" step="0.01" type="number" style="flex-grow: 1;"/>
+                                    <select id="warpCountSystem" style="width: auto;">
+                                        <option value="nm">Nm</option>
+                                        <option value="tex">Tex</option>
+                                        <option value="denye">Denye</option>
+                                        <option value="ne">Ne</option>
+                                        <option value="dtex">dTex</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="weftYarnCount">Atkı İplik Numarası:</label>
+                                <div style="display: flex; width: 100%; gap: 10px;">
+                                    <input id="weftYarnCount" min="0.01" placeholder="Örn: 40" required="" step="0.01" type="number" style="flex-grow: 1;"/>
+                                    <select id="weftCountSystem" style="width: auto;">
+                                        <option value="nm">Nm</option>
+                                        <option value="tex">Tex</option>
+                                        <option value="denye">Denye</option>
+                                        <option value="ne">Ne</option>
+                                        <option value="dtex">dTex</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <hr class="form-divider"/>
+                            <h4>Toleranslar / Fireler (%)</h4>
+                            <div class="input-with-unit-group">
+                                <label for="warpWastePercentage">Çözgü Fire Oranı (%):</label>
+                                <input id="warpWastePercentage" max="100" min="0" placeholder="Örn: 5" step="0.1" type="number" value="5"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="weftWastePercentage">Atkı Fire Oranı (%):</label>
+                                <input id="weftWastePercentage" max="100" min="0" placeholder="Örn: 3" step="0.1" type="number" value="3"/>
+                            </div>
+                            <button type="submit">Hesapla</button>
+                        </form>
+                        <div class="result-display" id="resultBox">
+                            <p><strong>Toplam Çözgü Miktarı:</strong> <span class="result-value" id="totalWarpYarn"></span> kg</p>
+                            <p><strong>Toplam Atkı Miktarı:</strong> <span class="result-value" id="totalWeftYarn"></span> kg</p>
+                        </div>
+                        <div class="calc-explanation">
+                            <p class="small-text">Tüm ölçüleri doğru birimlerde girdiğinizden ve iplik numarası sistemlerini doğru seçtiğinizden emin olun.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>Toplam Çözgü ve Atkı Miktarı Hesaplaması Nedir?</h3>
+            <p><strong>Toplam çözgü ve atkı ipliği miktarı hesaplaması</strong>, belirli bir miktar kumaş üretmek için ne kadar çözgü ipliği (boyuna iplikler) ve atkı ipliği (enine iplikler) gerekeceğini önceden belirleme sürecidir. Bu hesaplama, dokuma işletmelerinde üretim planlaması, hammadde siparişi, maliyet analizi ve stok yönetimi gibi operasyonel kararlar için temel bir adımdır.</p>
+            <p>Bu hesaplama, kumaşın yapısı (çözgü ve atkı sıklığı), üretilecek kumaşın boyutları (uzunluk ve en) ve kullanılan ipliklerin numaraları (inceliği) gibi parametrelere dayanır. Ayrıca, üretim sürecindeki doğal fire oranları da hesaba katılır.</p>
+            <h4>Neden Çözgü ve Atkı Miktarı Hesaplaması Önemlidir?</h4>
+            <ul>
+                <li><strong>Hammadde Yönetimi:</strong> İpliklerin zamanında ve doğru miktarda temin edilmesini sağlar, stok fazlasını veya eksikliğini önler.</li>
+                <li><strong>Maliyet Kontrolü:</strong> İplik, kumaş üretimindeki en büyük maliyet kalemlerinden biridir. Doğru hesaplama, gereksiz alımların önüne geçer.</li>
+                <li><strong>Üretim Planlaması:</strong> Makine kapasitesinin ve üretim zaman çizelgesinin doğru belirlenmesine yardımcı olur.</li>
+                <li><strong>Fiyatlandırma:</strong> Üretilecek kumaşın birim maliyetini doğru bir şekilde çıkarmak için gereklidir.</li>
+                <li><strong>Verimlilik Analizi:</strong> Gerçek tüketim ile planlanan tüketimi karşılaştırarak fire oranlarını ve verimliliği izlemeye olanak tanır.</li>
+            </ul>
+            <h4>Çözgü ve Atkı Miktarı Nasıl Hesaplanır?</h4>
+            <p>Hesaplama, her bir iplik türü için ayrı ayrı yapılır. Formüller, kullanılan iplik numarası sistemine ve birimlere göre değişiklik gösterir.</p>
+            <p class="formula-text">
+                <strong>Genel Prensip:</strong><br/>
+                Gerekli İplik Miktarı (kg) = (Toplam İplik Uzunluğu (km) * İpliğin Gramajı (g/km)) / 1000
+            </p>
+            <p>Bu hesaplamada, iplik numaraları Tex veya Nm gibi standart birimlere dönüştürülerek kullanılır. İplik numarası dönüşüm formülleri aşağıdaki gibidir:</p>
+            <ul>
+                <li>**Nm (Metrik Numara):** 1 gram ipliğin metre cinsinden uzunluğu. Örneğin, Nm 50 demek, 1 gram ipliğin 50 metre uzunluğunda olması demektir.</li>
+                <li>**Tex:** 1000 metre ipliğin gram cinsinden ağırlığı. Örneğin, 20 Tex demek, 1000 metre ipliğin 20 gram ağırlığında olması demektir.</li>
+                <li>**Denye:** 9000 metre ipliğin gram cinsinden ağırlığı. Örneğin, 180 Denye demek, 9000 metre ipliğin 180 gram ağırlığında olması demektir.</li>
+                <li>**Ne (İngiliz Numara):** 1 libre ipliğin 840 yard cinsinden uzunluk sayısı. Genellikle pamuk ipliklerinde kullanılır.</li>
+                <li>**dTex (DesiTex):** 10000 metre ipliğin gram cinsinden ağırlığı. Tex'in onda biridir.</li>
+            </ul>
+            <p class="formula-text">
+                **Çözgü İpliği Miktarı (kg) Formülü (Tex Cinsinden):**<br/>
+                $$((\text{Kumaş Uzunluğu (m)} \times \text{Mamul Kumaş Eni (cm)} \times \text{Çözgü Sıklığı (tel/cm)}) \times \text{Çözgü İplik Numarası (Tex)}) / 10000000$$
+                *(Not: Bu formülde Tex kullanılır. Eğer iplik numarası başka bir sistemdeyse, önce Tex'e dönüştürülmelidir. Dönüşüm faktörleri script içinde yer almaktadır.)*
+            </p>
+            <p class="formula-text">
+                **Atkı İpliği Miktarı (kg) Formülü (Tex Cinsinden):**<br/>
+                $$((\text{Kumaş Uzunluğu (m)} \times \text{Mamul Kumaş Eni (cm)} \times \text{Atkı Sıklığı (tel/cm)}) \times \text{Atkı İplik Numarası (Tex)}) / 10000000$$
+                *(Not: Bu formülde Tex kullanılır. Eğer iplik numarası başka bir sistemdeyse, önce Tex'e dönüştürülmelidir.)*
+            </p>
+            <p>Hesaplayıcımız, girdiğiniz iplik numarası sistemini (Tex, Denye, Ne, Nm, dTex) otomatik olarak Tex birimine dönüştürerek bu hesaplamaları yapar ve fire oranlarını da hesaba katar.</p>
+            <h4>Uygulama Alanları:</h4>
+            <ul>
+                <li>Dokuma kumaş üretim tesisleri.</li>
+                <li>İplik ve kumaş tedarikçileri.</li>
+                <li>Üretim planlama ve kontrol departmanları.</li>
+                <li>Maliyet muhasebesi ve fiyatlandırma birimleri.</li>
+                <li>Eğitim ve Ar-Ge çalışmaları.</li>
+            </ul>
+            <p class="disclaimer-text">Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Gerçek üretimde, iplik bükümü, iplik uzaması, makine ayarları, duruşlar, kesme kayıpları ve farklı proses adımlarındaki fire oranları gibi pek çok değişken, fiili iplik tüketimini etkileyebilir. Hassas ticari veya endüstriyel uygulamalar için deneyimli mühendislerin analizi ve detaylı fabrika verileri esas alınmalıdır. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize <a href="../../iletisim.html">iletişim</a> sayfamızdan ulaşın.</p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header ve Footer yükleme fonksiyonları
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            // Yüklenen HTML içindeki script etiketlerini bul ve çalıştır
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // URL'ye göre header ve footer yükleme
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // Metinleri dile göre tanımlayan bir obje
+            const texts = {
+                tr: {
+                    mainHeading: 'Toplam Çözgü ve Atkı Miktarı Hesaplayıcı',
+                    mainDescription: 'Belirli bir kumaş üretimi için ne kadar çözgü ve atkı ipliğine ihtiyacınız olduğunu bu hesaplayıcı ile kolayca belirleyebilirsiniz.',
+                    calculatorTitle: 'İplik Miktarlarını Hesapla',
+                    formIntro: 'Lütfen kumaş ve iplik bilgilerini girin:',
+                    fabricInfoTitle: 'Kumaş Bilgileri',
+                    fabricLengthLabel: 'Üretilecek Kumaş Uzunluğu (metre):',
+                    fabricWidthLabel: 'Mamul Kumaş Eni (cm):',
+                    warpDensityLabel: 'Çözgü Sıklığı (tel/cm):',
+                    weftDensityLabel: 'Atkı Sıklığı (tel/cm):',
+                    yarnInfoTitle: 'İplik Bilgileri (Ortalama)',
+                    warpYarnCountLabel: 'Çözgü İplik Numarası:',
+                    weftYarnCountLabel: 'Atkı İplik Numarası:',
+                    toleranceTitle: 'Toleranslar / Fireler (%)',
+                    warpWastePercentageLabel: 'Çözgü Fire Oranı (%):',
+                    weftWastePercentageLabel: 'Atkı Fire Oranı (%):',
+                    calculateButton: 'Hesapla',
+                    invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                    resultTitle: 'Sonuçlar (Gerekli Miktarlar):',
+                    totalWarpYarnLabel: 'Toplam Çözgü Miktarı:',
+                    totalWeftYarnLabel: 'Toplam Atkı Miktarı:',
+                    resultNote: 'Hesaplamalar fire oranları dahil edilerek yapılmıştır.',
+                    formExplanation: 'Tüm ölçüleri doğru birimlerde girdiğinizden ve iplik numarası sistemlerini doğru seçtiğinizden emin olun.',
+
+                    infoSectionTitle: 'Toplam Çözgü ve Atkı Miktarı Hesaplaması Nedir?',
+                    infoSectionP1: '<strong>Toplam çözgü ve atkı ipliği miktarı hesaplaması</strong>, belirli bir miktar kumaş üretmek için ne kadar çözgü ipliği (boyuna iplikler) ve atkı ipliği (enine iplikler) gerekeceğini önceden belirleme sürecidir. Bu hesaplama, dokuma işletmelerinde üretim planlaması, hammadde siparişi, maliyet analizi ve stok yönetimi gibi operasyonel kararlar için temel bir adımdır.',
+                    infoSectionP2: 'Bu hesaplama, kumaşın yapısı (çözgü ve atkı sıklığı), üretilecek kumaşın boyutları (uzunluk ve en) ve kullanılan ipliklerin numaraları (inceliği) gibi parametrelere dayanır. Ayrıca, üretim sürecindeki doğal fire oranları da hesaba katılır.',
+                    infoSectionH4_1: 'Neden Çözgü ve Atkı Miktarı Hesaplaması Önemlidir?',
+                    infoSectionList1_1: '<strong>Hammadde Yönetimi:</strong> İpliklerin zamanında ve doğru miktarda temin edilmesini sağlar, stok fazlasını veya eksikliğini önler.',
+                    infoSectionList1_2: '<strong>Maliyet Kontrolü:</strong> İplik, kumaş üretimindeki en büyük maliyet kalemlerinden biridir. Doğru hesaplama, gereksiz alımların önüne geçer.',
+                    infoSectionList1_3: '<strong>Üretim Planlaması:</strong> Makine kapasitesinin ve üretim zaman çizelgesinin doğru belirlenmesine yardımcı olur.',
+                    infoSectionList1_4: '<strong>Fiyatlandırma:</strong> Üretilecek kumaşın birim maliyetini doğru bir şekilde çıkarmak için gereklidir.',
+                    infoSectionList1_5: '<strong>Verimlilik Analizi:</strong> Gerçek tüketim ile planlanan tüketimi karşılaştırarak fire oranlarını ve verimliliği izlemeye olanak tanır.',
+                    infoSectionH4_2: 'Çözgü ve Atkı Miktarı Nasıl Hesaplanır?',
+                    infoSectionP3: 'Hesaplama, her bir iplik türü için ayrı ayrı yapılır. Formüller, kullanılan iplik numarası sistemine ve birimlere göre değişiklik gösterir.',
+                    infoSectionFormulaPrinciple: '<strong>Genel Prensip:</strong><br/>Gerekli İplik Miktarı (kg) = (Toplam İplik Uzunluğu (km) * İpliğin Gramajı (g/km)) / 1000',
+                    infoSectionP4: 'Bu hesaplamada, iplik numaraları Tex veya Nm gibi standart birimlere dönüştürülerek kullanılır. İplik numarası dönüşüm formülleri aşağıdaki gibidir:',
+                    infoSectionList2_1: '<strong>Nm (Metrik Numara):</strong> 1 gram ipliğin metre cinsinden uzunluğu. Örneğin, Nm 50 demek, 1 gram ipliğin 50 metre uzunluğunda olması demektir.',
+                    infoSectionList2_2: '<strong>Tex:</strong> 1000 metre ipliğin gram cinsinden ağırlığı. Örneğin, 20 Tex demek, 1000 metre ipliğin 20 gram ağırlığında olması demektir.',
+                    infoSectionList2_3: '<strong>Denye:</strong> 9000 metre ipliğin gram cinsinden ağırlığı. Örneğin, 180 Denye demek, 9000 metre ipliğin 180 gram ağırlığında olması demektir.',
+                    infoSectionList2_4: '<strong>Ne (İngiliz Numara):</strong> 1 libre ipliğin 840 yard cinsinden uzunluk sayısı. Genellikle pamuk ipliklerinde kullanılır.',
+                    infoSectionList2_5: '<strong>dTex (DesiTex):</strong> 10000 metre ipliğin gram cinsinden ağırlığı. Tex\'in onda biridir.',
+                    infoSectionFormulaWarp: '<strong>Çözgü İpliği Miktarı (kg) Formülü (Tex Cinsinden):</strong><br/>$$((\text{Kumaş Uzunluğu (m)} \\times \text{Mamul Kumaş Eni (cm)} \\times \text{Çözgü Sıklığı (tel/cm)}) \\times \text{Çözgü İplik Numarası (Tex)}) / 10000000$$<br/>*(Not: Bu formülde Tex kullanılır. Eğer iplik numarası başka bir sistemdeyse, önce Tex\'e dönüştürülmelidir. Dönüşüm faktörleri script içinde yer almaktadır.)*',
+                    infoSectionFormulaWeft: '<strong>Atkı İpliği Miktarı (kg) Formülü (Tex Cinsinden):</strong><br/>$$((\text{Kumaş Uzunluğu (m)} \\times \text{Mamul Kumaş Eni (cm)} \\times \text{Atkı Sıklığı (tel/cm)}) \\times \text{Atkı İplik Numarası (Tex)}) / 10000000$$<br/>*(Not: Bu formülde Tex kullanılır. Eğer iplik numarası başka bir sistemdeyse, önce Tex\'e dönüştürülmelidir.)*',
+                    infoSectionP5: 'Hesaplayıcımız, girdiğiniz iplik numarası sistemini (Tex, Denye, Ne, Nm, dTex) otomatik olarak Tex birimine dönüştürerek bu hesaplamaları yapar ve fire oranlarını da hesaba katar.',
+                    infoSectionH4_3: 'Uygulama Alanları:',
+                    infoSectionList3_1: 'Dokuma kumaş üretim tesisleri.',
+                    infoSectionList3_2: 'İplik ve kumaş tedarikçileri.',
+                    infoSectionList3_3: 'Üretim planlama ve kontrol departmanları.',
+                    infoSectionList3_4: 'Maliyet muhasebesi ve fiyatlandırma birimleri.',
+                    infoSectionList3_5: 'Eğitim ve Ar-Ge çalışmaları.',
+                    disclaimerText: 'Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Gerçek üretimde, iplik bükümü, iplik uzaması, makine ayarları, duruşlar, kesme kayıpları ve farklı proses adımlarındaki fire oranları gibi pek çok değişken, fiili iplik tüketimini etkileyebilir. Hassas ticari veya endüstriyel uygulamalar için deneyimli mühendislerin analizi ve detaylı fabrika verileri esas alınmalıdır. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize <a href="../../iletisim.html">iletişim</a> sayfamızdan ulaşın.'
+                },
+                en: {
+                    mainHeading: 'Total Warp and Weft Quantity Calculator',
+                    mainDescription: 'Easily determine how much warp and weft yarn you need for a specific fabric production with this calculator.',
+                    calculatorTitle: 'Calculate Yarn Quantities',
+                    formIntro: 'Please enter fabric and yarn information:',
+                    fabricInfoTitle: 'Fabric Information',
+                    fabricLengthLabel: 'Fabric Length to be Produced (meters):',
+                    fabricWidthLabel: 'Finished Fabric Width (cm):',
+                    warpDensityLabel: 'Warp Density (threads/cm):',
+                    weftDensityLabel: 'Weft Density (threads/cm):',
+                    yarnInfoTitle: 'Yarn Information (Average)',
+                    warpYarnCountLabel: 'Warp Yarn Count:',
+                    weftYarnCountLabel: 'Weft Yarn Count:',
+                    toleranceTitle: 'Tolerances / Waste (%):',
+                    warpWastePercentageLabel: 'Warp Waste Percentage (%):',
+                    weftWastePercentageLabel: 'Weft Waste Percentage (%):',
+                    calculateButton: 'Calculate',
+                    invalidInput: 'Please enter valid positive numbers for all fields.',
+                    resultTitle: 'Results (Required Quantities):',
+                    totalWarpYarnLabel: 'Total Warp Yarn:',
+                    totalWeftYarnLabel: 'Total Weft Yarn:',
+                    resultNote: 'Calculations include waste percentages.',
+                    formExplanation: 'Ensure you enter all measurements in correct units and select the correct yarn count systems.',
+
+                    infoSectionTitle: 'What is Total Warp and Weft Quantity Calculation?',
+                    infoSectionP1: '<strong>Total warp and weft yarn quantity calculation</strong> is the process of pre-determining how much warp yarn (longitudinal threads) and weft yarn (transverse threads) will be required to produce a certain amount of fabric. This calculation is a fundamental step for operational decisions such as production planning, raw material ordering, cost analysis, and inventory management in weaving enterprises.',
+                    infoSectionP2: 'This calculation is based on parameters such as the fabric\'s structure (warp and weft density), the dimensions of the fabric to be produced (length and width), and the counts (fineness) of the yarns used. Additionally, natural waste percentages during the production process are also taken into account.',
+                    infoSectionH4_1: 'Why is Warp and Weft Quantity Calculation Important?',
+                    infoSectionList1_1: '<strong>Raw Material Management:</strong> Ensures timely and accurate supply of yarns, preventing excess or shortage of stock.',
+                    infoSectionList1_2: '<strong>Cost Control:</strong> Yarn is one of the largest cost items in fabric production. Accurate calculation prevents unnecessary purchases.',
+                    infoSectionList1_3: '<strong>Production Planning:</strong> Helps in accurately determining machine capacity and production schedules.',
+                    infoSectionList1_4: '<strong>Pricing:</strong> Necessary to accurately determine the unit cost of the fabric to be produced.',
+                    infoSectionList1_5: '<strong>Efficiency Analysis:</strong> Allows monitoring waste rates and efficiency by comparing actual consumption with planned consumption.',
+                    infoSectionH4_2: 'How is Warp and Weft Quantity Calculated?',
+                    infoSectionP3: 'The calculation is done separately for each yarn type. Formulas vary according to the yarn count system and units used.',
+                    infoSectionFormulaPrinciple: '<strong>General Principle:</strong><br/>Required Yarn Quantity (kg) = (Total Yarn Length (km) * Yarn Weight per Km (g/km)) / 1000',
+                    infoSectionP4: 'In this calculation, yarn counts are converted to standard units like Tex or Nm. Yarn count conversion formulas are as follows:',
+                    infoSectionList2_1: '<strong>Nm (Metric Count):</strong> The length of 1 gram of yarn in meters. For example, Nm 50 means 1 gram of yarn is 50 meters long.',
+                    infoSectionList2_2: '<strong>Tex:</strong> The weight in grams of 1000 meters of yarn. For example, 20 Tex means 1000 meters of yarn weighs 20 grams.',
+                    infoSectionList2_3: '<strong>Denier:</strong> The weight in grams of 9000 meters of yarn. For example, 180 Denier means 9000 meters of yarn weighs 180 grams.',
+                    infoSectionList2_4: '<strong>Ne (English Cotton Count):</strong> The number of 840-yard hanks per pound of yarn. Commonly used for cotton yarns.',
+                    infoSectionList2_5: '<strong>dTex (DeciTex):</strong> The weight in grams of 10000 meters of yarn. It is one-tenth of Tex.',
+                    infoSectionFormulaWarp: '<strong>Warp Yarn Quantity (kg) Formula (in Tex):</strong><br/>$$((\text{Fabric Length (m)} \\times \text{Finished Fabric Width (cm)} \\times \text{Warp Density (threads/cm)}) \\times \text{Warp Yarn Count (Tex)}) / 10000000$$<br/>*(Note: This formula uses Tex. If the yarn count is in another system, it must first be converted to Tex. Conversion factors are included in the script.)*',
+                    infoSectionFormulaWeft: '<strong>Weft Yarn Quantity (kg) Formula (in Tex):</strong><br/>$$((\text{Fabric Length (m)} \\times \text{Finished Fabric Width (cm)} \\times \text{Weft Density (threads/cm)}) \\times \text{Weft Yarn Count (Tex)}) / 10000000$$<br/>*(Note: This formula uses Tex. If the yarn count is in another system, it must first be converted to Tex.)*',
+                    infoSectionP5: 'Our calculator automatically converts the entered yarn count system (Tex, Denier, Ne, Nm, dTex) to Tex units for these calculations and also accounts for waste percentages.',
+                    infoSectionH4_3: 'Application Areas:',
+                    infoSectionList3_1: 'Weaving fabric production facilities.',
+                    infoSectionList3_2: 'Yarn and fabric suppliers.',
+                    infoSectionList3_3: 'Production planning and control departments.',
+                    infoSectionList3_4: 'Cost accounting and pricing units.',
+                    infoSectionList3_5: 'Education and R&D studies.',
+                    disclaimerText: 'This calculator is for general informational purposes and provides theoretical calculations. In actual production, many variables such as yarn twist, yarn elongation, machine settings, stoppages, cutting losses, and waste percentages at different process steps can affect actual yarn consumption. For precise commercial or industrial applications, the analysis of experienced engineers and detailed factory data should be used. If you encounter any problems with your calculations, please contact us via our <a href="../../contact.html">contact</a> page.'
+                }
+            };
+
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // DOM Elementleri
+            const yarnConsumptionForm = document.getElementById('yarnConsumptionForm');
+            const resultBox = document.getElementById('resultBox');
+
+            // Başlık ve açıklama metinlerini güncelle
+            document.querySelector('.hero-section h1').textContent = currentTexts.mainHeading;
+            document.querySelector('.hero-section p').textContent = currentTexts.mainDescription;
+            document.querySelector('#calculator-yarnConsumption h3').innerHTML = `<i class="fas fa-splotch icon-small"></i> ${currentTexts.calculatorTitle}`;
+            document.querySelector('#yarnConsumptionForm p.small-text').textContent = currentTexts.formIntro;
+
+            document.querySelector('#yarnConsumptionForm h4:nth-of-type(1)').textContent = currentTexts.fabricInfoTitle;
+            document.getElementById('fabricLength').previousElementSibling.textContent = currentTexts.fabricLengthLabel;
+            document.getElementById('fabricWidth').previousElementSibling.textContent = currentTexts.fabricWidthLabel;
+            document.getElementById('warpDensity').previousElementSibling.textContent = currentTexts.warpDensityLabel;
+            document.getElementById('weftDensity').previousElementSibling.textContent = currentTexts.weftDensityLabel;
+
+            document.querySelector('#yarnConsumptionForm h4:nth-of-type(2)').textContent = currentTexts.yarnInfoTitle;
+            document.getElementById('warpYarnCount').previousElementSibling.textContent = currentTexts.warpYarnCountLabel;
+            document.getElementById('weftYarnCount').previousElementSibling.textContent = currentTexts.weftYarnCountLabel;
+
+            document.querySelector('#yarnConsumptionForm h4:nth-of-type(3)').textContent = currentTexts.toleranceTitle;
+            document.getElementById('warpWastePercentage').previousElementSibling.textContent = currentTexts.warpWastePercentageLabel;
+            document.getElementById('weftWastePercentage').previousElementSibling.textContent = currentTexts.weftWastePercentageLabel;
+
+            document.querySelector('#yarnConsumptionForm button[type="submit"]').textContent = currentTexts.calculateButton;
+            document.querySelector('#resultBox p:nth-of-type(1) strong').textContent = currentTexts.totalWarpYarnLabel;
+            document.querySelector('#resultBox p:nth-of-type(2) strong').textContent = currentTexts.totalWeftYarnLabel;
+            document.querySelector('.calc-explanation p.small-text').textContent = currentTexts.formExplanation;
+
+            // Bilgi Bölümü Metin Güncelleme
+            function updateInfoSectionContent() {
+                document.querySelector('.info-section h3').textContent = currentTexts.infoSectionTitle;
+                document.querySelector('.info-section p:nth-of-type(1)').innerHTML = currentTexts.infoSectionP1;
+                document.querySelector('.info-section p:nth-of-type(2)').innerHTML = currentTexts.infoSectionP2;
+                document.querySelector('.info-section h4:nth-of-type(1)').textContent = currentTexts.infoSectionH4_1;
+
+                const ul1 = document.querySelector('.info-section ul:nth-of-type(1)');
+                if (ul1) {
+                    ul1.innerHTML = `
+                        <li>${currentTexts.infoSectionList1_1}</li>
+                        <li>${currentTexts.infoSectionList1_2}</li>
+                        <li>${currentTexts.infoSectionList1_3}</li>
+                        <li>${currentTexts.infoSectionList1_4}</li>
+                        <li>${currentTexts.infoSectionList1_5}</li>
+                    `;
+                }
+
+                document.querySelector('.info-section h4:nth-of-type(2)').textContent = currentTexts.infoSectionH4_2;
+                document.querySelector('.info-section p:nth-of-type(3)').textContent = currentTexts.infoSectionP3;
+                document.querySelector('.info-section .formula-text:nth-of-type(1)').innerHTML = currentTexts.infoSectionFormulaPrinciple;
+                document.querySelector('.info-section p:nth-of-type(4)').textContent = currentTexts.infoSectionP4;
+
+                const ul2 = document.querySelector('.info-section ul:nth-of-type(2)');
+                if (ul2) {
+                    ul2.innerHTML = `
+                        <li>${currentTexts.infoSectionList2_1}</li>
+                        <li>${currentTexts.infoSectionList2_2}</li>
+                        <li>${currentTexts.infoSectionList2_3}</li>
+                        <li>${currentTexts.infoSectionList2_4}</li>
+                        <li>${currentTexts.infoSectionList2_5}</li>
+                    `;
+                }
+
+                document.querySelector('.info-section .formula-text:nth-of-type(2)').innerHTML = currentTexts.infoSectionFormulaWarp;
+                document.querySelector('.info-section .formula-text:nth-of-type(3)').innerHTML = currentTexts.infoSectionFormulaWeft;
+                document.querySelector('.info-section p:nth-of-type(5)').textContent = currentTexts.infoSectionP5;
+
+                document.querySelector('.info-section h4:nth-of-type(3)').textContent = currentTexts.infoSectionH4_3;
+                const ul3 = document.querySelector('.info-section ul:nth-of-type(3)');
+                if (ul3) {
+                    ul3.innerHTML = `
+                        <li>${currentTexts.infoSectionList3_1}</li>
+                        <li>${currentTexts.infoSectionList3_2}</li>
+                        <li>${currentTexts.infoSectionList3_3}</li>
+                        <li>${currentTexts.infoSectionList3_4}</li>
+                        <li>${currentTexts.infoSectionList3_5}</li>
+                    `;
+                }
+
+                document.querySelector('.info-section .disclaimer-text').innerHTML = currentTexts.disclaimerText;
+            }
+            updateInfoSectionContent(); // Sayfa yüklendiğinde bilgi bölümünü güncelle
+
+            // İplik Numarası Dönüşüm Fonksiyonları (Tex'e)
+            function convertToTex(value, unit) {
+                switch (unit) {
+                    case 'nm': return 1000 / value; // Tex = 1000 / Nm
+                    case 'tex': return value;
+                    case 'denye': return value / 9; // Tex = Denye / 9
+                    case 'ne': return 590.54 / value; // Tex = 590.54 / Ne
+                    case 'dtex': return value / 10; // Tex = dTex / 10
+                    default: return value;
+                }
+            }
+
+            yarnConsumptionForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                // Sonuçları temizle ve gizle
+                document.getElementById('totalWarpYarn').textContent = '';
+                document.getElementById('totalWeftYarn').textContent = '';
+                resultBox.style.display = 'none';
+
+                const fabricLength = parseFloat(document.getElementById('fabricLength').value);
+                const fabricWidth = parseFloat(document.getElementById('fabricWidth').value);
+                const warpDensity = parseFloat(document.getElementById('warpDensity').value);
+                const weftDensity = parseFloat(document.getElementById('weftDensity').value);
+                const warpYarnCount = parseFloat(document.getElementById('warpYarnCount').value);
+                const warpCountSystem = document.getElementById('warpCountSystem').value;
+                const weftYarnCount = parseFloat(document.getElementById('weftYarnCount').value);
+                const weftCountSystem = document.getElementById('weftCountSystem').value;
+                const warpWastePercentage = parseFloat(document.getElementById('warpWastePercentage').value);
+                const weftWastePercentage = parseFloat(document.getElementById('weftWastePercentage').value);
+
+                if (isNaN(fabricLength) || isNaN(fabricWidth) || isNaN(warpDensity) || isNaN(weftDensity) ||
+                    isNaN(warpYarnCount) || isNaN(weftYarnCount) || isNaN(warpWastePercentage) || isNaN(weftWastePercentage) ||
+                    fabricLength <= 0 || fabricWidth <= 0 || warpDensity <= 0 || weftDensity <= 0 ||
+                    warpYarnCount <= 0 || weftYarnCount <= 0 || warpWastePercentage < 0 || weftWastePercentage < 0) {
+                    resultBox.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                    resultBox.style.display = 'block';
+                    return;
+                }
+
+                // İplik numaralarını Tex'e dönüştür
+                const warpYarnCountTex = convertToTex(warpYarnCount, warpCountSystem);
+                const weftYarnCountTex = convertToTex(weftYarnCount, weftCountSystem);
+
+                // Çözgü miktarı hesaplaması (kg)
+                // Formül: (Kumaş Uzunluğu (m) * Mamul Kumaş Eni (cm) * Çözgü Sıklığı (tel/cm) * Çözgü İplik Numarası (Tex)) / 10^7
+                // 10^7 = 1000 (kg'ye çevirmek için) * 100 (cm'den m'ye) * 100 (tel/cm'den tel/m'ye)
+                const baseWarpYarnKg = (fabricLength * fabricWidth * warpDensity * warpYarnCountTex) / 10000000;
+                const totalWarpYarnKg = baseWarpYarnKg * (1 + warpWastePercentage / 100);
+
+                // Atkı miktarı hesaplaması (kg)
+                // Formül: (Kumaş Uzunluğu (m) * Mamul Kumaş Eni (cm) * Atkı Sıklığı (tel/cm) * Atkı İplik Numarası (Tex)) / 10^7
+                const baseWeftYarnKg = (fabricLength * fabricWidth * weftDensity * weftYarnCountTex) / 10000000;
+                const totalWeftYarnKg = baseWeftYarnKg * (1 + weftWastePercentage / 100);
+
+                document.getElementById('totalWarpYarn').textContent = totalWarpYarnKg.toFixed(3);
+                document.getElementById('totalWeftYarn').textContent = totalWeftYarnKg.toFixed(3);
+
+                resultBox.style.display = 'block'; // Sonuç kutusunu göster
+                resultBox.innerHTML = `
+                    <h3>${currentTexts.resultTitle}</h3>
+                    <p><strong>${currentTexts.totalWarpYarnLabel}</strong> <span class="result-value" id="totalWarpYarn">${totalWarpYarnKg.toFixed(3)}</span> kg</p>
+                    <p><strong>${currentTexts.totalWeftYarnLabel}</strong> <span class="result-value" id="totalWeftYarn">${totalWeftYarnKg.toFixed(3)}</span> kg</p>
+                    <p class="small-text">${currentTexts.resultNote}</p>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>

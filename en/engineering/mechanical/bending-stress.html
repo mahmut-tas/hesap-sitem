@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>
+   Bending Stress Calculator - Hesapkolik
+  </title>
+<link href="/css/style.css" rel="stylesheet"/>
+<link href="/css/footer.css" rel="stylesheet"/>
+<link href="/css/header.css" rel="stylesheet"/>
+<meta content="Easily calculate bending stresses due to bending moments in beams and similar members. An essential tool for civil and mechanical engineering design." name="description"/>
+<meta content="bending stress, stress calculation, strength, mechanics, engineering calculations, bending moment, moment of inertia, distance, calculative stress" name="keywords"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+<link href="css/style.css" rel="stylesheet"/>
+<link href="../../css/style.css" rel="stylesheet"/>
+<script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+</script>
+<style>
+   /* Ana Sayfa ve Genel Stil */
+        body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+       
+        
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Seçim Bölümü Stilleri */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #eaf0f0;
+            border-bottom: 1px solid #dee7e7;
+        }
+
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .calc-type-button {
+            background-color: #3498db; /* Mavi ton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
+            max-width: 250px; /* Butonların maksimum genişliği */
+            text-align: center;
+        }
+        
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Seçili buton için vurgulu renk */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .calc-result {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+        .calc-result strong {
+            color: #e74c3c;
+        }
+        .calc-result .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        .calc-explanation {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .calc-explanation strong {
+            color: #333;
+        }
+        .calc-explanation p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Genel açıklama bölümleri */
+        .info-section {
+            padding: 40px 0;
+            background-color: #ffffff;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .calc-result {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            header nav ul li {
+                margin: 10px 0;
+            }
+        }
+        .hidden-calc {
+            display: none;
+        }
+
+        /* Form elemanları ve sonuç gösterimi için ek stil */
+        .calculator-form-container button {
+            background-color: #28a745; /* Yeşil ton */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+        .calculator-form-container button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+        }
+
+        .result-display .result-value {
+            color: #e74c3c;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .formula-text.small-margin {
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 1em;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+        
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçiş için */
+        }
+        .input-with-unit label {
+            flex-basis: 100%; /* Label her zaman üstte veya solda */
+            margin-bottom: 5px;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input alanı boşluğu doldurur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+        .input-with-unit select {
+            flex-shrink: 0; /* Select kutusu sabit kalır */
+            width: auto; /* Select kutusu kendi genişliğinde olur */
+            margin-bottom: 0; /* İç boşluğu kaldır */
+        }
+  </style>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+</script>
+<link href="https://hesapkolik.net/muhendislik/makine/egilme-gerilmesi.html" hreflang="tr" rel="alternate"/>
+<link href="https://hesapkolik.net/en/muhendislik/makine/egilme-gerilmesi.html" hreflang="en" rel="alternate"/>
+<link href="https://hesapkolik.net/muhendislik/makine/egilme-gerilmesi.html" hreflang="x-default" rel="alternate"/>
+</head>
+<body>
+<div id="header-placeholder">
+</div>
+<main>
+<section class="hero-section">
+<div class="container">
+<h1>
+      Bending Stress Calculator
+     </h1>
+<p>
+      Easily calculate the bending stress caused by bending moment in beams and similar members.
+     </p>
+</div>
+</section>
+<section class="calculator-selection-section">
+<div class="container">
+<h2>
+      Calculate Bending Stress
+     </h2>
+<div class="calc-buttons-container">
+<button class="calc-type-button active" data-calc-type="bendingStress">
+       Calculate Bending Stress
+      </button>
+</div>
+<div class="calc-wrapper active-calc" id="calculator-bendingStress">
+<h3>
+<i class="fas fa-drafting-compass icon-small">
+</i>
+       Calculate Bending Stress (σb = My/I)
+      </h3>
+<div class="calculator-form-container">
+<form id="bendingStressForm">
+<div class="input-with-unit">
+<label for="bendingMoment">
+          Applied Bending Moment (M):
+         </label>
+<input id="bendingMoment" min="0.000001" placeholder="Örn: 1000" required="" step="any" type="number"/>
+<select id="bendingMomentUnit">
+<option value="Nm">
+           Newton-meter (N m)
+          </option>
+<option value="kNm">
+           Kilonewton-meter (kN m)
+          </option>
+<option value="lbf-ft">
+           Pound-force-feet (lbf ft)
+          </option>
+<option value="lbf-in">
+           Pound-force-inch (lbf in)
+          </option>
+</select>
+</div>
+<hr class="form-divider"/>
+<div class="input-with-unit">
+<label for="distanceToNeutralAxis">
+          Distance to Neutral Axis (y):
+         </label>
+<input id="distanceToNeutralAxis" min="0.000001" placeholder="Örn: 0.05" required="" step="any" type="number"/>
+<select id="distanceToNeutralAxisUnit">
+<option value="m">
+           meter (m)
+          </option>
+<option value="mm">
+           millimeter (mm)
+          </option>
+<option value="cm">
+           centimeter (cm)
+          </option>
+<option value="in">
+           inch
+          </option>
+</select>
+</div>
+<hr class="form-divider"/>
+<div class="input-with-unit">
+<label for="momentOfInertia">
+          Area Moment of Inertia (I):
+         </label>
+<input id="momentOfInertia" min="0.000000001" placeholder="Örn: 0.000001" required="" step="any" type="number"/>
+<select id="momentOfInertiaUnit">
+<option value="m4">
+           square meter over 4 (m⁴)
+          </option>
+<option value="mm4">
+           square millimeter to the power of 4 (mm⁴)
+          </option>
+<option value="cm4">
+           square centimeter to the power of 4 (cm⁴)
+          </option>
+<option value="in4">
+           inch to the power of 4 (in⁴)
+          </option>
+</select>
+</div>
+<button type="submit">
+         Calculate Bending Stress
+        </button>
+</form>
+<div class="result-display" id="bendingStressResult">
+</div>
+<div class="calc-explanation">
+<p>
+         Bending stress is the stress that occurs in the cross-section of a beam at the point farthest from the neutral axis. When a bending moment is applied, tensile and compressive stresses occur in the fibers of the beam.
+        </p>
+<p class="formula-text">
+         σb = (M ⋅ y) / I
+        </p>
+<ul>
+<li>
+          **σb:** Bending stress (Pascal, MPa, psi etc.)
+         </li>
+<li>
+          **M:** Applied bending moment
+         </li>
+<li>
+          **y:** Distance of the fiber farthest from the neutral axis
+         </li>
+<li>
+          **I:** Area moment of inertia with respect to the neutral axis of the section
+         </li>
+</ul>
+<p>
+         The result will be given in **Pascals (Pa)** or **Megapascals (MPa)** for metric units and **psi (pound per square inch)** for imperial units.
+        </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="info-section container">
+<h3>
+     What is Bending Stress?
+    </h3>
+<p>
+     **Bending stress (σb)** is the internal stress that occurs within the cross-section of a structural element (usually beams) when a bending moment is applied to that element. This stress, which causes the beam to bend, increases as it moves away from the neutral axis of the section and reaches its maximum value at the outermost fibers. Tensile stress occurs on one side of the beam and compressive stress occurs on the other side.
+    </p>
+<p>
+     The formula is as follows:
+    </p>
+<p class="formula-text">
+     σb = (M ⋅ y) / I
+    </p>
+<ul>
+<li>
+      **M:** Applied bending moment (N·m, lbf·ft etc.)
+     </li>
+<li>
+      **y:** The distance (m, mm, inch, etc.) from the neutral axis of the section to the (usually outermost) fiber for which the stress is calculated.
+     </li>
+<li>
+      **I:** Area moment of inertia (m⁴, mm⁴, in⁴ etc.) with respect to the neutral axis of the section
+     </li>
+<li>
+      **σb:** Bending stress (Pascal (Pa), Megapascal (MPa), psi (pound per square inch) etc.)
+     </li>
+</ul>
+<h4>
+     Unit and Conversions
+    </h4>
+<p>
+     Common units used for stress are the same as for normal and shear stress:
+    </p>
+<ul>
+<li>
+      **Pascal (Pa):** 1 N/m²
+     </li>
+<li>
+      **Kilopascal (kPa):** 10^3 Pa
+     </li>
+<li>
+      **Megapascal (MPa):** 10^6 Pa or 1 N/mm²
+     </li>
+<li>
+      **Gigapascal (GPa):** 10^9 Pa
+     </li>
+<li>
+      **Pound per Square Inch (psi):** 1 lbf/in²
+     </li>
+<li>
+      **Kilopound per Square Inch (ksi):** 1000 psi
+     </li>
+<li>
+      **1 MPa ≈ 145.038 psi**
+     </li>
+</ul>
+<p>
+     Consistent unit systems should also be used for moments, distances, and moments of inertia (e.g., N m, m, m⁴).
+    </p>
+<h4>
+     Situations Where Bending Stress Is Important:
+    </h4>
+<ul>
+<li>
+      **Civil Engineering:** Design of structural elements such as beams, slabs, columns.
+     </li>
+<li>
+      **Machine Design:** In machine parts subjected to bending loads such as shafts, axles, gears.
+     </li>
+<li>
+      **Aeronautical and Automotive Engineering:** Analysis of wings, chassis, and other structural components.
+     </li>
+<li>
+      **Furniture Design:** Durability of elements such as table legs and chair arms.
+     </li>
+</ul>
+<p class="disclaimer-text">
+     This calculator performs simple bending stress calculations for homogeneous, linear elastic, and regular section members. In real engineering applications, factors such as stress concentrations, fatigue, buckling, dynamic loads, complex section geometries, and material nonlinear behavior can affect bending stress distribution and material behavior. More complex scenarios require advanced strength analysis, finite element methods, and engineering expertise.
+    </p>
+</section>
+</main>
+<div id="footer-placeholder">
+</div>
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Metinleri dile göre tanımlayan bir obje
+        const texts = {
+            tr: {
+                // Genel
+                calculateButton: 'Eğilme Gerilmesini Hesapla',
+                invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                errorZeroMomentOfInertia: 'Atalet momenti sıfır olamaz.',
+                resultPrefix: 'Eğilme Gerilmesi:',
+                // Birimler
+                unit_Nm: 'Newton-metre (N m)',
+                unit_kNm: 'Kilonewton-metre (kN m)',
+                unit_lbf_ft: 'Pound-force-feet (lbf ft)',
+                unit_lbf_in: 'Pound-force-inch (lbf in)',
+                unit_m: 'metre (m)',
+                unit_mm: 'milimetre (mm)',
+                unit_cm: 'santimetre (cm)',
+                unit_in: 'inç',
+                unit_m4: 'metre üzeri 4 (m⁴)',
+                unit_mm4: 'milimetre üzeri 4 (mm⁴)',
+                unit_cm4: 'santimetre üzeri 4 (cm⁴)',
+                unit_in4: 'inç üzeri 4 (in⁴)',
+                unit_Pa: 'Pascal (Pa)',
+                unit_MPa: 'Megapascal (MPa)',
+                unit_psi: 'psi (pound per square inch)'
+            },
+            en: {
+                // General
+                calculateButton: 'Calculate Bending Stress',
+                invalidInput: 'Please enter valid positive numbers for all fields.',
+                errorZeroMomentOfInertia: 'Moment of inertia cannot be zero.',
+                resultPrefix: 'Bending Stress:',
+                // Units
+                unit_Nm: 'Newton-meter (N m)',
+                unit_kNm: 'Kilonewton-meter (kN m)',
+                unit_lbf_ft: 'Pound-force-feet (lbf ft)',
+                unit_lbf_in: 'Pound-force-inch (lbf in)',
+                unit_m: 'meter (m)',
+                unit_mm: 'millimeter (mm)',
+                unit_cm: 'centimeter (cm)',
+                unit_in: 'inch',
+                unit_m4: 'meter to the 4th (m⁴)',
+                unit_mm4: 'millimeter to the 4th (mm⁴)',
+                unit_cm4: 'centimeter to the 4th (cm⁴)',
+                unit_in4: 'inch to the 4th (in⁴)',
+                unit_Pa: 'Pascal (Pa)',
+                unit_MPa: 'Megapascal (MPa)',
+                unit_psi: 'psi (pound per square inch)'
+            }
+        };
+
+        // Aktif dil metinlerini seç
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        // --- Helper Functions ---
+        // Basınç dönüştürme faktörleri (Pa'ya)
+        const PRESSURE_TO_PA = {
+            'Pa': 1,
+            'MPa': 1e6,
+            'kPa': 1e3,
+            'psi': 6894.76
+        };
+
+        // Kuvvet dönüştürme faktörleri (N'ye)
+        const FORCE_TO_N = {
+            'N': 1,
+            'kN': 1000,
+            'lbf': 4.44822
+        };
+
+        // Uzunluk dönüştürme faktörleri (m'ye)
+        const LENGTH_TO_M = {
+            'm': 1,
+            'mm': 0.001,
+            'cm': 0.01,
+            'in': 0.0254,
+            'ft': 0.3048
+        };
+
+        // Alan Atalet Momenti dönüştürme faktörleri (m⁴'e)
+        const MOMENT_OF_INERTIA_TO_M4 = {
+            'm4': 1,
+            'mm4': 1e-12, // (0.001)^4
+            'cm4': 1e-8,  // (0.01)^4
+            'in4': 4.16231e-7 // (0.0254)^4
+        };
+
+        // Tork/Moment dönüştürme faktörleri (N m'ye)
+        const MOMENT_TO_NM = {
+            'Nm': 1,
+            'kNm': 1000,
+            'lbf-ft': 1.35582, // 1 lbf·ft = 1.35582 N·m
+            'lbf-in': 0.112985 // 1 lbf·in = 0.112985 N·m
+        };
+
+        // --- DOM Elements ---
+        const bendingStressForm = document.getElementById('bendingStressForm');
+        const bendingStressResultDiv = document.getElementById('bendingStressResult');
+
+        // --- Main Form Submission ---
+        bendingStressForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get values
+            const bendingMoment = parseFloat(document.getElementById('bendingMoment').value);
+            const distanceToNeutralAxis = parseFloat(document.getElementById('distanceToNeutralAxis').value);
+            const momentOfInertia = parseFloat(document.getElementById('momentOfInertia').value);
+
+            // Get units
+            const bendingMomentUnit = document.getElementById('bendingMomentUnit').value;
+            const distanceToNeutralAxisUnit = document.getElementById('distanceToNeutralAxisUnit').value;
+            const momentOfInertiaUnit = document.getElementById('momentOfInertiaUnit').value;
+
+            // --- Input Validation ---
+            if (isNaN(bendingMoment) || isNaN(distanceToNeutralAxis) || isNaN(momentOfInertia) ||
+                bendingMoment <= 0 || distanceToNeutralAxis <= 0 || momentOfInertia <= 0) {
+                bendingStressResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                bendingStressResultDiv.style.display = 'block';
+                return;
+            }
+            // Özel durum: Atalet momenti sıfır olamaz (bölme hatası)
+            if (momentOfInertia === 0) {
+                bendingStressResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroMomentOfInertia}</p>`;
+                bendingStressResultDiv.style.display = 'block';
+                return;
+            }
+
+            // --- Convert to Base SI Units (N·m, m, m⁴) ---
+            const M_Nm = bendingMoment * MOMENT_TO_NM[bendingMomentUnit];
+            const y_m = distanceToNeutralAxis * LENGTH_TO_M[distanceToNeutralAxisUnit];
+            const I_m4 = momentOfInertia * MOMENT_OF_INERTIA_TO_M4[momentOfInertiaUnit];
+
+            // --- Calculate Bending Stress (Pa) ---
+            const bendingStress_Pa = (M_Nm * y_m) / I_m4;
+
+            // --- Display Results in common units ---
+            const bendingStress_MPa = bendingStress_Pa / 1e6; // 1 MPa = 10^6 Pa
+            const bendingStress_psi = bendingStress_Pa * PRESSURE_TO_PA['psi']; // Convert Pa to psi
+
+            bendingStressResultDiv.innerHTML = `
+                <p>${currentTexts.resultPrefix} <span class="result-value">${bendingStress_Pa.toExponential(3)}</span> ${currentTexts.unit_Pa}</p>
+                <p>${currentTexts.resultPrefix} <span class="result-value">${bendingStress_MPa.toFixed(3)}</span> ${currentTexts.unit_MPa}</p>
+                <p>${currentTexts.resultPrefix} <span class="result-value">${bendingStress_psi.toFixed(3)}</span> ${currentTexts.unit_psi}</p>
+            `;
+            bendingStressResultDiv.style.display = 'block';
+        });
+    });
+</script>
+</body>
+</html>

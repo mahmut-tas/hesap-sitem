@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Color Code Converter - Calculus Hub</title>
+    
+    <meta content="Easily convert between Hex, RGB/RGBA, and HSL/HSLA color codes. Explore and instantly preview colors with the color picker." name="description"/>
+    <meta content="color code converter, hex rgb, hex hsl, rgb hsl, color picker, color converter, rgba, hsla, web colors, calculushub color" name="keywords"/>
+    
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    
+    <style>
+        /* General Settings and Font */
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f7f6; /* Simple and fresh background */
+            color: #333; 
+            line-height: 1.6;
+        }
+        .container { 
+            max-width: 960px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Compatible with dark header/footer */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Calculator Section */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff; /* White card background */
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50; /* Dark text color */
+            font-size: 2.2em;
+        }
+        .calc-wrapper { 
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 700px; /* Wider area */
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        /* Color Input Area and Picker */
+        .color-input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px; /* Space between color inputs and picker */
+        }
+        .color-input-group label {
+            flex: 0 0 120px; /* Fixed width for label */
+            margin-bottom: 0; /* Reset label's own margin */
+            font-weight: 600;
+            color: #555;
+            text-align: right;
+        }
+        .color-input-group input[type="text"] {
+            flex: 1; /* Allow input to fill remaining space */
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .color-input-group input[type="text"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        /* Color Picker and Preview */
+        .color-picker-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap; /* Wrap on smaller screens */
+        }
+        .color-picker-input {
+            width: 80px;
+            height: 80px;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            border-radius: 50%; /* Circular shape */
+            overflow: hidden; /* Keep edges rounded */
+            box-shadow: 0 0 0 4px rgba(0,0,0,0.1); /* Subtle shadow */
+            -webkit-appearance: none; /* Remove default browser styling */
+            appearance: none;
+        }
+        /* To remove inner styling of color input */
+        .color-picker-input::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        .color-picker-input::-webkit-color-swatch {
+            border: none;
+        }
+        .color-picker-input::-moz-color-swatch-wrapper {
+            padding: 0;
+        }
+        .color-picker-input::-moz-color-swatch {
+            border: none;
+        }
+
+
+        .color-preview-box {
+            width: 120px;
+            height: 120px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background-color: #f0f0f0; /* Starting color */
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .color-preview-label {
+            font-weight: 600;
+            color: #555;
+            text-align: center;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* Description Sections */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text { 
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .color-input-group {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            .color-input-group label {
+                text-align: left;
+                flex: none;
+                width: auto;
+            }
+            .color-picker-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            .color-input-group input[type="text"] {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+            .color-picker-input {
+                width: 60px;
+                height: 60px;
+            }
+            .color-preview-box {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+    
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1 id="main-heading">Color Code Converter</h1>
+                <p id="main-description">Easily convert between Hex, RGB/RGBA, and HSL/HSLA color codes. Explore and instantly preview colors with the color picker.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper">
+                    <h3 id="calculator-title"><i class="fas fa-palette icon-small"></i> Convert Color Codes</h3>
+                    <div class="color-picker-section">
+                        <input type="color" id="color-picker-input" class="color-picker-input" value="#3498db">
+                        <div class="color-preview-wrapper">
+                            <div id="color-preview-box" class="color-preview-box" style="background-color: #3498db;"></div>
+                            <div class="color-preview-label" id="color-preview-label">#3498DB</div>
+                        </div>
+                    </div>
+
+                    <div class="color-input-group">
+                        <label for="hex-input" id="hex-label">HEX:</label>
+                        <input type="text" id="hex-input" value="#3498DB" placeholder="#RRGGBB or #RRGGBBAA">
+                    </div>
+
+                    <div class="color-input-group">
+                        <label for="rgb-input" id="rgb-label">RGB/RGBA:</label>
+                        <input type="text" id="rgb-input" value="rgb(52, 152, 219)" placeholder="rgb(R, G, B) or rgba(R, G, B, A)">
+                    </div>
+
+                    <div class="color-input-group">
+                        <label for="hsl-input" id="hsl-label">HSL/HSLA:</label>
+                        <input type="text" id="hsl-input" value="hsl(206, 67%, 53%)" placeholder="hsl(H, S%, L%) or hsla(H, S%, L%, A)">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3 id="info-section-title">Color Codes and Their Uses</h3>
+            <p id="info-section-p1">
+                Colors play a critical role in the digital world in terms of aesthetics and functionality. In websites, mobile applications, graphic designs, and other digital products, colors are defined and used through different coding systems. This converter allows designers and developers to easily switch between different systems.
+            </p>
+            <h4>Main Color Codes:</h4>
+            <ul>
+                <li id="info-list-1">
+                    <strong>HEX (Hexadecimal):</strong> The most commonly used coding system in web design. It starts with '#' and is followed by 6 (RRGGBB) or 8 (RRGGBBAA - for transparency) hexadecimal characters. Each pair of characters (RR, GG, BB) represents the intensity of the primary colors (Red, Green, Blue).
+                </li>
+                <li id="info-list-2">
+                    <strong>RGB (Red, Green, Blue):</strong> Defines colors by combining Red, Green, and Blue light at different intensities. Each color component has a value between 0 and 255. In RGBA format, 'A' represents the alpha channel transparency (between 0-1).
+                </li>
+                <li id="info-list-3">
+                    <strong>HSL (Hue, Saturation, Lightness):</strong> Defines colors in a way that is closer to human perception.
+                    <ul>
+                        <li><strong>Hue:</strong> Expresses the angle on the color wheel (0-360 degrees) (e.g., 0° red, 120° green, 240° blue).</li>
+                        <li><strong>Saturation:</strong> Indicates how pure or vivid the color is (0-100%). 0% is a shade of gray.</li>
+                        <li><strong>Lightness:</strong> Indicates how light or dark the color is (0-100%). 0% is black, 100% is white.</li>
+                    </ul>
+                    In HSLA format, 'A' represents the alpha channel transparency.
+                </li>
+            </ul>
+            <p class="disclaimer-text" id="disclaimer-text">
+                This color code converter operates based on standard web color algorithms. The appearance of colors may vary from device to device (monitor, phone, etc.) due to factors such as screen calibration and ambient light. For professional printing or situations requiring precise color matching, it is recommended to use specialized calibration tools.
+            </p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+            const texts = {
+                tr: {
+                    mainHeading: 'Renk Kodu Dönüştürücü',
+                    mainDescription: 'Hex, RGB/RGBA ve HSL/HSLA renk kodları arasında kolayca dönüşüm yapın. Renk seçici ile renkleri keşfedin ve anında önizleyin.',
+                    calculatorTitle: 'Renk Kodlarını Dönüştür',
+                    hexLabel: 'HEX:',
+                    rgbLabel: 'RGB/RGBA:',
+                    hslLabel: 'HSL/HSLA:',
+                    infoSectionTitle: 'Renk Kodları ve Kullanım Alanları',
+                    infoSectionP1: 'Renkler dijital dünyada estetik ve işlevsellik açısından kritik bir rol oynar. Web siteleri, mobil uygulamalar, grafik tasarımlar ve diğer dijital ürünlerde renkler, farklı kodlama sistemleri aracılığıyla tanımlanır ve kullanılır. Bu dönüştürücü, tasarımcıların ve geliştiricilerin farklı sistemler arasında kolayca geçiş yapmasını sağlar.',
+                    mainColorCodesTitle: 'Başlıca Renk Kodları:',
+                    infoList1: '<strong>HEX (Hexadecimal):</strong> Web tasarımında en yaygın kullanılan kodlama sistemidir. \'#\' sembolüyle başlar ve ardından 6 (RRGGBB) veya 8 (RRGGBBAA - şeffaflık için) onaltılık karakter gelir. Her bir çift karakter (RR, GG, BB) birincil renklerin (Kırmızı, Yeşil, Mavi) yoğunluğunu temsil eder.',
+                    infoList2: '<strong>RGB (Red, Green, Blue):</strong> Kırmızı, Yeşil ve Mavi ışığın farklı yoğunluklarda birleşimiyle renkleri tanımlar. Her bir renk bileşeni 0 ile 255 arasında bir değere sahiptir. RGBA formatında \'A\' alfa kanalı şeffaflığı (0-1 arası) temsil eder.',
+                    infoList3: '<strong>HSL (Hue, Saturation, Lightness):</strong> Renkleri insan algısına daha yakın bir şekilde tanımlar.<ul><li><strong>Hue (Ton):</strong> Renk çarkındaki açıyı (0-360 derece) ifade eder (örn: 0° kırmızı, 120° yeşil, 240° mavi).</li><li><strong>Saturation (Doygunluk):</strong> Rengin ne kadar saf veya canlı olduğunu (%0-100) gösterir. %0 gri tonudur.</li><li><strong>Lightness (Parlaklık):</strong> Rengin ne kadar açık veya koyu olduğunu (%0-100) gösterir. %0 siyah, %100 beyazdır.</li></ul>HSLA formatında \'A\' alfa kanalı şeffaflığı temsil eder.',
+                    disclaimerText: 'Bu renk kodu dönüştürücü, standart web renk algoritmalarına göre çalışır. Renklerin cihazdan cihaza (monitör, telefon vb.) farklı görünmesi, ekran kalibrasyonu ve ortam ışığı gibi faktörlerden etkilenebilir. Profesyonel baskı veya hassas renk eşleştirme gerektiren durumlar için özel kalibrasyon araçları kullanılması önerilir.'
+                },
+                en: {
+                    mainHeading: 'Color Code Converter',
+                    mainDescription: 'Easily convert between Hex, RGB/RGBA, and HSL/HSLA color codes. Explore and instantly preview colors with the color picker.',
+                    calculatorTitle: 'Convert Color Codes',
+                    hexLabel: 'HEX:',
+                    rgbLabel: 'RGB/RGBA:',
+                    hslLabel: 'HSL/HSLA:',
+                    infoSectionTitle: 'Color Codes and Their Uses',
+                    infoSectionP1: 'Colors play a critical role in the digital world in terms of aesthetics and functionality. In websites, mobile applications, graphic designs, and other digital products, colors are defined and used through different coding systems. This converter allows designers and developers to easily switch between different systems.',
+                    mainColorCodesTitle: 'Main Color Codes:',
+                    infoList1: '<strong>HEX (Hexadecimal):</strong> The most commonly used coding system in web design. It starts with \'#\' and is followed by 6 (RRGGBB) or 8 (RRGGBBAA - for transparency) hexadecimal characters. Each pair of characters (RR, GG, BB) represents the intensity of the primary colors (Red, Green, Blue).',
+                    infoList2: '<strong>RGB (Red, Green, Blue):</strong> Defines colors by combining Red, Green, and Blue light at different intensities. Each color component has a value between 0 and 255. In RGBA format, \'A\' represents the alpha channel transparency (between 0-1).',
+                    infoList3: '<strong>HSL (Hue, Saturation, Lightness):</strong> Defines colors in a way that is closer to human perception.<ul><li><strong>Hue:</strong> Expresses the angle on the color wheel (0-360 degrees) (e.g., 0° red, 120° green, 240° blue).</li><li><strong>Saturation:</strong> Indicates how pure or vivid the color is (0-100%). 0% is a shade of gray.</li><li><strong>Lightness:</strong> Indicates how light or dark the color is (0-100%). 0% is black, 100% is white.</li></ul>In HSLA format, \'A\' represents the alpha channel transparency.',
+                    disclaimerText: 'This color code converter operates based on standard web color algorithms. The appearance of colors may vary from device to device (monitor, phone, etc.) due to factors such as screen calibration and ambient light. For professional printing or situations requiring precise color matching, it is recommended to use specialized calibration tools.'
+                }
+            };
+
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // Functions to load header and footer partials
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // Update texts
+            document.getElementById('main-heading').textContent = currentTexts.mainHeading;
+            document.getElementById('main-description').textContent = currentTexts.mainDescription;
+            document.getElementById('calculator-title').innerHTML = `<i class="fas fa-palette icon-small"></i> ${currentTexts.calculatorTitle}`;
+            document.getElementById('hex-label').textContent = currentTexts.hexLabel;
+            document.getElementById('rgb-label').textContent = currentTexts.rgbLabel;
+            document.getElementById('hsl-label').textContent = currentTexts.hslLabel;
+
+            document.getElementById('info-section-title').textContent = currentTexts.infoSectionTitle;
+            document.getElementById('info-section-p1').innerHTML = currentTexts.infoSectionP1;
+            document.querySelector('.info-section h4').textContent = currentTexts.mainColorCodesTitle;
+            document.getElementById('info-list-1').innerHTML = currentTexts.infoList1;
+            document.getElementById('info-list-2').innerHTML = currentTexts.infoList2;
+            document.getElementById('info-list-3').innerHTML = currentTexts.infoList3;
+            document.getElementById('disclaimer-text').textContent = currentTexts.disclaimerText;
+
+            // Get elements
+            const colorPickerInput = document.getElementById('color-picker-input');
+            const colorPreviewBox = document.getElementById('color-preview-box');
+            const colorPreviewLabel = document.getElementById('color-preview-label');
+            const hexInput = document.getElementById('hex-input');
+            const rgbInput = document.getElementById('rgb-input');
+            const hslInput = document.getElementById('hsl-input');
+
+            // Main function to update colors
+            function updateColors(source, value) {
+                let r, g, b, a = 1; // Alpha initially 1 (fully opaque)
+                let h, s, l;
+                let hex = '#000000'; // Initial default
+                let rgbStr = 'rgb(0, 0, 0)';
+                let hslStr = 'hsl(0, 0%, 0%)';
+
+                try {
+                    if (source === 'hex') {
+                        let parsedHex = parseHex(value);
+                        if (!parsedHex) return; // Stop if invalid hex
+                        ({r, g, b, a} = parsedHex);
+                        
+                        hex = formatHex(r, g, b, a);
+                        rgbStr = formatRgb(r, g, b, a);
+                        ({h, s, l} = rgbToHsl(r, g, b));
+                        hslStr = formatHsl(h, s, l, a);
+
+                    } else if (source === 'rgb') {
+                        let parsedRgb = parseRgb(value);
+                        if (!parsedRgb) return; // Stop if invalid rgb
+                        ({r, g, b, a} = parsedRgb);
+
+                        hex = formatHex(r, g, b, a);
+                        rgbStr = formatRgb(r, g, b, a);
+                        ({h, s, l} = rgbToHsl(r, g, b));
+                        hslStr = formatHsl(h, s, l, a);
+
+                    } else if (source === 'hsl') {
+                        let parsedHsl = parseHsl(value);
+                        if (!parsedHsl) return; // Stop if invalid hsl
+                        ({h, s, l, a} = parsedHsl);
+
+                        ({r, g, b} = hslToRgb(h, s, l));
+                        hex = formatHex(r, g, b, a);
+                        rgbStr = formatRgb(r, g, b, a);
+                        hslStr = formatHsl(h, s, l, a);
+
+                    } else if (source === 'picker') {
+                        // Color picker directly returns HEX, we convert to RGBA format
+                        hex = value;
+                        let parsedHex = parseHex(hex);
+                        if (!parsedHex) return;
+                        ({r, g, b, a} = parsedHex); // Picker doesn't provide alpha, so it remains 1
+
+                        rgbStr = formatRgb(r, g, b, a);
+                        ({h, s, l} = rgbToHsl(r, g, b));
+                        hslStr = formatHsl(h, s, l, a);
+                    }
+
+                    // Update all input fields and preview
+                    if (hexInput.value.toUpperCase() !== hex.toUpperCase()) hexInput.value = hex.toUpperCase();
+                    if (rgbInput.value !== rgbStr) rgbInput.value = rgbStr;
+                    if (hslInput.value !== hslStr) hslInput.value = hslStr;
+
+                    // Update preview box and label
+                    const previewColor = a === 1 ? hex : rgbStr; // Use RGB string if alpha is present
+                    colorPreviewBox.style.backgroundColor = previewColor;
+                    colorPreviewLabel.textContent = previewColor.toUpperCase();
+                    // Update color picker (since alpha support is limited, only convert from RGB to Hex)
+                    if (colorPickerInput.value.toUpperCase() !== hex.substring(0,7).toUpperCase()) { // If alpha is present, #RRGGBBAA comes, picker takes #RRGGBB
+                       colorPickerInput.value = hex.substring(0,7);
+                    }
+
+
+                } catch (e) {
+                    console.error("Color conversion error:", e);
+                    // In case of invalid input, show empty or default values
+                    colorPreviewBox.style.backgroundColor = '#CCC';
+                    colorPreviewLabel.textContent = 'INVALID';
+                }
+            }
+
+            // --- Color Conversion Functions ---
+
+            // HEX to RGBA
+            function parseHex(hex) {
+                let r = 0, g = 0, b = 0, a = 1;
+                hex = hex.startsWith('#') ? hex.slice(1) : hex;
+
+                if (!/^[0-9A-Fa-f]{6}$|^[0-9A-Fa-f]{8}$/.test(hex)) {
+                    // console.warn("Invalid HEX format:", hex);
+                    return null; // Invalid format
+                }
+
+                if (hex.length === 8) { // RGBA
+                    r = parseInt(hex.substring(0, 2), 16);
+                    g = parseInt(hex.substring(2, 4), 16);
+                    b = parseInt(hex.substring(4, 6), 16);
+                    a = parseInt(hex.substring(6, 8), 16) / 255;
+                } else if (hex.length === 6) { // RGB
+                    r = parseInt(hex.substring(0, 2), 16);
+                    g = parseInt(hex.substring(2, 4), 16);
+                    b = parseInt(hex.substring(4, 6), 16);
+                }
+                return {r, g, b, a};
+            }
+
+            // RGB/RGBA string to RGBA
+            function parseRgb(rgbStr) {
+                const match = rgbStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d*\.?\d+))?\)/);
+                if (!match) {
+                    // console.warn("Invalid RGB/RGBA format:", rgbStr);
+                    return null; // Invalid format
+                }
+                let r = parseInt(match[1]);
+                let g = parseInt(match[2]);
+                let b = parseInt(match[3]);
+                let a = match[4] ? parseFloat(match[4]) : 1;
+
+                // Clamp values between 0-255 and 0-1
+                r = Math.min(255, Math.max(0, r));
+                g = Math.min(255, Math.max(0, g));
+                b = Math.min(255, Math.max(0, b));
+                a = Math.min(1, Math.max(0, a));
+
+                return {r, g, b, a};
+            }
+
+            // HSL/HSLA string to HSLA
+            function parseHsl(hslStr) {
+                const match = hslStr.match(/hsla?\((\d+)(?:deg)?,\s*(\d+)%,\s*(\d+)%(?:,\s*(\d*\.?\d+))?\)/);
+                if (!match) {
+                    // console.warn("Invalid HSL/HSLA format:", hslStr);
+                    return null; // Invalid format
+                }
+                let h = parseInt(match[1]);
+                let s = parseInt(match[2]);
+                let l = parseInt(match[3]);
+                let a = match[4] ? parseFloat(match[4]) : 1;
+
+                // Clamp values to appropriate ranges
+                h = h % 360; // Hue 0-359
+                if (h < 0) h += 360;
+                s = Math.min(100, Math.max(0, s));
+                l = Math.min(100, Math.max(0, l));
+                a = Math.min(1, Math.max(0, a));
+
+                return {h, s, l, a};
+            }
+
+            // RGBA to HEX
+            function formatHex(r, g, b, a = 1) {
+                const toHex = (c) => Math.round(c).toString(16).padStart(2, '0');
+                if (a < 1) {
+                    return `#${toHex(r)}${toHex(g)}${toHex(b)}${toHex(a * 255)}`;
+                }
+                return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+            }
+
+            // RGBA to RGB/RGBA string
+            function formatRgb(r, g, b, a = 1) {
+                return a === 1 ? `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})` : `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${a.toFixed(2)})`;
+            }
+
+            // HSLA to HSL/HSLA string
+            function formatHsl(h, s, l, a = 1) {
+                return a === 1 ? `hsl(${Math.round(h)}, ${Math.round(s)}%, ${Math.round(l)}%)` : `hsla(${Math.round(h)}, ${Math.round(s)}%, ${Math.round(l)}%, ${a.toFixed(2)})`;
+            }
+
+            // RGB to HSL conversion
+            function rgbToHsl(r, g, b) {
+                r /= 255; g /= 255; b /= 255;
+
+                const max = Math.max(r, g, b);
+                const min = Math.min(r, g, b);
+                let h, s, l = (max + min) / 2;
+
+                if (max === min) {
+                    h = s = 0; // Grayscale
+                } else {
+                    const d = max - min;
+                    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                    switch (max) {
+                        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                        case g: h = (b - r) / d + 2; break;
+                        case b: h = (r - g) / d + 4; break;
+                    }
+                    h /= 6;
+                }
+
+                return {
+                    h: h * 360,
+                    s: s * 100,
+                    l: l * 100
+                };
+            }
+
+            // HSL to RGB conversion
+            function hslToRgb(h, s, l) {
+                h /= 360; s /= 100; l /= 100;
+                let r, g, b;
+
+                if (s === 0) {
+                    r = g = b = l; // Grayscale
+                } else {
+                    const hue2rgb = (p, q, t) => {
+                        if (t < 0) t += 1;
+                        if (t > 1) t -= 1;
+                        if (t < 1 / 6) return p + (q - p) * 6 * t;
+                        if (t < 1 / 2) return q;
+                        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                        return p;
+                    };
+                    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                    const p = 2 * l - q;
+                    r = hue2rgb(p, q, h + 1 / 3);
+                    g = hue2rgb(p, q, h);
+                    b = hue2rgb(p, q, h - 1 / 3);
+                }
+
+                return {
+                    r: Math.round(r * 255),
+                    g: Math.round(g * 255),
+                    b: Math.round(b * 255)
+                };
+            }
+
+
+            // Event Listeners
+            colorPickerInput.addEventListener('input', (e) => updateColors('picker', e.target.value));
+            hexInput.addEventListener('input', (e) => updateColors('hex', e.target.value));
+            rgbInput.addEventListener('input', (e) => updateColors('rgb', e.target.value));
+            hslInput.addEventListener('input', (e) => updateColors('hsl', e.target.value));
+
+            // Set default colors when the page loads
+            updateColors('hex', '#3498DB'); // Set initial color
+        });
+    </script>
+</body>
+</html>

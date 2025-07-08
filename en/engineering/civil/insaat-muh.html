@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>
+   Civil Engineering Calculations - Hesapkolik
+  </title>
+<link href="/css/style.css" rel="stylesheet"/>
+<meta content="Calculation tools specific to the field of Civil Engineering: Structural analysis, geotechnical, hydraulic, transportation, material quantity and more. Manage your projects efficiently." name="description"/>
+<meta content="civil engineering calculations, structural engineering, geotechnical, hydraulic, transportation, material quantity, beam, column, foundation, ground, pipe, road, concrete, brick, hesapkolik construction" name="keywords"/>
+<link href="/css/header.css" rel="stylesheet"/>
+<link href="../../css/style.css" rel="stylesheet"/>
+<link href="/css/footer.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+<script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+</script>
+<script>
+   window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+  </script>
+<style>
+   body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+
+        .health-calculator-landing-section { /* Genel bir kategori sayfası bölümü adı */
+            padding: 50px 0;
+            text-align: center;
+        }
+        .health-calculator-landing-section .main-title {
+            font-size: 2.8em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .health-calculator-landing-section .section-description {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .category-section {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-bottom: 40px; /* Kategoriler arasında boşluk */
+        }
+
+        .category-section h3 {
+            font-size: 2em;
+            color: #e74c3c; /* Kategori başlık rengi */
+            margin-bottom: 25px;
+            text-align: center;
+            border-bottom: 2px solid #eee; /* Alt çizgi */
+            padding-bottom: 10px;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            justify-content: center;
+            align-items: stretch; /* Kartların yüksekliklerini eşitlemek için */
+        }
+
+        .calculator-card {
+            background-color: #f9f9f9; /* Kart arka planı */
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Hafif gölge */
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-height: 200px; /* Kartların minimum yüksekliği */
+        }
+
+        .calculator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .calculator-card .icon-big {
+            font-size: 3em; /* İkon boyutu */
+            color: #3498db; /* İkon rengi */
+            margin-bottom: 15px;
+        }
+
+        .calculator-card h3 {
+            font-size: 1.4em; /* Kart başlığı */
+            color: #2c3e50;
+            margin-bottom: 10px;
+            flex-grow: 1; 
+            font-weight: 600;
+        }
+
+        .calculator-card p {
+            font-size: 0.9em;
+            color: #777;
+            margin-bottom: 20px;
+            flex-grow: 1; 
+        }
+
+        .calculator-card .card-button {
+            display: inline-block;
+            background-color: #e74c3c; /* Buton rengi */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 80%; /* Buton genişliği */
+            max-width: 180px;
+        }
+
+        .calculator-card .card-button:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .card-button.disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .card-button.disabled:hover {
+            background-color: #cccccc;
+            transform: none;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .health-calculator-landing-section .main-title {
+                font-size: 2.2em;
+            }
+            .category-section h3 {
+                font-size: 1.8em;
+            }
+            .calculator-grid {
+                grid-template-columns: 1fr; /* Tek sütun */
+            }
+            .calculator-card {
+                min-height: auto; 
+                padding: 20px;
+            }
+            .calculator-card h3 {
+                font-size: 1.3em;
+            }
+            .calculator-card .icon-big {
+                font-size: 2.5em;
+            }
+        }
+  </style>
+<link href="https://hesapkolik.net/muhendislik/insaat/insaat-muh.html" hreflang="tr" rel="alternate"/>
+<link href="https://hesapkolik.net/en/muhendislik/insaat/insaat-muh.html" hreflang="en" rel="alternate"/>
+<link href="https://hesapkolik.net/muhendislik/insaat/insaat-muh.html" hreflang="x-default" rel="alternate"/>
+</head>
+<body>
+<div id="header-placeholder">
+</div>
+<main>
+<section class="health-calculator-landing-section">
+<div class="container">
+<h1 class="main-title">
+      Civil Engineering Calculations
+     </h1>
+<p class="section-description">
+      Basic and advanced calculation tools you will need in your civil engineering projects and education:
+     </p>
+<div class="category-section">
+<h3>
+<i class="fas fa-boxes-stacked">
+</i>
+       Material Quantity Calculations
+      </h3>
+<div class="calculator-grid">
+<div class="calculator-card">
+<i class="fas fa-hard-hat icon-big">
+</i>
+<h3>
+         Concrete Volume and Material
+        </h3>
+<p>
+         Finds the required concrete volume and amount of cement, sand and gravel for a given building element.
+        </p>
+<a class="card-button" href="concrete-volume-materials.html">
+         Calculate
+        </a>
+</div>
+<div class="calculator-card">
+<i class="fa-solid fa-trowel-bricks">
+</i>
+<h3>
+         Brick/Block Wall Material
+        </h3>
+<p>
+         Calculates the number of bricks/blocks and mortar materials required for the wall area.
+        </p>
+<a class="card-button" href="brick-block-wall.html">
+         Calculate
+        </a>
+</div>
+<div class="calculator-card">
+<i class="fas fa-paint-roller icon-big">
+</i>
+<h3>
+         Paint Quantity Calculation
+        </h3>
+<p>
+         Estimates the amount of paint required to paint a given surface area.
+        </p>
+<a class="card-button" href="paint-quantity-calculator.html">
+         Calculate
+        </a>
+</div>
+<div class="calculator-card">
+<i class="fas fa-th-large icon-big">
+</i>
+<h3>
+         Tile/Ceramic Quantity
+        </h3>
+<p>
+         Calculates the number of tiles/ceramics and grout materials required for a given area.
+        </p>
+<a class="card-button" href="tile-ceramic.html">
+         Calculate
+        </a>
+</div>
+</div>
+</div>
+<div class="category-section">
+<h3>
+<i class="fas fa-building">
+</i>
+       Structural Engineering Calculations
+      </h3>
+<div class="calculator-grid">
+<div class="calculator-card">
+<i class="fas fa-ruler-combined icon-big">
+</i>
+<h3>
+         Beam Bending Moment and Shear Force
+        </h3>
+<p>
+         Calculates the maximum bending moment and shear force of beams under different loading conditions.
+        </p>
+<a class="card-button" href="insaat/yapi/kiris-egilme-kesme.html">
+         Calculate
+        </a>
+</div>
+<div class="calculator-card">
+<i class="fas fa-arrows-alt-v icon-big">
+</i>
+<h3>
+         Beam Deflection (Deformation) Calculation
+        </h3>
+<p>
+         Finds the maximum deflection (deflection) of the beam under a certain load.
+        </p>
+<a class="card-button" href="insaat/yapi/kiris-sehim.html">
+         Calculate
+        </a>
+</div>
+<div class="calculator-card">
+<i class="fas fa-ruler-horizontal icon-big">
+</i>
+<h3>
+         Beam/Column Moment of Inertia Calculation
+        </h3>
+<p>
+         Calculates moments of inertia for different cross-sectional areas (rectangle, circle, I-beam).
+        </p>
+<a class="card-button" href="insaat/yapi/atalet-momenti.html">
+         Calculate
+        </a>
+</div>
+<div class="calculator-card">
+<i class="fas fa-compress-alt icon-big">
+</i>
+<h3>
+         Short Column Carrying Capacity
+        </h3>
+<p>
+         Finds the axial load carrying capacity of reinforced concrete or steel short columns.
+        </p>
+<a class="card-button" href="insaat/yapi/kisa-kolon-kapasitesi.html">
+         Calculate
+        </a>
+</div>
+</div>
+</div>
+<div class="category-section">
+<h3>
+<i class="fas fa-mountain">
+</i>
+       Geotechnical Engineering Calculations
+      </h3>
+<div class="calculator-grid">
+<div class="calculator-card">
+<i class="fas fa-hand-holding-box icon-big">
+</i>
+<h3>
+         Ground Bearing Capacity
+        </h3>
+<p>
+         Estimates the safe bearing capacity of the soil for shallow foundations.
+        </p>
+<a class="card-button" href="insaat/geoteknik/zemin-tasima-kapasitesi.html">
+         Calculate
+        </a>
+</div>
+<div class="calculator-card">
+<i class="fas fa-house-damage icon-big">
+</i>
+<h3>
+         Soil Settlement Calculation
+        </h3>
+<p>
+         Estimates the expected amount of settlement due to consolidation in soft clays.
+        </p>
+<a class="card-button" href="insaat/geoteknik/zemin-oturmasi.html">
+         Calculate
+        </a>
+</div>
+</div>
+</div>
+<div class="category-section">
+<h3>
+<i class="fas fa-water">
+</i>
+       Water Resources and Hydraulic Engineering Calculations
+      </h3>
+<div class="calculator-grid">
+<div class="calculator-card">
+<i class="fas fa-faucet-drip icon-big">
+</i>
+<h3>
+         Pipe Pressure Drop
+        </h3>
+<p>
+         Calculates energy loss due to friction in pressurized pipelines.
+        </p>
+<a class="card-button" href="insaat/hidrolik/boru-basinc-dususu.html">
+         Calculate
+        </a>
+</div>
+<div class="calculator-card">
+<i class="fas fa-stream icon-big">
+</i>
+<h3>
+         Open Channel Flow (Manning Formula)
+        </h3>
+<p>
+         It finds the flow rate/velocity according to the cross-section, slope and roughness of the channels (rectangular, triangular, trapezoidal).
+        </p>
+<a class="card-button" href="insaat/hidrolik/acik-kanal-akisi.html">
+         Calculate
+        </a>
+</div>
+</div>
+</div>
+<div class="category-section">
+<h3>
+<i class="fas fa-road">
+</i>
+       Transportation Engineering Calculations
+      </h3>
+<div class="calculator-grid">
+<div class="calculator-card">
+<i class="fas fa-road-circle-check icon-big">
+</i>
+<h3>
+         Horizontal Curve Minimum Radius
+        </h3>
+<p>
+         Calculates the safe minimum horizontal curve radius in road design.
+        </p>
+<a class="card-button" href="insaat/ulastirma/yatay-kurp.html">
+         Calculate
+        </a>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<div id="footer-placeholder">
+</div>
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const isEnglishPage = window.location.pathname.startsWith('/en/');
+    const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+    const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+    // Header Yükleme
+    fetch(headerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+                headerPlaceholder.innerHTML = data;
+
+                // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
+                const scriptElement = headerPlaceholder.querySelector('script');
+                if (scriptElement) {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                    document.body.appendChild(newScript);
+                    scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                }
+            }
+        })
+        .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+    // Footer Yükleme
+    fetch(footerPath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+                footerPlaceholder.innerHTML = data;
+                // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = data;
+                const footerElement = tempDiv.querySelector('footer');
+                if (footerElement) {
+                    footerPlaceholder.replaceWith(footerElement);
+                }
+            }
+        })
+        .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+});
+  </script>
+</body>
+</html>

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Faydalı Araçlar ve Hesaplayıcılar - Hesapkolik</title>
+
+    <meta content="Günlük hayatınızı ve işlerinizi kolaylaştıracak pratik online araçlar ve hesaplayıcılar. Kelime sayıcı, birim çevirici, rastgele sayı üretici ve daha fazlası." name="description"/>
+    <meta content="faydalı araçlar, pratik hesaplayıcılar, kelime sayıcı, karakter sayıcı, rastgele sayı, renk kodu dönüştürücü, birim çevirici, online araçlar, hesapkolik" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    
+    <style>
+        /* Bu sayfaya özel stil eklemeleri */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Sade ve ferah bir arka plan */
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1000px; /* Biraz daha geniş olabilir */
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Koyu tema başlık/altlık ile uyumlu */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Calculator Grid Section */
+        .calculator-grid-section {
+            padding: 50px 0;
+            text-align: center;
+            flex-grow: 1;
+            background-color: #ffffff; /* Beyaz kart arka planı */
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-grid-section h2 {
+            margin-bottom: 40px;
+            color: #2c3e50; /* Koyu metin rengi */
+            font-size: 2.2em;
+        }
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            justify-content: center;
+            align-items: stretch; /* Kartların aynı yüksekliğe sahip olmasını sağlar */
+            max-width: 960px; /* Grid genişliğini ayarlayın */
+            margin: 0 auto;
+        }
+        .calculator-card {
+            background-color: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative; /* İkonların konumlandırılması için */
+            overflow: hidden; /* Taşmayı önlemek için */
+            min-height: 220px; /* Kartların minimum yüksekliği */
+        }
+        .calculator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: #e74c3c; /* Hover'da renk değişimi */
+        }
+
+        .calculator-card .icon-big {
+            font-size: 3.5em;
+            color: #3498db; /* Mavi tonu */
+            margin-bottom: 20px;
+            opacity: 0.8;
+            transition: color 0.3s ease;
+        }
+        .calculator-card:hover .icon-big {
+            color: #e74c3c; /* Hover'da ikon rengi değişimi */
+        }
+
+        .calculator-card h3 {
+            font-size: 1.6em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .calculator-card p {
+            font-size: 0.95em;
+            color: #666;
+            flex-grow: 1; /* Açıklama metninin boş alanı doldurmasını sağlar */
+            margin-bottom: 20px;
+        }
+        .calculator-card .card-button {
+            display: inline-block;
+            background-color: #3498db; /* CTA butonu rengi */
+            color: white;
+            padding: 10px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .calculator-card .card-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        .calculator-card .card-button.disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Bilgi Bölümü */
+        .info-section {
+            background-color: #ffffff;
+            padding: 35px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-top: 40px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+        }
+        .info-section h3 {
+            color: #2c3e50; /* Bilgi başlığı için farklı renk */
+            font-size: 2em;
+            margin-bottom: 25px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: none; /* Varsayılan madde işaretini kaldır */
+            padding: 0;
+            margin: 0 auto 20px auto;
+            max-width: 700px;
+            text-align: left;
+        }
+        .info-section ul li {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 12px;
+            line-height: 1.6;
+            color: #555;
+        }
+        .info-section ul li::before {
+            content: '✅'; /* Eğlenceli bir ikon */
+            position: absolute;
+            left: 0;
+            color: #27ae60; /* Yeşil checkmark */
+            font-size: 1.2em;
+            top: 0;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .disclaimer-text {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 30px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: center;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5em;
+            }
+            .hero-section p {
+                font-size: 1.1em;
+            }
+            .calculator-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+            .calculator-card {
+                padding: 25px;
+            }
+            .calculator-card .icon-big {
+                font-size: 3em;
+            }
+            .calculator-card h3 {
+                font-size: 1.4em;
+            }
+            .calculator-card p {
+                font-size: 0.9em;
+            }
+            .info-section {
+                padding: 25px;
+            }
+            .info-section h3 {
+                font-size: 1.8em;
+            }
+        }
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 50px 15px;
+            }
+            .hero-section h1 {
+                font-size: 2em;
+            }
+            .hero-section p {
+                font-size: 1em;
+            }
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+            .calculator-card {
+                padding: 20px;
+            }
+            .calculator-card .icon-big {
+                font-size: 2.8em;
+            }
+            .calculator-card h3 {
+                font-size: 1.2em;
+            }
+            .calculator-card p {
+                font-size: 0.85em;
+            }
+            .info-section {
+                padding: 20px;
+            }
+            .info-section h3 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Faydalı Araçlar ve Hesaplayıcılar</h1>
+                <p>Günlük işlerinizi hızlandıracak, verimliliğinizi artıracak ve hayatınızı kolaylaştıracak pratik online araçlar.</p>
+            </div>
+        </section>
+
+        <section class="calculator-grid-section">
+            <div class="container">
+                <h2>İşinizi Kolaylaştıracak Araçlarımız</h2>
+                <div class="calculator-grid">
+                    <div class="calculator-card">
+                        <i class="fas fa-font icon-big"></i>
+                        <h3>Kelime ve Karakter Sayıcı</h3>
+                        <p>Yazdığınız metinlerin kelime, karakter, boşluk ve satır sayılarını anında öğrenin. Yazarlar, öğrenciler ve SEO uzmanları için ideal.</p>
+                        <a class="card-button" href="kelime-karakter-sayici.html">Hesapla</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-dice icon-big"></i>
+                        <h3>Rastgele Sayı Üretici</h3>
+                        <p>Belirlediğiniz aralıkta rastgele bir sayı veya şifreler üretin. Çekilişler, oyunlar veya güvenli parola oluşturmak için kullanışlı.</p>
+                        <a class="card-button" href="random-number-generator.html">Hesapla</a>
+                    </div>
+                    
+                    <div class="calculator-card">
+                        <i class="fas fa-palette icon-big"></i>
+                        <h3>Renk Kodu Dönüştürücü</h3>
+                        <p>RGB, HEX, HSL gibi farklı renk kodları arasında kolayca dönüşüm yapın. Tasarımcılar ve geliştiriciler için pratik bir araç.</p>
+                        <a class="card-button" href="renk-donusum-araci.html">Dönüştür</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-exchange-alt icon-big"></i>
+                        <h3>Birim Çevirici</h3>
+                        <p>Uzunluk, ağırlık, hacim, sıcaklık ve daha birçok ölçü birimini saniyeler içinde birbirine dönüştürün.</p>
+                        <a class="card-button" href="birim-cevirici.html">Çevir</a>
+                    </div>
+
+                    <div class="calculator-card">
+                        <i class="fas fa-barcode icon-big"></i>
+                        <h3>QR Kod Üretici</h3>
+                        <p>Metinleri, URL'leri veya iletişim bilgilerini hızla QR kodlarına dönüştürün.</p>
+                        <a class="card-button" href="qr-kod-uretici.html">Oluştur</a>
+                    </div>
+                                        
+                    <div class="calculator-card">
+                        <i class="fas fa-clock icon-big"></i>
+                        <h3>Zaman Dilimi Dönüştürücü</h3>
+                        <p>Farklı şehirler veya ülkeler arasındaki saat farklarını hızlıca bulun.</p>
+                        <a class="card-button disabled" href="#">Yakında</a>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>Faydalı Araçlar Neden Önemlidir?</h3>
+            <p>
+                Dijital çağda, günlük hayatımızda veya profesyonel işlerimizde karşılaştığımız pek çok küçük hesaplama veya veri dönüştürme ihtiyacı doğar. Faydalı online araçlar ve hesaplayıcılar, bu ihtiyaçları hızlı, doğru ve kolay bir şekilde karşılamak için tasarlanmıştır. Bu araçlar, karmaşık formülleri veya manuel dönüşümleri bilme zorunluluğunu ortadan kaldırarak zaman ve çaba tasarrufu sağlar.
+            </p>
+            <ul>
+                <li>
+                    <strong>Zaman Tasarrufu:</strong> Anlık sonuçlar sunarak uzun süren manuel hesaplamaları veya araştırmaları ortadan kaldırır.
+                </li>
+                <li>
+                    <strong>Hata Azaltma:</strong> Otomatikleştirilmiş süreçler sayesinde insan hatalarını minimize eder.
+                </li>
+                <li>
+                    <strong>Erişilebilirlik:</strong> İnternet bağlantısı olan her yerden kolayca erişilebilir olması, anlık ihtiyaçlar için büyük avantaj sağlar.
+                </li>
+                <li>
+                    <strong>Verimlilik Artışı:</strong> Tekrarlayan görevleri hızlandırarak hem kişisel hem de profesyonel verimliliği artırır.
+                </li>
+                <li>
+                    <strong>Öğrenme ve Keşfetme:</strong> Farklı alanlardaki birimleri, dönüşümleri veya kavramları daha iyi anlamaya yardımcı olur.
+                </li>
+            </ul>
+            <p class="disclaimer-text">
+                Bu sayfada sunulan araçlar ve hesaplayıcılar, genel kullanım ve bilgi amaçlıdır. Sağlanan sonuçlar, profesyonel tavsiye, yasal veya finansal danışmanlık yerine geçmez. Hesaplamalardaki doğruluk için azami özen gösterilmiştir ancak herhangi bir hata veya eksiklikten Hesapkolik sorumlu tutulamaz. Herhangi bir özel durum veya önemli karar için daima ilgili alanda uzman bir profesyonele danışmanız önerilir.
+            </p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        // Header ve Footer yükleme fonksiyonu
+        function loadPartial(elementId, url) {
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        console.error(`HTTP error! Status: ${response.status} for ${url}. Response: ${response.statusText}`);
+                        throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    const placeholder = document.getElementById(elementId);
+                    if (placeholder) {
+                        // Create a temporary div to parse the loaded HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+
+                        // Check if the loaded content is a semantic element (like <header> or <footer>)
+                        const semanticElement = tempDiv.firstElementChild; 
+                        if (semanticElement && (semanticElement.tagName.toLowerCase() === 'header' || semanticElement.tagName.toLowerCase() === 'footer')) {
+                            placeholder.replaceWith(semanticElement); 
+                            // Re-execute scripts within the newly inserted semantic element
+                            const scripts = semanticElement.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                document.body.appendChild(newScript);
+                                oldScript.remove(); 
+                            });
+                        } else {
+                            placeholder.innerHTML = html;
+                            // Re-execute scripts if just innerHTML is loaded (for cases where it's not a full semantic tag)
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                        console.log(`Successfully loaded ${url} into #${elementId}`);
+                    } else {
+                        console.warn(`Placeholder element with ID '${elementId}' not found for URL: ${url}`);
+                    }
+                })
+                .catch(error => {
+                    console.error(`Error loading ${url}:`, error);
+                    const placeholder = document.getElementById(elementId);
+                    if (placeholder) {
+                        placeholder.innerHTML = `<p style="color: red; text-align: center;">Hata: ${elementId} içeriği yüklenemedi.</p>`;
+                    }
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+        });
+    </script>
+</body>
+</html>

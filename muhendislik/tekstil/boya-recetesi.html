@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Boya Reçetesi Hesaplama - Hesapkolik</title>
+
+    <meta content="İstenilen renk tonu için kumaşın ağırlığına ve boya/kimyasal yüzdelerine göre gerekli madde miktarını hesaplayın. Boyahane süreçleri için pratik reçete aracı." name="description"/>
+    <meta content="boya reçetesi, boya hesaplama, kimyasal miktar, tekstil boyama, boyahane, renk tonu, tekstil mühendisliği hesaplamaları, hesapkolik tekstil" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <style>
+        /* General Settings and Font */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Simple and fresh background */
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section (Uyarlanmış Ana Başlık Bölümü) */
+        .hero-section {
+            background-color: #34495e; /* Compatible with dark theme header/footer */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Grubu Bölümü (Karbon Ayak İzi stiline benzer) */
+        .calculator-group-section { /* Yeni bölüm adı */
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff; /* White card background */
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-group-section h2 { /* Sayfa içindeki ana başlık */
+            margin-bottom: 30px;
+            color: #2c3e50; /* Dark text color */
+            font-size: 2.2em;
+        }
+
+        /* Hesaplayıcı Kutusu (calc-wrapper ile aynı stil) */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px; /* Merkeze hizalama için */
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c; /* Hesaplayıcı başlık rengi */
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+
+        /* Form Elemanları */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"],
+        .calc-wrapper input[type="text"] { /* Text input için eklendi */
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper input[type="text"]:focus { /* Text input focus için eklendi */
+            border-color: #3498db;
+            outline: none;
+        }
+        /* input-with-unit için düzenleme */
+        .input-with-unit {
+            display: flex;
+            align-items: center; /* Label ve input/select'i dikeyde ortala */
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alta geçebilir */
+            position: relative; /* Remove button positioning */
+        }
+        .input-with-unit label {
+            flex-basis: 40%; /* Label için daha fazla alan */
+            margin-right: 10px;
+            text-align: left;
+            min-width: 120px; /* Minimum genişlik */
+            margin-bottom: 0; /* Align items will handle vertical spacing */
+        }
+        .input-with-unit input.material-name {
+            flex-basis: 55%; /* Ad inputu için daha fazla alan */
+            flex-grow: 1;
+            margin-right: 10px; /* input ile input arasında boşluk */
+            margin-bottom: 0;
+        }
+        .input-with-unit input.material-percentage {
+            flex-basis: 30%; /* Yüzde inputu için daha az alan */
+            flex-grow: 1;
+            margin-right: 0; /* Remove button'dan önce boşluk yok */
+            margin-bottom: 0;
+        }
+
+        /* Dinamik eklenen satırlardaki "Kaldır" butonu */
+        .remove-material-button {
+            background: none;
+            border: none;
+            color: #e74c3c; /* Kırmızı renk */
+            font-size: 1.5em; /* İkon boyutu */
+            cursor: pointer;
+            margin-left: 10px; /* Input ile buton arasına boşluk */
+            transition: color 0.3s ease;
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px; /* Buton alanını genişlet */
+            height: 30px; /* Buton alanını genişlet */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1; /* Diğer elemanların üzerine çıkmasını sağlar */
+        }
+        .remove-material-button:hover {
+            color: #c0392b;
+        }
+        /* Dinamik olarak eklenen label ve inputların düzeni için,
+           material-input-row içindeki label'ları ve input'ları hizalamak için düzenleme */
+        .material-input-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px; /* Elemanlar arası varsayılan boşluk */
+            margin-bottom: 15px; /* Her satır arasına boşluk */
+            padding-right: 40px; /* Remove butonu için sağdan boşluk */
+            border-bottom: 1px dashed #eee; /* Her bir madde arasına çizgi */
+            padding-bottom: 10px;
+        }
+        .material-input-row:last-of-type {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .material-input-row label {
+            flex-basis: 100%; /* Label yeni satıra geçsin */
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        .material-input-row input {
+            flex-grow: 1; /* Inputlar kalan alanı doldursun */
+            margin-bottom: 0;
+        }
+        /* Madde Adı ve Yüzde inputları yan yana durmalı */
+        .material-input-row .material-name {
+            width: calc(60% - 15px); /* İki input ve boşluklar için */
+            margin-right: 10px;
+        }
+        .material-input-row .material-percentage {
+            width: calc(40% - 15px);
+        }
+
+        .form-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        /* Form Butonları */
+        .calculator-form-container button[type="button"] {
+            background-color: #28a745; /* Confirmation green */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button[type="button"]:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Yeni Madde Ekle butonu */
+        .add-material-button {
+            background-color: #3498db !important; /* Mavi renk, !important ile override */
+            margin-top: 20px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .add-material-button:hover {
+            background-color: #2980b9 !important;
+        }
+
+        /* Sonuç Alanı */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em; /* Daha küçük font boyutu */
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+            display: none; /* Hidden by default */
+            line-height: 1.4;
+        }
+        .result-display h3 {
+            font-size: 1.5em; /* Sonuç başlığı için uygun boyut */
+            margin-bottom: 15px;
+            color: #e74c3c;
+        }
+        .result-display .result-value {
+            color: #e74c3c;
+            font-size: 1.2em; /* Değerler biraz daha büyük */
+            margin-left: 5px;
+        }
+        .result-display .error {
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        .result-display p { /* İç p etiketleri için stil */
+            margin: 5px 0;
+            font-size: 0.8em; /* Genel result-display fontundan farklı */
+        }
+        .result-display strong {
+            font-weight: 600;
+            color: #444;
+        }
+        /* Her bir sonuç maddesi için stil */
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px dashed #dcdfe4;
+        }
+        .result-item:last-of-type {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+
+        /* Bilgilendirme Bölümleri */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+            text-align: left; /* Bilgi yazılarının sola hizalanması */
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px; /* İç boşluk */
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        /* Yeni başlık stili (Form içindeki h4'ler için) */
+        .calc-wrapper h4 {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1.2em;
+            }
+            /* Dinamik eklenen satırlar için responsive düzenleme */
+            .material-input-row {
+                flex-direction: column;
+                align-items: flex-start;
+                padding-right: 0; /* Buton için boşluğu kaldır */
+            }
+            .material-input-row label,
+            .material-input-row input {
+                width: 100%;
+                margin-right: 0;
+            }
+            .material-input-row .remove-material-button {
+                position: static; /* Butonu normal akışa al */
+                transform: none;
+                margin-left: 0;
+                margin-top: 10px; /* Üstteki inputtan boşluk bırak */
+                width: 100%;
+                text-align: right; /* Butonu sağa hizala */
+                padding-right: 0; /* Padding'i sıfırla */
+                justify-content: flex-end; /* İçeriği sağa yasla */
+                font-size: 1.2em; /* Buton ikon boyutunu ayarla */
+                padding: 5px 0;
+            }
+            /* Sadece ikonu göstermek için metni gizle */
+            .remove-material-button::before {
+                content: ''; /* Metni gizle */
+            }
+            .remove-material-button::after { /* İkonu tekrar ekle */
+                font-family: "Font Awesome 5 Free";
+                font-weight: 900;
+                content: "\f057"; /* fa-times-circle kodu */
+                margin-left: 5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-group-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            .result-display {
+                font-size: 0.9em;
+                padding: 15px;
+            }
+            .result-display .result-value {
+                font-size: 1.1em;
+            }
+            .info-section p {
+                padding: 0 10px;
+            }
+            .info-section ul {
+                margin-left: 20px;
+            }
+            /* Responsive'de input-with-unit düzeni */
+            .input-with-unit label,
+            .input-with-unit input {
+                flex-basis: 100%; /* Küçük ekranlarda tam genişlik */
+                margin-right: 0;
+            }
+            .input-with-unit input.material-name,
+            .input-with-unit input.material-percentage {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Boya Reçetesi Hesaplayıcı</h1>
+                <p>Tekstil boyama işlemlerinde, istenilen renk tonunu ve kalitesini elde etmek için doğru boya ve yardımcı kimyasal madde miktarlarını belirlemek çok önemlidir.</p>
+            </div>
+        </section>
+
+        <section class="calculator-group-section">
+            <div class="container">
+                <h2>Boya ve Kimyasal Miktarı Hesapla</h2>
+
+                <div class="calc-wrapper"> <h3><i class="fas fa-tint icon-small"></i> Boya Reçetesi Hesaplama</h3>
+                    <div class="calculator-form-container">
+                        <form id="dyeRecipeForm">
+                            <p class="small-text">Lütfen boyanacak kumaşın kuru ağırlığını ve her bir boya/kimyasal için yüzde (%) değerini girin. Yüzde değeri kumaş ağırlığına oranla (%) hesaplanır (OWF - On Weight of Fabric).</p>
+
+                            <div class="input-with-unit">
+                                <label for="fabricWeight">Kumaş Ağırlığı (kg):</label>
+                                <input id="fabricWeight" min="0.01" placeholder="Örn: 100" required="" step="0.01" type="number"/>
+                            </div>
+
+                            <div class="form-divider"></div>
+
+                            <h4>Boya ve Kimyasal Bilgileri</h4>
+                            <div id="materialInputs">
+                                <div class="input-with-unit material-input-row" data-material-id="1">
+                                    <label for="material1Name">Madde Adı 1:</label>
+                                    <input class="material-name" id="material1Name" placeholder="Örn: Kırmızı Boya" type="text"/>
+                                    <label for="material1Percentage">Yüzde (%):</label>
+                                    <input class="material-percentage" id="material1Percentage" min="0" placeholder="Örn: 1.5" required="" step="0.01" type="number"/>
+                                    </div>
+                                <div class="input-with-unit material-input-row" data-material-id="2">
+                                    <label for="material2Name">Madde Adı 2:</label>
+                                    <input class="material-name" id="material2Name" placeholder="Örn: Tuz" type="text"/>
+                                    <label for="material2Percentage">Yüzde (%):</label>
+                                    <input class="material-percentage" id="material2Percentage" min="0" placeholder="Örn: 60" required="" step="0.01" type="number"/>
+                                    </div>
+                            </div>
+
+                            <button class="add-material-button" type="button">
+                                <i class="fas fa-plus"></i> Yeni Madde Ekle
+                            </button>
+                            <button type="button" onclick="calculateDyeRecipe()">
+                                Hesapla
+                            </button>
+                        </form>
+
+                        <div class="result-display" id="resultBox">
+                            <h3>Sonuçlar (Gerekli Miktarlar):</h3>
+                            </div>
+
+                        <p class="small-text">Hesaplanan miktarlar kumaşın kuru ağırlığına göre gram veya kilogram cinsindendir. Laboratuvar uygulamalarında boya/kimyasalın konsantrasyonu ve stok çözelti oranları dikkate alınmalıdır.</p>
+                    </div>
+                </div>
+
+                <section class="info-section container">
+                    <h3>Boya Reçetesi Nedir?</h3>
+                    <p>
+                        <strong>Boya reçetesi</strong>, tekstil materyalini (iplik, kumaş, elyaf) istenilen renk ve tuşeye ulaştırmak için gerekli olan boya maddelerinin ve yardımcı kimyasalların miktarını, oranlarını, uygulama koşullarını (sıcaklık, süre, pH vb.) ve sırasını belirten detaylı bir talimat setidir. Her renk tonu ve her elyaf türü için özel bir reçete oluşturulur.
+                    </p>
+                    <p>
+                        Reçeteler genellikle "Kumaş Ağırlığına Göre Yüzde" (OWF - On Weight of Fabric/Fiber) prensibine göre hazırlanır. Bu, kullanılacak boya veya kimyasalın, boyanacak materyalin kuru ağırlığına oranla yüzde kaçının kullanılacağını belirtir.
+                    </p>
+                    <h4>Boya Reçetesi Neden Önemlidir?</h4>
+                    <ul>
+                        <li><strong>Renk Tutarlılığı:</strong> Aynı rengin farklı üretim partilerinde veya farklı makinelerde aynı tonu vermesini sağlamak.</li>
+                        <li><strong>Maliyet Kontrolü:</strong> Boya ve kimyasal israfını önleyerek üretim maliyetlerini düşürmek.</li>
+                        <li><strong>Kalite Güvencesi:</strong> Boyama hatalarını (lekelenme, ton farkı vb.) minimize etmek.</li>
+                        <li><strong>Çevresel Etki:</strong> Kimyasal kullanımını optimize ederek atık miktarını azaltmak.</li>
+                        <li><strong>Verimlilik:</strong> Boyama proseslerinin hızlı ve etkin bir şekilde yürütülmesini sağlamak.</li>
+                    </ul>
+                    <h4>Boya ve Kimyasal Miktarı Nasıl Hesaplanır?</h4>
+                    <p>
+                        Gerekli boya veya kimyasal miktarı, kumaşın kuru ağırlığı ve reçetedeki yüzde değeri kullanılarak basit bir orantıyla hesaplanır:
+                    </p>
+                    <p class="formula-text">
+                        Madde Miktarı (kg) = (Kumaş Ağırlığı (kg) * Madde Yüzdesi (%)) / 100
+                    </p>
+                    <p>
+                        Bu formül, kumaş ağırlığı kilogram cinsinden ise sonuç miktarı da kilogram cinsinden verecektir. Gram cinsinden bir hesaplama için kumaş ağırlığını gram cinsinden girmeniz yeterlidir.
+                    </p>
+                    <h4>Uygulama Alanları:</h4>
+                    <ul>
+                        <li>Tekstil boyahaneleri ve baskı işletmeleri.</li>
+                        <li>Kimyasal tedarikçiler ve formülasyon geliştirme.</li>
+                        <li>Kalite kontrol laboratuvarları.</li>
+                        <li>Ar-Ge departmanları (yeni renkler ve prosesler geliştirme).</li>
+                        <li>Hazır giyim ve ev tekstili üretim tesisleri.</li>
+                    </ul>
+                    <p class="disclaimer-text">
+                        Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Gerçek boyahane operasyonlarında, laboratuvar ölçekli denemeler, boya verimi, suyun sertliği, yardımcı kimyasalların pH'ı etkileme gücü, makine tipi ve boya banyosu oranı gibi birçok ek faktör dikkate alınmalıdır. Hassas ve ticari boyama uygulamaları için deneyimli boyama mühendislerine ve detaylı laboratuvar analizlerine başvurulmalıdır. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize
+                        <a href="../../iletisim.html">iletişim</a> sayfamızdan ulaşın.
+                    </p>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header and Footer loading functions
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // Load header and footer based on URL
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // --- JavaScript for Dye Recipe Calculation ---
+
+            // Language detection & texts
+            const texts = {
+                tr: {
+                    mainHeading: 'Boya Reçetesi Hesaplayıcı',
+                    mainDescription: 'Tekstil boyama işlemlerinde, istenilen renk tonunu ve kalitesini elde etmek için doğru boya ve yardımcı kimyasal madde miktarlarını belirlemek çok önemlidir.',
+                    calculateQuantitiesTitle: 'Boya ve Kimyasal Miktarı Hesapla',
+                    inputInstruction: 'Lütfen boyanacak kumaşın kuru ağırlığını ve her bir boya/kimyasal için yüzde (%) değerini girin. Yüzde değeri kumaş ağırlığına oranla (%) hesaplanır (OWF - On Weight of Fabric).',
+                    fabricWeightLabel: 'Kumaş Ağırlığı (kg):',
+                    materialInfoTitle: 'Boya ve Kimyasal Bilgileri',
+                    materialNameLabel: 'Madde Adı {num}:',
+                    materialPercentageLabel: 'Yüzde (%):',
+                    materialNamePlaceholder: 'Örn: Kırmızı Boya',
+                    materialPercentagePlaceholder: 'Örn: 1.5',
+                    addMaterialText: '<i class="fas fa-plus"></i> Yeni Madde Ekle',
+                    calculateButtonText: 'Hesapla',
+                    resultsTitle: 'Sonuçlar (Gerekli Miktarlar):',
+                    materialAmountResult: '{name}: <span class="result-value">{amount}</span> kg',
+                    totalEnteredPercentage: 'Girilen Yüzdelerin Toplamı:',
+                    fabricWeightResult: 'Kumaş Ağırlığı:',
+                    unit_kg: 'kg',
+                    unit_percent: '%',
+                    bottomNote: 'Hesaplanan miktarlar kumaşın kuru ağırlığına göre gram veya kilogram cinsindendir. Laboratuvar uygulamalarında boya/kimyasalın konsantrasyonu ve stok çözelti oranları dikkate alınmalıdır.',
+                    invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                    errorPercentageRange: 'Yüzde oranları 0 ile 100 arasında olmalıdır.',
+                    infoRemainingPercentage: 'Girilen yüzdelerin toplamı %{sum} oldu. Kalan kısım genellikle su veya açıcı patıdır. Toplamın %100 olması beklenir.',
+                    removeMaterialText: 'Kaldır',
+                    defaultMaterialName: 'Madde' // For unnamed materials
+                },
+                en: {
+                    mainHeading: 'Dye Recipe Calculator',
+                    mainDescription: 'In textile dyeing processes, it is very important to determine the correct amounts of dyes and auxiliary chemicals to obtain the desired color tone and quality.',
+                    calculateQuantitiesTitle: 'Calculate Dye and Chemical Amount',
+                    inputInstruction: 'Please enter the dry weight of the fabric to be dyed and the percentage (%) for each dye/chemical. The percentage value is calculated in proportion to the fabric weight (%) (OWF - On Weight of Fabric).',
+                    fabricWeightLabel: 'Fabric Weight (kg):',
+                    materialInfoTitle: 'Dye and Chemical Information',
+                    materialNameLabel: 'Material Name {num}:',
+                    materialPercentageLabel: 'Percentage (%) (OWF):',
+                    materialNamePlaceholder: 'Ex: Red Dye',
+                    materialPercentagePlaceholder: 'Ex: 1.5',
+                    addMaterialText: '<i class="fas fa-plus"></i> Add New Material',
+                    calculateButtonText: 'Calculate',
+                    resultsTitle: 'Results (Required Quantities):',
+                    materialAmountResult: '{name}: <span class="result-value">{amount}</span> kg',
+                    totalEnteredPercentage: 'Total Entered Percentage:',
+                    fabricWeightResult: 'Fabric Weight:',
+                    unit_kg: 'kg',
+                    unit_percent: '%',
+                    bottomNote: 'The calculated amounts are in grams or kilograms according to the dry weight of the fabric. In laboratory applications, the concentration of the dye/chemical and stock solution ratios should be taken into account.',
+                    invalidInput: 'Please enter valid positive numbers for all fields.',
+                    errorPercentageRange: 'Percentage values must be between 0 and 100.',
+                    infoRemainingPercentage: 'The sum of entered percentages is {sum}%. The remaining portion is typically water or diluent paste. Total is expected to be 100%.',
+                    removeMaterialText: 'Remove',
+                    defaultMaterialName: 'Material'
+                }
+            };
+
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // Update main titles and descriptions
+            document.querySelector('.hero-section h1').textContent = currentTexts.mainHeading;
+            document.querySelector('.hero-section p').textContent = currentTexts.mainDescription;
+            document.querySelector('.calculator-group-section h2').textContent = currentTexts.calculateQuantitiesTitle;
+
+            // --- DOM Elements ---
+            const dyeRecipeForm = document.getElementById('dyeRecipeForm');
+            const fabricWeightInput = document.getElementById('fabricWeight');
+            const materialInputsContainer = document.getElementById('materialInputs');
+            const resultBox = document.getElementById('resultBox');
+            const addMaterialButton = document.querySelector('.add-material-button'); // Use existing class as selector
+            const calculateButton = document.querySelector('#dyeRecipeForm button[onclick="calculateDyeRecipe()"]'); // Select the calculate button
+
+            // Initial material count (based on existing HTML rows)
+            let materialCounter = materialInputsContainer.children.length; 
+
+            // Update form specific labels and placeholders
+            document.querySelector('.calc-wrapper h3').innerHTML = `<i class="fas fa-tint icon-small"></i> ${currentTexts.calculateQuantitiesTitle}`;
+            dyeRecipeForm.querySelector('p.small-text').textContent = currentTexts.inputInstruction;
+            document.getElementById('fabricWeight').previousElementSibling.textContent = currentTexts.fabricWeightLabel;
+            document.getElementById('fabricWeight').placeholder = 'Örn: 100'; // Keep static placeholder for consistency
+
+            // Update Add Material button text
+            if (addMaterialButton) {
+                addMaterialButton.innerHTML = currentTexts.addMaterialText;
+            }
+
+            // Update Calculate button text
+            if (calculateButton) {
+                calculateButton.textContent = currentTexts.calculateButtonText;
+            }
+
+            // Update static material labels and placeholders
+            function updateStaticMaterialLabels() {
+                for (let i = 1; i <= materialCounter; i++) { // For material1, material2 etc.
+                    const nameLabel = document.querySelector(`label[for="material${i}Name"]`);
+                    const percentageLabel = document.querySelector(`label[for="material${i}Percentage"]`);
+                    const nameInput = document.getElementById(`material${i}Name`);
+                    const percentageInput = document.getElementById(`material${i}Percentage`);
+
+                    if (nameLabel) {
+                        nameLabel.textContent = currentTexts.materialNameLabel.replace('{num}', i);
+                    }
+                    if (percentageLabel) {
+                        percentageLabel.textContent = currentTexts.materialPercentageLabel;
+                    }
+                    if (nameInput) {
+                        nameInput.placeholder = currentTexts.materialNamePlaceholder;
+                    }
+                    if (percentageInput) {
+                        percentageInput.placeholder = currentTexts.materialPercentagePlaceholder;
+                    }
+                }
+            }
+            updateStaticMaterialLabels(); // Call on load to update static labels
+
+            // Update material info title
+            document.querySelector('#dyeRecipeForm h4:nth-of-type(1)').textContent = currentTexts.materialInfoTitle;
+            
+            // Update bottom note
+            document.querySelector('.calculator-form-container > p.small-text').textContent = currentTexts.bottomNote;
+
+            // --- Add Material Input Function ---
+            window.addMaterialInput = function() {
+                materialCounter++;
+                const newMaterialRow = document.createElement('div');
+                newMaterialRow.classList.add('input-with-unit', 'material-input-row');
+                newMaterialRow.setAttribute('data-material-id', materialCounter);
+
+                newMaterialRow.innerHTML = `
+                    <label for="material${materialCounter}Name">${currentTexts.materialNameLabel.replace('{num}', materialCounter)}:</label>
+                    <input type="text" class="material-name" id="material${materialCounter}Name" placeholder="${currentTexts.materialNamePlaceholder}">
+                    <label for="material${materialCounter}Percentage">${currentTexts.materialPercentageLabel}</label>
+                    <input type="number" class="material-percentage" id="material${materialCounter}Percentage" min="0" step="0.01" placeholder="${currentTexts.materialPercentagePlaceholder}" required>
+                    <button type="button" class="remove-material-button" title="${currentTexts.removeMaterialText}"><i class="fas fa-times-circle"></i></button>
+                `;
+                materialInputsContainer.appendChild(newMaterialRow);
+
+                // Add event listener for the new remove button
+                newMaterialRow.querySelector('.remove-material-button').addEventListener('click', function() {
+                    newMaterialRow.remove();
+                    // Re-calculate results after removal if results are currently displayed
+                    if (resultBox.style.display === 'block') {
+                        calculateDyeRecipe();
+                    }
+                });
+            };
+
+            // --- Main Calculation Function ---
+            window.calculateDyeRecipe = function() {
+                let fabricWeight = parseFloat(fabricWeightInput.value);
+
+                // Clear previous results
+                resultBox.innerHTML = `<h3>${currentTexts.resultsTitle}</h3>`;
+                resultBox.style.display = 'none';
+
+                // Validate fabric weight
+                if (isNaN(fabricWeight) || fabricWeight <= 0) {
+                    resultBox.innerHTML += `<p class="error">${currentTexts.invalidInput}</p>`;
+                    resultBox.style.display = 'block';
+                    return;
+                }
+
+                let totalPercentageSum = 0;
+                const materialRows = materialInputsContainer.querySelectorAll('.material-input-row');
+                let resultsHtmlContent = '';
+                let hasError = false;
+
+                materialRows.forEach(row => {
+                    const nameInput = row.querySelector('.material-name');
+                    const percentageInput = row.querySelector('.material-percentage');
+
+                    let materialName = nameInput ? nameInput.value.trim() : '';
+                    let percentage = parseFloat(percentageInput ? percentageInput.value : '');
+
+                    // Only process rows with valid inputs
+                    if (isNaN(percentage) || percentage < 0 || percentage > 100) {
+                        resultBox.innerHTML = `<h3>${currentTexts.resultsTitle}</h3><p class="error">${currentTexts.errorPercentageRange}</p>`;
+                        resultBox.style.display = 'block';
+                        hasError = true;
+                        return; // Exit forEach
+                    }
+
+                    // If percentage is 0 and name is empty, skip this row
+                    if (percentage === 0 && materialName === '') {
+                        return;
+                    }
+
+                    if (materialName === '') { // If name is empty, use a generic name based on its percentage or index
+                        materialName = `${currentTexts.defaultMaterialName} (${percentage.toFixed(2)}%)`;
+                    }
+
+                    const amount = (fabricWeight * percentage) / 100;
+                    totalPercentageSum += percentage;
+
+                    resultsHtmlContent += `
+                        <div class="result-item">
+                            <strong>${materialName}</strong>
+                            <span class="result-value">${amount.toFixed(3)} ${currentTexts.unit_kg}</span>
+                        </div>
+                    `;
+                });
+
+                if (hasError) return; // Stop if any error occurred during validation
+
+                // Display results
+                resultBox.innerHTML += resultsHtmlContent;
+
+                resultBox.innerHTML += `
+                    <hr class="form-divider" style="margin: 15px 0;">
+                    <div class="result-item">
+                        <strong>${currentTexts.totalEnteredPercentage}</strong>
+                        <span class="result-value">${totalPercentageSum.toFixed(2)} ${currentTexts.unit_percent}</span>
+                    </div>
+                    <div class="result-item">
+                        <strong>${currentTexts.fabricWeightResult}</strong>
+                        <span class="result-value">${fabricWeight.toFixed(2)} ${currentTexts.unit_kg}</span>
+                    </div>
+                `;
+
+                // Warn if total percentage is not 100% (with a small tolerance for floating point errors)
+                if (totalPercentageSum > 100.01 || totalPercentageSum < 99.99) {
+                    resultBox.innerHTML += `<p class="small-text error">${currentTexts.infoRemainingPercentage.replace('{sum}', totalPercentageSum.toFixed(2))}</p>`;
+                }
+
+                resultBox.style.display = 'block';
+            };
+
+            // Update Info Section Text
+            function updateInfoSectionContent() {
+                // Main Info Section Title
+                document.querySelector('.info-section h3').textContent = isEnglishPage ? 'What is a Dye Recipe?' : 'Boya Reçetesi Nedir?';
+
+                // First paragraphs
+                document.querySelector('.info-section p:nth-of-type(1)').innerHTML = isEnglishPage ?
+                    `<strong>Dye recipe</strong> is a detailed set of instructions that specify the amount, proportions, application conditions (temperature, time, pH, etc.) and order of dyes and auxiliary chemicals required to achieve the desired color and touch of the textile material (yarn, fabric, fiber). A special recipe is created for each color tone and each fiber type.<br><br>Recipes are usually prepared according to the &quot;Percentage on Weight of Fabric/Fiber&quot; (OWF) principle. This indicates what percentage of the dye or chemical to be used is used in relation to the dry weight of the material to be dyed.` :
+                    `<strong>Boya reçetesi</strong>, tekstil materyalini (iplik, kumaş, elyaf) istenilen renk ve tuşeye ulaştırmak için gerekli olan boya maddelerinin ve yardımcı kimyasalların miktarını, oranlarını, uygulama koşullarını (sıcaklık, süre, pH vb.) ve sırasını belirten detaylı bir talimat setidir. Her renk tonu ve her elyaf türü için özel bir reçete oluşturulur.<br><br>Reçeteler genellikle "Kumaş Ağırlığına Göre Yüzde" (OWF - On Weight of Fabric/Fiber) prensibine göre hazırlanır. Bu, kullanılacak boya veya kimyasalın, boyanacak materyalin kuru ağırlığına oranla yüzde kaçının kullanılacağını belirtir.`;
+
+                // Why Important section
+                document.querySelector('.info-section h4:nth-of-type(1)').textContent = isEnglishPage ? 'Why Is Dye Recipe Important?' : 'Boya Reçetesi Neden Önemlidir?';
+                const ul1 = document.querySelector('.info-section ul:nth-of-type(1)');
+                if (ul1) {
+                    ul1.innerHTML = `
+                        <li>${isEnglishPage ? '<strong>Color Consistency:</strong> Ensuring that the same color gives the same tone in different production batches or different machines.' : '<strong>Renk Tutarlılığı:</strong> Aynı rengin farklı üretim partilerinde veya farklı makinelerde aynı tonu vermesini sağlamak.'}</li>
+                        <li>${isEnglishPage ? '<strong>Cost Control:</strong> Reducing production costs by preventing paint and chemical waste.' : '<strong>Maliyet Kontrolü:</strong> Boya ve kimyasal israfını önleyerek üretim maliyetlerini düşürmek.'}</li>
+                        <li>${isEnglishPage ? '<strong>Quality Assurance:</strong> To minimize dyeing errors (staining, tone difference, etc.).' : '<strong>Kalite Güvencesi:</strong> Boyama hatalarını (lekelenme, ton farkı vb.) minimize etmek.'}</li>
+                        <li>${isEnglishPage ? '<strong>Environmental Impact:</strong> Reducing waste by optimizing chemical use.' : '<strong>Çevresel Etki:</strong> Kimyasal kullanımını optimize ederek atık miktarını azaltmak.'}</li>
+                        <li>${isEnglishPage ? '<strong>Efficiency:</strong> To ensure that painting processes are carried out quickly and effectively.' : '<strong>Verimlilik:</strong> Boyama proseslerinin hızlı ve etkin bir şekilde yürütülmesini sağlamak.'}</li>
+                    `;
+                }
+                
+                // How to Calculate section
+                document.querySelector('.info-section h4:nth-of-type(2)').textContent = isEnglishPage ? 'How to Calculate Dye and Chemical Quantities?' : 'Boya ve Kimyasal Miktarı Nasıl Hesaplanır?';
+                document.querySelector('.info-section p:nth-of-type(3)').innerHTML = isEnglishPage ?
+                    'The amount of dye or chemical required is calculated using the dry weight of the fabric and the percentage value in the recipe using a simple ratio:' :
+                    'Gerekli boya veya kimyasal miktarı, kumaşın kuru ağırlığı ve reçetedeki yüzde değeri kullanılarak basit bir orantıyla hesaplanır:';
+                document.querySelector('.info-section p.formula-text').textContent = isEnglishPage ?
+                    'Material Amount (kg) = (Fabric Weight (kg) * Material Percentage (%)) / 100' :
+                    'Madde Miktarı (kg) = (Kumaş Ağırlığı (kg) * Madde Yüzdesi (%)) / 100';
+                document.querySelector('.info-section p:nth-of-type(5)').innerHTML = isEnglishPage ?
+                    'This formula will give the result in kilograms if the fabric weight is in kilograms. For a calculation in grams, simply enter the fabric weight in grams.' :
+                    'Bu formül, kumaş ağırlığı kilogram cinsinden ise sonuç miktarı da kilogram cinsinden verecektir. Gram cinsinden bir hesaplama için kumaş ağırlığını gram cinsinden girmeniz yeterlidir.';
+
+                // Application Areas section
+                document.querySelector('.info-section h4:nth-of-type(3)').textContent = isEnglishPage ? 'Application Areas:' : 'Uygulama Alanları:';
+                const ul2 = document.querySelector('.info-section ul:nth-of-type(2)');
+                if (ul2) {
+                    ul2.innerHTML = `
+                        <li>${isEnglishPage ? 'Textile dyehouses and printing enterprises.' : 'Tekstil boyahaneleri ve baskı işletmeleri.'}</li>
+                        <li>${isEnglishPage ? 'Chemical suppliers and formulation development.' : 'Kimyasal tedarikçiler ve formülasyon geliştirme.'}</li>
+                        <li>${isEnglishPage ? 'Quality control laboratories.' : 'Kalite kontrol laboratuvarları.'}</li>
+                        <li>${isEnglishPage ? 'R&D departments (developing new colours and processes).' : 'Ar-Ge departmanları (yeni renkler ve prosesler geliştirme).'}</li>
+                        <li>${isEnglishPage ? 'Ready-made clothing and home textile production facilities.' : 'Hazır giyim ve ev tekstili üretim tesisleri.'}</li>
+                    `;
+                }
+
+                // Disclaimer
+                const disclaimerLinkText = isEnglishPage ? 'communication' : 'iletişim';
+                document.querySelector('.info-section .disclaimer-text').innerHTML = isEnglishPage ?
+                    `This calculator is for general information purposes only and provides theoretical calculations. Actual dyehouse operations require many additional factors such as laboratory scale trials, dye yield, water hardness, pH affecting power of auxiliary chemicals, machine type and dye bath ratio. For sensitive and commercial dyeing applications, experienced dye engineers and detailed laboratory analysis should be consulted. If you have any problems with your calculations, please contact us <a href="../../contact.html">${disclaimerLinkText}</a> reach us from our page.` :
+                    `Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Gerçek boyahane operasyonlarında, laboratuvar ölçekli denemeler, boya verimi, suyun sertliği, yardımcı kimyasalların pH'ı etkileme gücü, makine tipi ve boya banyosu oranı gibi birçok ek faktör dikkate alınmalıdır. Hassas ve ticari boyama uygulamaları için deneyimli boyama mühendislerine ve detaylı laboratuvar analizlerine başvurulmalıdır. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize <a href="../../iletisim.html">${disclaimerLinkText}</a> sayfamızdan ulaşın.`;
+            }
+            updateInfoSectionContent(); // Update info section on page load
+        });
+    </script>
+</body>
+</html>

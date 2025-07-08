@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Factorial Design of Experiments Generator - Hesapkolik</title>
+
+    <meta content="Analyze your products and processes comprehensively with Factorial Design of Experiments. Generate full factorial designs by entering factors and levels." name="description"/>
+    <meta content="Factorial design, design of experiments, full factorial, fractional factorial, quality engineering, ANOVA, statistical experiment, hesapkolik quality" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <style>
+        /* General Settings and Font */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Simple and fresh background */
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Dark theme compatible with header/footer */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Calculator Section */
+        .calculator-section { /* New name */
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff;
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 { /* New title style */
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        /* General style for each calculator form */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        /* Form Elements */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .input-with-unit-group, .input-with-unit { /* Combined these two classes */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .input-with-unit-group label, .input-with-unit label {
+            flex-basis: auto;
+            width: 100%;
+            margin-bottom: 0;
+            text-align: left;
+        }
+        .input-with-unit-group input[type="number"], .input-with-unit-group select,
+        .input-with-unit input[type="number"], .input-with-unit select {
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+        .form-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        /* Dynamic Factor Inputs */
+        #factorLevelsContainer .factor-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        #factorLevelsContainer .factor-input-group label {
+            font-weight: 500;
+            color: #444;
+        }
+        #factorLevelsContainer .factor-input-group input[type="number"] {
+            width: calc(100% - 20px); /* Account for padding */
+            margin-bottom: 0;
+        }
+
+
+        /* Form buttons */
+        .calculator-form-container button[type="submit"] {
+            background-color: #28a745; /* Green for confirmation */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button[type="submit"]:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Result Display */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+            display: none; /* Hidden by default */
+        }
+        .result-display .result-value {
+            color: #e74c3c;
+        }
+        .result-display .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+        .result-display p { /* Correction for result paragraph */
+            padding: 0;
+            margin: 5px 0;
+            text-align: center;
+            font-size: 1.2em; /* Slightly smaller */
+            line-height: 1.4;
+        }
+        .result-display h3 {
+            font-size: 1.8em; /* Reduce H3 size */
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #2c3e50; /* Not red */
+        }
+
+        /* Orthogonal Array Table Styles */
+        .design-table-container {
+            margin-top: 20px;
+            overflow-x: auto; /* Scrollbar for small screens */
+            background-color: #ffffff; /* Table background */
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        .design-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            text-align: center;
+        }
+        .design-table th, .design-table td {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+        }
+        .design-table th {
+            background-color: #34495e;
+            color: white;
+            font-weight: 600;
+        }
+        .design-table tbody tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+        .design-table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+
+        /* Explanation sections */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        /* New Carbon Footprint heading style */
+        .calc-wrapper h4 {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+            text-align: left; /* Align headings to the left */
+        }
+        .calculator-form-container p.small-text { /* Small text inside the form */
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1.4em;
+            }
+            .input-with-unit-group, .input-with-unit {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+            }
+            .input-with-unit-group label, .input-with-unit label {
+                margin-bottom: 5px;
+                text-align: left;
+            }
+            .input-with-unit-group input[type="number"], .input-with-unit-group select,
+            .input-with-unit input[type="number"], .input-with-unit select {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            .result-display {
+                font-size: 1em;
+                padding: 15px;
+            }
+            .result-display .result-value {
+                font-size: 1.2em;
+            }
+            .design-table {
+                font-size: 0.8em;
+            }
+        }
+    </style>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Factorial Design of Experiments Generator</h1>
+                <p>Comprehensively examine the main effects and interactions of critical factors in your processes and products with Factorial Design of Experiments.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper active-calc" id="calculator-factorialDesign">
+                    <h3><i class="fas fa-cubes icon-small"></i> Generate Factorial Design</h3>
+                    <div class="calculator-form-container">
+                        <form id="factorialDesignForm">
+                            <p class="small-text">Please enter the number of factors for your experiment and the number of levels for each factor.</p>
+
+                            <h4>Experiment Information</h4>
+                            <div class="input-with-unit-group">
+                                <label for="numFactors">Number of Factors:</label>
+                                <input id="numFactors" min="2" max="6" placeholder="Ex: 3" step="1" type="number" required/>
+                                <p class="small-text">Currently, 2 to 6 factors are supported.</p>
+                            </div>
+
+                            <div class="form-divider"></div>
+
+                            <h4>Factor Levels</h4>
+                            <p class="small-text">Specify the number of levels to be used in the experiment for each factor. Each factor can have a different number of levels.</p>
+                            <div id="factorLevelsContainer">
+                            </div>
+
+                            <button type="submit">Generate Design</button>
+                        </form>
+                        <div class="result-display" id="resultBox">
+                            <h3>Generated Factorial Experiment Design:</h3>
+                            <p id="designResult"></p>
+                            <div id="designTableContainer"></div>
+                        </div>
+                        <div class="calc-explanation">
+                            <p class="small-text">This tool generates a **full factorial experiment design** based on the number of factors and levels you enter. Note that the number of experiments increases rapidly with the number of factors and levels. For a large number of factors or levels, **fractional factorial designs** might be more suitable.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>What is Factorial Design of Experiments?</h3>
+            <p><strong>Factorial Design of Experiments (DOE)</strong> is a powerful statistical method that allows for the simultaneous investigation of the effects of multiple factors (independent variables) and their interactions on an outcome (dependent variable) in an experiment. This design systematically explores all possible combinations of different levels for each factor.</p>
+            <p>In its most common type, **Full Factorial Design**, every level of each factor is combined with every level of all other factors. This allows for the simultaneous evaluation of all main effects (the effect of each factor alone) and all interaction effects (the effect of combinations of factors on each other).</p>
+            <h4>Why is Factorial Design Important?</h4>
+            <ul>
+                <li><strong>Comprehensive Understanding:</strong> It reveals not only main effects but also complex relationships (interactions) between factors. This provides a deeper insight into how the process or product behaves.</li>
+                <li><strong>Efficiency:</strong> By examining multiple factors at once, more information is obtained with fewer experimental runs compared to one-factor-at-a-time experiments.</li>
+                <li><strong>Optimization:</strong> Helps identify the combination of factors that yields the best performance.</li>
+                <li><strong>Robustness:</strong> Can be used to understand how sensitive a process is to noise factors.</li>
+            </ul>
+            <h4>How to Implement Factorial Design?</h4>
+            <p>The basic steps of factorial design are as follows:</p>
+            <ul>
+                <li><strong>Problem Definition:</strong> The objective of the experiment, the outputs to be investigated, and potential factors are identified.</li>
+                <li><strong>Factor and Level Selection:</strong> Controllable factors (e.g., temperature, pressure) and the levels to be used for each factor in the experiment (e.g., low/high, 100°C/120°C/140°C) are determined.</li>
+                <li><strong>Creation of the Experimental Matrix:</strong> A matrix containing all experimental conditions is created based on the selected factor and level combinations. For example, a 2-factor design with 2 levels each requires $2^2 = 4$ experimental runs. If there are $k$ factors and each factor has $n$ levels, the number of experiments is $n^k$.</li>
+                <li><strong>Conducting Experiments:</strong> Experiments are carefully conducted according to the created matrix, and results are collected for each experimental condition.</li>
+                <li><strong>Data Analysis:</strong> Collected data is typically analyzed using Analysis of Variance (ANOVA). This analysis helps determine which factors and interactions have a statistically significant effect on the outcome.</li>
+                <li><strong>Interpretation of Results and Verification:</strong> Analysis results are interpreted, optimal conditions are determined, and additional verification experiments are conducted if necessary.</li>
+            </ul>
+            <p class="formula-text">
+                <strong>Total Number of Experimental Runs (Full Factorial):</strong><br/>
+                $N = n_1 \times n_2 \times \dots \times n_k$
+                <br/>(Where $N$ is the total number of experiments, $n_i$ is the number of levels for each factor, and $k$ is the number of factors.)
+            </p>
+            <p>
+                <strong>Explanations:</strong>
+                <ul>
+                    <li>
+                    <strong>Factors:</strong> Independent variables that are changed in an experiment (e.g., speed, temperature).
+                    </li>
+                    <li>
+                    <strong>Levels:</strong> Different values or settings a factor can take (e.g., low, medium, high for speed).
+                    </li>
+                    <li>
+                    <strong>Main Effect:</strong> The effect of a single factor on the outcome, independent of the levels of other factors.
+                    </li>
+                    <li>
+                    <strong>Interaction Effect:</strong> The situation where the effect of one factor changes depending on the level of another factor.
+                    </li>
+                </ul>
+            </p>
+            <h4>Application Areas:</h4>
+            <ul>
+                <li>Product and process development and optimization.</li>
+                <li>Drug development and clinical trials.</li>
+                <li>Food science and agriculture.</li>
+                <li>Engineering and manufacturing process improvement.</li>
+                <li>Marketing and customer behavior analysis.</li>
+            </ul>
+            <p class="disclaimer-text">
+                This calculator is for general informational purposes and provides theoretical Factorial Design of Experiments suggestions. In real-world applications, many factors such as the complexity of the experiment, the nature of the factors, and their interactions can affect the results. For precise commercial or scientific applications, it is recommended to use statistical software and seek support from experts in the field. If you encounter any issues with your calculations, please reach out to us via our
+                <a href="../../iletisim.html">
+                contact
+                </a>
+                page.
+            </p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header and Footer loading functions
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            // Find and execute script tags within the loaded HTML
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // Load header and footer based on URL
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            const factorialDesignForm = document.getElementById('factorialDesignForm');
+            const numFactorsInput = document.getElementById('numFactors');
+            const factorLevelsContainer = document.getElementById('factorLevelsContainer');
+            const resultBox = document.getElementById('resultBox');
+            const designResult = document.getElementById('designResult');
+            const designTableContainer = document.getElementById('designTableContainer');
+
+            // Create level inputs when the number of factors changes
+            numFactorsInput.addEventListener('input', function() {
+                const numFactors = parseInt(numFactorsInput.value);
+                factorLevelsContainer.innerHTML = ''; // Clear previous inputs
+
+                if (isNaN(numFactors) || numFactors < 2 || numFactors > 6) {
+                    return; // Invalid number
+                }
+
+                for (let i = 0; i < numFactors; i++) {
+                    const factorGroup = document.createElement('div');
+                    factorGroup.classList.add('factor-input-group');
+                    factorGroup.innerHTML = `
+                        <label for="factor${i + 1}Levels">Factor ${String.fromCharCode(65 + i)} Number of Levels:</label>
+                        <input type="number" id="factor${i + 1}Levels" min="2" max="5" value="2" required />
+                    `;
+                    factorLevelsContainer.appendChild(factorGroup);
+                }
+            });
+
+            // Generate factorial design when the form is submitted
+            factorialDesignForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const numFactors = parseInt(numFactorsInput.value);
+                let factorLevels = [];
+                let isValid = true;
+
+                for (let i = 0; i < numFactors; i++) {
+                    const levelInput = document.getElementById(`factor${i + 1}Levels`);
+                    if (levelInput) {
+                        const levels = parseInt(levelInput.value);
+                        if (isNaN(levels) || levels < 2 || levels > 5) {
+                            isValid = false;
+                            designResult.textContent = `Please enter a valid number of levels (between 2-5) for Factor ${String.fromCharCode(65 + i)}.`;
+                            resultBox.style.display = 'block';
+                            designTableContainer.innerHTML = '';
+                            return;
+                        }
+                        factorLevels.push(levels);
+                    } else {
+                        isValid = false; // If a required input field is missing
+                        break;
+                    }
+                }
+
+                if (!isValid || numFactors < 2) {
+                    designResult.textContent = 'Please fill in all fields with valid values.';
+                    resultBox.style.display = 'block';
+                    designTableContainer.innerHTML = '';
+                    return;
+                }
+
+                // Generate the design
+                const design = generateFullFactorialDesign(factorLevels);
+                const totalExperiments = design.length;
+
+                designResult.innerHTML = `
+                    Generated Design: <strong>Full Factorial Design</strong><br/>
+                    Total Experimental Runs: <strong>${totalExperiments}</strong>
+                `;
+                resultBox.style.display = 'block';
+                displayFactorialTable(design, factorLevels.length);
+            });
+
+            /**
+             * Function to generate a full factorial experiment design.
+             * Each factor can have its own number of levels.
+             * @param {number[]} factorLevelsArray Array of number of levels for each factor (e.g., [2, 3, 2] -> 2 levels for A, 3 for B, 2 for C)
+             * @returns {number[][]} Experimental matrix, each row represents an experimental run.
+             */
+            function generateFullFactorialDesign(factorLevelsArray) {
+                const numFactors = factorLevelsArray.length;
+                if (numFactors === 0) return [];
+
+                let design = [[]]; // Start with an empty experimental run
+
+                for (let i = 0; i < numFactors; i++) {
+                    const levels = factorLevelsArray[i];
+                    let newDesign = [];
+                    for (let j = 0; j < levels; j++) {
+                        // Combine each existing experiment with each level of the new factor
+                        for (let k = 0; k < design.length; k++) {
+                            newDesign.push([...design[k], j + 1]); // Start levels from 1
+                        }
+                    }
+                    design = newDesign;
+                }
+                return design;
+            }
+
+            /**
+             * Displays the generated factorial design matrix as an HTML table.
+             * @param {number[][]} design Experimental matrix
+             * @param {number} numFactors Number of factors
+             */
+            function displayFactorialTable(design, numFactors) {
+                designTableContainer.innerHTML = '';
+
+                if (design.length === 0) {
+                    designTableContainer.innerHTML = '<p class="error">Design matrix could not be generated.</p>';
+                    return;
+                }
+
+                const table = document.createElement('table');
+                table.classList.add('design-table');
+
+                // Table Header
+                const thead = table.createTHead();
+                const headerRow = thead.insertRow();
+                headerRow.insertCell().textContent = 'Experiment No.';
+                for (let i = 0; i < numFactors; i++) {
+                    headerRow.insertCell().textContent = `Factor ${String.fromCharCode(65 + i)}`; // A, B, C...
+                }
+
+                // Table Body
+                const tbody = table.createTBody();
+                for (let i = 0; i < design.length; i++) {
+                    const row = tbody.insertRow();
+                    row.insertCell().textContent = i + 1; // Experiment No.
+                    for (let j = 0; j < numFactors; j++) {
+                        row.insertCell().textContent = design[i][j];
+                    }
+                }
+                designTableContainer.appendChild(table);
+            }
+
+            // Show level inputs for 2 factors by default when the page loads
+            numFactorsInput.value = 2; // Initial number of factors
+            numFactorsInput.dispatchEvent(new Event('input')); // Trigger the input event to generate inputs
+
+        });
+    </script>
+</body>
+</html>

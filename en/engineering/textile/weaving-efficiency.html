@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Weaving Machine Efficiency Calculation - Hesapkolik</title>
+
+    <meta content="Calculate the efficiency (yield) rate of weaving looms according to the actual production amount and working time. Practical tool for production capacity and cost optimization." name="description"/>
+    <meta content="weaving machine efficiency, weaving yield, loom efficiency, production capacity, weaving calculation, textile engineering calculations, hesapkolik textile" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <style>
+        /* General Settings and Font */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Simple and fresh background */
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section (Uyarlanmış Ana Başlık Bölümü) */
+        .hero-section {
+            background-color: #34495e; /* Compatible with dark theme header/footer */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Grubu Bölümü (Karbon Ayak İzi stiline benzer) */
+        .calculator-group-section { /* Yeni bölüm adı */
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff; /* White card background */
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-group-section h2 { /* Sayfa içindeki ana başlık */
+            margin-bottom: 30px;
+            color: #2c3e50; /* Dark text color */
+            font-size: 2.2em;
+        }
+
+        /* Hesaplayıcı Kutusu (calc-wrapper ile aynı stil) */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px; /* Merkeze hizalama için */
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c; /* Hesaplayıcı başlık rengi */
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+
+        /* Form Elemanları */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        /* input-with-unit için düzenleme */
+        .input-with-unit {
+            display: flex;
+            align-items: center; /* Label ve input/select'i dikeyde ortala */
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alta geçebilir */
+        }
+        .input-with-unit label {
+            flex-basis: 50%; /* Label için alan */
+            margin-right: 10px;
+            text-align: left;
+            min-width: 150px; /* Minimum genişlik */
+            margin-bottom: 0;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input'un kalan alanı doldurmasını sağlar */
+            margin-bottom: 0;
+        }
+
+
+        .form-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        /* Form Butonları */
+        .calculator-form-container button[type="button"] { /* Type 'button' olarak değişti */
+            background-color: #28a745; /* Confirmation green */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button[type="button"]:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Sonuç Alanı */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+            display: none; /* Hidden by default */
+            line-height: 1.4; /* Satır aralığı */
+        }
+        .result-display h3 {
+            font-size: 1.5em; /* Sonuç başlığı için uygun boyut */
+            margin-bottom: 15px;
+            color: #e74c3c;
+        }
+        .result-display .result-value {
+            color: #e74c3c;
+            font-size: 1.2em; /* Değerler biraz daha büyük */
+            margin-left: 5px;
+        }
+        .result-display .error {
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        .result-display p { /* İç p etiketleri için stil */
+            margin: 5px 0;
+            font-size: 0.8em; /* Genel result-display fontundan farklı */
+        }
+        .result-display strong {
+            font-size: 0.9em;
+            display: inline-block; /* Yan yana durması için */
+        }
+
+
+        /* Bilgilendirme Bölümleri */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+            text-align: left; /* Bilgi yazılarının sola hizalanması */
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px; /* İç boşluk */
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        /* Yeni başlık stili (Form içindeki h4'ler için) */
+        .calc-wrapper h4 {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1.4em;
+            }
+            .input-with-unit {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .input-with-unit label {
+                margin-right: 0;
+                margin-bottom: 5px;
+                min-width: unset;
+            }
+            .input-with-unit input[type="number"],
+            .input-with-unit select {
+                width: 100%;
+                margin-bottom: 10px; /* Alt boşluğu geri getir */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-group-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            .result-display {
+                font-size: 1em;
+                padding: 15px;
+            }
+            .result-display .result-value {
+                font-size: 1.2em;
+            }
+            .info-section p {
+                padding: 0 10px;
+            }
+            .info-section ul {
+                margin-left: 20px;
+            }
+        }
+    </style>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Weaving Machine Efficiency Calculator</h1>
+                <p>Calculate the efficiency (yield) rate of your weaving looms based on actual production and working time.</p>
+            </div>
+        </section>
+
+        <section class="calculator-group-section">
+            <div class="container">
+                <h2>Calculate Machine Efficiency</h2>
+
+                <div class="calc-wrapper"> <h3><i class="fas fa-cogs icon-small"></i> Weaving Machine Efficiency Calculation</h3>
+                    <div class="calculator-form-container">
+                        <form id="loomEfficiencyForm">
+                            <p class="small-text">Please enter the required parameters for weaving machine efficiency:</p>
+
+                            <div class="input-with-unit">
+                                <label for="machineRPM">Machine Speed (Weft/minute):</label>
+                                <input id="machineRPM" min="1" placeholder="Ex: 500" required="" step="1" type="number"/>
+                            </div>
+                            <div class="input-with-unit">
+                                <label for="weftDensity">Weft Density (Weft/cm):</label>
+                                <input id="weftDensity" min="0.1" placeholder="Ex: 28" required="" step="0.1" type="number"/>
+                            </div>
+                            <div class="input-with-unit">
+                                <label for="workingHours">Working Time (hours):</label>
+                                <input id="workingHours" min="0.1" placeholder="Ex: 8" required="" step="0.1" type="number"/>
+                            </div>
+                            <div class="input-with-unit">
+                                <label for="actualProduction">Actual Production (meters):</label>
+                                <input id="actualProduction" min="0" placeholder="Ex: 183.6" required="" step="0.01" type="number"/>
+                            </div>
+
+                            <button type="button" onclick="calculateLoomEfficiency()">Calculate</button>
+                        </form>
+
+                        <div class="result-display" id="resultBox">
+                            <h3>Results:</h3>
+                            <p><strong>Theoretical Production (meters):</strong> <span class="result-value" id="theoreticalProduction"></span></p>
+                            <p><strong>Weaving Machine Efficiency (%):</strong> <span class="result-value" id="efficiencyPercentage"></span></p>
+                        </div>
+
+                        <p class="small-text">Productivity is the percentage of actual production to theoretical production. It is normal for it to be less than 100%.</p>
+                    </div>
+                </div>
+
+                <section class="info-section container">
+                    <h3>What is Weaving Machine Efficiency?</h3>
+                    <p>
+                        <strong>Weaving machine efficiency</strong> (or <strong>efficiency</strong>) is the amount of fabric a loom actually produces in a given time period, expressed as a percentage (%), compared to the maximum amount of fabric it could theoretically produce. Higher efficiency means that the machine operates faster, with fewer stops, fewer errors, and more efficiently.
+                    </p>
+                    <p>
+                        Productivity depends not only on machine speed but also on many factors such as yarn breaks, downtime, operator interventions, maintenance times, fabric faults and pattern changes. For textile businesses, productivity is vital in terms of cost effectiveness and on-time delivery.
+                    </p>
+                    <h4>Why Is Weaving Machine Efficiency Important?</h4>
+                    <ul>
+                        <li><strong>Cost Optimization:</strong> Low efficiency means high labor, energy and depreciation costs.</li>
+                        <li><strong>Production Capacity:</strong> Increased productivity enables more production with the existing machinery.</li>
+                        <li><strong>Lead Time Management:</strong> High-efficiency machines can complete orders in less time.</li>
+                        <li><strong>Quality Improvement:</strong> Generally associated with increased productivity, fewer errors, and better process control.</li>
+                        <li><strong>Business Decision Making:</strong> Provides basic data for machinery purchases, workforce planning and investment decisions.</li>
+                    </ul>
+                    <h4>How to Calculate Weaving Machine Efficiency?</h4>
+                    <p>
+                        While there are various methods for calculating weaving machine efficiency, one of the most common formulas is as follows:
+                    </p>
+                    <p class="formula-text">
+                        Theoretical Production (m/hour) = (Machine Speed (weft/minute) * 60 (min/hour)) / (Weft Density (weft/cm) * 100 (cm/m))
+                    </p>
+                    <p class="formula-text">
+                        Theoretical Total Production (meters) = Theoretical Production (m/hour) * Working Time (hours)
+                    </p>
+                    <p class="formula-text">
+                        Efficiency (%) = (Actual Production (meters) / Theoretical Total Production (meters)) * 100
+                    </p>
+                    <p>
+                        <strong>Explanations:</strong>
+                        <ul>
+                            <li><strong>Machine Revolution (Wefts/Minute):</strong> The number of wefts the machine makes in one minute (RPM - also known as Revolutions Per Minute).</li>
+                            <li><strong>Weft Density (Weft/cm):</strong> The number of weft threads in one centimeter of woven fabric.</li>
+                            <li><strong>Working Time (hours):</strong> Total time the machine is actually running.</li>
+                            <li><strong>Actual Production (meters):</strong> The amount of fabric actually produced by the machine during the specified run time.</li>
+                        </ul>
+                        Using these principles, this calculator determines theoretical production and then the efficiency percentage.
+                    </p>
+                    <h4>Major Factors Affecting Productivity:</h4>
+                    <ul>
+                        <li><strong>Yarn Quality:</strong> Breaks reduce efficiency.</li>
+                        <li><strong>Machine Maintenance and Adjustments:</strong> Regular maintenance and correct adjustments minimize downtime.</li>
+                        <li><strong>Operator Competence:</strong> Fast intervention and correct operation reduces downtime.</li>
+                        <li><strong>Weft/Warp Breaks:</strong> It is one of the biggest productivity losses.</li>
+                        <li><strong>Fabric Pattern and Structure:</strong> Complex patterns and high densities may affect machine speed.</li>
+                        <li><strong>Environmental Conditions:</strong> Factors such as temperature and humidity can affect yarn behavior.</li>
+                    </ul>
+                    <p class="disclaimer-text">
+                        This calculator is a tool for applying basic textile machine efficiency principles. In real industrial environments, efficiency analysis involves more complex metrics such as downtime, error rates, OEE (Overall Equipment Effectiveness) and detailed data collection systems. For sensitive commercial or industrial applications, factory data and expert engineering analysis are required. If you have any problems with your calculations, please contact us.
+                        <a href="../../contact.html">communication</a> reach us from our page.
+                    </p>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header and Footer loading functions
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // Load header and footer based on URL
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // --- JavaScript for Weaving Machine Efficiency Calculation ---
+
+            // Language detection & texts
+            const texts = {
+                tr: {
+                    mainHeading: 'Dokuma Makinesi Verimliliği Hesaplayıcı',
+                    mainDescription: 'Dokuma tezgahlarının verimlilik (randıman) oranını fiili üretim miktarına ve çalışma süresine göre hesaplayın.',
+                    calculateEfficiencyTitle: 'Makine Verimliliğini Hesapla',
+                    inputInstruction: 'Lütfen dokuma makinesi verimliliği için gerekli parametreleri girin:',
+                    machineSpeedLabel: 'Makine Hızı (Atkı/dakika):',
+                    weftDensityLabel: 'Atkı Sıklığı (Atkı/cm):',
+                    workingHoursLabel: 'Çalışma Süresi (saat):',
+                    actualProductionLabel: 'Fiili Üretim (metre):',
+                    calculateButtonText: 'Hesapla',
+                    resultsTitle: 'Sonuçlar:',
+                    theoreticalProductionResultLabel: 'Teorik Üretim (metre):',
+                    efficiencyPercentageResultLabel: 'Dokuma Makinesi Verimliliği (%):',
+                    bottomNote: 'Verimlilik, gerçek üretimin teorik üretime oranıdır. %100\'den az olması normaldir.',
+                    invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                    unit_meter: 'metre'
+                },
+                en: {
+                    mainHeading: 'Weaving Machine Efficiency Calculator',
+                    mainDescription: 'Calculate the efficiency (yield) rate of weaving looms according to the actual production amount and working time.',
+                    calculateEfficiencyTitle: 'Calculate Machine Efficiency',
+                    inputInstruction: 'Please enter the required parameters for weaving machine efficiency:',
+                    machineSpeedLabel: 'Machine Speed (Weft/minute):',
+                    weftDensityLabel: 'Weft Density (Weft/cm):',
+                    workingHoursLabel: 'Working Time (hours):',
+                    actualProductionLabel: 'Actual Production (meters):',
+                    calculateButtonText: 'Calculate',
+                    resultsTitle: 'Results:',
+                    theoreticalProductionResultLabel: 'Theoretical Production (meters):',
+                    efficiencyPercentageResultLabel: 'Weaving Machine Efficiency (%):',
+                    bottomNote: 'Productivity is the percentage of actual production to theoretical production. It is normal for it to be less than 100%.',
+                    invalidInput: 'Please enter valid positive numbers for all fields.',
+                    unit_meter: 'meters'
+                }
+            };
+
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // Update main titles and descriptions
+            document.querySelector('.hero-section h1').textContent = currentTexts.mainHeading;
+            document.querySelector('.hero-section p').textContent = currentTexts.mainDescription;
+            document.querySelector('.calculator-group-section h2').textContent = currentTexts.calculateEfficiencyTitle;
+
+            // --- DOM Elements ---
+            const loomEfficiencyForm = document.getElementById('loomEfficiencyForm');
+            const machineRPMInput = document.getElementById('machineRPM');
+            const weftDensityInput = document.getElementById('weftDensity');
+            const workingHoursInput = document.getElementById('workingHours');
+            const actualProductionInput = document.getElementById('actualProduction');
+            const theoreticalProductionSpan = document.getElementById('theoreticalProduction');
+            const efficiencyPercentageSpan = document.getElementById('efficiencyPercentage');
+            const resultBox = document.getElementById('resultBox');
+            const calculateButton = loomEfficiencyForm.querySelector('button[type="button"]');
+            const explanationParagraph = document.querySelector('.calculator-form-container > p.small-text'); // Corrected selector for the bottom note
+
+            // Update form specific labels and placeholders
+            document.querySelector('.calc-wrapper h3').innerHTML = `<i class="fas fa-cogs icon-small"></i> ${currentTexts.calculateEfficiencyTitle}`;
+            loomEfficiencyForm.querySelector('p.small-text').textContent = currentTexts.inputInstruction;
+            document.getElementById('machineRPM').previousElementSibling.textContent = currentTexts.machineSpeedLabel;
+            document.getElementById('machineRPM').placeholder = 'Ex: 500'; // Keep static placeholder for consistency
+            document.getElementById('weftDensity').previousElementSibling.textContent = currentTexts.weftDensityLabel;
+            document.getElementById('weftDensity').placeholder = 'Ex: 28'; // Keep static placeholder for consistency
+            document.getElementById('workingHours').previousElementSibling.textContent = currentTexts.workingHoursLabel;
+            document.getElementById('workingHours').placeholder = 'Ex: 8'; // Keep static placeholder for consistency
+            document.getElementById('actualProduction').previousElementSibling.textContent = currentTexts.actualProductionLabel;
+            document.getElementById('actualProduction').placeholder = 'Ex: 183.6'; // Keep static placeholder for consistency
+            calculateButton.textContent = currentTexts.calculateButtonText;
+            explanationParagraph.textContent = currentTexts.bottomNote; // This is the p tag below the result box
+
+            // Update result box texts initially (before calculation)
+            resultBox.querySelector('h3').textContent = currentTexts.resultsTitle;
+            // The spans for theoretical production and efficiency percentage are dynamically updated in JS.
+            // Ensure their strong labels are correct.
+            resultBox.querySelector('p:nth-of-type(1) strong').textContent = currentTexts.theoreticalProductionResultLabel;
+            resultBox.querySelector('p:nth-of-type(2) strong').textContent = currentTexts.efficiencyPercentageResultLabel;
+
+            // --- Calculation Function ---
+            window.calculateLoomEfficiency = function() {
+                let machineRPM = parseFloat(machineRPMInput.value);
+                let weftDensity = parseFloat(weftDensityInput.value);
+                let workingHours = parseFloat(workingHoursInput.value);
+                let actualProduction = parseFloat(actualProductionInput.value);
+
+                // Clear previous results and hide result box initially
+                // Re-inject static parts of result box for dynamic content management
+                resultBox.innerHTML = `
+                    <h3>${currentTexts.resultsTitle}</h3>
+                    <p><strong>${currentTexts.theoreticalProductionResultLabel}</strong> <span class="result-value" id="theoreticalProduction"></span></p>
+                    <p><strong>${currentTexts.efficiencyPercentageResultLabel}</strong> <span class="result-value" id="efficiencyPercentage"></span></p>
+                `;
+                resultBox.style.display = 'none';
+
+                // Re-get spans as their content was reset
+                const updatedTheoreticalProductionSpan = document.getElementById('theoreticalProduction');
+                const updatedEfficiencyPercentageSpan = document.getElementById('efficiencyPercentage');
+
+                // --- Input Validation ---
+                if (isNaN(machineRPM) || isNaN(weftDensity) || isNaN(workingHours) || isNaN(actualProduction) ||
+                    machineRPM <= 0 || weftDensity <= 0 || workingHours <= 0 || actualProduction < 0) {
+                    resultBox.innerHTML = `<h3>${currentTexts.resultsTitle}</h3><p class="error">${currentTexts.invalidInput}</p>`;
+                    resultBox.style.display = 'block';
+                    return;
+                }
+
+                // --- Perform Calculations ---
+                // Theoretical Production (m/hour) = (Machine Speed (weft/minute) * 60 (min/hour)) / (Weft Density (weft/cm) * 100 (cm/m))
+                const theoreticalProductionPerHour = (machineRPM * 60) / (weftDensity * 100);
+
+                // Theoretical Total Production (meters) = Theoretical Production (m/hour) * Working Time (hours)
+                const theoreticalTotalProduction = theoreticalProductionPerHour * workingHours;
+
+                // Efficiency (%) = (Actual Production (meters) / Theoretical Total Production (meters)) * 100
+                let efficiencyPercentage;
+                if (theoreticalTotalProduction === 0) { // Avoid division by zero
+                    efficiencyPercentage = 0;
+                } else {
+                    efficiencyPercentage = (actualProduction / theoreticalTotalProduction) * 100;
+                }
+
+                // Cap at 100% as efficiency cannot exceed 100% in practical terms
+                if (efficiencyPercentage > 100) {
+                    efficiencyPercentage = 100;
+                }
+
+                // --- Display Results ---
+                updatedTheoreticalProductionSpan.textContent = `${theoreticalTotalProduction.toFixed(2)} ${currentTexts.unit_meter}`;
+                updatedEfficiencyPercentageSpan.textContent = `${efficiencyPercentage.toFixed(2)} %`;
+                resultBox.style.display = 'block'; // Show the result box
+            };
+
+            // Update Info Section Text
+            function updateInfoSectionContent() {
+                // Main Info Section Title
+                document.querySelector('.info-section h3').textContent = isEnglishPage ? 'What is Weaving Machine Efficiency?' : 'Dokuma Makinesi Verimliliği Nedir?';
+
+                // First paragraphs
+                document.querySelector('.info-section p:nth-of-type(1)').innerHTML = isEnglishPage ?
+                    `<strong>Weaving machine efficiency</strong> (or <strong>efficiency</strong>) is the amount of fabric a loom actually produces in a given time period, expressed as a percentage (%), compared to the maximum amount of fabric it could theoretically produce. Higher efficiency means that the machine operates faster, with fewer stops, fewer errors, and more efficiently.` :
+                    `<strong>Dokuma makinesi verimliliği</strong> (veya <strong>randıman</strong>), bir dokuma tezgahının belirli bir zaman diliminde teorik olarak üretebileceği maksimum kumaş miktarına kıyasla, fiilen ürettiği kumaş miktarının yüzde (%) olarak ifadesidir. Daha yüksek verimlilik, makinenin daha hızlı, daha az duruşla, daha az hatayla ve daha etkin çalıştığı anlamına gelir.`;
+                document.querySelector('.info-section p:nth-of-type(2)').innerHTML = isEnglishPage ?
+                    `Productivity depends not only on machine speed but also on many factors such as yarn breaks, downtime, operator interventions, maintenance times, fabric faults and pattern changes. For textile businesses, productivity is vital in terms of cost effectiveness and on-time delivery.` :
+                    `Verimlilik, sadece makine hızına değil; iplik kopuşları, duruşlar, operatör müdahaleleri, bakım süreleri, kumaş hataları ve desen değişiklikleri gibi birçok faktöre de bağlıdır. Tekstil işletmeleri için verimlilik, maliyet etkinliği ve zamanında teslimat açısından hayati önem taşır.`;
+
+                // Why Important section
+                document.querySelector('.info-section h4:nth-of-type(1)').textContent = isEnglishPage ? 'Why Is Weaving Machine Efficiency Important?' : 'Dokuma Makinesi Verimliliği Neden Önemlidir?';
+                const ul1 = document.querySelector('.info-section ul:nth-of-type(1)');
+                if (ul1) {
+                    ul1.innerHTML = `
+                        <li>${isEnglishPage ? '<strong>Cost Optimization:</strong> Low efficiency means high labor, energy and depreciation costs.' : '<strong>Maliyet Optimizasyonu:</strong> Düşük verimlilik, yüksek işçilik, enerji ve amortisman maliyetleri anlamına gelir.'}</li>
+                        <li>${isEnglishPage ? '<strong>Production Capacity:</strong> Increased productivity enables more production with the existing machinery.' : '<strong>Üretim Kapasitesi:</strong> Verimlilik artışı, mevcut makine parkuru ile daha fazla üretim yapılmasını sağlar.'}</li>
+                        <li>${isEnglishPage ? '<strong>Lead Time Management:</strong> High-efficiency machines can complete orders in less time.' : '<strong>Teslim Süresi Yönetimi:</strong> Yüksek verimli makineler, siparişleri daha kısa sürede tamamlayabilir.'}</li>
+                        <li>${isEnglishPage ? '<strong>Quality Improvement:</strong> Generally associated with increased productivity, fewer errors, and better process control.' : '<strong>Kalite İyileştirme:</strong> Genellikle verimlilik artışı, daha az hata ve daha iyi proses kontrolü ile ilişkilidir.'}</li>
+                        <li>${isEnglishPage ? '<strong>Business Decision Making:</strong> Provides basic data for machinery purchases, workforce planning and investment decisions.' : '<strong>İş Karar Verme:</strong> Makine alımları, iş gücü planlaması ve yatırım kararları için temel veriler sunar.'}</li>
+                    `;
+                }
+
+                // How to Calculate section
+                document.querySelector('.info-section h4:nth-of-type(2)').textContent = isEnglishPage ? 'How to Calculate Weaving Machine Efficiency?' : 'Dokuma Makinesi Verimliliği Nasıl Hesaplanır?';
+                document.querySelector('.info-section p:nth-of-type(3)').innerHTML = isEnglishPage ?
+                    'While there are various methods for calculating weaving machine efficiency, one of the most common formulas is as follows:' :
+                    'Dokuma makinesi verimliliğini hesaplamak için çeşitli yöntemler olmakla birlikte, en yaygın formüllerden biri şu şekildedir:';
+
+                document.querySelector('.info-section p.formula-text:nth-of-type(1)').textContent = isEnglishPage ?
+                    'Theoretical Production (m/hour) = (Machine Speed (weft/minute) * 60 (min/hour)) / (Weft Density (weft/cm) * 100 (cm/m))' :
+                    'Teorik Üretim (m/saat) = (Makine Hızı (atkı/dakika) * 60 (dak/saat)) / (Atkı Sıklığı (atkı/cm) * 100 (cm/m))';
+                document.querySelector('.info-section p.formula-text:nth-of-type(2)').textContent = isEnglishPage ?
+                    'Theoretical Total Production (meters) = Theoretical Production (m/hour) * Working Time (hours)' :
+                    'Teorik Toplam Üretim (metre) = Teorik Üretim (m/saat) * Çalışma Süresi (saat)';
+                document.querySelector('.info-section p.formula-text:nth-of-type(3)').textContent = isEnglishPage ?
+                    'Efficiency (%) = (Actual Production (meters) / Theoretical Total Production (meters)) * 100' :
+                    'Verimlilik (%) = (Fiili Üretim (metre) / Teorik Toplam Üretim (metre)) * 100';
+
+                // Explanations for terms
+                const explanationP = document.querySelector('.info-section p:nth-of-type(7)');
+                if (explanationP) { // Make sure this p tag exists, if structure changed, adjust selector
+                    explanationP.innerHTML = isEnglishPage ?
+                        `<strong>Explanations:</strong>
+                        <ul>
+                            <li><strong>Machine Speed (Wefts/Minute):</strong> The number of wefts the machine makes in one minute (RPM - also known as Revolutions Per Minute).</li>
+                            <li><strong>Weft Density (Weft/cm):</strong> The number of weft threads in one centimeter of woven fabric.</li>
+                            <li><strong>Working Time (hours):</strong> Total time the machine is actually running.</li>
+                            <li><strong>Actual Production (meters):</strong> The amount of fabric actually produced by the machine during the specified run time.</li>
+                        </ul>
+                        Using these principles, this calculator determines theoretical production and then the efficiency percentage.` :
+                        `<strong>Açıklamalar:</strong>
+                        <ul>
+                            <li><strong>Makine Devri (Atkı/Dakika):</strong> Makinenin bir dakikada attığı atkı sayısı (RPM - Revolutions Per Minute olarak da bilinir).</li>
+                            <li><strong>Atkı Sıklığı (Atkı/cm):</strong> Dokuma kumaşın bir santimetresindeki atkı ipliği sayısı.</li>
+                            <li><strong>Çalışma Süresi (saat):</strong> Makinenin fiilen çalıştığı toplam süre.</li>
+                            <li><strong>Fiili Üretim (metre):</strong> Belirtilen çalışma süresince makinenin gerçekte ürettiği kumaş miktarı.</li>
+                        </ul>
+                        Bu prensipler kullanılarak, bu hesaplayıcı teorik üretimi ve ardından verimlilik yüzdesini belirler.`;
+                }
+
+                // Factors Affecting Productivity section
+                document.querySelector('.info-section h4:nth-of-type(3)').textContent = isEnglishPage ? 'Major Factors Affecting Productivity:' : 'Verimliliği Etkileyen Başlıca Faktörler:';
+                const ul2 = document.querySelector('.info-section ul:nth-of-type(2)');
+                if (ul2) {
+                    ul2.innerHTML = `
+                        <li>${isEnglishPage ? '<strong>Yarn Quality:</strong> Breaks reduce efficiency.' : '<strong>İplik Kalitesi:</strong> Kopmalar verimliliği düşürür.'}</li>
+                        <li>${isEnglishPage ? '<strong>Machine Maintenance and Adjustments:</strong> Regular maintenance and correct adjustments minimize downtime.' : '<strong>Makine Bakımı ve Ayarları:</strong> Düzenli bakım ve doğru ayarlar, duruş sürelerini minimize eder.'}</li>
+                        <li>${isEnglishPage ? '<strong>Operator Competence:</strong> Fast intervention and correct operation reduces downtime.' : '<strong>Operatör Yetkinliği:</strong> Hızlı müdahale ve doğru operasyon, duruş sürelerini azaltır.'}</li>
+                        <li>${isEnglishPage ? '<strong>Weft/Warp Breaks:</strong> It is one of the biggest productivity losses.' : '<strong>Atkı/Çözgü Kopuşları:</strong> En büyük verimlilik kayıplarından biridir.'}</li>
+                        <li>${isEnglishPage ? '<strong>Fabric Pattern and Structure:</strong> Complex patterns and high densities may affect machine speed.' : '<strong>Kumaş Deseni ve Yapısı:</strong> Karmaşık desenler ve yüksek sıklıklar, makine hızını etkileyebilir.'}</li>
+                        <li>${isEnglishPage ? '<strong>Environmental Conditions:</strong> Factors such as temperature and humidity can affect yarn behavior.' : '<strong>Çevresel Koşullar:</strong> Sıcaklık ve nem gibi faktörler, iplik davranışını etkileyebilir.'}</li>
+                    `;
+                }
+
+                // Disclaimer
+                const disclaimerLinkText = isEnglishPage ? 'communication' : 'iletişim';
+                document.querySelector('.info-section .disclaimer-text').innerHTML = isEnglishPage ?
+                    `This calculator is a tool for applying basic textile machine efficiency principles. In real industrial environments, efficiency analysis involves more complex metrics such as downtime, error rates, OEE (Overall Equipment Effectiveness) and detailed data collection systems. For sensitive commercial or industrial applications, factory data and expert engineering analysis are required. If you have any problems with your calculations, please contact us. <a href="../../contact.html">${disclaimerLinkText}</a> reach us from our page.` :
+                    `Bu hesaplayıcı, temel tekstil makinesi verimliliği prensiplerini uygulamak için bir araçtır. Gerçek endüstriyel ortamlarda verimlilik analizi, duruş süreleri, hata oranları, OEE (Overall Equipment Effectiveness - Genel Ekipman Etkinliği) gibi daha karmaşık metrikleri ve detaylı veri toplama sistemlerini içerir. Hassas ticari veya endüstriyel uygulamalar için fabrika verileri ve uzman mühendislik analizleri gereklidir. Hesaplamalarınızla ilgili bir sorun yaşarsanız, <a href="../../contact.html">${disclaimerLinkText}</a> sayfamızdan bize ulaşın.`;
+            }
+            updateInfoSectionContent(); // Update info section on page load
+        });
+    </script>
+</body>
+</html>

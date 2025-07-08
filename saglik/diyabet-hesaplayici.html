@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Diyabet Hesaplayıcı - Hesapkolik</title>
+    
+    <meta content="HbA1c'den ortalama kan şekerine (eAG) hesaplayın, kan şekeri birimlerini dönüştürün ve Vücut Kitle İndeksi (BMI) hesaplayın. Şeker hastaları için kapsamlı bir araç." name="description"/>
+    <meta content="diyabet, şeker hastalığı, HbA1c, ortalama kan şekeri, eAG, kan şekeri birimi, mg/dL, mmol/L, BMI, Vücut Kitle İndeksi, diyabet hesaplayıcı, hesapkolik" name="keywords"/>
+    
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/> 
+    <link href="/css/footer.css" rel="stylesheet"/>
+    
+    <style>
+        /* Genel Ayarlar ve Font */
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f7f6; /* Sade ve ferah bir arka plan */
+            color: #333; 
+            line-height: 1.6;
+        }
+        .container { 
+            max-width: 960px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Koyu tema başlık/altlık ile uyumlu */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Seçim Bölümü */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff; /* Beyaz kart arka planı */
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50; /* Koyu metin rengi */
+            font-size: 2.2em;
+        }
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        .calc-type-button {
+            background-color: #3498db; /* Canlı mavi buton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(25% - 30px); /* Dört sütunlu düzen (yeni buton için) */
+            max-width: 250px;
+            text-align: center;
+        }
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Vurgulu turuncu */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper { 
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db;
+        }
+        .hidden-calc {
+            display: none;
+        }
+
+        /* Form Elemanları */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+        /* input-with-unit-group için özel stil - BAŞLIK GÖRÜNÜRLÜĞÜ DÜZELTİLDİ */
+        .input-with-unit-group {
+            display: flex;
+            flex-direction: column; /* Label ve input/select'i alt alta sırala */
+            align-items: flex-start; /* İçerikleri sola hizala */
+            gap: 8px; /* Etiket ve input arasında boşluk */
+            margin-bottom: 20px;
+        }
+        .input-with-unit-group label {
+            flex-basis: auto; /* Etiketin içeriğine göre genişlemesini sağla, sıkışmayı engelle */
+            width: 100%; /* Tam genişlik kaplamasını sağla */
+            margin-bottom: 0; /* Üstteki 8px gap yeterli */
+            text-align: left; /* Metni sola hizala */
+        }
+        .input-with-unit-group input[type="number"],
+        .input-with-unit-group select {
+            width: 100%; /* Input ve select tam genişlik kaplasın */
+            margin-bottom: 0; /* Üstteki 8px gap yeterli */
+            /* Diğer padding, border vb. stiller aynı kalır */
+        }
+        .form-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        /* Form butonları */
+        .calculator-form-container button[type="submit"] {
+            background-color: #28a745; /* Onay yeşili */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button[type="submit"]:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Sonuç Ekranı */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+            display: none; /* Varsayılan olarak gizli */
+        }
+        .result-display .result-value {
+            color: #e74c3c;
+        }
+        .result-display .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        /* Açıklama bölümleri */
+        .calc-explanation, .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text { 
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        /* İnsülin hesaplayıcısı için özel uyarı metni */
+        .important-disclaimer {
+            color: #dc3545; /* Kırmızı renk */
+            font-weight: bold;
+            border: 2px solid #dc3545;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f8d7da; /* Açık kırmızı arka plan */
+            margin-top: 25px;
+        }
+
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1.4em;
+            }
+            /* input-with-unit-group özel responsive */
+            .input-with-unit-group {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+            }
+            .input-with-unit-group label {
+                margin-bottom: 5px;
+                text-align: left;
+            }
+            .input-with-unit-group input[type="number"],
+            .input-with-unit-group select {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-selection-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            .result-display {
+                font-size: 1em;
+                padding: 15px;
+            }
+            .result-display .result-value {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+    
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Diyabet Hesaplayıcı</h1>
+                <p>HbA1c'den ortalama kan şekerine (eAG) hesaplayın, kan şekeri birimlerini dönüştürün, Vücut Kitle İndeksi (BMI) hesaplayın ve insülin dozunu tahmin edin.</p>
+            </div>
+        </section>
+
+        <section class="calculator-selection-section">
+            <div class="container">
+                <h2>Yapmak İstediğiniz Hesaplama Türünü Seçin</h2>
+                <div class="calc-buttons-container">
+                    <button class="calc-type-button active" data-calc-type="hba1cToEAG">HbA1c'den Ortalama Kan Şekerine</button>
+                    <button class="calc-type-button" data-calc-type="glucoseUnitConverter">Kan Şekeri Birim Dönüşümü</button>
+                    <button class="calc-type-button" data-calc-type="bmiCalculator">Vücut Kitle İndeksi (BMI)</button>
+                    <button class="calc-type-button" data-calc-type="insulinDoseCalculator">İnsülin Dozu Tahmini</button>
+                </div>
+
+                <div class="calc-wrapper active-calc" id="calculator-hba1cToEAG">
+                    <h3><i class="fas fa-chart-line icon-small"></i> HbA1c'den Ortalama Kan Şekerine (eAG) Hesapla</h3>
+                    <div class="calculator-form-container">
+                        <form id="hba1cForm">
+                            <div class="input-with-unit-group">
+                                <label for="hba1cValue">HbA1c Değeri (%):</label>
+                                <input id="hba1cValue" min="4" max="15" placeholder="Örn: 7" required="" step="0.1" type="number"/>
+                            </div>
+                            <button type="submit">Hesapla</button>
+                        </form>
+                        <div class="result-display" id="hba1cResult"></div>
+                        <div class="calc-explanation">
+                            <p>Bu hesaplayıcı, <strong>HbA1c (glikosile hemoglobin)</strong> yüzde değerinizi kullanarak tahmini ortalama kan şekerinizi (eAG - estimated Average Glucose) hem $mg/dL$ hem de $mmol/L$ birimlerinde hesaplar. HbA1c, son 2-3 aydaki ortalama kan şekeri seviyelerinizi gösteren önemli bir diyabet kontrol göstergesidir.</p>
+                            <p><strong>Formül:</strong></p>
+                            <p class="formula-text">eAG (mg/dL) = 28.7 × HbA1c (%) - 46.7</p>
+                            <p class="formula-text">eAG (mmol/L) = 1.59 × HbA1c (%) - 2.59</p>
+                            <p class="small-text">Bu formüller, diyabet yönetiminde sıklıkla kullanılan uluslararası kabul görmüş formüllerdir. Ancak, kişisel tıbbi durumlar ve ölçüm farklılıkları nedeniyle sonuçlar bir sağlık profesyonelinin değerlendirmesi yerine geçmez.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="calc-wrapper hidden-calc" id="calculator-glucoseUnitConverter">
+                    <h3><i class="fas fa-arrows-alt-h icon-small"></i> Kan Şekeri Birim Dönüşümü</h3>
+                    <div class="calculator-form-container">
+                        <form id="glucoseConverterForm">
+                            <div class="input-with-unit-group">
+                                <label for="glucoseValue">Kan Şekeri Değeri:</label>
+                                <input id="glucoseValue" min="0" placeholder="Örn: 120" required="" step="0.1" type="number"/>
+                                <select id="glucoseUnit">
+                                    <option value="mg/dL">mg/dL</option>
+                                    <option value="mmol/L">mmol/L</option>
+                                </select>
+                            </div>
+                            <button type="submit">Dönüştür</button>
+                        </form>
+                        <div class="result-display" id="glucoseConverterResult"></div>
+                        <div class="calc-explanation">
+                            <p>Bu hesaplayıcı, kan şekeri değerlerinizi $mg/dL$ (miligram/desilitre) ve $mmol/L$ (milimol/litre) birimleri arasında dönüştürmenizi sağlar. Farklı ülkelerde ve laboratuvarlarda farklı birimler kullanılabildiğinden bu dönüşüm pratik bir ihtiyaçtır.</p>
+                            <p><strong>Dönüşüm Formülleri:</strong></p>
+                            <p class="formula-text">mg/dL'den mmol/L'ye: Değer (mg/dL) / 18.018</p>
+                            <p class="formula-text">mmol/L'den mg/dL'ye: Değer (mmol/L) × 18.018</p>
+                            <p class="small-text">18.018 faktörü, glikozun molar kütlesine ($180.156 \text{ g/mol}$) dayanır ve $mg/dL$'yi $mmol/L$'ye veya tersini çevirmek için kullanılır.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="calc-wrapper hidden-calc" id="calculator-bmiCalculator">
+                    <h3><i class="fas fa-ruler-vertical icon-small"></i> Vücut Kitle İndeksi (BMI) Hesapla</h3>
+                    <div class="calculator-form-container">
+                        <form id="bmiForm">
+                            <div class="input-with-unit-group">
+                                <label for="weight">Kilo (kg):</label>
+                                <input id="weight" min="1" placeholder="Örn: 70" required="" step="0.1" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="height">Boy (cm):</label>
+                                <input id="height" min="50" placeholder="Örn: 175" required="" step="0.1" type="number"/>
+                            </div>
+                            <button type="submit">Hesapla</button>
+                        </form>
+                        <div class="result-display" id="bmiResult"></div>
+                        <div class="calc-explanation">
+                            <p><strong>Vücut Kitle İndeksi (BMI)</strong>, bir kişinin kilosunun boyuna göre sağlıklı bir aralıkta olup olmadığını değerlendirmek için kullanılan basit bir ölçümdür. Diyabet riskini değerlendirmede ve genel sağlık takibinde önemlidir.</p>
+                            <p><strong>Formül:</strong></p>
+                            <p class="formula-text">BMI = Kilo (kg) / (Boy (m)<sup>2</sup>)</p>
+                            <ul>
+                                <li>**18.5 altı:** Zayıf</li>
+                                <li>**18.5 - 24.9:** Normal Kilolu</li>
+                                <li>**25.0 - 29.9:** Fazla Kilolu</li>
+                                <li>**30.0 ve üzeri:** Obez</li>
+                            </ul>
+                            <p class="small-text">BMI yaşa, cinsiyete ve kas kütlesine göre değişebilir. Özellikle sporcular için yanıltıcı olabilir. En doğru değerlendirme için bir sağlık uzmanına danışmalısın.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="calc-wrapper hidden-calc" id="calculator-insulinDoseCalculator">
+                    <h3><i class="fas fa-syringe icon-small"></i> İnsülin Dozu Tahmini</h3>
+                    <div class="calculator-form-container">
+                        <form id="insulinDoseForm">
+                            <div class="input-with-unit-group">
+                                <label for="carbsGrams">Tüketilecek Karbonhidrat (gram):</label>
+                                <input id="carbsGrams" min="0" placeholder="Örn: 45" required="" step="0.1" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="carbToInsulinRatio">Karbonhidrat/İnsülin Oranı (gram KH / 1 Ünite İnsülin):</label>
+                                <input id="carbToInsulinRatio" min="1" placeholder="Örn: 15 (15 gram KH için 1 Ünite insülin)" required="" step="0.1" type="number"/>
+                            </div>
+                            <hr class="form-divider"/>
+                            <div class="input-with-unit-group">
+                                <label for="currentGlucose">Mevcut Kan Şekeri (mg/dL):</label>
+                                <input id="currentGlucose" min="0" placeholder="Örn: 200" required="" step="0.1" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="targetGlucose">Hedef Kan Şekeri (mg/dL):</label>
+                                <input id="targetGlucose" min="50" placeholder="Örn: 100" required="" step="0.1" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="insulinSensitivityFactor">İnsülin Hassasiyet Faktörü (1 Ünite İnsülin / kaç mg/dL düşüş):</label>
+                                <input id="insulinSensitivityFactor" min="1" placeholder="Örn: 50 (1 Ünite insülin kan şekerini 50 mg/dL düşürür)" required="" step="0.1" type="number"/>
+                            </div>
+                            <button type="submit">İnsülin Dozunu Tahmin Et</button>
+                        </form>
+                        <div class="result-display" id="insulinDoseResult"></div>
+                        <div class="calc-explanation">
+                            <p>Bu hesaplayıcı, doktorunuz tarafından belirlenen kişisel oranlarınıza göre öğün ve düzeltme insülin dozlarınızı tahmin etmenize yardımcı olur. Lütfen unutmayın ki bu bir tahmindir ve gerçek dozlar kişisel duruma, aktivite düzeyine ve diğer birçok faktöre göre değişebilir.</p>
+                            <p><strong>Öğün İnsülini Formülü:</strong></p>
+                            <p class="formula-text">Öğün İnsülini (Ünite) = Tüketilecek Karbonhidrat (gram) / Karbonhidrat/İnsülin Oranı</p>
+                            <p><strong>Düzeltme İnsülini Formülü:</strong></p>
+                            <p class="formula-text">Düzeltme İnsülini (Ünite) = (Mevcut Kan Şekeri - Hedef Kan Şekeri) / İnsülin Hassasiyet Faktörü</p>
+                            <p><strong>Toplam İnsülin Dozu:</strong> Öğün İnsülini + Düzeltme İnsülini</p>
+                            <p class="disclaimer-text important-disclaimer">
+                                **ÖNEMLİ UYARI:** Bu insülin dozu hesaplayıcısı yalnızca bir **tahmin aracıdır** ve **tıbbi tavsiye yerine geçmez**. İnsülin dozlarınız daima **doktorunuz veya diyabet eğitimciniz tarafından belirlenmeli ve onaylanmalıdır**. Yanlış insülin dozu ciddi sağlık sorunlarına yol açabilir. Herhangi bir değişiklik yapmadan önce daima sağlık uzmanınıza danışın.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>Diyabet ve Kan Şekeri Yönetimi</h3>
+            <p><strong>Diyabet (şeker hastalığı)</strong>, vücudun kan şekerini (glikoz) düzgün bir şekilde kullanamadığı veya üretemediği zaman ortaya çıkan kronik bir durumdur. Vücudumuzun enerji ana kaynağı olan glikoz, yediğimiz yiyeceklerden gelir. İnsülin hormonu, glikozun kan dolaşımından hücrelere geçişine yardımcı olur.</p>
+            <p>Diyabetin temel türleri Tip 1, Tip 2 ve Gestasyonel diyabettir. Diyabet yönetiminde <strong>kan şekeri takibi</strong> ve <strong>HbA1c seviyelerinin izlenmesi</strong> hayati öneme sahiptir. Bu değerler, tedavi planının etkinliğini gösterir ve komplikasyon riskini azaltmaya yardımcı olur.</p>
+            <h4>Önemli Diyabet Yönetimi Göstergeleri:</h4>
+            <ul>
+                <li>**HbA1c (Glikosile Hemoglobin):** Son 2-3 aylık ortalama kan şekeri seviyenizi gösterir. Yüksek HbA1c seviyeleri, diyabetin kötü kontrol edildiğini ve komplikasyon riskinin arttığını gösterir. Hedef genellikle %7'nin altındadır, ancak kişiye göre değişebilir.</li>
+                <li>**Kan Şekeri Ölçümleri (Anlık):** Gün içinde yapılan parmak ucu veya sürekli glikoz monitörü (CGM) ölçümleri, anlık kan şekeri seviyelerini gösterir. Yemek öncesi, sonrası ve yatmadan önceki değerler önemlidir.</li>
+                <li>**Ortalama Kan Şekeri (eAG - Estimated Average Glucose):** HbA1c değerinden türetilen tahmini ortalama kan şekeri değeridir ve hastaların anlık kan şekeri ölçümleriyle daha kolay ilişki kurmasını sağlar.</li>
+                <li>**Vücut Kitle İndeksi (BMI):** Sağlıklı bir kiloyu korumak, özellikle Tip 2 diyabetin önlenmesi ve yönetimi için kritiktir. BMI, kişinin boyuna göre kilo aralığını gösterir.</li>
+                <li>**İnsülin Dozu Hesaplamaları:** Tip 1 diyabetli veya bazı Tip 2 diyabetli bireyler için karbonhidrat alımına ve mevcut kan şekerine göre insülin dozunu doğru hesaplamak kritik öneme sahiptir.</li>
+            </ul>
+            <h4>Uygulama Alanları:</h4>
+            <ul>
+                <li>Diyabet hastalarının kendi kan şekeri verilerini ve yönetim parametrelerini daha iyi anlaması.</li>
+                <li>Sağlık profesyonellerinin hasta eğitiminde ve takibinde yardımcı araç olarak kullanması.</li>
+                <li>Diyabet riskini değerlendirme ve sağlıklı yaşam tarzı kararları alma.</li>
+                <li>Diyet, egzersiz ve insülin dozajının kan şekeri üzerindeki etkilerini izleme.</li>
+            </ul>
+            <p class="disclaimer-text">Bu hesaplayıcı, bilgi amaçlı tasarlanmıştır ve profesyonel tıbbi tavsiye, teşhis veya tedavi yerine geçmez. Diyabet yönetimi ve tüm tıbbi kararlar için her zaman bir sağlık uzmanına danışılmalıdır. Hesaplamalar genel formüllere dayanmaktadır ve bireysel farklılıklar veya spesifik tıbbi durumlar için ayarlanması gerekebilir.</p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header ve Footer yükleme fonksiyonları
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            // Yüklenen HTML içindeki script etiketlerini bul ve çalıştır
+                            // Bu kısım, yüklenen HTML içeriğinde scriptler varsa onları dinamik olarak çalıştırmak için önemlidir.
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // URL'ye göre header ve footer yükleme
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+
+            // Metinleri dile göre tanımlayan bir obje
+            const texts = {
+                tr: {
+                    // Genel
+                    mainHeading: 'Diyabet Hesaplayıcı',
+                    mainDescription: 'HbA1c\'den ortalama kan şekerine (eAG) hesaplayın, kan şekeri birimlerini dönüştürün, Vücut Kitle İndeksi (BMI) hesaplayın ve insülin dozunu tahmin edin.',
+                    selectCalculationType: 'Yapmak İstediğiniz Hesaplama Türünü Seçin',
+                    calculateButton: 'Hesapla',
+                    convertButton: 'Dönüştür',
+                    estimateButton: 'Tahmin Et', // Yeni insülin butonu metni
+                    invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                    errorNegativeValue: 'Değer sıfırdan küçük olamaz.',
+                    errorZeroValue: 'Değer sıfır olamaz.',
+                    resultPrefix: 'Sonuç:',
+
+                    // HbA1c'den Ortalama Kan Şekerine (eAG)
+                    hba1cToEAGButton: 'HbA1c\'den Ortalama Kan Şekerine',
+                    hba1cToEAGTitle: 'HbA1c\'den Ortalama Kan Şekerine (eAG) Hesapla',
+                    hba1cLabel: 'HbA1c Değeri (%):',
+                    eagMgdLResultLabel: 'Ortalama Kan Şekeri (eAG):',
+                    eagMmolLResultLabel: 'Ortalama Kan Şekeri (eAG):',
+                    unit_mgdL: 'mg/dL',
+                    unit_mmolL: 'mmol/L',
+                    hba1cExplanation: `
+                        <p>Bu hesaplayıcı, <strong>HbA1c (glikosile hemoglobin)</strong> yüzde değerinizi kullanarak tahmini ortalama kan şekerinizi (eAG - estimated Average Glucose) hem $mg/dL$ hem de $mmol/L$ birimlerinde hesaplar. HbA1c, son 2-3 aydaki ortalama kan şekeri seviyelerinizi gösteren önemli bir diyabet kontrol göstergesidir.</p>
+                        <p><strong>Formül:</strong></p>
+                        <p class="formula-text">eAG (mg/dL) = 28.7 × HbA1c (%) - 46.7</p>
+                        <p class="formula-text">eAG (mmol/L) = 1.59 × HbA1c (%) - 2.59</p>
+                        <p class="small-text">Bu formüller, diyabet yönetiminde sıklıkla kullanılan uluslararası kabul görmüş formüllerdir. Ancak, kişisel tıbbi durumlar ve ölçüm farklılıkları nedeniyle sonuçlar bir sağlık profesyonelinin değerlendirmesi yerine geçmez.</p>
+                    `,
+
+                    // Kan Şekeri Birim Dönüşümü
+                    glucoseUnitConverterButton: 'Kan Şekeri Birim Dönüşümü',
+                    glucoseUnitConverterTitle: 'Kan Şekeri Birim Dönüşümü',
+                    glucoseValueLabel: 'Kan Şekeri Değeri:',
+                    glucoseConvertedResultLabel: 'Dönüştürülen Değer:',
+                    glucoseConverterExplanation: `
+                        <p>Bu hesaplayıcı, kan şekeri değerlerinizi $mg/dL$ (miligram/desilitre) ve $mmol/L$ (milimol/litre) birimleri arasında dönüştürmenizi sağlar. Farklı ülkelerde ve laboratuvarlarda farklı birimler kullanılabildiğinden bu dönüşüm pratik bir ihtiyaçtır.</p>
+                        <p><strong>Dönüşüm Formülleri:</strong></p>
+                        <p class="formula-text">mg/dL'den mmol/L'ye: Değer (mg/dL) / 18.018</p>
+                        <p class="formula-text">mmol/L'den mg/dL'ye: Değer (mmol/L) × 18.018</p>
+                        <p class="small-text">18.018 faktörü, glikozun molar kütlesine ($180.156 \text{ g/mol}$) dayanır ve $mg/dL$'yi $mmol/L$'ye veya tersini çevirmek için kullanılır.</p>
+                    `,
+
+                    // Vücut Kitle İndeksi (BMI)
+                    bmiCalculatorButton: 'Vücut Kitle İndeksi (BMI)',
+                    bmiCalculatorTitle: 'Vücut Kitle İndeksi (BMI) Hesapla',
+                    weightLabel: 'Kilo (kg):',
+                    heightLabel: 'Boy (cm):',
+                    bmiResultLabel: 'BMI:',
+                    bmiStatusLabel: 'Durum:',
+                    bmiStatusUnderweight: 'Zayıf',
+                    bmiStatusNormal: 'Normal Kilolu',
+                    bmiStatusOverweight: 'Fazla Kilolu',
+                    bmiStatusObese: 'Obez',
+                    bmiExplanation: `
+                        <p><strong>Vücut Kitle İndeksi (BMI)</strong>, bir kişinin kilosunun boyuna göre sağlıklı bir aralıkta olup olmadığını değerlendirmek için kullanılan basit bir ölçümdür. Diyabet riskini değerlendirmede ve genel sağlık takibinde önemlidir.</p>
+                        <p><strong>Formül:</strong></p>
+                        <p class="formula-text">BMI = Kilo (kg) / (Boy (m)<sup>2</sup>)</p>
+                        <ul>
+                            <li>**18.5 altı:** Zayıf</li>
+                            <li>**18.5 - 24.9:** Normal Kilolu</li>
+                            <li>**25.0 - 29.9:** Fazla Kilolu</li>
+                            <li>**30.0 ve üzeri:** Obez</li>
+                        </ul>
+                        <p class="small-text">BMI yaşa, cinsiyete ve kas kütlesine göre değişebilir. Özellikle sporcular için yanıltıcı olabilir. En doğru değerlendirme için bir sağlık uzmanına danışmalısın.</p>
+                    `,
+
+                    // İnsülin Dozu Tahmini
+                    insulinDoseCalculatorButton: 'İnsülin Dozu Tahmini',
+                    insulinDoseCalculatorTitle: 'İnsülin Dozu Tahmini',
+                    carbsGramsLabel: 'Tüketilecek Karbonhidrat (gram):',
+                    carbToInsulinRatioLabel: 'Karbonhidrat/İnsülin Oranı (gram KH / 1 Ünite İnsülin):',
+                    currentGlucoseLabel: 'Mevcut Kan Şekeri (mg/dL):',
+                    targetGlucoseLabel: 'Hedef Kan Şekeri (mg/dL):',
+                    insulinSensitivityFactorLabel: 'İnsülin Hassasiyet Faktörü (1 Ünite İnsülin / kaç mg/dL düşüş):',
+                    mealInsulinLabel: 'Öğün İnsülini:',
+                    correctionInsulinLabel: 'Düzeltme İnsülini:',
+                    totalInsulinLabel: 'Toplam İnsülin Dozu:',
+                    unitsLabel: 'Ünite',
+                    insulinDoseExplanation: `
+                        <p>Bu hesaplayıcı, doktorunuz tarafından belirlenen kişisel oranlarınıza göre öğün ve düzeltme insülin dozlarınızı tahmin etmenize yardımcı olur. Lütfen unutmayın ki bu bir tahmindir ve gerçek dozlar kişisel duruma, aktivite düzeyine ve diğer birçok faktöre göre değişebilir.</p>
+                        <p><strong>Öğün İnsülini Formülü:</strong></p>
+                        <p class="formula-text">Öğün İnsülini (Ünite) = Tüketilecek Karbonhidrat (gram) / Karbonhidrat/İnsülin Oranı</p>
+                        <p><strong>Düzeltme İnsülini Formülü:</strong></p>
+                        <p class="formula-text">Düzeltme İnsülini (Ünite) = (Mevcut Kan Şekeri - Hedef Kan Şekeri) / İnsülin Hassasiyet Faktörü</p>
+                        <p><strong>Toplam İnsülin Dozu:</strong> Öğün İnsülini + Düzeltme İnsülini</p>
+                        <p class="disclaimer-text important-disclaimer">
+                            <strong>ÖNEMLİ UYARI:</strong> Bu insülin dozu hesaplayıcısı yalnızca bir <strong>tahmin aracıdır</strong> ve <strong>tıbbi tavsiye yerine geçmez</strong>. İnsülin dozlarınız daima <strong>doktorunuz veya diyabet eğitimciniz tarafından belirlenmeli ve onaylanmalıdır</strong>. Yanlış insülin dozu ciddi sağlık sorunlarına yol açabilir. Herhangi bir değişiklik yapmadan önce daima sağlık uzmanınıza danışın.
+                        </p>
+                    `,
+
+                    // Bilgi Bölümü
+                    infoSectionTitle: 'Diyabet ve Kan Şekeri Yönetimi',
+                    infoSectionP1: '<strong>Diyabet (şeker hastalığı)</strong>, vücudun kan şekerini (glikoz) düzgün bir şekilde kullanamadığı veya üretemediği zaman ortaya çıkan kronik bir durumdur. Vücudumuzun enerji ana kaynağı olan glikoz, yediğimiz yiyeceklerden gelir. İnsülin hormonu, glikozun kan dolaşımından hücrelere geçişine yardımcı olur.',
+                    infoSectionP2: 'Diyabetin temel türleri Tip 1, Tip 2 ve Gestasyonel diyabettir. Diyabet yönetiminde <strong>kan şekeri takibi</strong> ve <strong>HbA1c seviyelerinin izlenmesi</strong> hayati öneme sahiptir. Bu değerler, tedavi planının etkinliğini gösterir ve komplikasyon riskini azaltmaya yardımcı olur.',
+                    infoSectionH4_1: 'Önemli Diyabet Yönetimi Göstergeleri:',
+                    infoSectionList1_1: '**HbA1c (Glikosile Hemoglobin):** Son 2-3 aylık ortalama kan şekeri seviyenizi gösterir. Yüksek HbA1c seviyeleri, diyabetin kötü kontrol edildiğini ve komplikasyon riskinin arttığını gösterir. Hedef genellikle %7\'nin altındadır, ancak kişiye göre değişebilir.',
+                    infoSectionList1_2: '**Kan Şekeri Ölçümleri (Anlık):** Gün içinde yapılan parmak ucu veya sürekli glikoz monitörü (CGM) ölçümleri, anlık kan şekeri seviyelerini gösterir. Yemek öncesi, sonrası ve yatmadan önceki değerler önemlidir.',
+                    infoSectionList1_3: '**Ortalama Kan Şekeri (eAG - Estimated Average Glucose):** HbA1c değerinden türetilen tahmini ortalama kan şekeri değeridir ve hastaların anlık kan şekeri ölçümleriyle daha kolay ilişki kurmasını sağlar.',
+                    infoSectionList1_4: '**Vücut Kitle İndeksi (BMI):** Sağlıklı bir kiloyu korumak, özellikle Tip 2 diyabetin önlenmesi ve yönetimi için kritiktir. BMI, kişinin boyuna göre kilo aralığını gösterir.',
+                    infoSectionList1_5: '**İnsülin Dozu Hesaplamaları:** Tip 1 diyabetli veya bazı Tip 2 diyabetli bireyler için karbonhidrat alımına ve mevcut kan şekerine göre insülin dozunu doğru hesaplamak kritik öneme sahiptir.', // Yeni madde
+                    infoSectionH4_2: 'Uygulama Alanları:',
+                    infoSectionApp1: 'Diyabet hastalarının kendi kan şekeri verilerini ve yönetim parametrelerini daha iyi anlaması.',
+                    infoSectionApp2: 'Sağlık profesyonellerinin hasta eğitiminde ve takibinde yardımcı araç olarak kullanması.',
+                    infoSectionApp3: 'Diyabet riskini değerlendirme ve sağlıklı yaşam tarzı kararları alma.',
+                    infoSectionApp4: 'Diyet, egzersiz ve insülin dozajının kan şekeri üzerindeki etkilerini izleme.',
+                    disclaimerText: 'Bu hesaplayıcı, bilgi amaçlı tasarlanmıştır ve profesyonel tıbbi tavsiye, teşhis veya tedavi yerine geçmez. Diyabet yönetimi ve tüm tıbbi kararlar için her zaman bir sağlık uzmanına danışılmalıdır. Hesaplamalar genel formüllere dayanmaktadır ve bireysel farklılıklar veya spesifik tıbbi durumlar için ayarlanması gerekebilir.'
+                },
+                en: {
+                    // General
+                    mainHeading: 'Diabetes Calculator',
+                    mainDescription: 'Calculate estimated Average Glucose (eAG) from HbA1c, convert blood glucose units, calculate Body Mass Index (BMI), and estimate insulin dosage.',
+                    selectCalculationType: 'Select Calculation Type',
+                    calculateButton: 'Calculate',
+                    convertButton: 'Convert',
+                    estimateButton: 'Estimate', // New insulin button text
+                    invalidInput: 'Please enter valid positive numbers for all fields.',
+                    errorNegativeValue: 'Value cannot be less than zero.',
+                    errorZeroValue: 'Value cannot be zero.',
+                    resultPrefix: 'Result:',
+
+                    // HbA1c to eAG
+                    hba1cToEAGButton: 'HbA1c to Average Blood Glucose',
+                    hba1cToEAGTitle: 'Calculate Average Blood Glucose (eAG) from HbA1c',
+                    hba1cLabel: 'HbA1c Value (%):',
+                    eagMgdLResultLabel: 'Estimated Average Glucose (eAG):',
+                    eagMmolLResultLabel: 'Estimated Average Glucose (eAG):',
+                    unit_mgdL: 'mg/dL',
+                    unit_mmolL: 'mmol/L',
+                    hba1cExplanation: `
+                        <p>This calculator uses your <strong>HbA1c (glycated hemoglobin)</strong> percentage value to estimate your average blood glucose (eAG - estimated Average Glucose) in both $mg/dL$ and $mmol/L$ units. HbA1c is an important diabetes control indicator that reflects your average blood sugar levels over the past 2-3 months.</p>
+                        <p><strong>Formula:</strong></p>
+                        <p class="formula-text">eAG (mg/dL) = 28.7 × HbA1c (%) - 46.7</p>
+                        <p class="formula-text">eAG (mmol/L) = 1.59 × HbA1c (%) - 2.59</p>
+                        <p class="small-text">These formulas are internationally recognized formulas frequently used in diabetes management. However, due to individual medical conditions and measurement differences, the results do not replace evaluation by a healthcare professional.</p>
+                    `,
+
+                    // Blood Glucose Unit Converter
+                    glucoseUnitConverterButton: 'Blood Glucose Unit Converter',
+                    glucoseUnitConverterTitle: 'Blood Glucose Unit Converter',
+                    glucoseValueLabel: 'Blood Glucose Value:',
+                    glucoseConvertedResultLabel: 'Converted Value:',
+                    glucoseConverterExplanation: `
+                        <p>This calculator allows you to convert blood glucose values between $mg/dL$ (milligrams/deciliter) and $mmol/L$ (millimoles/liter) units. This conversion is practical as different units may be used in different countries and laboratories.</p>
+                        <p><strong>Conversion Formulas:</strong></p>
+                        <p class="formula-text">mg/dL to mmol/L: Value (mg/dL) / 18.018</p>
+                        <p class="formula-text">mmol/L to mg/dL: Value (mmol/L) × 18.018</p>
+                        <p class="small-text">The factor 18.018 is based on the molar mass of glucose ($180.156 \text{ g/mol}$) and is used to convert mg/dL to mmol/L or vice versa.</p>
+                    `,
+
+                    // Body Mass Index (BMI)
+                    bmiCalculatorButton: 'Body Mass Index (BMI)',
+                    bmiCalculatorTitle: 'Calculate Body Mass Index (BMI)',
+                    weightLabel: 'Weight (kg):',
+                    heightLabel: 'Height (cm):',
+                    bmiResultLabel: 'BMI:',
+                    bmiStatusLabel: 'Status:',
+                    bmiStatusUnderweight: 'Underweight',
+                    bmiStatusNormal: 'Normal Weight',
+                    bmiStatusOverweight: 'Overweight',
+                    bmiStatusObese: 'Obese',
+                    bmiExplanation: `
+                        <p><strong>Body Mass Index (BMI)</strong>, is a simple measure used to assess whether a person's weight is within a healthy range for their height. It is important in evaluating diabetes risk and for general health monitoring.</p>
+                        <p><strong>Formula:</strong></p>
+                        <p class="formula-text">BMI = Weight (kg) / (Height (m)<sup>2</sup>)</p>
+                        <ul>
+                            <li><strong>Below 18.5:</strong> Underweight</li>
+                            <li><strong>18.5 - 24.9:</strong> Normal Weight</li>
+                            <li><strong>25.0 - 29.9:</strong> Overweight</li>
+                            <li><strong>30.0 and above:</strong> Obese</li>
+                        </ul>
+                        <p class="small-text">BMI can vary by age, sex, and muscle mass. It can be misleading, especially for athletes. For the most accurate assessment, you should consult a healthcare professional.</p>
+                    `,
+
+                    // Insulin Dose Estimation
+                    insulinDoseCalculatorButton: 'Insulin Dose Estimation',
+                    insulinDoseCalculatorTitle: 'Insulin Dose Estimation',
+                    carbsGramsLabel: 'Carbohydrates to Consume (grams):',
+                    carbToInsulinRatioLabel: 'Carb-to-Insulin Ratio (grams CHO / 1 Unit Insulin):',
+                    currentGlucoseLabel: 'Current Blood Glucose (mg/dL):',
+                    targetGlucoseLabel: 'Target Blood Glucose (mg/dL):',
+                    insulinSensitivityFactorLabel: 'Insulin Sensitivity Factor (1 Unit Insulin / mg/dL drop):',
+                    mealInsulinLabel: 'Meal Insulin:',
+                    correctionInsulinLabel: 'Correction Insulin:',
+                    totalInsulinLabel: 'Total Insulin Dose:',
+                    unitsLabel: 'Units',
+                    insulinDoseExplanation: `
+                        <p>This calculator helps you estimate your meal and correction insulin doses based on your personalized ratios determined by your doctor. Please note that this is an estimation, and actual doses may vary based on individual circumstances, activity levels, and many other factors.</p>
+                        <p><strong>Meal Insulin Formula:</strong></p>
+                        <p class="formula-text">Meal Insulin (Units) = Carbohydrates to Consume (grams) / Carb-to-Insulin Ratio</p>
+                        <p><strong>Correction Insulin Formula:</strong></p>
+                        <p class="formula-text">Correction Insulin (Units) = (Current Blood Glucose - Target Blood Glucose) / Insulin Sensitivity Factor</p>
+                        <p><strong>Total Insulin Dose:</strong> Meal Insulin + Correction Insulin</p>
+                        <p class="disclaimer-text important-disclaimer">
+                            <strong>IMPORTANT WARNING:</strong> This insulin dose calculator is solely an <strong>estimation tool</strong> and does <strong>not replace medical advice</strong>. Your insulin doses must always be <strong>determined and approved by your doctor or diabetes educator</strong>. Incorrect insulin dosage can lead to serious health problems. Always consult your healthcare professional before making any changes.
+                        </p>
+                    `,
+
+                    // Info Section
+                    infoSectionTitle: 'Diabetes and Blood Glucose Management',
+                    infoSectionP1: '<strong>Diabetes</strong> is a chronic condition that occurs when the body cannot properly use or produce blood sugar (glucose). Glucose, our body\'s main source of energy, comes from the food we eat. The hormone insulin helps glucose move from the bloodstream into cells.',
+                    infoSectionP2: 'The main types of diabetes are Type 1, Type 2, and Gestational diabetes. In diabetes management, <strong>blood glucose monitoring</strong> and <strong>HbA1c level monitoring</strong> are vital. These values indicate the effectiveness of the treatment plan and help reduce the risk of complications.',
+                    infoSectionH4_1: 'Important Diabetes Management Indicators:',
+                    infoSectionList1_1: '**HbA1c (Glycated Hemoglobin):** Shows your average blood sugar level over the past 2-3 months. High HbA1c levels indicate poorly controlled diabetes and an increased risk of complications. The target is usually below 7%, but it may vary depending on the individual.',
+                    infoSectionList1_2: '**Blood Glucose Measurements (Instant):** Finger-prick or continuous glucose monitor (CGM) measurements throughout the day show instantaneous blood glucose levels. Values before, after meals, and before bedtime are important.',
+                    infoSectionList1_3: '**Estimated Average Glucose (eAG):** This is an estimated average blood glucose value derived from the HbA1c value, allowing patients to relate more easily to their instant blood glucose measurements.',
+                    infoSectionList1_4: '**Body Mass Index (BMI):** Maintaining a healthy weight is critical, especially for the prevention and management of Type 2 diabetes. BMI shows a person\'s weight range relative to their height.',
+                    infoSectionList1_5: '**Insulin Dose Calculations:** For individuals with Type 1 diabetes or some with Type 2 diabetes, accurately calculating insulin doses based on carbohydrate intake and current blood glucose is critically important.',
+                    infoSectionH4_2: 'Areas of Application:',
+                    infoSectionApp1: 'For diabetes patients to better understand their blood glucose data.',
+                    infoSectionApp2: 'As a helpful tool for healthcare professionals in patient education and monitoring.',
+                    infoSectionApp3: 'Evaluating diabetes risk and making healthy lifestyle decisions.',
+                    infoSectionApp4: 'Monitoring the effects of diet and exercise plans on blood glucose.',
+                    disclaimerText: 'This calculator is designed for informational purposes only and does not substitute for professional medical advice, diagnosis, or treatment. Always consult a healthcare professional for diabetes management and all medical decisions. Calculations are based on general formulas and may need to be adjusted for individual differences or specific medical conditions.'
+                }
+            };
+
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // DOM Elementleri
+            const calcButtons = document.querySelectorAll('.calc-type-button');
+            const calcWrappers = document.querySelectorAll('.calc-wrapper');
+
+            // Başlangıç Metin Güncellemeleri
+            document.querySelector('.hero-section h1').textContent = currentTexts.mainHeading;
+            document.querySelector('.hero-section p').textContent = currentTexts.mainDescription;
+            document.querySelector('.calculator-selection-section h2').textContent = currentTexts.selectCalculationType;
+            document.querySelector('.calc-type-button[data-calc-type="hba1cToEAG"]').textContent = currentTexts.hba1cToEAGButton;
+            document.querySelector('.calc-type-button[data-calc-type="glucoseUnitConverter"]').textContent = currentTexts.glucoseUnitConverterButton;
+            document.querySelector('.calc-type-button[data-calc-type="bmiCalculator"]').textContent = currentTexts.bmiCalculatorButton;
+            document.querySelector('.calc-type-button[data-calc-type="insulinDoseCalculator"]').textContent = currentTexts.insulinDoseCalculatorButton; // Yeni buton metni
+
+            // Hesaplayıcıları göster/gizle fonksiyonu
+            function showCalculator(calcType) {
+                calcWrappers.forEach(wrapper => {
+                    if (wrapper.id === `calculator-${calcType}`) {
+                        wrapper.classList.remove('hidden-calc');
+                    } else {
+                        wrapper.classList.add('hidden-calc');
+                    }
+                });
+
+                calcButtons.forEach(button => {
+                    if (button.dataset.calcType === calcType) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                });
+                // Her kategori değişiminde önceki sonuçları temizle ve gizle
+                document.querySelectorAll('.result-display').forEach(resultDiv => {
+                    resultDiv.innerHTML = '';
+                    resultDiv.style.display = 'none';
+                });
+            }
+
+            // Butonlara tıklama olaylarını ekle
+            calcButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const calcType = this.dataset.calcType;
+                    showCalculator(calcType);
+                });
+            });
+
+            // Sayfa yüklendiğinde varsayılan olarak ilk hesaplayıcıyı göster
+            showCalculator('hba1cToEAG');
+
+            // --- HbA1c'den Ortalama Kan Şekerine (eAG) Hesaplayıcı ---
+            const hba1cForm = document.getElementById('hba1cForm');
+            const hba1cResultDiv = document.getElementById('hba1cResult');
+
+            // Etiket metinlerini güncelle
+            document.querySelector('#calculator-hba1cToEAG h3').innerHTML = `<i class="fas fa-chart-line icon-small"></i> ${currentTexts.hba1cToEAGTitle}`;
+            document.getElementById('hba1cValue').previousElementSibling.textContent = currentTexts.hba1cLabel;
+            document.querySelector('#hba1cForm button[type="submit"]').textContent = currentTexts.calculateButton;
+            document.querySelector('#calculator-hba1cToEAG .calc-explanation').innerHTML = currentTexts.hba1cExplanation;
+
+
+            hba1cForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                hba1cResultDiv.innerHTML = '';
+                hba1cResultDiv.style.display = 'none';
+
+                const hba1c = parseFloat(document.getElementById('hba1cValue').value);
+
+                if (isNaN(hba1c) || hba1c < 4 || hba1c > 15) { // HbA1c için tipik aralıklar
+                    hba1cResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                    hba1cResultDiv.style.display = 'block';
+                    return;
+                }
+
+                // eAG (mg/dL) = 28.7 * HbA1c - 46.7
+                const eag_mgdl = (28.7 * hba1c) - 46.7;
+                // eAG (mmol/L) = 1.59 * HbA1c - 2.59
+                const eag_mmolL = (1.59 * hba1c) - 2.59;
+
+                hba1cResultDiv.innerHTML = `
+                    <p>${currentTexts.eagMgdLResultLabel} <span class="result-value">${eag_mgdl.toFixed(2)}</span> ${currentTexts.unit_mgdL}</p>
+                    <p>${currentTexts.eagMmolLResultLabel} <span class="result-value">${eag_mmolL.toFixed(2)}</span> ${currentTexts.unit_mmolL}</p>
+                `;
+                hba1cResultDiv.style.display = 'block';
+            });
+
+            // --- Kan Şekeri Birim Dönüşümü Hesaplayıcı ---
+            const glucoseConverterForm = document.getElementById('glucoseConverterForm');
+            const glucoseConverterResultDiv = document.getElementById('glucoseConverterResult');
+
+            // Etiket metinlerini güncelle
+            document.querySelector('#calculator-glucoseUnitConverter h3').innerHTML = `<i class="fas fa-arrows-alt-h icon-small"></i> ${currentTexts.glucoseUnitConverterTitle}`;
+            document.getElementById('glucoseValue').previousElementSibling.textContent = currentTexts.glucoseValueLabel;
+            document.querySelector('#glucoseConverterForm button[type="submit"]').textContent = currentTexts.convertButton;
+            document.querySelector('#calculator-glucoseUnitConverter .calc-explanation').innerHTML = currentTexts.glucoseConverterExplanation;
+
+
+            glucoseConverterForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                glucoseConverterResultDiv.innerHTML = '';
+                glucoseConverterResultDiv.style.display = 'none';
+
+                const glucoseValue = parseFloat(document.getElementById('glucoseValue').value);
+                const glucoseUnit = document.getElementById('glucoseUnit').value;
+
+                if (isNaN(glucoseValue) || glucoseValue < 0) {
+                    glucoseConverterResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                    glucoseConverterResultDiv.style.display = 'block';
+                    return;
+                }
+                if (glucoseValue === 0) {
+                    glucoseConverterResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroValue}</p>`;
+                    glucoseConverterResultDiv.style.display = 'block';
+                    return;
+                }
+
+                let convertedValue;
+                let convertedUnit;
+
+                if (glucoseUnit === 'mg/dL') {
+                    convertedValue = glucoseValue / 18.018;
+                    convertedUnit = currentTexts.unit_mmolL;
+                } else { // mmol/L
+                    convertedValue = glucoseValue * 18.018;
+                    convertedUnit = currentTexts.unit_mgdL;
+                }
+
+                glucoseConverterResultDiv.innerHTML = `
+                    <p>${currentTexts.glucoseConvertedResultLabel} <span class="result-value">${convertedValue.toFixed(2)}</span> ${convertedUnit}</p>
+                `;
+                glucoseConverterResultDiv.style.display = 'block';
+            });
+
+            // --- Vücut Kitle İndeksi (BMI) Hesaplayıcı ---
+            const bmiForm = document.getElementById('bmiForm');
+            const bmiResultDiv = document.getElementById('bmiResult');
+
+            // Etiket metinlerini güncelle
+            document.querySelector('#calculator-bmiCalculator h3').innerHTML = `<i class="fas fa-ruler-vertical icon-small"></i> ${currentTexts.bmiCalculatorTitle}`;
+            document.getElementById('weight').previousElementSibling.textContent = currentTexts.weightLabel;
+            document.getElementById('height').previousElementSibling.textContent = currentTexts.heightLabel;
+            document.querySelector('#bmiForm button[type="submit"]').textContent = currentTexts.calculateButton;
+            document.querySelector('#calculator-bmiCalculator .calc-explanation').innerHTML = currentTexts.bmiExplanation;
+
+
+            bmiForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                bmiResultDiv.innerHTML = '';
+                bmiResultDiv.style.display = 'none';
+
+                const weight = parseFloat(document.getElementById('weight').value); // kg
+                const height_cm = parseFloat(document.getElementById('height').value); // cm
+
+                if (isNaN(weight) || isNaN(height_cm) || weight <= 0 || height_cm <= 0) {
+                    bmiResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                    bmiResultDiv.style.display = 'block';
+                    return;
+                }
+
+                const height_m = height_cm / 100; // cm'yi metreye çevir
+                const bmi = weight / (height_m * height_m);
+
+                let bmiStatus = '';
+                if (bmi < 18.5) {
+                    bmiStatus = currentTexts.bmiStatusUnderweight;
+                } else if (bmi >= 18.5 && bmi < 25) {
+                    bmiStatus = currentTexts.bmiStatusNormal;
+                } else if (bmi >= 25 && bmi < 30) {
+                    bmiStatus = currentTexts.bmiStatusOverweight;
+                } else {
+                    bmiStatus = currentTexts.bmiStatusObese;
+                }
+
+                bmiResultDiv.innerHTML = `
+                    <p>${currentTexts.bmiResultLabel} <span class="result-value">${bmi.toFixed(2)}</span></p>
+                    <p>${currentTexts.bmiStatusLabel} <span class="result-value">${bmiStatus}</span></p>
+                `;
+                bmiResultDiv.style.display = 'block';
+            });
+
+            // --- İnsülin Dozu Tahmin Hesaplayıcı ---
+            const insulinDoseForm = document.getElementById('insulinDoseForm');
+            const insulinDoseResultDiv = document.getElementById('insulinDoseResult');
+
+            // Etiket metinlerini güncelle
+            document.querySelector('#calculator-insulinDoseCalculator h3').innerHTML = `<i class="fas fa-syringe icon-small"></i> ${currentTexts.insulinDoseCalculatorTitle}`;
+            document.getElementById('carbsGrams').previousElementSibling.textContent = currentTexts.carbsGramsLabel;
+            document.getElementById('carbToInsulinRatio').previousElementSibling.textContent = currentTexts.carbToInsulinRatioLabel;
+            document.getElementById('currentGlucose').previousElementSibling.textContent = currentTexts.currentGlucoseLabel;
+            document.getElementById('targetGlucose').previousElementSibling.textContent = currentTexts.targetGlucoseLabel;
+            document.getElementById('insulinSensitivityFactor').previousElementSibling.textContent = currentTexts.insulinSensitivityFactorLabel;
+            document.querySelector('#insulinDoseForm button[type="submit"]').textContent = currentTexts.estimateButton;
+            document.querySelector('#calculator-insulinDoseCalculator .calc-explanation').innerHTML = currentTexts.insulinDoseExplanation;
+
+
+            insulinDoseForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                insulinDoseResultDiv.innerHTML = '';
+                insulinDoseResultDiv.style.display = 'none';
+
+                const carbsGrams = parseFloat(document.getElementById('carbsGrams').value);
+                const carbToInsulinRatio = parseFloat(document.getElementById('carbToInsulinRatio').value);
+                const currentGlucose = parseFloat(document.getElementById('currentGlucose').value);
+                const targetGlucose = parseFloat(document.getElementById('targetGlucose').value);
+                const insulinSensitivityFactor = parseFloat(document.getElementById('insulinSensitivityFactor').value);
+
+                if (isNaN(carbsGrams) || isNaN(carbToInsulinRatio) || isNaN(currentGlucose) || isNaN(targetGlucose) || isNaN(insulinSensitivityFactor) ||
+                    carbsGrams < 0 || carbToInsulinRatio <= 0 || currentGlucose < 0 || targetGlucose < 0 || insulinSensitivityFactor <= 0) {
+                    insulinDoseResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                    insulinDoseResultDiv.style.display = 'block';
+                    return;
+                }
+
+                if (targetGlucose > currentGlucose && carbsGrams === 0) {
+                    insulinDoseResultDiv.innerHTML = `<p class="error">Hedef kan şekeri mevcut kan şekerinizden yüksekse ve karbonhidrat alımı yoksa insülin dozu hesaplanamaz. Lütfen değerleri kontrol edin.</p>`;
+                    insulinDoseResultDiv.style.display = 'block';
+                    return;
+                }
+                if (insulinSensitivityFactor === 0) {
+                     insulinDoseResultDiv.innerHTML = `<p class="error">İnsülin Hassasiyet Faktörü sıfır olamaz.</p>`;
+                     insulinDoseResultDiv.style.display = 'block';
+                     return;
+                }
+                if (carbToInsulinRatio === 0) {
+                    insulinDoseResultDiv.innerHTML = `<p class="error">Karbonhidrat/İnsülin Oranı sıfır olamaz.</p>`;
+                    insulinDoseResultDiv.style.display = 'block';
+                    return;
+                }
+
+
+                let mealInsulin = 0;
+                if (carbsGrams > 0) { // Sadece pozitif karbonhidratlar için hesapla
+                    mealInsulin = carbsGrams / carbToInsulinRatio;
+                }
+                
+                let correctionInsulin = 0;
+                if (currentGlucose > targetGlucose) { // Sadece mevcut kan şekeri hedeften yüksekse düzeltme yap
+                    correctionInsulin = (currentGlucose - targetGlucose) / insulinSensitivityFactor;
+                }
+
+                const totalInsulinDose = mealInsulin + correctionInsulin;
+
+                insulinDoseResultDiv.innerHTML = `
+                    <p>${currentTexts.mealInsulinLabel} <span class="result-value">${mealInsulin.toFixed(2)}</span> ${currentTexts.unitsLabel}</p>
+                    <p>${currentTexts.correctionInsulinLabel} <span class="result-value">${correctionInsulin.toFixed(2)}</span> ${currentTexts.unitsLabel}</p>
+                    <p>${currentTexts.totalInsulinLabel} <span class="result-value">${totalInsulinDose.toFixed(2)}</span> ${currentTexts.unitsLabel}</p>
+                `;
+                insulinDoseResultDiv.style.display = 'block';
+            });
+
+            // Bilgi Bölümü Metin Güncelleme
+            function updateInfoSectionContent() {
+                document.querySelector('.info-section h3').textContent = currentTexts.infoSectionTitle;
+                document.querySelector('.info-section p:nth-of-type(1)').innerHTML = currentTexts.infoSectionP1;
+                document.querySelector('.info-section p:nth-of-type(2)').innerHTML = currentTexts.infoSectionP2;
+                document.querySelector('.info-section h4:nth-of-type(1)').textContent = currentTexts.infoSectionH4_1;
+                
+                const ul1 = document.querySelector('.info-section ul:nth-of-type(1)');
+                if (ul1) {
+                    ul1.innerHTML = `
+                        <li>${currentTexts.infoSectionList1_1}</li>
+                        <li>${currentTexts.infoSectionList1_2}</li>
+                        <li>${currentTexts.infoSectionList1_3}</li>
+                        <li>${currentTexts.infoSectionList1_4}</li>
+                        <li>${currentTexts.infoSectionList1_5}</li>
+                    `;
+                }
+
+                document.querySelector('.info-section h4:nth-of-type(2)').textContent = currentTexts.infoSectionH4_2;
+                const ul2 = document.querySelector('.info-section ul:nth-of-type(2)');
+                if (ul2) {
+                    ul2.innerHTML = `
+                        <li>${currentTexts.infoSectionApp1}</li>
+                        <li>${currentTexts.infoSectionApp2}</li>
+                        <li>${currentTexts.infoSectionApp3}</li>
+                        <li>${currentTexts.infoSectionApp4}</li>
+                    `;
+                }
+                
+                document.querySelector('.info-section .disclaimer-text').textContent = currentTexts.disclaimerText;
+            }
+            updateInfoSectionContent(); // Sayfa yüklendiğinde bilgi bölümünü güncelle
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Fabric Cutting Waste Rate Calculation - Hesapkolik</title>
+
+    <meta content="Calculate the fabric waste rate (as a percentage) after the cutting process in garment production. A practical tool for cost analysis and production efficiency." name="description"/>
+    <meta content="fabric waste rate, cutting waste, waste calculation, textile production, apparel, cost, efficiency, textile engineering calculations, hesapkolik textile" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <style>
+        /* General Settings and Font */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Simple and fresh background */
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section (Uyarlanmış Ana Başlık Bölümü) */
+        .hero-section {
+            background-color: #34495e; /* Compatible with dark theme header/footer */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Grubu Bölümü (Karbon Ayak İzi stiline benzer) */
+        .calculator-group-section { /* Yeni bölüm adı */
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff; /* White card background */
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-group-section h2 { /* Sayfa içindeki ana başlık */
+            margin-bottom: 30px;
+            color: #2c3e50; /* Dark text color */
+            font-size: 2.2em;
+        }
+
+        /* Hesaplayıcı Kutusu (calc-wrapper ile aynı stil) */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px; /* Merkeze hizalama için */
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c; /* Hesaplayıcı başlık rengi */
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+
+        /* Form Elemanları */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        /* input-with-unit için düzenleme */
+        .input-with-unit {
+            display: flex;
+            align-items: center; /* Label ve input/select'i dikeyde ortala */
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alta geçebilir */
+        }
+        .input-with-unit label {
+            flex-basis: 50%; /* Label için alan */
+            margin-right: 10px;
+            text-align: left;
+            min-width: 150px; /* Minimum genişlik */
+            margin-bottom: 0;
+        }
+        .input-with-unit input[type="number"] {
+            flex-grow: 1; /* Input'un kalan alanı doldurmasını sağlar */
+            margin-bottom: 0;
+        }
+
+
+        .form-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        /* Form Butonları */
+        .calculator-form-container button[type="button"] { /* Type 'button' olarak değişti */
+            background-color: #28a745; /* Confirmation green */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button[type="button"]:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Sonuç Alanı */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+            display: none; /* Hidden by default */
+            line-height: 1.4; /* Satır aralığı */
+        }
+        .result-display h3 {
+            font-size: 1.5em; /* Sonuç başlığı için uygun boyut */
+            margin-bottom: 15px;
+            color: #e74c3c;
+        }
+        .result-display .result-value {
+            color: #e74c3c;
+            font-size: 1.2em; /* Değerler biraz daha büyük */
+            margin-left: 5px;
+        }
+        .result-display .error {
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        .result-display p { /* İç p etiketleri için stil */
+            margin: 5px 0;
+            font-size: 0.8em; /* Genel result-display fontundan farklı */
+        }
+        .result-display strong {
+            font-size: 0.9em;
+            display: inline-block; /* Yan yana durması için */
+        }
+
+
+        /* Bilgilendirme Bölümleri */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+            text-align: left; /* Bilgi yazılarının sola hizalanması */
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px; /* İç boşluk */
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        /* Yeni başlık stili (Form içindeki h4'ler için) */
+        .calc-wrapper h4 {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1.4em;
+            }
+            .input-with-unit {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .input-with-unit label {
+                margin-right: 0;
+                margin-bottom: 5px;
+                min-width: unset;
+            }
+            .input-with-unit input[type="number"],
+            .input-with-unit select {
+                width: 100%;
+                margin-bottom: 10px; /* Alt boşluğu geri getir */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-group-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            .result-display {
+                font-size: 1em;
+                padding: 15px;
+            }
+            .result-display .result-value {
+                font-size: 1.2em;
+            }
+            .info-section p {
+                padding: 0 10px;
+            }
+            .info-section ul {
+                margin-left: 20px;
+            }
+        }
+    </style>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Fabric Cutting Waste Rate Calculator</h1>
+                <p>Calculate the fabric waste rate as a percentage, a critical indicator for cost control and production efficiency.</p>
+            </div>
+        </section>
+
+        <section class="calculator-group-section">
+            <div class="container">
+                <h2>Calculate Cutting Waste Rate</h2>
+
+                <div class="calc-wrapper"> <h3><i class="fas fa-cut icon-small"></i> Cutting Waste Rate Calculation</h3>
+                    <div class="calculator-form-container">
+                        <form id="fabricWasteForm">
+                            <p class="small-text">Please enter fabric and production information (in the same unit: meter, kg, yard, etc.):</p>
+
+                            <div class="input-with-unit">
+                                <label for="totalFabricUsed">Total Amount of Fabric Used:</label>
+                                <input id="totalFabricUsed" min="0.01" placeholder="Ex: 1000" required="" step="0.01" type="number"/>
+                            </div>
+                            <div class="input-with-unit">
+                                <label for="netFabricConsumed">Net Fabric Consumed (For Products):</label>
+                                <input id="netFabricConsumed" min="0" placeholder="Ex: 950" required="" step="0.01" type="number"/>
+                            </div>
+
+                            <button type="button" onclick="calculateFabricWaste()">Calculate</button>
+                        </form>
+
+                        <div class="result-display" id="resultBox">
+                            <h3>Results:</h3>
+                            <p><strong>Cutting Waste Amount:</strong> <span class="result-value" id="wasteAmount"></span></p>
+                            <p><strong>Cutting Waste Rate (%):</strong> <span class="result-value" id="wastePercentage"></span> %</p>
+                        </div>
+
+                        <p class="small-text">The waste rate shows how much of the total fabric used is not converted into a product. The units (meter, kg, etc.) must be the same.</p>
+                    </div>
+                </div>
+
+                <section class="info-section container">
+                    <h3>What is the Fabric Cutting Waste Rate?</h3>
+                    <p>
+                        <strong>Fabric cutting waste rate</strong> is the percentage (%) of the part of the fabric that remains outside the product parts during the cutting phase of the fabric laid out to sew a product and is separated as waste, expressed in the apparel industry, to the total amount of fabric used. This waste is caused by the fabric pattern, the design of the product model, the placement of the cutting patterns (placard placement) and the cutting technology.
+                    </p>
+                    <p>
+                        The waste rate is an important cost item and efficiency indicator for textile businesses. Working with minimum waste both reduces raw material waste and reduces production costs.
+                    </p>
+                    <h4>Why Is Fabric Cutting Waste Rate Important?</h4>
+                    <ul>
+                        <li><strong>Cost Control:</strong> Fabric is the biggest cost item in ready-made garment production. Low waste rate directly reduces raw material cost.</li>
+                        <li><strong>Efficiency:</strong> Reducing the waste rate means producing more products with the available amount of fabric.</li>
+                        <li><strong>Sustainability:</strong> Helps to minimize environmental impact by reducing waste.</li>
+                        <li><strong>Pricing:</strong> It is essential to know the waste rate for accurate calculation of product cost and competitive pricing.</li>
+                        <li><strong>Planning:</strong> Provides more accurate fabric orders and production planning.</li>
+                    </ul>
+                    <h4>How to Calculate Fabric Cutting Waste Rate?</h4>
+                    <p>
+                        The cutting waste rate is generally calculated by the following formula:
+                    </p>
+                    <p class="formula-text">
+                        Cutting Waste Amount = Total Fabric Used Amount - Net Fabric Spent Amount
+                    </p>
+                    <p class="formula-text">
+                        Cutting Waste Rate (%) = (Cutting Waste Amount / Total Fabric Amount Used) * 100
+                    </p>
+                    <p>
+                        <strong>Explanations:</strong>
+                        <ul>
+                            <li><strong>Total Fabric Used:</strong> The total amount of fabric laid out and used for the cutting process (in meters, kilograms or yards).</li>
+                            <li><strong>Net Fabric Consumed (For Products):</strong> The total amount of fabric pieces cut and turned into products.</li>
+                        </ul>
+                        It is critical that both values are in the same unit (for example, all meters or all kilograms).
+                    </p>
+                    <h4>Factors Affecting the Waste Rate:</h4>
+                    <ul>
+                        <li><strong>Fabric Width and Pattern:</strong> The pattern (unidirectional, multidirectional, plaid, etc.) and width of the fabric affect the pattern placement and therefore the waste.</li>
+                        <li><strong>Pattern Design and Placement (Pattern Placement):</strong> How efficiently the patterns are placed on the fabric directly affects the waste. Automatic marker systems minimize waste.</li>
+                        <li><strong>Product Model Complexity:</strong> Models with many small parts or asymmetrical models may cause more waste.</li>
+                        <li><strong>Cutting Technology:</strong> Precision technologies such as laser cutting can create less waste than manual cutting.</li>
+                        <li><strong>Operator Experience:</strong> In manual cutting, the experience of the operator affects the waste.</li>
+                    </ul>
+                    <p class="disclaimer-text">
+                        This calculator is for general information purposes and provides theoretical calculations. In real production, additional factors such as fabric defects, cutting errors, test and sample losses may affect the waste rate. For sensitive commercial or industrial applications, detailed factory data, optimization software and analysis by experienced production engineers should be considered. If you have any problems with your calculations, please contact us.
+                        <a href="../../contact.html">communication</a> reach us from our page.
+                    </p>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header and Footer loading functions
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // Load header and footer based on URL
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // --- JavaScript for Fabric Cutting Waste Rate Calculation ---
+
+            // Language detection & texts
+            const texts = {
+                tr: {
+                    mainHeading: 'Kumaş Kesim Fire Oranı Hesaplayıcı',
+                    mainDescription: 'Konfeksiyon üretiminde kesim işlemi sonrası oluşan kumaş fire oranını (yüzde olarak) hesaplayın. Maliyet analizi ve üretim verimliliği için pratik bir araç.',
+                    calculateWasteRateTitle: 'Kesim Fire Oranını Hesapla',
+                    inputInstruction: 'Lütfen kumaş ve üretim bilgilerini (aynı birimde: metre, kg, yard vb.) girin:',
+                    totalFabricUsedLabel: 'Toplam Kullanılan Kumaş Miktarı:',
+                    netFabricConsumedLabel: 'Net Tüketilen Kumaş (Ürünler İçin):',
+                    calculateButtonText: 'Hesapla',
+                    resultsTitle: 'Sonuç:',
+                    wasteAmountResult: 'Kesim Fire Miktarı:',
+                    wastePercentageResult: 'Kesim Fire Oranı (%):',
+                    unit_percent: '%',
+                    bottomNote: 'Fire oranı, kullanılan toplam kumaşın ne kadarının ürüne dönüşmediğini gösterir. Birimler (metre, kg vb.) aynı olmalıdır.',
+                    invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                    errorNetConsumedGreater: 'Net Tüketilen Kumaş Miktarı, Toplam Kullanılan Kumaş Miktarından büyük olamaz.'
+                },
+                en: {
+                    mainHeading: 'Fabric Cutting Waste Rate Calculator',
+                    mainDescription: 'Calculate the fabric waste rate (as a percentage) after the cutting process in garment production. A practical tool for cost analysis and production efficiency.',
+                    calculateWasteRateTitle: 'Calculate Cutting Waste Rate',
+                    inputInstruction: 'Please enter fabric and production information (in the same unit: meter, kg, yard, etc.):',
+                    totalFabricUsedLabel: 'Total Amount of Fabric Used:',
+                    netFabricConsumedLabel: 'Net Fabric Consumed (For Products):',
+                    calculateButtonText: 'Calculate',
+                    resultsTitle: 'Conclusion:',
+                    wasteAmountResult: 'Cutting Waste Amount:',
+                    wastePercentageResult: 'Cutting Waste Rate (%):',
+                    unit_percent: '%',
+                    bottomNote: 'The waste rate shows how much of the total fabric used is not converted into a product. The units (meter, kg, etc.) must be the same.',
+                    invalidInput: 'Please enter valid positive numbers for all fields.',
+                    errorNetConsumedGreater: 'Net Fabric Consumed cannot be greater than Total Fabric Used.'
+                }
+            };
+
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // Update main titles and descriptions
+            document.querySelector('.hero-section h1').textContent = currentTexts.mainHeading;
+            document.querySelector('.hero-section p').textContent = currentTexts.mainDescription;
+            document.querySelector('.calculator-group-section h2').textContent = currentTexts.calculateWasteRateTitle;
+
+            // --- DOM Elements ---
+            const fabricWasteForm = document.getElementById('fabricWasteForm');
+            const totalFabricUsedInput = document.getElementById('totalFabricUsed');
+            const netFabricConsumedInput = document.getElementById('netFabricConsumed');
+            const resultBox = document.getElementById('resultBox');
+            const calculateButton = fabricWasteForm.querySelector('button[type="button"]');
+
+            // Update form specific labels and placeholders
+            document.querySelector('.calc-wrapper h3').innerHTML = `<i class="fas fa-cut icon-small"></i> ${currentTexts.calculateWasteRateTitle}`;
+            fabricWasteForm.querySelector('p.small-text').textContent = currentTexts.inputInstruction;
+            document.getElementById('totalFabricUsed').previousElementSibling.textContent = currentTexts.totalFabricUsedLabel;
+            document.getElementById('totalFabricUsed').placeholder = 'Ex: 1000'; // Keep static placeholder for consistency
+            document.getElementById('netFabricConsumed').previousElementSibling.textContent = currentTexts.netFabricConsumedLabel;
+            document.getElementById('netFabricConsumed').placeholder = 'Ex: 950'; // Keep static placeholder for consistency
+            calculateButton.textContent = currentTexts.calculateButtonText;
+            document.querySelector('.calculator-form-container > p.small-text').textContent = currentTexts.bottomNote;
+
+            // Update result box texts initially (before calculation)
+            resultBox.querySelector('h3').textContent = currentTexts.resultsTitle;
+            resultBox.querySelector('p:nth-of-type(1) strong').textContent = currentTexts.wasteAmountResult;
+            resultBox.querySelector('p:nth-of-type(2) strong').textContent = currentTexts.wastePercentageResult;
+            resultBox.querySelector('p:nth-of-type(2) span.result-value + span').textContent = ' %'; // Ensure % unit is visible
+
+
+            // --- Calculation Function ---
+            window.calculateFabricWaste = function() {
+                let totalFabricUsed = parseFloat(totalFabricUsedInput.value);
+                let netFabricConsumed = parseFloat(netFabricConsumedInput.value);
+
+                // Clear previous results and hide result box initially
+                // Re-inject static parts of result box for dynamic content management
+                resultBox.innerHTML = `
+                    <h3>${currentTexts.resultsTitle}</h3>
+                    <p><strong>${currentTexts.wasteAmountResult}</strong> <span class="result-value" id="wasteAmount"></span></p>
+                    <p><strong>${currentTexts.wastePercentageResult}</strong> <span class="result-value" id="wastePercentage"></span> %</p>
+                `;
+                resultBox.style.display = 'none';
+
+                // Re-get spans as their content was reset
+                const wasteAmountSpan = document.getElementById('wasteAmount');
+                const wastePercentageSpan = document.getElementById('wastePercentage');
+
+                // --- Input Validation ---
+                if (isNaN(totalFabricUsed) || isNaN(netFabricConsumed) || totalFabricUsed <= 0 || netFabricConsumed < 0) {
+                    resultBox.innerHTML = `<h3>${currentTexts.resultsTitle}</h3><p class="error">${currentTexts.invalidInput}</p>`;
+                    resultBox.style.display = 'block';
+                    return;
+                }
+
+                if (netFabricConsumed > totalFabricUsed) {
+                    resultBox.innerHTML = `<h3>${currentTexts.resultsTitle}</h3><p class="error">${currentTexts.errorNetConsumedGreater}</p>`;
+                    resultBox.style.display = 'block';
+                    return;
+                }
+
+                // --- Perform Calculations ---
+                const cuttingWasteAmount = totalFabricUsed - netFabricConsumed;
+                let cuttingWastePercentage = (cuttingWasteAmount / totalFabricUsed) * 100;
+
+                // Ensure percentage is not negative due to floating point inaccuracies with zero waste
+                if (cuttingWastePercentage < 0) {
+                    cuttingWastePercentage = 0;
+                }
+
+                // --- Display Results ---
+                wasteAmountSpan.textContent = cuttingWasteAmount.toFixed(2);
+                wastePercentageSpan.textContent = cuttingWastePercentage.toFixed(2);
+                resultBox.style.display = 'block'; // Show the result box
+            };
+
+            // Update Info Section Text
+            function updateInfoSectionContent() {
+                // Main Info Section Title
+                document.querySelector('.info-section h3').textContent = isEnglishPage ? 'What is the Fabric Cutting Waste Rate?' : 'Kumaş Kesim Fire Oranı Nedir?';
+
+                // First paragraph
+                document.querySelector('.info-section p:nth-of-type(1)').innerHTML = isEnglishPage ?
+                    `<strong>Fabric cutting waste rate</strong> is the percentage (%) of the part of the fabric that remains outside the product parts during the cutting phase of the fabric laid out to sew a product and is separated as waste, expressed in the apparel industry, to the total amount of fabric used. This waste is caused by the fabric pattern, the design of the product model, the placement of the cutting patterns (placard placement) and the cutting technology.` :
+                    `<strong>Kumaş kesim fire oranı</strong>, konfeksiyon sektöründe bir ürün dikmek üzere serilen kumaşın kesim aşamasında ürün parçaları dışında kalan ve fire olarak ayrılan kısmının, kullanılan toplam kumaş miktarına yüzde (%) olarak ifadesidir. Bu fire, kumaşın deseninden, ürün modelinin tasarımından, kesim kalıplarının yerleşiminden (pastal serimi) ve kesim teknolojisinden kaynaklanır.`;
+                document.querySelector('.info-section p:nth-of-type(2)').innerHTML = isEnglishPage ?
+                    `The waste rate is an important cost item and efficiency indicator for textile businesses. Working with minimum waste both reduces raw material waste and reduces production costs.` :
+                    `Fire oranı, tekstil işletmeleri için önemli bir maliyet kalemi ve verimlilik göstergesidir. Minimum fire ile çalışmak, hem hammadde israfını azaltır hem de üretim maliyetlerini düşürür.`;
+
+                // Why Important section
+                document.querySelector('.info-section h4:nth-of-type(1)').textContent = isEnglishPage ? 'Why Is Fabric Cutting Waste Rate Important?' : 'Kumaş Kesim Fire Oranı Neden Önemlidir?';
+                const ul1 = document.querySelector('.info-section ul:nth-of-type(1)');
+                if (ul1) {
+                    ul1.innerHTML = `
+                        <li>${isEnglishPage ? '<strong>Cost Control:</strong> Fabric is the biggest cost item in ready-made garment production. Low waste rate directly reduces raw material cost.' : '<strong>Maliyet Kontrolü:</strong> Kumaş, hazır giyim üretiminde en büyük maliyet kalemidir. Düşük fire oranı, hammadde maliyetini doğrudan düşürür.'}</li>
+                        <li>${isEnglishPage ? '<strong>Efficiency:</strong> Reducing the waste rate means producing more products with the available amount of fabric.' : '<strong>Verimlilik:</strong> Fire oranını düşürmek, mevcut kumaş miktarı ile daha fazla ürün üretmek anlamına gelir.'}</li>
+                        <li>${isEnglishPage ? '<strong>Sustainability:</strong> Helps to minimize environmental impact by reducing waste.' : '<strong>Sürdürülebilirlik:</strong> Atık miktarını azaltarak çevresel etkinin minimize edilmesine yardımcı olur.'}</li>
+                        <li>${isEnglishPage ? '<strong>Pricing:</strong> It is essential to know the waste rate for accurate calculation of product cost and competitive pricing.' : '<strong>Fiyatlandırma:</strong> Ürün maliyetinin doğru hesaplanması ve rekabetçi fiyatlandırma için fire oranının bilinmesi esastır.'}</li>
+                        <li>${isEnglishPage ? '<strong>Planning:</strong> Provides more accurate fabric orders and production planning.' : '<strong>Planlama:</strong> Daha doğru kumaş siparişleri ve üretim planlaması yapılmasını sağlar.'}</li>
+                    `;
+                }
+
+                // How to Calculate section
+                document.querySelector('.info-section h4:nth-of-type(2)').textContent = isEnglishPage ? 'How to Calculate Fabric Cutting Waste Rate?' : 'Kumaş Kesim Fire Oranı Nasıl Hesaplanır?';
+                document.querySelector('.info-section p.formula-text:nth-of-type(1)').textContent = isEnglishPage ?
+                    'Cutting Waste Amount = Total Fabric Used Amount - Net Fabric Spent Amount' :
+                    'Kesim Fire Miktarı = Toplam Kullanılan Kumaş Miktarı - Net Tüketilen Kumaş Miktarı';
+                document.querySelector('.info-section p.formula-text:nth-of-type(2)').textContent = isEnglishPage ?
+                    'Cutting Waste Rate (%) = (Cutting Waste Amount / Total Fabric Amount Used) * 100' :
+                    'Kesim Fire Oranı (%) = (Kesim Fire Miktarı / Toplam Kullanılan Kumaş Miktarı) * 100';
+
+                document.querySelector('.info-section p:nth-of-type(5)').innerHTML = isEnglishPage ?
+                    `<strong>Explanations:</strong>
+                    <ul>
+                        <li><strong>Total Fabric Used:</strong> The total amount of fabric laid out and used for the cutting process (in meters, kilograms or yards).</li>
+                        <li><strong>Net Fabric Consumed (For Products):</strong> The total amount of fabric pieces cut and turned into products.</li>
+                    </ul>
+                    It is critical that both values are in the same unit (for example, all meters or all kilograms).` :
+                    `<strong>Açıklamalar:</strong>
+                    <ul>
+                        <li><strong>Toplam Kullanılan Kumaş:</strong> Kesim işlemi için serilen ve kullanılan toplam kumaş miktarı (metre, kilogram veya yard cinsinden).</li>
+                        <li><strong>Net Tüketilen Kumaş (Ürünler İçin):</strong> Ürüne dönüşen, kesilen kumaş parçalarının toplam miktarı.</li>
+                    </ul>
+                    Her iki değerin de aynı birimde olması (örneğin, hepsi metre veya hepsi kilogram) kritik öneme sahiptir.`;
+
+
+                // Factors Affecting section
+                document.querySelector('.info-section h4:nth-of-type(3)').textContent = isEnglishPage ? 'Factors Affecting the Waste Rate:' : 'Fire Oranını Etkileyen Faktörler:';
+                const ul2 = document.querySelector('.info-section ul:nth-of-type(2)');
+                if (ul2) {
+                    ul2.innerHTML = `
+                        <li>${isEnglishPage ? '<strong>Fabric Width and Pattern:</strong> The pattern (unidirectional, multidirectional, plaid, etc.) and width of the fabric affect the pattern placement and therefore the waste.' : '<strong>Kumaş Eni ve Desen:</strong> Kumaşın deseni (tek yönlü, çok yönlü, ekose vb.) ve eni, kalıp yerleşimini ve dolayısıyla fireyi etkiler.'}</li>
+                        <li>${isEnglishPage ? '<strong>Pattern Design and Placement (Pattern Placement):</strong> How efficiently the patterns are placed on the fabric directly affects the waste. Automatic marker systems minimize waste.' : '<strong>Kalıp Tasarımı ve Yerleşimi (Pastal Serimi):</strong> Kalıpların kumaşa ne kadar verimli yerleştirildiği, fireyi doğrudan etkiler. Otomatik pastal sistemleri fireyi minimize eder.'}</li>
+                        <li>${isEnglishPage ? '<strong>Product Model Complexity:</strong> Models with many small parts or asymmetrical models may cause more waste.' : '<strong>Ürün Modelinin Karmaşıklığı:</strong> Çok sayıda küçük parça içeren veya asimetrik modeller daha fazla fireye neden olabilir.'}</li>
+                        <li>${isEnglishPage ? '<strong>Cutting Technology:</strong> Precision technologies such as laser cutting can create less waste than manual cutting.' : '<strong>Kesim Teknolojisi:</strong> Lazer kesim gibi hassas teknolojiler, manuel kesime göre daha az fire oluşturabilir.'}</li>
+                        <li>${isEnglishPage ? '<strong>Operator Experience:</strong> In manual cutting, the experience of the operator affects the waste.' : '<strong>Operatör Deneyimi:</strong> Manuel kesimde, operatörün deneyimi fireyi etkiler.'}</li>
+                    `;
+                }
+
+                // Disclaimer
+                const disclaimerLinkText = isEnglishPage ? 'communication' : 'iletişim';
+                document.querySelector('.info-section .disclaimer-text').innerHTML = isEnglishPage ?
+                    `This calculator is for general information purposes and provides theoretical calculations. In real production, additional factors such as fabric defects, cutting errors, test and sample losses may affect the waste rate. For sensitive commercial or industrial applications, detailed factory data, optimization software and analysis by experienced production engineers should be considered. If you have any problems with your calculations, please contact us. <a href="../../contact.html">${disclaimerLinkText}</a> reach us from our page.` :
+                    `Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Gerçek üretimde, kumaş hataları, kesim hataları, test ve numune kayıpları gibi ek faktörler fire oranını etkileyebilir. Hassas ticari veya endüstriyel uygulamalar için detaylı fabrika verileri, optimizasyon yazılımları ve deneyimli üretim mühendisleri tarafından yapılan analizler dikkate alınmalıdır. Hesaplamalarınızla ilgili bir sorun yaşarsanız, <a href="../../contact.html">${disclaimerLinkText}</a> sayfamızdan bize ulaşın.`;
+            }
+            updateInfoSectionContent(); // Update info section on page load
+        });
+    </script>
+</body>
+</html>

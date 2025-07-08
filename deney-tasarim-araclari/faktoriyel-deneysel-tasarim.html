@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Faktöriyel Deney Tasarımı Oluşturucu - Hesapkolik</title>
+
+    <meta content="Faktöriyel Deney Tasarımı ile ürün ve süreçlerinizi kapsamlı bir şekilde analiz edin. Faktörleri ve seviyeleri girerek tam faktöriyel tasarımları oluşturun." name="description"/>
+    <meta content="Faktöriyel tasarım, deney tasarımı, tam faktöriyel, kesirli faktöriyel, kalite mühendisliği, ANOVA, istatistiksel deney, hesapkolik kalite" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <style>
+        /* Genel Ayarlar ve Font */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Sade ve ferah bir arka plan */
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Koyu tema başlık/altlık ile uyumlu */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Bölümü */
+        .calculator-section { /* Yeni isim */
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff;
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 { /* Yeni başlık stili */
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        /* Form Elemanları */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .input-with-unit-group, .input-with-unit { /* Bu iki sınıfı birleştirdim */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .input-with-unit-group label, .input-with-unit label {
+            flex-basis: auto;
+            width: 100%;
+            margin-bottom: 0;
+            text-align: left;
+        }
+        .input-with-unit-group input[type="number"], .input-with-unit-group select,
+        .input-with-unit input[type="number"], .input-with-unit select {
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+        .form-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        /* Dinamik Faktör Girişleri */
+        #factorLevelsContainer .factor-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        #factorLevelsContainer .factor-input-group label {
+            font-weight: 500;
+            color: #444;
+        }
+        #factorLevelsContainer .factor-input-group input[type="number"] {
+            width: calc(100% - 20px); /* Padding'i hesaba kat */
+            margin-bottom: 0;
+        }
+
+
+        /* Form butonları */
+        .calculator-form-container button[type="submit"] {
+            background-color: #28a745; /* Onay yeşili */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button[type="submit"]:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Sonuç Ekranı */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+            display: none; /* Varsayılan olarak gizli */
+        }
+        .result-display .result-value {
+            color: #e74c3c;
+        }
+        .result-display .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+        .result-display p { /* Sonuç paragrafı için düzeltme */
+            padding: 0;
+            margin: 5px 0;
+            text-align: center;
+            font-size: 1.2em; /* Biraz küçültelim */
+            line-height: 1.4;
+        }
+        .result-display h3 {
+            font-size: 1.8em; /* H3 boyutunu küçültelim */
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #2c3e50; /* Kırmızı olmasın */
+        }
+
+        /* Ortogonal Dizi Tablosu Stilleri */
+        .design-table-container {
+            margin-top: 20px;
+            overflow-x: auto; /* Küçük ekranlarda kaydırma çubuğu */
+            background-color: #ffffff; /* Tablo arka planı */
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        .design-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            text-align: center;
+        }
+        .design-table th, .design-table td {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+        }
+        .design-table th {
+            background-color: #34495e;
+            color: white;
+            font-weight: 600;
+        }
+        .design-table tbody tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+        .design-table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+
+        /* Açıklama bölümleri */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        /* Yeni Karbon Ayak İzi başlık stili */
+        .calc-wrapper h4 {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+            text-align: left; /* Başlıkların sola hizalanması */
+        }
+        .calculator-form-container p.small-text { /* Form içindeki küçük metin */
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1.4em;
+            }
+            .input-with-unit-group, .input-with-unit {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+            }
+            .input-with-unit-group label, .input-with-unit label {
+                margin-bottom: 5px;
+                text-align: left;
+            }
+            .input-with-unit-group input[type="number"], .input-with-unit-group select,
+            .input-with-unit input[type="number"], .input-with-unit select {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            .result-display {
+                font-size: 1em;
+                padding: 15px;
+            }
+            .result-display .result-value {
+                font-size: 1.2em;
+            }
+            .design-table {
+                font-size: 0.8em;
+            }
+        }
+    </style>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Faktöriyel Deney Tasarımı Oluşturucu</h1>
+                <p>Faktöriyel Deney Tasarımı ile süreç ve ürünlerinizdeki kritik faktörlerin ana etkilerini ve etkileşimlerini kapsamlı bir şekilde inceleyin.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper active-calc" id="calculator-factorialDesign">
+                    <h3><i class="fas fa-cubes icon-small"></i> Faktöriyel Tasarım Oluştur</h3>
+                    <div class="calculator-form-container">
+                        <form id="factorialDesignForm">
+                            <p class="small-text">Lütfen deney faktörlerinizin sayısını ve her bir faktör için seviye sayısını girin.</p>
+                            
+                            <h4>Deney Bilgileri</h4>
+                            <div class="input-with-unit-group">
+                                <label for="numFactors">Faktör Sayısı:</label>
+                                <input id="numFactors" min="2" max="6" placeholder="Örn: 3" step="1" type="number" required/>
+                                <p class="small-text">Şu an için 2 ila 6 faktör desteklenmektedir.</p>
+                            </div>
+                            
+                            <div class="form-divider"></div>
+
+                            <h4>Faktör Seviyeleri</h4>
+                            <p class="small-text">Her bir faktör için deneyde kullanılacak seviye sayısını belirtin. Her faktörün farklı sayıda seviyesi olabilir.</p>
+                            <div id="factorLevelsContainer">
+                                </div>
+                            
+                            <button type="submit">Tasarım Oluştur</button>
+                        </form>
+                        <div class="result-display" id="resultBox">
+                            <h3>Oluşturulan Faktöriyel Deney Tasarımı:</h3>
+                            <p id="designResult"></p>
+                            <div id="designTableContainer"></div>
+                        </div>
+                        <div class="calc-explanation">
+                            <p class="small-text">Bu araç, girdiğiniz faktör ve seviye sayılarına göre **tam faktöriyel deney tasarımını** oluşturur. Deney sayısının faktör ve seviye sayısıyla birlikte hızla artacağını unutmayın. Çok sayıda faktör veya seviye için **kesirli faktöriyel tasarımlar** daha uygun olabilir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>Faktöriyel Deney Tasarımı Nedir?</h3>
+            <p><strong>Faktöriyel Deney Tasarımı (Factorial Design of Experiments - DOE)</strong>, bir deneyde birden fazla faktörün (bağımsız değişkenin) ve bunların çıktı (bağımlı değişken) üzerindeki etkileşimlerinin aynı anda incelenmesini sağlayan güçlü bir istatistiksel yöntemdir. Bu tasarım, her faktörün farklı seviyelerdeki tüm olası kombinasyonlarını sistematik olarak araştırır.</p>
+            <p>En yaygın türü olan **Tam Faktöriyel Tasarım**'da, her bir faktörün her seviyesi, diğer tüm faktörlerin her seviyesiyle birleşir. Bu, tüm ana etkilerin (her bir faktörün tek başına etkisi) ve tüm etkileşim etkilerinin (faktörlerin birbirleriyle olan kombinasyonlarının etkisi) eş zamanlı olarak değerlendirilmesine olanak tanır.</p>
+            <h4>Neden Faktöriyel Tasarım Önemlidir?</h4>
+            <ul>
+                <li><strong>Kapsamlı Anlayış:</strong> Sadece ana etkileri değil, faktörler arasındaki karmaşık ilişkileri (etkileşimleri) de ortaya çıkarır. Bu, sürecin veya ürünün nasıl davrandığına dair daha derin bir kavrayış sağlar.</li>
+                <li><strong>Verimlilik:</strong> Bir seferde birden fazla faktörü incelediği için, tek faktörlü deneylere göre daha az deney koşuluyla daha fazla bilgi elde edilir.</li>
+                <li><strong>Optimizasyon:</strong> En iyi performansı veren faktör kombinasyonunu belirlemeye yardımcı olur.</li>
+                <li><strong>Sağlamlık:</strong> Sürecin gürültü faktörlerine karşı ne kadar hassas olduğunu anlamak için kullanılabilir.</li>
+            </ul>
+            <h4>Faktöriyel Tasarım Nasıl Uygulanır?</h4>
+            <p>Faktöriyel tasarımın temel adımları şunlardır:</p>
+            <ul>
+                <li><strong>Problemin Tanımlanması:</strong> Deneyin amacı, incelenecek çıktılar ve potansiyel faktörler belirlenir.</li>
+                <li><strong>Faktör ve Seviye Seçimi:</strong> Kontrol edilebilir faktörler (örn. sıcaklık, basınç) ve her bir faktör için deneyde kullanılacak seviyeler (örn. düşük/yüksek, 100°C/120°C/140°C) belirlenir.</li>
+                <li><strong>Deney Matrisinin Oluşturulması:</strong> Seçilen faktör ve seviye kombinasyonlarına göre tüm deney koşullarını içeren bir matris oluşturulur. Örneğin, 2 faktörlü ve her biri 2 seviyeli bir tasarım $2^2 = 4$ deney koşulu gerektirir. $k$ faktör ve her faktör $n$ seviyeye sahipse, deney sayısı $n^k$ olur.</li>
+                <li><strong>Deneylerin Yapılması:</strong> Oluşturulan matrise göre deneyler dikkatlice gerçekleştirilir ve her bir deneme koşulu için sonuçlar toplanır.</li>
+                <li><strong>Veri Analizi:</strong> Toplanan veriler genellikle Varyans Analizi (ANOVA) kullanılarak analiz edilir. Bu analiz, hangi faktörlerin ve etkileşimlerin çıktı üzerinde istatistiksel olarak anlamlı bir etkisi olduğunu belirlemeye yardımcı olur.</li>
+                <li><strong>Sonuçların Yorumlanması ve Doğrulama:</strong> Analiz sonuçları yorumlanır, optimal koşullar belirlenir ve gerekirse ek doğrulama deneyleri yapılır.</li>
+            </ul>
+            <p class="formula-text">
+                <strong>Toplam Deney Koşulu Sayısı (Tam Faktöriyel):</strong><br/>
+                $N = n_1 \times n_2 \times \dots \times n_k$
+                <br/>(Burada $N$ toplam deney sayısı, $n_i$ her bir faktörün seviye sayısı, $k$ faktör sayısıdır.)
+            </p>
+            <p>
+                <strong>Açıklamalar:</strong>
+                <ul>
+                    <li>
+                    <strong>Faktörler:</strong> Bir deneyde değiştirilen bağımsız değişkenler (örn. hız, sıcaklık).
+                    </li>
+                    <li>
+                    <strong>Seviyeler:</strong> Bir faktörün aldığı farklı değerler veya ayarlar (örn. hız için düşük, orta, yüksek).
+                    </li>
+                    <li>
+                    <strong>Ana Etki:</strong> Bir faktörün, diğer faktörlerin seviyelerinden bağımsız olarak çıktı üzerindeki etkisi.
+                    </li>
+                    <li>
+                    <strong>Etkileşim Etkisi:</strong> Bir faktörün etkisinin, diğer bir faktörün seviyesine bağlı olarak değişmesi durumu.
+                    </li>
+                </ul>
+            </p>
+            <h4>Uygulama Alanları:</h4>
+            <ul>
+                <li>Ürün ve süreç geliştirme ve optimizasyonu.</li>
+                <li>İlaç geliştirme ve klinik araştırmalar.</li>
+                <li>Gıda bilimi ve tarım.</li>
+                <li>Mühendislik ve üretim süreçleri iyileştirme.</li>
+                <li>Pazarlama ve müşteri davranışları analizi.</li>
+            </ul>
+            <p class="disclaimer-text">
+                Bu hesaplayıcı genel bilgi amaçlıdır ve teorik Faktöriyel Deney Tasarımı önerileri sunar. Gerçek uygulamalarda, deneyin karmaşıklığı, faktörlerin doğası ve etkileşimleri gibi birçok faktör sonuçları etkileyebilir. Hassas ticari veya bilimsel uygulamalar için istatistiksel yazılımlar ve alanında uzman kişilerden destek alınması tavsiye edilir. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize
+                <a href="../../iletisim.html">
+                iletişim
+                </a>
+                sayfamızdan ulaşın.
+            </p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header ve Footer yükleme fonksiyonları
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            // Yüklenen HTML içindeki script etiketlerini bul ve çalıştır
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // URL'ye göre header ve footer yükleme
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            const factorialDesignForm = document.getElementById('factorialDesignForm');
+            const numFactorsInput = document.getElementById('numFactors');
+            const factorLevelsContainer = document.getElementById('factorLevelsContainer');
+            const resultBox = document.getElementById('resultBox');
+            const designResult = document.getElementById('designResult');
+            const designTableContainer = document.getElementById('designTableContainer');
+
+            // Faktör sayısı değiştiğinde ilgili seviye girişlerini oluştur
+            numFactorsInput.addEventListener('input', function() {
+                const numFactors = parseInt(numFactorsInput.value);
+                factorLevelsContainer.innerHTML = ''; // Önceki girişleri temizle
+
+                if (isNaN(numFactors) || numFactors < 2 || numFactors > 6) {
+                    return; // Geçersiz sayı
+                }
+
+                for (let i = 0; i < numFactors; i++) {
+                    const factorGroup = document.createElement('div');
+                    factorGroup.classList.add('factor-input-group');
+                    factorGroup.innerHTML = `
+                        <label for="factor${i + 1}Levels">Faktör ${String.fromCharCode(65 + i)} Seviye Sayısı:</label>
+                        <input type="number" id="factor${i + 1}Levels" min="2" max="5" value="2" required />
+                    `;
+                    factorLevelsContainer.appendChild(factorGroup);
+                }
+            });
+
+            // Form gönderildiğinde faktöriyel tasarımı oluştur
+            factorialDesignForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const numFactors = parseInt(numFactorsInput.value);
+                let factorLevels = [];
+                let isValid = true;
+
+                for (let i = 0; i < numFactors; i++) {
+                    const levelInput = document.getElementById(`factor${i + 1}Levels`);
+                    if (levelInput) {
+                        const levels = parseInt(levelInput.value);
+                        if (isNaN(levels) || levels < 2 || levels > 5) {
+                            isValid = false;
+                            designResult.textContent = `Faktör ${String.fromCharCode(65 + i)} için geçerli bir seviye sayısı (2-5 arası) giriniz.`;
+                            resultBox.style.display = 'block';
+                            designTableContainer.innerHTML = '';
+                            return;
+                        }
+                        factorLevels.push(levels);
+                    } else {
+                        isValid = false; // Gerekli input alanı yoksa
+                        break;
+                    }
+                }
+
+                if (!isValid || numFactors < 2) {
+                    designResult.textContent = 'Lütfen tüm alanları geçerli değerlerle doldurun.';
+                    resultBox.style.display = 'block';
+                    designTableContainer.innerHTML = '';
+                    return;
+                }
+
+                // Tasarımı oluştur
+                const design = generateFullFactorialDesign(factorLevels);
+                const totalExperiments = design.length;
+
+                designResult.innerHTML = `
+                    Oluşturulan Tasarım: <strong>Tam Faktöriyel Tasarım</strong><br/>
+                    Toplam Deney Koşulu: <strong>${totalExperiments}</strong>
+                `;
+                resultBox.style.display = 'block';
+                displayFactorialTable(design, factorLevels.length);
+            });
+
+            /**
+             * Tam faktöriyel deney tasarımını oluşturan fonksiyon.
+             * Her faktörün kendi seviye sayısı olabilir.
+             * @param {number[]} factorLevelsArray Her faktör için seviye sayılarının dizisi (örn: [2, 3, 2] -> 2 seviyeli A, 3 seviyeli B, 2 seviyeli C)
+             * @returns {number[][]} Deney matrisi, her satır bir deney koşulunu temsil eder.
+             */
+            function generateFullFactorialDesign(factorLevelsArray) {
+                const numFactors = factorLevelsArray.length;
+                if (numFactors === 0) return [];
+
+                let design = [[]]; // Başlangıçta boş bir deney koşulu
+
+                for (let i = 0; i < numFactors; i++) {
+                    const levels = factorLevelsArray[i];
+                    let newDesign = [];
+                    for (let j = 0; j < levels; j++) {
+                        // Mevcut her deneyi yeni faktörün her seviyesiyle birleştir
+                        for (let k = 0; k < design.length; k++) {
+                            newDesign.push([...design[k], j + 1]); // Seviyeleri 1'den başlat
+                        }
+                    }
+                    design = newDesign;
+                }
+                return design;
+            }
+
+            /**
+             * Oluşturulan faktöriyel tasarım matrisini HTML tablo olarak görüntüler.
+             * @param {number[][]} design Deney matrisi
+             * @param {number} numFactors Faktör sayısı
+             */
+            function displayFactorialTable(design, numFactors) {
+                designTableContainer.innerHTML = '';
+
+                if (design.length === 0) {
+                    designTableContainer.innerHTML = '<p class="error">Tasarım matrisi oluşturulamadı.</p>';
+                    return;
+                }
+
+                const table = document.createElement('table');
+                table.classList.add('design-table');
+
+                // Tablo başlığı (Header)
+                const thead = table.createTHead();
+                const headerRow = thead.insertRow();
+                headerRow.insertCell().textContent = 'Deney No.';
+                for (let i = 0; i < numFactors; i++) {
+                    headerRow.insertCell().textContent = `Faktör ${String.fromCharCode(65 + i)}`; // A, B, C...
+                }
+
+                // Tablo içeriği (Body)
+                const tbody = table.createTBody();
+                for (let i = 0; i < design.length; i++) {
+                    const row = tbody.insertRow();
+                    row.insertCell().textContent = i + 1; // Deney No.
+                    for (let j = 0; j < numFactors; j++) {
+                        row.insertCell().textContent = design[i][j];
+                    }
+                }
+                designTableContainer.appendChild(table);
+            }
+
+            // Sayfa yüklendiğinde varsayılan olarak 2 faktör için seviye girişlerini göster
+            numFactorsInput.value = 2; // Başlangıç faktör sayısı
+            numFactorsInput.dispatchEvent(new Event('input')); // Input event'ini tetikleyerek girişleri oluştur
+
+        });
+    </script>
+</body>
+</html>

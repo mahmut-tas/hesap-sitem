@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>İplik Uzunluğu Hesaplama - Hesapkolik</title>
+
+    <meta content="Belirli bir ağırlıktaki (gram/kg) ipliğin uzunluğunu (metre/yarda) farklı iplik numarası sistemlerine (Tex, Denye, Ne, Nm) göre hesaplayın. İplik tedarik ve üretim planlaması için pratik araç." name="description"/>
+    <meta content="iplik uzunluğu, iplik ağırlığı, iplik metre, tex, denye, ne, nm, iplik hesaplama, tekstil mühendisliği hesaplamaları, hesapkolik tekstil" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <style>
+        /* Genel Ayarlar ve Font */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Sade ve ferah bir arka plan */
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Koyu tema başlık/altlık ile uyumlu */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Bölümü */
+        .calculator-section { /* Yeni isim */
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff;
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 { /* Yeni başlık stili */
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        /* Form Elemanları */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .input-with-unit-group { /* Genişletilmiş flexbox grup */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px; /* Etiket ve input/select arasında boşluk */
+            margin-bottom: 20px;
+        }
+        .input-with-unit-group label {
+            flex-basis: auto;
+            width: 100%;
+            margin-bottom: 0;
+            text-align: left;
+        }
+        /* input-with-unit-group içindeki input ve select'lerin tam genişlik kaplamasını sağlar */
+        .input-with-unit-group input[type="number"],
+        .input-with-unit-group select {
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+        /* input-with-unit için stil (önceden vardı, uyumlu hale getirildi) */
+        .input-with-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .input-with-unit input[type="number"],
+        .input-with-unit select {
+            width: 100%; /* Tam genişlik */
+            margin-bottom: 0; /* Boşluk yönetimi üstteki gap ile */
+        }
+        /* Özelleştirilmiş: input ve select'i aynı satırda tutmak için (iplik ağırlığı ve iplik numarası gibi) */
+        .input-with-unit.inline-inputs {
+            flex-direction: row; /* Yan yana */
+            align-items: center; /* Dikeyde ortala */
+            flex-wrap: wrap; /* Küçük ekranlarda alta geçsin */
+        }
+        .input-with-unit.inline-inputs label {
+            width: auto; /* Label genişliği içeriğine göre */
+            margin-right: 15px; /* Label sonrası boşluk */
+            min-width: 120px; /* Label'ın daralmasını engelle */
+        }
+        .input-with-unit.inline-inputs input[type="number"] {
+            flex-grow: 1; /* Input alanı kalan boşluğu doldursun */
+            margin-bottom: 0; /* Kendi margin'i olmasın */
+        }
+        .input-with-unit.inline-inputs select {
+            width: auto; /* Select kendi içeriğine göre genişlesin */
+            min-width: 120px; /* Minimum genişlik */
+            margin-bottom: 0;
+        }
+        /* Responsive uyumluluk için */
+        @media (max-width: 600px) {
+            .input-with-unit.inline-inputs {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .input-with-unit.inline-inputs label {
+                margin-right: 0;
+                margin-bottom: 5px; /* Label altında boşluk */
+                width: 100%;
+            }
+            .input-with-unit.inline-inputs input[type="number"],
+            .input-with-unit.inline-inputs select {
+                width: 100%;
+            }
+        }
+
+
+        .form-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        /* Form butonları */
+        .calculator-form-container button[type="submit"] {
+            background-color: #28a745; /* Onay yeşili */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button[type="submit"]:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Sonuç Ekranı */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+            display: none; /* Varsayılan olarak gizli */
+        }
+        .result-display .result-value {
+            color: #e74c3c;
+        }
+        .result-display .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+        .result-display p { /* Sonuç paragrafı için düzeltme */
+            padding: 0;
+            margin: 5px 0;
+            text-align: center;
+            font-size: 1.2em; /* Biraz küçültelim */
+            line-height: 1.4;
+        }
+        .result-display h3 {
+            font-size: 1.8em; /* H3 boyutunu küçültelim */
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #2c3e50; /* Kırmızı olmasın */
+        }
+
+
+        /* Açıklama bölümleri */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .info-section li .formula-text { /* Liste içindeki formül metnine özel stil */
+            display: block; /* Yeni satırda başlasın */
+            margin-top: 5px;
+            margin-bottom: 5px;
+            font-size: 1em; /* Liste içindeki formül daha küçük olabilir */
+            padding: 5px 10px;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        /* Yeni Karbon Ayak İzi başlık stili */
+        .calc-wrapper h4 {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+            text-align: left; /* Başlıkların sola hizalanması */
+        }
+        .calculator-form-container p.small-text { /* Form içindeki küçük metin */
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1.4em;
+            }
+            .input-with-unit-group, .input-with-unit {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+            }
+            .input-with-unit-group label, .input-with-unit label {
+                margin-bottom: 5px;
+                text-align: left;
+            }
+            .input-with-unit-group input[type="number"], .input-with-unit-group select,
+            .input-with-unit input[type="number"], .input-with-unit select {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            .result-display {
+                font-size: 1em;
+                padding: 15px;
+            }
+            .result-display .result-value {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>İplik Uzunluğu Hesaplayıcı</h1>
+                <p>Belirli bir ağırlıktaki (gram veya kilogram) ipliğin, seçilen iplik numarası sistemine (Tex, Denye, Ne, Nm) göre yaklaşık uzunluğunu (metre veya yarda) kolayca hesaplayın. İplik siparişleri, üretim planlaması ve stok yönetimi için pratik bir araçtır.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper active-calc" id="calculator-yarnLength">
+                    <h3><i class="fas fa-arrows-alt-h icon-small"></i> İplik Uzunluğunu Hesapla</h3>
+                    <div class="calculator-form-container">
+                        <form id="yarnLengthForm">
+                            <div class="input-with-unit inline-inputs">
+                                <label for="yarnWeight">İplik Ağırlığı:</label>
+                                <input id="yarnWeight" min="0.001" placeholder="Örn: 500" required="" step="0.001" type="number"/>
+                                <select id="weightUnit" required>
+                                    <option value="gram">Gram (gr)</option>
+                                    <option value="kg">Kilogram (kg)</option>
+                                    <option value="pound">Pound (lb)</option>
+                                </select>
+                            </div>
+                            <div class="input-with-unit inline-inputs">
+                                <label for="yarnCount">İplik Numarası:</label>
+                                <input id="yarnCount" min="0.01" placeholder="Örn: 20" required="" step="0.01" type="number"/>
+                                <select id="countSystem" required>
+                                    <option value="tex">Tex</option>
+                                    <option value="denye">Denye</option>
+                                    <option value="ne">Ne (Pamuk Numarası)</option>
+                                    <option value="nm">Nm (Metrik Numara)</option>
+                                    <option value="dtex">dTex</option>
+                                </select>
+                            </div>
+                            <button type="submit">Hesapla</button>
+                        </form>
+                        <div class="result-display" id="resultBox">
+                            <h3>Sonuç:</h3>
+                            <p><strong>Tahmini İplik Uzunluğu:</strong> <span class="result-value" id="yarnLengthResult"></span></p>
+                        </div>
+                        <div class="calc-explanation">
+                            <p class="small-text">İplik numarası ve ağırlık birimlerini doğru girdiğinizden emin olun. Hesaplamalar ortalama değerlere dayanır.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>İplik Uzunluğu Hesaplaması Nedir?</h3>
+            <p><strong>İplik uzunluğu hesaplaması</strong>, belirli bir ağırlıktaki (örneğin 1 kilogram) ipliğin, o ipliğin inceliğini (numarasını) temsil eden birimlere göre kaç metre veya yarda geleceğini belirleme işlemidir. Bu hesaplama, tekstil üretiminde hammadde yönetimi, maliyet analizi, bobinleme, sarım ve kumaş üretiminde iplik tüketiminin tahmin edilmesi için kritik öneme sahiptir.</p>
+            <p>İplik numarası, ipliğin birim ağırlık başına uzunluğunu (dolaylı sistemler) veya birim uzunluk başına ağırlığını (doğrudan sistemler) gösterir. Bu iki bilgiyle, herhangi bir ağırlıktaki ipliğin toplam uzunluğu bulunabilir.</p>
+            <h4>İplik Uzunluğu Neden Önemlidir?</h4>
+            <ul>
+                <li><strong>Hammadde Planlaması:</strong> Belirli bir üretim siparişi için ne kadar iplik gerekeceğinin tahmin edilmesi.</li>
+                <li><strong>Maliyet Analizi:</strong> İplik maliyetinin birim uzunluk (metre) başına düşen değerini hesaplamak.</li>
+                <li><strong>Stok Yönetimi:</strong> Depodaki iplik bobinlerinin veya partilerinin toplam uzunluğunu tahmin etmek.</li>
+                <li><strong>Üretim Verimliliği:</strong> Dokuma veya örme makinelerinde iplik besleme ve tüketimini optimize etmek.</li>
+                <li><strong>Kalite Kontrol:</strong> İplik numarası ve uzunluk tutarlılığını kontrol etmek.</li>
+            </ul>
+            <h4>İplik Uzunluğu Nasıl Hesaplanır?</h4>
+            <p>İplik numarası sistemine ve ağırlık birimine bağlı olarak farklı formüller kullanılır. Hesaplamalar genellikle ipliğin belirli bir uzunluğunun ağırlığını (Tex, Denye, dTex gibi doğrudan sistemler) veya belirli bir ağırlığının uzunluğunu (Ne, Nm gibi dolaylı sistemler) temel alır.</p>
+            <p class="formula-text">
+                <strong>Genel Prensip:</strong> Uzunluk = Ağırlık / (İplik Numarası * Dönüşüm Faktörü)
+                <br/>veya
+                Uzunluk = Ağırlık * (İplik Numarası * Dönüşüm Faktörü)
+            </p>
+            <p>
+                <strong>Bazı Örnek Formüller:</strong>
+                <ul>
+                    <li>
+                    <strong>Tex (Metre):</strong> Uzunluk (m) = (Ağırlık (gr) / Tex) * 1000
+                    </li>
+                    <li>
+                    <strong>Denye (Metre):</strong> Uzunluk (m) = (Ağırlık (gr) / Denye) * 9000
+                    </li>
+                    <li>
+                    <strong>Nm (Metre):</strong> Uzunluk (m) = Ağırlık (gr) * Nm
+                    </li>
+                    <li>
+                    <strong>Ne (Yarda):</strong> Uzunluk (yarda) = Ağırlık (lb) * Ne * 840
+                    </li>
+                </ul>
+                Hesaplayıcımız, seçtiğiniz birimlere ve iplik numarası sistemine göre ilgili formülü otomatik olarak uygulayarak uzunluğu belirler.
+            </p>
+            <h4>Uygulama Alanları:</h4>
+            <ul>
+                <li>İplik eğirme tesisleri ve bobinleme departmanları.</li>
+                <li>Dokuma ve örme fabrikalarının üretim planlama birimleri.</li>
+                <li>Tekstil laboratuvarları ve Ar-Ge çalışmaları.</li>
+                <li>Hammaddeleri iplik olan tüm tekstil ürünleri üreticileri.</li>
+            </ul>
+            <p class="disclaimer-text">Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Gerçek iplik uzunluğu, ipliğin bükümü, nem oranı, sarım gerginliği ve test koşulları gibi faktörlerden etkilenebilir. Hassas ticari veya endüstriyel uygulamalar için uluslararası standartlara uygun ölçüm ekipmanları ve deneyimli personel tarafından yapılan testler esas alınmalıdır. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize <a href="../../iletisim.html">iletişim</a> sayfamızdan ulaşın.</p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header ve Footer yükleme fonksiyonları
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            // Yüklenen HTML içindeki script etiketlerini bul ve çalıştır
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // URL'ye göre header ve footer yükleme
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // Metinleri dile göre tanımlayan bir obje
+            const texts = {
+                tr: {
+                    mainHeading: 'İplik Uzunluğu Hesaplayıcı',
+                    mainDescription: 'Belirli bir ağırlıktaki (gram veya kilogram) ipliğin, seçilen iplik numarası sistemine (Tex, Denye, Ne, Nm) göre yaklaşık uzunluğunu (metre veya yarda) kolayca hesaplayın. İplik siparişleri, üretim planlaması ve stok yönetimi için pratik bir araçtır.',
+                    calculatorTitle: 'İplik Uzunluğunu Hesapla',
+                    yarnWeightLabel: 'İplik Ağırlığı:',
+                    weightUnitGram: 'Gram (gr)',
+                    weightUnitKg: 'Kilogram (kg)',
+                    weightUnitPound: 'Pound (lb)',
+                    yarnCountLabel: 'İplik Numarası:',
+                    countSystemTex: 'Tex',
+                    countSystemDenye: 'Denye',
+                    countSystemNe: 'Ne (Pamuk Numarası)',
+                    countSystemNm: 'Nm (Metrik Numara)',
+                    countSystemDtex: 'dTex',
+                    calculateButton: 'Hesapla',
+                    invalidInput: 'Lütfen iplik ağırlığı ve iplik numarası için geçerli pozitif sayılar girin.',
+                    resultTitle: 'Sonuç:',
+                    estimatedYarnLength: 'Tahmini İplik Uzunluğu:',
+                    unit_meter: 'metre',
+                    unit_yard: 'yarda',
+                    explanation: 'İplik numarası ve ağırlık birimlerini doğru girdiğinizden emin olun. Hesaplamalar ortalama değerlere dayanır.',
+
+                    infoSectionTitle: 'İplik Uzunluğu Hesaplaması Nedir?',
+                    infoSectionP1: '<strong>İplik uzunluğu hesaplaması</strong>, belirli bir ağırlıktaki (örneğin 1 kilogram) ipliğin, o ipliğin inceliğini (numarasını) temsil eden birimlere göre kaç metre veya yarda geleceğini belirleme işlemidir. Bu hesaplama, tekstil üretiminde hammadde yönetimi, maliyet analizi, bobinleme, sarım ve kumaş üretiminde iplik tüketiminin tahmin edilmesi için kritik öneme sahiptir.',
+                    infoSectionP2: 'İplik numarası, ipliğin birim ağırlık başına uzunluğunu (dolaylı sistemler) veya birim uzunluk başına ağırlığını (doğrudan sistemler) gösterir. Bu iki bilgiyle, herhangi bir ağırlıktaki ipliğin toplam uzunluğu bulunabilir.',
+                    infoSectionH4_1: 'İplik Uzunluğu Neden Önemlidir?',
+                    infoSectionList1_1: '<strong>Hammadde Planlaması:</strong> Belirli bir üretim siparişi için ne kadar iplik gerekeceğinin tahmin edilmesi.',
+                    infoSectionList1_2: '<strong>Maliyet Analizi:</strong> İplik maliyetinin birim uzunluk (metre) başına düşen değerini hesaplamak.',
+                    infoSectionList1_3: '<strong>Stok Yönetimi:</strong> Depodaki iplik bobinlerinin veya partilerinin toplam uzunluğunu tahmin etmek.',
+                    infoSectionList1_4: '<strong>Üretim Verimliliği:</strong> Dokuma veya örme makinelerinde iplik besleme ve tüketimini optimize etmek.',
+                    infoSectionList1_5: '<strong>Kalite Kontrol:</strong> İplik numarası ve uzunluk tutarlılığını kontrol etmek.',
+                    infoSectionH4_2: 'İplik Uzunluğu Nasıl Hesaplanır?',
+                    infoSectionP3: 'İplik numarası sistemine ve ağırlık birimine bağlı olarak farklı formüller kullanılır. Hesaplamalar genellikle ipliğin belirli bir uzunluğunun ağırlığını (Tex, Denye, dTex gibi doğrudan sistemler) veya belirli bir ağırlığının uzunluğunu (Ne, Nm gibi dolaylı sistemler) temel alır.',
+                    infoSectionFormulaPrinciple: '<strong>Genel Prensip:</strong> Uzunluk = Ağırlık / (İplik Numarası * Dönüşüm Faktörü)<br/>veya<br/>Uzunluk = Ağırlık * (İplik Numarası * Dönüşüm Faktörü)',
+                    infoSectionP4_bold: 'Bazı Örnek Formüller:',
+                    infoSectionList2_1: '<strong>Tex (Metre):</strong> Uzunluk (m) = (Ağırlık (gr) / Tex) * 1000',
+                    infoSectionList2_2: '<strong>Denye (Metre):</strong> Uzunluk (m) = (Ağırlık (gr) / Denye) * 9000',
+                    infoSectionList2_3: '<strong>Nm (Metre):</strong> Uzunluk (m) = Ağırlık (gr) * Nm',
+                    infoSectionList2_4: '<strong>Ne (Yarda):</strong> Uzunluk (yarda) = Ağırlık (lb) * Ne * 840',
+                    infoSectionP5: 'Hesaplayıcımız, seçtiğiniz birimlere ve iplik numarası sistemine göre ilgili formülü otomatik olarak uygulayarak uzunluğu belirler.',
+                    infoSectionH4_3: 'Uygulama Alanları:',
+                    infoSectionList3_1: 'İplik eğirme tesisleri ve bobinleme departmanları.',
+                    infoSectionList3_2: 'Dokuma ve örme fabrikalarının üretim planlama birimleri.',
+                    infoSectionList3_3: 'Tekstil laboratuvarları ve Ar-Ge çalışmaları.',
+                    infoSectionList3_4: 'Hammaddeleri iplik olan tüm tekstil ürünleri üreticileri.',
+                    disclaimerText: 'Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Gerçek iplik uzunluğu, ipliğin bükümü, nem oranı, sarım gerginliği ve test koşulları gibi faktörlerden etkilenebilir. Hassas ticari veya endüstriyel uygulamalar için uluslararası standartlara uygun ölçüm ekipmanları ve deneyimli personel tarafından yapılan testler esas alınmalıdır. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize <a href="../../iletisim.html">iletişim</a> sayfamızdan ulaşın.'
+                },
+                en: {
+                    mainHeading: 'Yarn Length Calculator',
+                    mainDescription: 'Easily calculate the approximate length (meters or yards) of a given weight (grams or kilograms) of yarn, according to the selected yarn count system (Tex, Denier, Ne, Nm). It\'s a practical tool for yarn procurement and production planning.',
+                    calculatorTitle: 'Calculate Yarn Length',
+                    yarnWeightLabel: 'Yarn Weight:',
+                    weightUnitGram: 'Gram (gr)',
+                    weightUnitKg: 'Kilogram (kg)',
+                    weightUnitPound: 'Pound (lb)',
+                    yarnCountLabel: 'Yarn Count:',
+                    countSystemTex: 'Tex',
+                    countSystemDenye: 'Denier',
+                    countSystemNe: 'Ne (Cotton Count)',
+                    countSystemNm: 'Nm (Metric Number)',
+                    countSystemDtex: 'dTex',
+                    calculateButton: 'Calculate',
+                    invalidInput: 'Please enter valid positive numbers for yarn weight and yarn count.',
+                    resultTitle: 'Result:',
+                    estimatedYarnLength: 'Estimated Yarn Length:',
+                    unit_meter: 'meters',
+                    unit_yard: 'yards',
+                    explanation: 'Ensure you enter the correct yarn count and weight units. Calculations are based on average values.',
+
+                    infoSectionTitle: 'What is Yarn Length Calculation?',
+                    infoSectionP1: '<strong>Yarn length calculation</strong> is the process of determining how many meters or yards a certain weight (e.g., 1 kilogram) of yarn will yield, based on the units representing the fineness (count) of that yarn. This calculation is critically important for raw material management, cost analysis, winding, reeling, and estimating yarn consumption in fabric production.',
+                    infoSectionP2: 'Yarn count indicates the length per unit weight (indirect systems) or the weight per unit length (direct systems) of the yarn. With these two pieces of information, the total length of yarn for any given weight can be found.',
+                    infoSectionH4_1: 'Why is Yarn Length Important?',
+                    infoSectionList1_1: '<strong>Raw Material Planning:</strong> Estimating how much yarn is needed for a specific production order.',
+                    infoSectionList1_2: '<strong>Cost Analysis:</strong> Calculating the cost of yarn per unit length (meter).',
+                    infoSectionList1_3: '<strong>Inventory Management:</strong> Estimating the total length of yarn bobbins or batches in storage.',
+                    infoSectionList1_4: '<strong>Production Efficiency:</strong> Optimizing yarn feeding and consumption in weaving or knitting machines.',
+                    infoSectionList1_5: '<strong>Quality Control:</strong> Checking the consistency of yarn count and length.',
+                    infoSectionH4_2: 'How to Calculate Yarn Length?',
+                    infoSectionP3: 'Different formulas are used depending on the yarn count system and weight unit. Calculations are generally based on the weight of a specific length of yarn (direct systems like Tex, Denier, dTex) or the length of a specific weight of yarn (indirect systems like Ne, Nm).',
+                    infoSectionFormulaPrinciple: '<strong>General Principle:</strong> Length = Weight / (Yarn Count * Conversion Factor)<br/>or<br/>Length = Weight * (Yarn Count * Conversion Factor)',
+                    infoSectionP4_bold: 'Some Sample Formulas:',
+                    infoSectionList2_1: '<strong>Tex (Meters):</strong> Length (m) = (Weight (gr) / Tex) * 1000',
+                    infoSectionList2_2: '<strong>Denier (Meters):</strong> Length (m) = (Weight (gr) / Denier) * 9000',
+                    infoSectionList2_3: '<strong>Nm (Meters):</strong> Length (m) = Weight (gr) * Nm',
+                    infoSectionList2_4: '<strong>Ne (Yards):</strong> Length (yards) = Weight (lb) * Ne * 840',
+                    infoSectionP5: 'Our calculator automatically applies the relevant formula based on your selected units and yarn count system to determine the length.',
+                    infoSectionH4_3: 'Application Areas:',
+                    infoSectionList3_1: 'Yarn spinning mills and winding departments.',
+                    infoSectionList3_2: 'Production planning units of weaving and knitting factories.',
+                    infoSectionList3_3: 'Textile laboratories and R&D studies.',
+                    infoSectionList3_4: 'All textile product manufacturers whose raw material is yarn.',
+                    disclaimerText: 'This calculator is for general informational purposes and provides theoretical calculations. Actual yarn length can be affected by factors such as yarn twist, moisture content, winding tension, and testing conditions. For precise commercial or industrial applications, tests performed by experienced personnel with internationally standardized measurement equipment should be used. If you encounter any problems with your calculations, please contact us via our <a href="../../contact.html">contact</a> page.'
+                }
+            };
+
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // --- DOM Elements ---
+            const yarnLengthForm = document.getElementById('yarnLengthForm');
+            const yarnWeightInput = document.getElementById('yarnWeight');
+            const weightUnitSelect = document.getElementById('weightUnit');
+            const yarnCountInput = document.getElementById('yarnCount');
+            const countSystemSelect = document.getElementById('countSystem');
+            const yarnLengthResultSpan = document.getElementById('yarnLengthResult');
+            const resultBox = document.getElementById('resultBox');
+            const calculateButton = yarnLengthForm.querySelector('button[type="submit"]'); // Changed to type="submit"
+
+            // Update main heading and description
+            document.querySelector('.hero-section h1').textContent = currentTexts.mainHeading;
+            document.querySelector('.hero-section p').textContent = currentTexts.mainDescription;
+
+            // Update calculator section heading and labels
+            document.querySelector('#calculator-yarnLength h3').innerHTML = `<i class="fas fa-arrows-alt-h icon-small"></i> ${currentTexts.calculatorTitle}`;
+            document.getElementById('yarnWeight').previousElementSibling.textContent = currentTexts.yarnWeightLabel;
+            document.querySelector('#weightUnit option[value="gram"]').textContent = currentTexts.weightUnitGram;
+            document.querySelector('#weightUnit option[value="kg"]').textContent = currentTexts.weightUnitKg;
+            document.querySelector('#weightUnit option[value="pound"]').textContent = currentTexts.weightUnitPound;
+            document.getElementById('yarnCount').previousElementSibling.textContent = currentTexts.yarnCountLabel;
+            document.querySelector('#countSystem option[value="tex"]').textContent = currentTexts.countSystemTex;
+            document.querySelector('#countSystem option[value="denye"]').textContent = currentTexts.countSystemDenye;
+            document.querySelector('#countSystem option[value="ne"]').textContent = currentTexts.countSystemNe;
+            document.querySelector('#countSystem option[value="nm"]').textContent = currentTexts.countSystemNm;
+            document.querySelector('#countSystem option[value="dtex"]').textContent = currentTexts.countSystemDtex;
+            calculateButton.textContent = currentTexts.calculateButton;
+
+            // Update result box header and label
+            resultBox.querySelector('h3').textContent = currentTexts.resultTitle;
+            resultBox.querySelector('p strong').textContent = currentTexts.estimatedYarnLength;
+
+            // Update calculator explanation text
+            document.querySelector('.calc-explanation p.small-text').textContent = currentTexts.explanation;
+
+            // Bilgi Bölümü Metin Güncelleme
+            function updateInfoSectionContent() {
+                document.querySelector('.info-section h3').textContent = currentTexts.infoSectionTitle;
+                document.querySelector('.info-section p:nth-of-type(1)').innerHTML = currentTexts.infoSectionP1;
+                document.querySelector('.info-section p:nth-of-type(2)').innerHTML = currentTexts.infoSectionP2;
+                document.querySelector('.info-section h4:nth-of-type(1)').textContent = currentTexts.infoSectionH4_1;
+
+                const ul1 = document.querySelector('.info-section ul:nth-of-type(1)');
+                if (ul1) {
+                    ul1.innerHTML = `
+                        <li>${currentTexts.infoSectionList1_1}</li>
+                        <li>${currentTexts.infoSectionList1_2}</li>
+                        <li>${currentTexts.infoSectionList1_3}</li>
+                        <li>${currentTexts.infoSectionList1_4}</li>
+                        <li>${currentTexts.infoSectionList1_5}</li>
+                    `;
+                }
+
+                document.querySelector('.info-section h4:nth-of-type(2)').textContent = currentTexts.infoSectionH4_2;
+                document.querySelector('.info-section p:nth-of-type(3)').textContent = currentTexts.infoSectionP3;
+                document.querySelector('.info-section .formula-text:nth-of-type(1)').innerHTML = currentTexts.infoSectionFormulaPrinciple;
+                
+                const ul2 = document.querySelector('.info-section ul:nth-of-type(2)');
+                if (ul2) {
+                    ul2.innerHTML = `
+                        <li>${currentTexts.infoSectionList2_1}</li>
+                        <li>${currentTexts.infoSectionList2_2}</li>
+                        <li>${currentTexts.infoSectionList2_3}</li>
+                        <li>${currentTexts.infoSectionList2_4}</li>
+                    `;
+                }
+                document.querySelector('.info-section p:nth-of-type(5)').textContent = currentTexts.infoSectionP5;
+
+                document.querySelector('.info-section h4:nth-of-type(3)').textContent = currentTexts.infoSectionH4_3;
+                const ul3 = document.querySelector('.info-section ul:nth-of-type(3)');
+                if (ul3) {
+                    ul3.innerHTML = `
+                        <li>${currentTexts.infoSectionList3_1}</li>
+                        <li>${currentTexts.infoSectionList3_2}</li>
+                        <li>${currentTexts.infoSectionList3_3}</li>
+                        <li>${currentTexts.infoSectionList3_4}</li>
+                    `;
+                }
+                document.querySelector('.info-section .disclaimer-text').innerHTML = currentTexts.disclaimerText;
+            }
+            updateInfoSectionContent(); // Sayfa yüklendiğinde bilgi bölümünü güncelle
+
+
+            // --- Calculation Function ---
+            yarnLengthForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                let yarnWeight = parseFloat(yarnWeightInput.value);
+                let weightUnit = weightUnitSelect.value;
+                let yarnCount = parseFloat(yarnCountInput.value);
+                let countSystem = countSystemSelect.value;
+
+                // Clear previous results and hide result box initially
+                yarnLengthResultSpan.textContent = '';
+                resultBox.style.display = 'none';
+
+                // --- Input Validation ---
+                if (isNaN(yarnWeight) || isNaN(yarnCount) || yarnWeight <= 0 || yarnCount <= 0) {
+                    resultBox.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                    resultBox.style.display = 'block';
+                    return;
+                }
+
+                let calculatedLength = 0;
+                let outputUnit = ''; // Will be 'meter' or 'yard'
+
+                // Convert yarn weight to a common base (grams or pounds) for calculation
+                let weightInGrams;
+                let weightInPounds;
+
+                if (weightUnit === 'gram') {
+                    weightInGrams = yarnWeight;
+                    weightInPounds = yarnWeight / 453.592;
+                } else if (weightUnit === 'kg') {
+                    weightInGrams = yarnWeight * 1000;
+                    weightInPounds = yarnWeight * 2.20462;
+                } else if (weightUnit === 'pound') {
+                    weightInGrams = yarnWeight * 453.592;
+                    weightInPounds = yarnWeight;
+                }
+
+
+                // --- Perform Calculations based on Yarn Count System ---
+                switch (countSystem) {
+                    case 'tex':
+                        // Tex: Weight in grams of 1000 meters of yarn
+                        // Length (m) = (Weight (gr) / Tex) * 1000
+                        calculatedLength = (weightInGrams / yarnCount) * 1000;
+                        outputUnit = currentTexts.unit_meter;
+                        break;
+                    case 'denye':
+                        // Denye: Weight in grams of 9000 meters of yarn
+                        // Length (m) = (Weight (gr) / Denye) * 9000
+                        calculatedLength = (weightInGrams / yarnCount) * 9000;
+                        outputUnit = currentTexts.unit_meter;
+                        break;
+                    case 'ne':
+                        // Ne (Cotton Count): Number of 840-yard hanks per pound
+                        // Length (yarda) = Weight (lb) * Ne * 840
+                        calculatedLength = weightInPounds * yarnCount * 840;
+                        outputUnit = currentTexts.unit_yard;
+                        break;
+                    case 'nm':
+                        // Nm (Metric Count): Number of meters per gram
+                        // Length (m) = Weight (gr) * Nm
+                        calculatedLength = weightInGrams * yarnCount;
+                        outputUnit = currentTexts.unit_meter;
+                        break;
+                    case 'dtex':
+                        // dTex: Weight in grams of 10,000 meters of yarn (1 dTex = 1 gram/10,000 m)
+                        // Length (m) = (Weight (gr) / dTex) * 10000
+                        calculatedLength = (weightInGrams / yarnCount) * 10000;
+                        outputUnit = currentTexts.unit_meter;
+                        break;
+                    default:
+                        calculatedLength = 0; // Should not happen with valid select options
+                        break;
+                }
+
+                // --- Display Results ---
+                yarnLengthResultSpan.textContent = `${calculatedLength.toFixed(2)} ${outputUnit}`;
+                resultBox.style.display = 'block'; // Show the result box
+            });
+        });
+    </script>
+</body>
+</html>
