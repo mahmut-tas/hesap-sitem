@@ -13,23 +13,19 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Replace API Key in HTML
-      run: |
-        # API anahtarını GitHub Secrets'tan al
-        # GitHub deponuzun Settings > Secrets and variables > Actions bölümünde
-        # 'Maps_API_KEY' adında bir secret tanımlı olduğundan emin olun.
-        API_KEY="${{ secrets.MAPS_API_KEY }}"
-        
-        # HTML dosyasını oku ve 'src' özniteliği içindeki 'key=' parametresinin yer tutucusunu
-        # gerçek API anahtarıyla değiştir. Bu, tam eşleşmeyi garanti eder.
-        # 'YOUR_Maps_API_KEY_PLACEHOLDER' metninin HTML dosyanızdakiyle birebir aynı olduğundan emin olun.
-        # Bu sed komutu, 'key=' ile başlayan ve 'libraries=' ile biten kısmı hedefleyecektir.
-        sed -i "s|key=YOUR_Maps_API_KEY_PLACEHOLDER&libraries=places|key=${API_KEY}&libraries=places|g" rota-hesaplayici.html
+    - name: Setup Node.js
+      uses: actions/setup-node@v4 # Node.js ortamını kurar
+      with:
+        node-version: '18' # Kullanmak istediğiniz Node.js versiyonu
 
-        # Değişiklikleri görmek isterseniz (opsiyonel)
-        # Bu satırın yorumunu kaldırarak workflow günlüklerinde HTML dosyasının son halini görebilirsiniz.
-        # cat rota-hesaplayici.html
-        
+    - name: Replace API Key in HTML using Node.js script
+      env:
+        # GitHub Secret'ı bir ortam değişkeni olarak Node.js betiğine aktarır
+        MAPS_API_KEY: ${{ secrets.Maps_API_KEY }} 
+      run: |
+        # Node.js betiğini çalıştır
+        node replace-api-key.js
+
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
