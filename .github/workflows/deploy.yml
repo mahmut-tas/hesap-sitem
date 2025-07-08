@@ -1,0 +1,36 @@
+name: Deploy Rota Hesaplayici to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # Veya sitenizi yayınladığınız branch'in adı (örn. master, gh-pages)
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Replace API Key in HTML
+      run: |
+        # API anahtarını çevre değişkeninden al
+        # Not: process.env yerine direkt value kullanıyoruz çünkü bu bir shell komutu
+        API_KEY="${{ secrets.Maps_API_KEY }}"
+
+        # HTML dosyasını oku, yer tutucuyu yeni API anahtarıyla değiştir
+        # s'de ilk / sonrası eski değer, ikinci / sonrası yeni değer, g tüm eşleşmeleri değiştirir
+        sed -i "s|YOUR_Maps_API_KEY_PLACEHOLDER|${API_KEY}|g" rota-hesaplayici.html
+
+        # Değişiklikleri görmek isterseniz (opsiyonel)
+        cat rota-hesaplayici.html
+
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./ # HTML dosyanızın bulunduğu dizin (muhtemelen depo kökü)
+        # Eğer HTML dosyanız başka bir alt klasördeyse, örneğin 'dist'
+        # publish_dir: ./dist
