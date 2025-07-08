@@ -15,18 +15,18 @@ jobs:
 
     - name: Replace API Key in HTML
       run: |
-        # API anahtarını çevre değişkeninden al
-        # Not: process.env yerine direkt value kullanıyoruz çünkü bu bir shell komutu
+        # API anahtarını GitHub Secrets'tan al
+        # Not: secrets.Maps_API_KEY olarak adlandırılan secret'ı kullanıyoruz.
+        # GitHub deponuzun Settings > Secrets and variables > Actions bölümünde bu secret'ın tanımlı olduğundan emin olun.
         API_KEY="${{ secrets.Maps_API_KEY }}"
-
-        # HTML dosyasını oku, yer tutucuyu yeni API anahtarıyla değiştir
-        # s'de ilk / sonrası eski değer, ikinci / sonrası yeni değer, g tüm eşleşmeleri değiştirir
-        sed -i "s|YOUR_Maps_API_KEY_PLACEHOLDER|${API_KEY}|g" rota-hesaplayici.html
+        
+        # HTML dosyasını oku ve 'key=' parametresi içindeki yer tutucuyu gerçek API anahtarıyla değiştir.
+        # Bu, API anahtarının doğru yere enjekte edilmesini sağlar.
+        sed -i "s|key=YOUR_Maps_API_KEY_PLACEHOLDER|key=${API_KEY}|g" rota-hesaplayici.html
 
         # Değişiklikleri görmek isterseniz (opsiyonel)
-        cat rota-hesaplayici.html
-
-
+        # cat rota-hesaplayici.html
+        
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
