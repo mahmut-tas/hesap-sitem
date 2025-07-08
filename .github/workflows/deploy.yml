@@ -20,11 +20,12 @@ jobs:
 
     - name: Replace API Key in HTML using Node.js script
       env:
-        # GitHub Secret'ı bir ortam değişkeni olarak Node.js betiğine aktarır
         MAPS_API_KEY: ${{ secrets.Maps_API_KEY }} 
       run: |
-        # Node.js betiğini çalıştır
-        node replace-api-key.js
+        # Node.js betiğini doğru yoldan çalıştır
+        # GitHub Actions deponuzu /home/runner/work/hesap-sitem/hesap-sitem/ altına klonladığı için
+        # betiğe doğru yolu veriyoruz.
+        node ./replace-api-key.js
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
