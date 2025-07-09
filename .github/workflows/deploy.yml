@@ -1,34 +1,35 @@
-name: Deploy Rota Hesaplayici to GitHub Pages
+name: Deploy Rota Hesaplayıcı to GitHub Pages
 
 on:
   push:
     branches:
-      - main # Veya sitenizi yayınladığınız branch'in adı (örn. master, gh-pages)
+      - main # Veya projenizin ana dalı (master, gh-pages vb.)
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4 # Node.js ortamını kurar
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
       with:
-        node-version: '18' # Kullanmak istediğiniz Node.js versiyonu
+        node-version: '18' # Kullandığınız Node.js versiyonunu buraya yazın
 
-    - name: Replace API Key in HTML using Node.js script
+    - name: Install Dependencies
+      run: npm install # Eğer projenizde başka bağımlılıklar varsa (sadece fs değil)
+
+    - name: Inject API Key into HTML
+      run: node replace-api-key.js
       env:
-        MAPS_API_KEY: ${{ secrets.Maps_API_KEY }} 
-      run: |
-        # Node.js betiğini doğru yoldan çalıştır
-        # GitHub Actions deponuzu /home/runner/work/hesap-sitem/hesap-sitem/ altına klonladığı için
-        # betiğe doğru yolu veriyoruz.
-        node ./replace-api-key.js
+        MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }} # GitHub Secret'ı buraya enjekte ediyoruz
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./ # rota-hesaplayici.html kök dizinde olduğu için bu doğru
+        publish_dir: ./ # HTML dosyanızın bulunduğu dizin (muhtemelen projenizin kök dizini)
+        # Eğer HTML dosyanız başka bir alt dizinde ise, örneğin 'public' veya 'dist', o dizini buraya yazın:
+        # publish_dir: ./public
