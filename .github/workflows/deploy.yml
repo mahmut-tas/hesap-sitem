@@ -18,10 +18,12 @@ jobs:
       with:
         node-version: '18' # Kullandığınız Node.js versiyonunu buraya yazın
 
-    - name: Install Dependencies # Bu adım artık package.json'u bulabilecek
+    - name: Install Dependencies
+      # package.json'u direkt kök dizinde bulacağı için ek bir 'cd' komutuna gerek yok.
       run: npm install
 
     - name: Inject API Key into HTML
+      # replace-api-key.js de kök dizinde olduğu için ek bir 'cd' komutuna gerek yok.
       run: node replace-api-key.js
       env:
         MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
@@ -30,11 +32,4 @@ jobs:
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        # publish_dir: ./  <-- Bu satırı inceleyelim
-        # Önemli: Eğer HTML dosyanız ve replace-api-key.js projenizin kök dizininde değilse,
-        # publish_dir'i ve yukarıdaki adımların çalışacağı dizini ona göre ayarlamalısınız.
-        # Örneğin, her şey 'src' klasöründeyse:
-        # publish_dir: ./src
-        # run: cd src && npm install
-        # run: cd src && node replace-api-key.js
-        # Ancak current durumda, her şeyin root'ta olduğunu varsayarak devam edelim.
+        publish_dir: ./ # Kök dizini yayınla
