@@ -18,18 +18,23 @@ jobs:
       with:
         node-version: '18' # Kullandığınız Node.js versiyonunu buraya yazın
 
-    - name: Install Dependencies
-      run: npm install # Eğer projenizde başka bağımlılıklar varsa (sadece fs değil)
+    - name: Install Dependencies # Bu adım artık package.json'u bulabilecek
+      run: npm install
 
     - name: Inject API Key into HTML
       run: node replace-api-key.js
       env:
-        MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }} # GitHub Secret'ı buraya enjekte ediyoruz
+        MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./ # HTML dosyanızın bulunduğu dizin (muhtemelen projenizin kök dizini)
-        # Eğer HTML dosyanız başka bir alt dizinde ise, örneğin 'public' veya 'dist', o dizini buraya yazın:
-        # publish_dir: ./public
+        # publish_dir: ./  <-- Bu satırı inceleyelim
+        # Önemli: Eğer HTML dosyanız ve replace-api-key.js projenizin kök dizininde değilse,
+        # publish_dir'i ve yukarıdaki adımların çalışacağı dizini ona göre ayarlamalısınız.
+        # Örneğin, her şey 'src' klasöründeyse:
+        # publish_dir: ./src
+        # run: cd src && npm install
+        # run: cd src && node replace-api-key.js
+        # Ancak current durumda, her şeyin root'ta olduğunu varsayarak devam edelim.
