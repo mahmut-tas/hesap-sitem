@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Estimated IQ Calculation Test - Hesapkolik</title>
+    
+    <meta content="Measure your estimated IQ level with a simple 15-question test. Evaluate your general abilities. For entertainment purposes only." name="description"/>
+    <meta content="iq test, iq calculation, intelligence test, general aptitude, 15 question iq, quick iq test, fun iq test, hesapkolik iq" name="keywords"/>
+    
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    
+    <style>
+        /* General Settings and Font */
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f7f6; /* Clean and fresh background */
+            color: #333; 
+            line-height: 1.6;
+        }
+        .container { 
+            max-width: 960px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Matches dark header/footer theme */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Calculator Section (Quiz Container) */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff; /* White card background */
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50; /* Dark text color */
+            font-size: 2.2em;
+        }
+        .calc-wrapper { 
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 700px;
+            margin: 30px auto;
+            text-align: left;
+            min-height: 400px; /* To prevent content from being empty */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        /* Quiz Specific Styles */
+        .quiz-container {
+            flex-grow: 1; /* Occupy full container space */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .question-counter {
+            text-align: right;
+            font-size: 0.9em;
+            color: #777;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 1.4em;
+            margin-bottom: 25px;
+            font-weight: 600;
+            color: #34495e;
+            text-align: center;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            font-size: 1.1em;
+            color: #555;
+            text-align: left; /* Left-align option text */
+        }
+        .option-label:hover {
+            background-color: #eef;
+            border-color: #3498db;
+        }
+        .option-label input[type="radio"] {
+            margin-right: 15px;
+            transform: scale(1.3); /* Enlarge radio button */
+            accent-color: #3498db; /* Change color in Chrome, Edge etc. */
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .navigation-buttons button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            color: white;
+            font-weight: 600;
+        }
+
+        .navigation-buttons button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .navigation-buttons button.prev-button {
+            background-color: #f39c12; /* Orange */
+        }
+        .navigation-buttons button.prev-button:hover:not(:disabled) {
+            background-color: #e67e22;
+            transform: translateY(-2px);
+        }
+
+        .navigation-buttons button.next-button,
+        .navigation-buttons button.submit-button {
+            background-color: #28a745; /* Green */
+        }
+        .navigation-buttons button.next-button:hover:not(:disabled),
+        .navigation-buttons button.submit-button:hover:not(:disabled) {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Result Display */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            padding: 25px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+            background-color: #ecf0f1;
+            display: none; /* Hidden by default */
+        }
+        .result-display h4 {
+            color: #3498db;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        .result-display .iq-score {
+            font-size: 3em;
+            color: #e74c3c;
+            margin: 15px 0;
+            font-weight: 800;
+        }
+        .result-display .score-message {
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        .result-display .error-message {
+            color: #e74c3c;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        .result-display .reset-button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        .result-display .reset-button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Info Section */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text { 
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .question-text {
+                font-size: 1.2em;
+            }
+            .option-label {
+                font-size: 1em;
+            }
+            .result-display {
+                font-size: 1.1em;
+            }
+            .result-display .iq-score {
+                font-size: 2.5em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            .question-text {
+                font-size: 1em;
+            }
+            .option-label {
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+            .navigation-buttons button {
+                font-size: 1em;
+                padding: 10px 15px;
+            }
+            .result-display {
+                font-size: 0.9em;
+                padding: 15px;
+            }
+            .result-display h4 {
+                font-size: 1.5em;
+            }
+            .result-display .iq-score {
+                font-size: 2em;
+            }
+        }
+    </style>
+    
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1 id="main-heading">Estimated IQ Calculation Test</h1>
+                <p id="main-description">Measure your estimated IQ level with a simple 15-question test. Evaluate your general abilities. For entertainment purposes only.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper">
+                    <h3 id="calculator-title"><i class="fas fa-brain icon-small"></i> IQ Test</h3>
+                    <div class="quiz-container">
+                        <div class="question-counter" id="questionCounter"></div>
+                        <div class="question-display">
+                            <p class="question-text" id="questionText"></p>
+                            <div class="options-container" id="optionsContainer">
+                            </div>
+                        </div>
+                        <div class="navigation-buttons">
+                            <button id="prevButton" class="prev-button" disabled>Previous</button>
+                            <button id="nextButton" class="next-button">Next</button>
+                            <button id="submitButton" class="submit-button" style="display: none;">Finish Test</button>
+                        </div>
+                    </div>
+                    <div class="result-display" id="quizResultDisplay">
+                        </div>
+                       <div class="already-taken-message" id="alreadyTakenMessage" style="display: none;">
+                            <p class="error-message">You have already completed this test. You can only take the test once.</p>
+                            <button class="reset-button" id="resetTestButton">Click to Retake (CAUTION: This will reset the test data)</button>
+                        </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3 id="info-section-title">IQ Tests and the Concept of Intelligence</h3>
+            <p id="info-section-p1">
+                **IQ (Intelligence Quotient)** is the result of standardized tests aiming to measure a person's cognitive abilities. These tests typically assess skills in areas such as logic, problem-solving, spatial reasoning, verbal reasoning, and memory. However, intelligence is a complex and multifaceted concept, and IQ tests measure only one aspect of intelligence.
+            </p>
+            <h4 id="aboutTestHeading">About This Test:</h4>
+            <ul>
+                <li id="info-list-1">
+                    <strong>For Entertainment Purposes Only:</strong> This test is not a formal or clinical IQ assessment. It is designed only to provide a simple and fun idea of your general cognitive skills.
+                </li>
+                <li id="info-list-2">
+                    <strong>Limited Scope:</strong> Real IQ tests are much more comprehensive and do not include different types of intelligence (e.g., emotional intelligence, creative intelligence). This test focuses only on specific logic and general knowledge questions.
+                </li>
+                <li id="info-list-3">
+                    <strong>Can Be Taken Once:</strong> The goal is for each user to take the test once. This control is provided by data in your browser cache. (However, it is possible to retake the test by clearing browser data or using a different browser/incognito tab.)
+                </li>
+                <li id="info-list-4">
+                    <strong>Feedback:</strong> Your test result will be presented with an estimated IQ score and a simple explanation corresponding to this score.
+                </li>
+            </ul>
+            <p class="disclaimer-text" id="disclaimer-text">
+                This estimated IQ calculation tool is for entertainment and personal interest purposes only. It does not replace professional psychological evaluations or clinical intelligence tests. The results you obtain are not a scientific indicator of your actual IQ level and cannot be used for any official purpose. It is always recommended to consult a licensed professional to learn more about your intelligence level.
+            </p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+            // Text localization data
+            const texts = {
+                tr: {
+                    mainHeading: 'Tahmini IQ Hesaplama Testi',
+                    mainDescription: '15 soruluk basit bir testle tahmini IQ seviyenizi ölçün. Genel yeteneklerinizi değerlendirin. Yalnızca eğlence amaçlıdır.',
+                    calculatorTitle: 'IQ Testi',
+                    prevButton: 'Önceki',
+                    nextButton: 'Sonraki',
+                    submitButton: 'Testi Bitir',
+                    alreadyTakenMessage: 'Bu testi daha önce çözdünüz. Testi sadece bir kez çözebilirsiniz.',
+                    resetButton: 'Yeniden Çözmek İçin Tıklayın (DİKKAT: Bu testi sıfırlayacaktır)',
+                    resultHeading: 'Test Sonucunuz:',
+                    scoreMessagePrefix: 'Tahmini IQ Puanınız:',
+                    scoreMessages: {
+                        veryLow: 'Zeka seviyeniz ortalamanın altında görünüyor. Daha fazla pratikle gelişebilirsiniz!', // < 70
+                        low: 'Ortalamanın altında bir zeka seviyesine sahipsiniz. Okuma ve problem çözme egzersizleri faydalı olabilir.', // 70-80
+                        average: 'Ortalama zeka seviyesindesiniz. Günlük hayattaki problemleri rahatlıkla çözebilirsiniz.', // 81-110
+                        aboveAverage: 'Ortalamanın üzerinde bir zeka seviyesine sahipsiniz. İyi iş çıkardınız!', // 111-120
+                        high: 'Yüksek bir zeka seviyesine sahipsiniz. Zihinsel olarak oldukça çeviksiniz!', // 121-130
+                        veryHigh: 'Çok yüksek bir zeka seviyesine sahipsiniz. Olağanüstü bir zihinsel kapasiteye sahipsiniz!' // > 130
+                    },
+                    infoSectionTitle: 'IQ Testleri ve Zeka Kavramı',
+                    infoSectionP1: '**IQ (Zeka Katsayısı)**, bir kişinin bilişsel yeteneklerini ölçmeyi amaçlayan standardize edilmiş testlerin sonucudur. Bu testler genellikle mantık, problem çözme, mekansal düşünme, sözel akıl yürütme ve hafıza gibi alanlardaki becerileri değerlendirir. Ancak, zeka karmaşık ve çok boyutlu bir kavram olup, IQ testleri zekanın yalnızca bir yönünü ölçer.',
+                    aboutTestTitle: 'Bu Test Hakkında:',
+                    infoList1: '<strong>Eğlence Amaçlıdır:</strong> Bu test, resmi veya klinik bir IQ değerlendirmesi değildir. Yalnızca genel bilişsel becerilerinize dair basit ve eğlenceli bir fikir vermek için tasarlanmıştır.',
+                    infoList2: '<strong>Sınırlı Kapsam:</strong> Gerçek IQ testleri çok daha kapsamlıdır ve farklı zeka türlerini (örneğin duygusal zeka, yaratıcı zeka) içermez. Bu test, yalnızca belirli mantık ve genel bilgi sorularına odaklanır.',
+                    infoList3: '<strong>Bir Kez Çözülebilir:</strong> Her kullanıcının testi bir kez çözmesi hedeflenmiştir. Tarayıcı önbelleğinizdeki verilerle bu kontrol sağlanır. (Ancak, tarayıcı verilerini temizleyerek veya farklı bir tarayıcı kullanarak tekrar çözmek mümkündür.)',
+                    infoList4: '<strong>Geri Bildirim:</strong> Test sonucunuz, tahmini bir IQ puanı ve bu puana karşılık gelen basit bir açıklama ile sunulacaktır.',
+                    disclaimerText: 'Bu tahmini IQ hesaplama aracı yalnızca eğlence ve kişisel ilgi amaçlıdır. Profesyonel psikolojik değerlendirmelerin veya klinik zeka testlerinin yerini tutmaz. Elde ettiğiniz sonuçlar, gerçek IQ seviyenizin bilimsel bir göstergesi değildir ve herhangi bir resmi amaçla kullanılamaz. Zeka seviyeniz hakkında daha fazla bilgi edinmek için daima lisanslı bir uzmana danışmanız önerilir.'
+                },
+                en: {
+                    mainHeading: 'Estimated IQ Calculation Test',
+                    mainDescription: 'Measure your estimated IQ level with a simple 15-question test. Evaluate your general abilities. For entertainment purposes only.',
+                    calculatorTitle: 'IQ Test',
+                    prevButton: 'Previous',
+                    nextButton: 'Next',
+                    submitButton: 'Finish Test',
+                    alreadyTakenMessage: 'You have already completed this test. You can only take the test once.',
+                    resetButton: 'Click to Retake (CAUTION: This will reset the test data)',
+                    resultHeading: 'Your Test Result:',
+                    scoreMessagePrefix: 'Your Estimated IQ Score:',
+                    scoreMessages: {
+                        veryLow: 'Your intelligence level seems below average. You can improve with more practice!', // < 70
+                        low: 'You have a below-average intelligence level. Reading and problem-solving exercises might be beneficial.', // 70-80
+                        average: 'You are at an average intelligence level. You can easily solve everyday problems.', // 81-110
+                        aboveAverage: 'You have an above-average intelligence level. Well done!', // 111-120
+                        high: 'You have a high intelligence level. You are mentally very agile!', // 121-130
+                        veryHigh: 'You have a very high intelligence level. You possess an extraordinary mental capacity!' // > 130
+                    },
+                    infoSectionTitle: 'IQ Tests and the Concept of Intelligence',
+                    infoSectionP1: '**IQ (Intelligence Quotient)** is the result of standardized tests aiming to measure a person\'s cognitive abilities. These tests typically assess skills in areas such as logic, problem-solving, spatial reasoning, verbal reasoning, and memory. However, intelligence is a complex and multifaceted concept, and IQ tests measure only one aspect of intelligence.',
+                    aboutTestTitle: 'About This Test:',
+                    infoList1: '<strong>For Entertainment Purposes Only:</strong> This test is not a formal or clinical IQ assessment. It is designed only to provide a simple and fun idea of your general cognitive skills.',
+                    infoList2: '<strong>Limited Scope:</strong> Real IQ tests are much more comprehensive and do not include different types of intelligence (e.g., emotional intelligence, creative intelligence). This test focuses only on specific logic and general knowledge questions.',
+                    infoList3: '<strong>Can Be Taken Once:</strong> The goal is for each user to take the test once. This control is provided by data in your browser cache. (However, it is possible to retake the test by clearing browser data or using a different browser/incognito tab.)',
+                    infoList4: '<strong>Feedback:</strong> Your test result will be presented with an estimated IQ score and a simple explanation corresponding to this score.',
+                    disclaimerText: 'This estimated IQ calculation tool is for entertainment and personal interest purposes only. It does not replace professional psychological evaluations or clinical intelligence tests. The results you obtain are not a scientific indicator of your actual IQ level and cannot be used for any official purpose. It is always recommended to consult a licensed professional to learn more about your intelligence level.'
+                }
+            };
+
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // Header and Footer loading function (from your previous response, slightly modified to handle semantic elements)
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            console.error(`HTTP error! Status: ${response.status} for ${url}. Response: ${response.statusText}`);
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            // Create a temporary div to parse the loaded HTML
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = html;
+
+                            // Check if the loaded content is a semantic element (like <header> or <footer>)
+                            // and replace the placeholder with it, otherwise just inject innerHTML
+                            const semanticElement = tempDiv.firstElementChild; 
+                            if (semanticElement && (semanticElement.tagName.toLowerCase() === 'header' || semanticElement.tagName.toLowerCase() === 'footer')) {
+                                placeholder.replaceWith(semanticElement); 
+                                // Re-execute scripts within the newly inserted semantic element
+                                const scripts = semanticElement.querySelectorAll('script');
+                                scripts.forEach(oldScript => {
+                                    const newScript = document.createElement('script');
+                                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                    newScript.textContent = oldScript.textContent;
+                                    document.body.appendChild(newScript);
+                                    oldScript.remove(); 
+                                });
+                            } else {
+                                placeholder.innerHTML = html;
+                                // Re-execute scripts if just innerHTML is loaded (for cases where it's not a full semantic tag)
+                                const scripts = placeholder.querySelectorAll('script');
+                                scripts.forEach(oldScript => {
+                                    const newScript = document.createElement('script');
+                                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                    newScript.textContent = oldScript.textContent;
+                                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                                });
+                            }
+                            console.log(`Successfully loaded ${url} into #${elementId}`);
+                        } else {
+                            console.warn(`Placeholder element with ID '${elementId}' not found for URL: ${url}`);
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red; text-align: center;">Error: Could not load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // Load header and footer when the page is fully loaded
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // Update page-specific texts based on selected language
+            document.getElementById('main-heading').textContent = currentTexts.mainHeading;
+            document.getElementById('main-description').textContent = currentTexts.mainDescription;
+            document.getElementById('calculator-title').innerHTML = `<i class="fas fa-brain icon-small"></i> ${currentTexts.calculatorTitle}`;
+            document.getElementById('prevButton').textContent = currentTexts.prevButton;
+            document.getElementById('nextButton').textContent = currentTexts.nextButton;
+            document.getElementById('submitButton').textContent = currentTexts.submitButton;
+            document.getElementById('alreadyTakenMessage').querySelector('.error-message').textContent = currentTexts.alreadyTakenMessage;
+            document.getElementById('resetTestButton').textContent = currentTexts.resetButton;
+            document.getElementById('info-section-title').textContent = currentTexts.infoSectionTitle;
+            document.getElementById('info-section-p1').innerHTML = currentTexts.infoSectionP1;
+            
+            // Corrected selector for h4 by adding ID directly to HTML
+            const aboutTestTitleElement = document.getElementById('aboutTestHeading'); 
+            if (aboutTestTitleElement) {
+                aboutTestTitleElement.textContent = currentTexts.aboutTestTitle;
+            } else {
+                console.warn("Element for 'About This Test' title not found with ID 'aboutTestHeading'.");
+            }
+            
+            document.getElementById('info-list-1').innerHTML = currentTexts.infoList1;
+            document.getElementById('info-list-2').innerHTML = currentTexts.infoList2;
+            document.getElementById('info-list-3').innerHTML = currentTexts.infoList3;
+            document.getElementById('info-list-4').innerHTML = currentTexts.infoList4;
+            document.getElementById('disclaimer-text').textContent = currentTexts.disclaimerText;
+
+
+            // Quiz Questions and Answers (translated)
+            const questions = [
+                {
+                    question: "Which of the following numbers is different from the others?",
+                    options: ["25", "36", "49", "64", "80"],
+                    answer: "80" // All others are perfect squares
+                },
+                {
+                    question: "Complete the series: 2, 4, 8, 16, ?",
+                    options: ["20", "24", "32", "48"],
+                    answer: "32" // Each number is double the previous one
+                },
+                {
+                    question: "An apple costs 50 cents. How much do 10 apples cost?",
+                    options: ["5 TL", "50 TL", "500 kuruş", "2 TL"], // Keeping TL/kuruş for context or can be generic currency
+                    answer: "5 TL" // 50 cents * 10 = 500 cents = 5 TL (assuming TL is the currency unit)
+                },
+                {
+                    question: "Spell the word: 'Intelligence'",
+                    options: ["In-tel-li-gence", "In-te-lli-gence", "Intell-igence", "Intelligence"],
+                    answer: "In-tel-li-gence" // Basic spelling
+                },
+                {
+                    question: "What is 20% of 50?",
+                    options: ["5", "10", "15", "20"],
+                    answer: "10" // 50 * 0.20 = 10
+                },
+                {
+                    question: "There were 5 taxis at a taxi stand. 2 of them left. How many taxis remained?",
+                    options: ["2", "3", "5", "7"],
+                    answer: "3" // 5 - 2 = 3
+                },
+                {
+                    question: "A, C, E, G, ?",
+                    options: ["H", "I", "J", "K"],
+                    answer: "I" // Alphabetical sequence, skipping one letter
+                },
+                {
+                    question: "What is the sum of the three angles of a triangle?",
+                    options: ["90", "180", "270", "360"],
+                    answer: "180" // Sum of interior angles of a triangle
+                },
+                {
+                    question: "Which of the following is NOT a mammal?",
+                    options: ["Dolphin", "Penguin", "Bat", "Whale"],
+                    answer: "Penguin" // Penguin is a bird species
+                },
+                {
+                    question: "There are 60 minutes in an hour, and 60 seconds in a minute. How many seconds are there in an hour?",
+                    options: ["60", "120", "360", "3600"],
+                    answer: "3600" // 60 * 60 = 3600
+                },
+                {
+                    question: "If yesterday was Tuesday, what day is tomorrow?",
+                    options: ["Monday", "Wednesday", "Thursday", "Friday"],
+                    answer: "Thursday" // If yesterday was Tuesday, today is Wednesday, tomorrow is Thursday
+                },
+                {
+                    question: "Apple, Pear, Orange. What could be next?",
+                    options: ["Potato", "Banana", "Carrot", "Tomato"],
+                    answer: "Banana" // Fruit series
+                },
+                {
+                    question: "A person bought a book for 10 TL and sold it for 12 TL. How much profit did they make?",
+                    options: ["1 TL", "2 TL", "10 TL", "22 TL"],
+                    answer: "2 TL" // 12 - 10 = 2
+                },
+                {
+                    question: "Which constant is used to calculate the circumference of a circle?",
+                    options: ["E", "Pi", "Phi", "Gamma"],
+                    answer: "Pi" // Mathematical constant
+                },
+                {
+                    question: "Which of the following words is different from the others?",
+                    options: ["Run", "Walk", "Dance", "Sleep"],
+                    answer: "Sleep" // Others are physical activities
+                }
+            ];
+
+            let currentQuestionIndex = 0;
+            let userAnswers = new Array(questions.length).fill(null); // To store answers
+            let score = 0;
+
+            const quizContainer = document.querySelector('.quiz-container');
+            const questionCounterElement = document.getElementById('questionCounter');
+            const questionTextElement = document.getElementById('questionText');
+            const optionsContainerElement = document.getElementById('optionsContainer');
+            const prevButton = document.getElementById('prevButton');
+            const nextButton = document.getElementById('nextButton');
+            const submitButton = document.getElementById('submitButton');
+            const quizResultDisplay = document.getElementById('quizResultDisplay');
+            const alreadyTakenMessageDiv = document.getElementById('alreadyTakenMessage');
+            const resetTestButton = document.getElementById('resetTestButton');
+
+            const TEST_TAKEN_KEY = 'iqTestTaken';
+
+            // Check if the test has been taken before
+            if (localStorage.getItem(TEST_TAKEN_KEY) === 'true') {
+                quizContainer.style.display = 'none';
+                alreadyTakenMessageDiv.style.display = 'block';
+            } else {
+                quizContainer.style.display = 'block';
+                alreadyTakenMessageDiv.style.display = 'none';
+                displayQuestion(); // Show the first question if test not started
+            }
+
+            resetTestButton.addEventListener('click', function() {
+                localStorage.removeItem(TEST_TAKEN_KEY);
+                location.reload(); // Reload the page
+            });
+
+
+            function displayQuestion() {
+                const questionData = questions[currentQuestionIndex];
+                questionCounterElement.textContent = `${currentQuestionIndex + 1} / ${questions.length}`;
+                questionTextElement.textContent = questionData.question;
+                optionsContainerElement.innerHTML = ''; // Clear previous options
+
+                questionData.options.forEach((option, index) => {
+                    const optionLabel = document.createElement('label');
+                    optionLabel.classList.add('option-label');
+                    const optionInput = document.createElement('input');
+                    optionInput.type = 'radio';
+                    optionInput.name = 'question' + currentQuestionIndex;
+                    optionInput.value = option;
+
+                    // If the user has already answered this question, check the option
+                    if (userAnswers[currentQuestionIndex] === option) {
+                        optionInput.checked = true;
+                    }
+
+                    optionInput.addEventListener('change', (event) => {
+                        userAnswers[currentQuestionIndex] = event.target.value;
+                        updateNavigationButtons();
+                    });
+
+                    optionLabel.appendChild(optionInput);
+                    optionLabel.appendChild(document.createTextNode(option));
+                    optionsContainerElement.appendChild(optionLabel);
+                });
+
+                updateNavigationButtons();
+            }
+
+            function updateNavigationButtons() {
+                prevButton.disabled = currentQuestionIndex === 0;
+                
+                // Disable Next/Submit button if current question is not answered
+                const isCurrentQuestionAnswered = userAnswers[currentQuestionIndex] !== null;
+                nextButton.disabled = !isCurrentQuestionAnswered;
+                submitButton.disabled = !isCurrentQuestionAnswered; // Submit button also disabled if not answered
+
+                if (currentQuestionIndex === questions.length - 1) {
+                    nextButton.style.display = 'none';
+                    submitButton.style.display = 'block';
+                } else {
+                    nextButton.style.display = 'block';
+                    submitButton.style.display = 'none';
+                }
+            }
+
+            function calculateResult() {
+                score = 0;
+                userAnswers.forEach((answer, index) => {
+                    if (answer === questions[index].answer) {
+                        score++;
+                    }
+                });
+
+                // Calculate IQ score (a simple mapping example)
+                let estimatedIQ = 0;
+                let message = '';
+
+                // Add 5 IQ points for each correct answer (a simple scale)
+                estimatedIQ = 70 + (score * 5); 
+
+                if (estimatedIQ < 70) {
+                    message = currentTexts.scoreMessages.veryLow;
+                } else if (estimatedIQ >= 70 && estimatedIQ <= 80) {
+                    message = currentTexts.scoreMessages.low;
+                } else if (estimatedIQ >= 81 && estimatedIQ <= 110) {
+                    message = currentTexts.scoreMessages.average;
+                } else if (estimatedIQ >= 111 && estimatedIQ <= 120) {
+                    message = currentTexts.scoreMessages.aboveAverage;
+                } else if (estimatedIQ >= 121 && estimatedIQ <= 130) {
+                    // Corrected from currentTexts.texts.en.scoreMessages.high
+                    message = currentTexts.scoreMessages.high; 
+                } else { // > 130
+                    message = currentTexts.scoreMessages.veryHigh;
+                }
+                
+                quizContainer.style.display = 'none'; // Hide the quiz
+                quizResultDisplay.innerHTML = `
+                    <h4>${currentTexts.resultHeading}</h4>
+                    <p class="score-message">${currentTexts.scoreMessagePrefix}</p>
+                    <div class="iq-score">${estimatedIQ}</div>
+                    <p class="score-message">${message}</p>
+                `;
+                quizResultDisplay.style.display = 'block'; // Show the result
+
+                localStorage.setItem(TEST_TAKEN_KEY, 'true'); // Mark test as taken
+            }
+
+            prevButton.addEventListener('click', () => {
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    displayQuestion();
+                }
+            });
+
+            nextButton.addEventListener('click', () => {
+                if (currentQuestionIndex < questions.length - 1) {
+                    currentQuestionIndex++;
+                    displayQuestion();
+                }
+            });
+
+            submitButton.addEventListener('click', calculateResult);
+
+            // Update texts on page load and start test (if not already taken)
+            document.getElementById('main-heading').textContent = currentTexts.mainHeading;
+            document.getElementById('main-description').textContent = currentTexts.mainDescription;
+            document.getElementById('calculator-title').innerHTML = `<i class="fas fa-brain icon-small"></i> ${currentTexts.calculatorTitle}`;
+            document.getElementById('prevButton').textContent = currentTexts.prevButton;
+            document.getElementById('nextButton').textContent = currentTexts.nextButton;
+            document.getElementById('submitButton').textContent = currentTexts.submitButton;
+            document.getElementById('alreadyTakenMessage').querySelector('.error-message').textContent = currentTexts.alreadyTakenMessage;
+            document.getElementById('resetTestButton').textContent = currentTexts.resetButton;
+            document.getElementById('info-section-title').textContent = currentTexts.infoSectionTitle;
+            document.getElementById('info-section-p1').innerHTML = currentTexts.infoSectionP1;
+            
+            // Selector for h4 by ID
+            const aboutTestHeadingElement = document.getElementById('aboutTestHeading'); 
+            if (aboutTestHeadingElement) {
+                aboutTestHeadingElement.textContent = currentTexts.aboutTestTitle;
+            } else {
+                console.warn("Element with ID 'aboutTestHeading' not found.");
+            }
+            
+            document.getElementById('info-list-1').innerHTML = currentTexts.infoList1;
+            document.getElementById('info-list-2').innerHTML = currentTexts.infoList2;
+            document.getElementById('info-list-3').innerHTML = currentTexts.infoList3;
+            document.getElementById('info-list-4').innerHTML = currentTexts.infoList4;
+            document.getElementById('disclaimer-text').textContent = currentTexts.disclaimerText;
+
+            // Update navigation buttons on initial load
+            updateNavigationButtons(); 
+        });
+
+        // Header and Footer loading function
+        function loadPartial(elementId, url) {
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        console.error(`HTTP error! Status: ${response.status} for ${url}. Response: ${response.statusText}`);
+                        throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    const placeholder = document.getElementById(elementId);
+                    if (placeholder) {
+                        // Create a temporary div to parse the loaded HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+
+                        // Check if the loaded content is a semantic element (like <header> or <footer>)
+                        // and replace the placeholder with it, otherwise just inject innerHTML
+                        const semanticElement = tempDiv.firstElementChild; 
+                        if (semanticElement && (semanticElement.tagName.toLowerCase() === 'header' || semanticElement.tagName.toLowerCase() === 'footer')) {
+                            placeholder.replaceWith(semanticElement); 
+                            // Re-execute scripts within the newly inserted semantic element
+                            const scripts = semanticElement.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                document.body.appendChild(newScript);
+                                oldScript.remove(); 
+                            });
+                        } else {
+                            placeholder.innerHTML = html;
+                            // Re-execute scripts if just innerHTML is loaded (for cases where it's not a full semantic tag)
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                        console.log(`Successfully loaded ${url} into #${elementId}`);
+                    } else {
+                        console.warn(`Placeholder element with ID '${elementId}' not found for URL: ${url}`);
+                    }
+                })
+                .catch(error => {
+                    console.error(`Error loading ${url}:`, error);
+                    const placeholder = document.getElementById(elementId);
+                    if (placeholder) {
+                        placeholder.innerHTML = `<p style="color: red; text-align: center;">Error: Could not load ${elementId} content.</p>`;
+                    }
+                });
+        }
+
+        // Load header and footer when the page is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+        });
+    </script>
+</body>
+</html>

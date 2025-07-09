@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Mutfak Ölçü Birimi Dönüştürücü - Hesapkolik</title>
+    
+    <meta content="Mutfak ölçü birimlerini kolayca dönüştürün: Çay kaşığı, yemek kaşığı, su bardağı, çay bardağı gibi hacim ölçülerini grama veya mililitreye çevirin. Toz şeker, un, yağ gibi farklı malzemeler için doğru dönüşüm faktörleri." name="description"/>
+    <meta content="mutfak ölçüleri, birim dönüştürücü, gram, mililitre, çay kaşığı, yemek kaşığı, su bardağı, çay bardağı, toz şeker, un, sıvı yağ, pirinç, kakao, su, süt, hesapkolik mutfak" name="keywords"/>
+    
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/> 
+    <link href="/css/footer.css" rel="stylesheet"/>
+    
+    <style>
+        /* Genel Ayarlar ve Font */
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f7f6; /* Sade ve ferah bir arka plan */
+            color: #333; 
+            line-height: 1.6;
+        }
+        .container { 
+            max-width: 960px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Koyu tema başlık/altlık ile uyumlu */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Seçim Bölümü */
+        .calculator-selection-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff; /* Beyaz kart arka planı */
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-selection-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50; /* Koyu metin rengi */
+            font-size: 2.2em;
+        }
+        .calc-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        .calc-type-button {
+            background-color: #3498db; /* Canlı mavi buton */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(50% - 30px); /* İki sütunlu düzen */
+            max-width: 300px; /* Daha geniş butonlar için ayar */
+            text-align: center;
+        }
+        .calc-type-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+        .calc-type-button.active {
+            background-color: #e74c3c; /* Vurgulu turuncu */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper { 
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db;
+        }
+        .hidden-calc {
+            display: none;
+        }
+
+        /* Form Elemanları */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+        /* input-with-unit-group için özel stil - BAŞLIK GÖRÜNÜRLÜĞÜ DÜZELTİLDİ */
+        .input-with-unit-group {
+            display: flex;
+            flex-direction: column; /* Label ve input/select'i alt alta sırala */
+            align-items: flex-start; /* İçerikleri sola hizala */
+            gap: 8px; /* Etiket ve input arasında boşluk */
+            margin-bottom: 20px;
+        }
+        .input-with-unit-group label {
+            flex-basis: auto; /* Etiketin içeriğine göre genişlemesini sağla, sıkışmayı engelle */
+            width: 100%; /* Tam genişlik kaplamasını sağla */
+            margin-bottom: 0; /* Üstteki 8px gap yeterli */
+            text-align: left; /* Metni sola hizala */
+        }
+        .input-with-unit-group input[type="number"],
+        .input-with-unit-group select {
+            width: 100%; /* Input ve select tam genişlik kaplasın */
+            margin-bottom: 0; /* Üstteki 8px gap yeterli */
+            /* Diğer padding, border vb. stiller aynı kalır */
+        }
+        .form-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        /* Form butonları */
+        .calculator-form-container button[type="submit"] {
+            background-color: #28a745; /* Onay yeşili */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button[type="submit"]:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Sonuç Ekranı */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+            display: none; /* Varsayılan olarak gizli */
+        }
+        .result-display .result-value {
+            color: #e74c3c;
+        }
+        .result-display .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        /* Açıklama bölümleri */
+        .calc-explanation, .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text { 
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        /* Yeni alt başlık stili */
+        .calc-wrapper h4 {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-type-button {
+                flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
+            }
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1.4em;
+            }
+            /* input-with-unit-group özel responsive */
+            .input-with-unit-group {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+            }
+            .input-with-unit-group label {
+                margin-bottom: 5px;
+                text-align: left;
+            }
+            .input-with-unit-group input[type="number"],
+            .input-with-unit-group select {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calc-type-button {
+                flex: 1 1 100%; /* Tek sütunlu düzen */
+                max-width: 100%;
+            }
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-selection-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            .result-display {
+                font-size: 1em;
+                padding: 15px;
+            }
+            .result-display .result-value {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+    
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Mutfak Ölçü Birimi Dönüştürücü</h1>
+                <p>Yemek tariflerindeki ölçüleri kolayca dönüştürün: Kaşıktan grama, bardaktan mililitreye ve daha fazlası!</p>
+            </div>
+        </section>
+
+        <section class="calculator-selection-section">
+            <div class="container">
+                <h2>Yapmak İstediğiniz Dönüşüm Türünü Seçin</h2>
+                <div class="calc-buttons-container">
+                    <button class="calc-type-button active" data-calc-type="volumeToWeight">Hacimden Kütleye (Kaşık/Bardak - Gram)</button>
+                    <button class="calc-type-button" data-calc-type="weightToVolume">Kütleden Hacme (Gram - Kaşık/Bardak)</button>
+                    <button class="calc-type-button" data-calc-type="liquidConverter">Sıvı Ölçüleri (Mililitre - Bardak/Kaşık)</button>
+                </div>
+
+                <div class="calc-wrapper active-calc" id="calculator-volumeToWeight">
+                    <h3><i class="fas fa-balance-scale-right icon-small"></i> Hacimden Kütleye Dönüştürücü</h3>
+                    <div class="calculator-form-container">
+                        <form id="volumeToWeightForm">
+                            <div class="input-with-unit-group">
+                                <label for="vt_amount">Miktar:</label>
+                                <input id="vt_amount" min="0.1" placeholder="Örn: 2" required="" step="0.1" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="vt_unit">Hacim Birimi:</label>
+                                <select id="vt_unit" required>
+                                    <option value="teaspoon">Çay Kaşığı</option>
+                                    <option value="tablespoon">Yemek Kaşığı</option>
+                                    <option value="cup_water">Su Bardağı (200ml)</option>
+                                    <option value="cup_tea">Çay Bardağı (100ml)</option>
+                                </select>
+                            </div>
+                             <div class="input-with-unit-group">
+                                <label for="vt_material">Malzeme:</label>
+                                <select id="vt_material" required>
+                                    <option value="sugar">Toz Şeker</option>
+                                    <option value="flour">Un</option>
+                                    <option value="oil">Sıvı Yağ</option>
+                                    <option value="rice">Pirinç</option>
+                                    <option value="cocoa">Kakao</option>
+                                    <option value="water">Su</option>
+                                    <option value="milk">Süt</option>
+                                </select>
+                            </div>
+                            <button type="submit">Gram Karşılığını Hesapla</button>
+                        </form>
+                        <div class="result-display" id="volumeToWeightResult"></div>
+                        <div class="calc-explanation">
+                            <p>Bu dönüştürücü, mutfaklarda sıkça kullanılan hacim ölçülerini (çay kaşığı, yemek kaşığı, su bardağı, çay bardağı) farklı malzemeler için gram cinsinden kütleye çevirir. Malzemenin yoğunluğuna göre her birimin gram karşılığı değişir.</p>
+                            <p class="small-text">Dönüşüm faktörleri, standart mutfak ölçülerine ve malzemelerin ortalama yoğunluklarına dayanır. Bu değerler yaklaşık olduğundan, özellikle hassas tariflerde dijital mutfak tartısı kullanmanız önerilir.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="calc-wrapper hidden-calc" id="calculator-weightToVolume">
+                    <h3><i class="fas fa-weight-hanging icon-small"></i> Kütleden Hacme Dönüştürücü</h3>
+                    <div class="calculator-form-container">
+                        <form id="weightToVolumeForm">
+                            <div class="input-with-unit-group">
+                                <label for="wt_amount">Miktar (Gram):</label>
+                                <input id="wt_amount" min="0.1" placeholder="Örn: 50" required="" step="0.1" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="wt_material">Malzeme:</label>
+                                <select id="wt_material" required>
+                                    <option value="sugar">Toz Şeker</option>
+                                    <option value="flour">Un</option>
+                                    <option value="oil">Sıvı Yağ</option>
+                                    <option value="rice">Pirinç</option>
+                                    <option value="cocoa">Kakao</option>
+                                    <option value="water">Su</option>
+                                    <option value="milk">Süt</option>
+                                </select>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="wt_target_unit">Hedef Hacim Birimi:</label>
+                                <select id="wt_target_unit" required>
+                                    <option value="teaspoon">Çay Kaşığı</option>
+                                    <option value="tablespoon">Yemek Kaşığı</option>
+                                    <option value="cup_water">Su Bardağı (200ml)</option>
+                                    <option value="cup_tea">Çay Bardağı (100ml)</option>
+                                </select>
+                            </div>
+                            <button type="submit">Hacim Karşılığını Hesapla</button>
+                        </form>
+                        <div class="result-display" id="weightToVolumeResult"></div>
+                        <div class="calc-explanation">
+                            <p>Bu dönüştürücü, gram cinsinden verilen kütleyi, seçilen malzeme için mutfaklarda kullanılan hacim birimlerine (çay kaşığı, yemek kaşığı, su bardağı, çay bardağı) çevirir. Özellikle gram cinsinden verilmiş bir tarifi, kaşık/bardak ölçüleriyle hazırlamak istediğinizde kullanışlıdır.</p>
+                            <p class="small-text">Dönüşüm, malzemenin yoğunluğuna göre ayarlanır. Unutmayın ki ev tipi ölçülerde küçük farklılıklar olabilir.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="calc-wrapper hidden-calc" id="calculator-liquidConverter">
+                    <h3><i class="fas fa-tint icon-small"></i> Sıvı Ölçüleri Dönüştürücü</h3>
+                    <div class="calculator-form-container">
+                        <form id="liquidConverterForm">
+                            <div class="input-with-unit-group">
+                                <label for="lc_amount">Miktar:</label>
+                                <input id="lc_amount" min="0.1" placeholder="Örn: 200" required="" step="0.1" type="number"/>
+                                <select id="lc_from_unit">
+                                    <option value="ml">Mililitre (ml)</option>
+                                    <option value="liter">Litre (L)</option>
+                                    <option value="teaspoon">Çay Kaşığı</option>
+                                    <option value="tablespoon">Yemek Kaşığı</option>
+                                    <option value="cup_water">Su Bardağı</option>
+                                    <option value="cup_tea">Çay Bardağı</option>
+                                </select>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="lc_to_unit">Dönüştürülecek Birim:</label>
+                                <select id="lc_to_unit" required>
+                                    <option value="ml">Mililitre (ml)</option>
+                                    <option value="liter">Litre (L)</option>
+                                    <option value="teaspoon">Çay Kaşığı</option>
+                                    <option value="tablespoon">Yemek Kaşığı</option>
+                                    <option value="cup_water">Su Bardağı</option>
+                                    <option value="cup_tea">Çay Bardağı</option>
+                                </select>
+                            </div>
+                            <button type="submit">Dönüştür</button>
+                        </form>
+                        <div class="result-display" id="liquidConverterResult"></div>
+                        <div class="calc-explanation">
+                            <p>Bu dönüştürücü, sıvı malzemeler için farklı hacim birimleri (mililitre, litre, çay kaşığı, yemek kaşığı, su bardağı, çay bardağı) arasında dönüşüm yapmanızı sağlar. Özellikle Amerikan/İngiliz tariflerindeki sıvı ölçülerini Türk mutfağı ölçülerine uyarlarken çok işe yarar.</p>
+                            <p class="small-text">Dönüşümler, genellikle su yoğunluğu referans alınarak yapılır. Diğer sıvıların (örneğin yağ) yoğunluğu biraz farklı olsa da, mutfak pratikliğinde bu dönüşümler genellikle yeterince doğrudur.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>Mutfakta Ölçü Birimi Dönüşümlerinin Önemi ve Püf Noktaları</h3>
+            <p>Mutfakta doğru ölçü birimlerini kullanmak, tariflerin başarılı olması için kritik öneme sahiptir. Özellikle internetten veya farklı kültürlerden tarifler denerken, ölçü birimleri arasındaki farklılıklar (gram, mililitre, cup, tablespoon, teaspoon vb.) kafa karıştırıcı olabilir. Doğru dönüşümler, yemeklerinizin lezzet ve kıvam dengesini tutturmanıza yardımcı olur.</p>
+            
+            <h4>Sık Kullanılan Mutfak Ölçü Birimleri ve Yaklaşık Karşılıkları:</h4>
+            <ul>
+                <li><strong>Çay Kaşığı (ÇK):</strong> Yaklaşık 5 ml</li>
+                <li><strong>Yemek Kaşığı (YK):</strong> Yaklaşık 15 ml</li>
+                <li><strong>Su Bardağı (SB):</strong> Yaklaşık 200 ml (Türk mutfağında yaygın)</li>
+                <li><strong>Çay Bardağı (ÇB):</strong> Yaklaşık 100 ml (Türk mutfağında yaygın)</li>
+                <li><strong>Gram (g):</strong> Kütle birimi</li>
+                <li><strong>Mililitre (ml):</strong> Hacim birimi</li>
+            </ul>
+
+            <h4>Malzemeye Göre Farklılıklar: Neden Önemlidir?</h4>
+            <p>Aynı hacimdeki farklı malzemelerin kütlesi (gramı) yoğunlukları nedeniyle değişiklik gösterir. Örneğin, bir su bardağı un ile bir su bardağı toz şeker aynı hacimde olmalarına rağmen farklı gramajlara sahiptirler. Bu durum, tariflerdeki hassasiyeti etkiler:</p>
+            <ul>
+                <li>**Un:** Genellikle havadan kabartıldığı için yoğunluğu düşüktür. Bir su bardağı yaklaşık 120-130 gram gelir.</li>
+                <li>**Toz Şeker:** Daha yoğundur. Bir su bardağı yaklaşık 180-200 gram gelir.</li>
+                <li>**Sıvı Yağ (Ayçiçek, Zeytinyağı):** Suya göre daha az yoğundur. 1 litre yağ yaklaşık 920 gram gelirken, 1 litre su 1000 gramdır. Bu nedenle bardak veya kaşık ölçüsüyle alınan yağın gramajı, aynı hacimdeki sudan daha az olacaktır.</li>
+                <li>**Kakao:** Oldukça hafiftir. Bir yemek kaşığı yaklaşık 5-7 gram gelir.</li>
+                <li>**Pirinç:** Yoğunluğu yüksek kuru bir malzemedir. Bir su bardağı pirinç yaklaşık 180-200 gram gelir.</li>
+            </ul>
+
+            <h4>Dönüşümde Dikkat Edilmesi Gerekenler:</h4>
+            <ul>
+                <li>**Hassasiyet:** Fırıncılık (kek, kurabiye, ekmek vb.) gibi hassas tariflerde gramaj ölçümü (dijital tartı ile) her zaman en doğru sonucu verir. Hacim ölçüleri, özellikle malzemelerin doldurulma şekline göre farklılık gösterebilir (örneğin, sıkıştırılmış un ile elenmiş unun aynı hacimdeki kütlesi farklıdır).</li>
+                <li>**Su ve Süt:** Yoğunlukları birbirine yakın olduğu için, sıvı ölçü birimleri genellikle su için verilen değerlerle birebir kullanılabilir.</li>
+                <li>**Standart Mutfak Aletleri:** Ölçü kaşıkları ve bardakları da markadan markaya veya ülkeden ülkeye küçük farklılıklar gösterebilir.</li>
+            </ul>
+
+            <h4>Bu Hesaplayıcının Uygulama Alanları:</h4>
+            <ul>
+                <li>İnternetten farklı ölçü birimleriyle bulunan tarifleri kendi mutfak ölçülerinize uyarlarken.</li>
+                <li>Özellikle fırıncılık gibi hassasiyet gerektiren tariflerde yaklaşık gramajları öğrenirken.</li>
+                <li>Yeni başlayan aşçılar için ölçü birimleri arasındaki ilişkiyi anlamada.</li>
+                <li>Farklı mutfak kültürlerinin tariflerini denemek isteyenler için pratik bir rehber olarak.</li>
+            </ul>
+
+            <p class="disclaimer-text">Bu dönüştürücüdeki ölçüler ve dönüşüm faktörleri, mutfak pratikliğine ve genel kabul görmüş standartlara dayanmaktadır. Ancak malzemelerin nem oranı, sıkıştırma derecesi ve farklı mutfak aletlerinin hacimleri gibi faktörler nedeniyle sonuçlar her zaman %100 kesin olmayabilir. Özellikle profesyonel mutfaklarda veya hassas bilimsel çalışmalarda dijital tartı ve kesin kalibrasyonlu ölçü aletleri kullanılması tavsiye edilir.</p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header ve Footer yükleme fonksiyonları
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // URL'ye göre header ve footer yükleme
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+
+            // Metinleri dile göre tanımlayan bir obje
+            const texts = {
+                tr: {
+                    // Genel
+                    mainHeading: 'Mutfak Ölçü Birimi Dönüştürücü',
+                    mainDescription: 'Yemek tariflerindeki ölçüleri kolayca dönüştürün: Kaşıktan grama, bardaktan mililitreye ve daha fazlası!',
+                    selectConversionType: 'Yapmak İstediğiniz Dönüşüm Türünü Seçin',
+                    calculateButton: 'Hesapla',
+                    convertButton: 'Dönüştür',
+                    invalidInput: 'Lütfen geçerli bir pozitif sayı girin.',
+                    resultPrefix: 'Sonuç:',
+
+                    // Hacimden Kütleye
+                    volumeToWeightButton: 'Hacimden Kütleye (Kaşık/Bardak - Gram)',
+                    volumeToWeightTitle: 'Hacimden Kütleye Dönüştürücü',
+                    vtAmountLabel: 'Miktar:',
+                    vtUnitLabel: 'Hacim Birimi:',
+                    vtUnitTeaspoon: 'Çay Kaşığı',
+                    vtUnitTablespoon: 'Yemek Kaşığı',
+                    vtUnitCupWater: 'Su Bardağı (200ml)',
+                    vtUnitCupTea: 'Çay Bardağı (100ml)',
+                    vtMaterialLabel: 'Malzeme:',
+                    vtMaterialSugar: 'Toz Şeker',
+                    vtMaterialFlour: 'Un',
+                    vtMaterialOil: 'Sıvı Yağ',
+                    vtMaterialRice: 'Pirinç',
+                    vtMaterialCocoa: 'Kakao',
+                    vtMaterialWater: 'Su',
+                    vtMaterialMilk: 'Süt',
+                    vtResultLabel: 'Gram Karşılığı:',
+                    vtUnitGram: 'gram',
+                    vtExplanation: `
+                        <p>Bu dönüştürücü, mutfaklarda sıkça kullanılan hacim ölçülerini (çay kaşığı, yemek kaşığı, su bardağı, çay bardağı) farklı malzemeler için gram cinsinden kütleye çevirir. Malzemenin yoğunluğuna göre her birimin gram karşılığı değişir.</p>
+                        <p class="small-text">Dönüşüm faktörleri, standart mutfak ölçülerine ve malzemelerin ortalama yoğunluklarına dayanır. Bu değerler yaklaşık olduğundan, özellikle hassas tariflerde dijital mutfak tartısı kullanmanız önerilir.</p>
+                    `,
+
+                    // Kütleden Hacme
+                    weightToVolumeButton: 'Kütleden Hacme (Gram - Kaşık/Bardak)',
+                    weightToVolumeTitle: 'Kütleden Hacme Dönüştürücü',
+                    wtAmountLabel: 'Miktar (Gram):',
+                    wtMaterialLabel: 'Malzeme:',
+                    wtTargetUnitLabel: 'Hedef Hacim Birimi:',
+                    wtResultLabel: 'Hacim Karşılığı:',
+                    wtExplanation: `
+                        <p>Bu dönüştürücü, gram cinsinden verilen kütleyi, seçilen malzeme için mutfaklarda kullanılan hacim birimlerine (çay kaşığı, yemek kaşığı, su bardağı, çay bardağı) çevirir. Özellikle gram cinsinden verilmiş bir tarifi, kaşık/bardak ölçüleriyle hazırlamak istediğinizde kullanışlıdır.</p>
+                        <p class="small-text">Dönüşüm, malzemenin yoğunluğuna göre ayarlanır. Unutmayın ki ev tipi ölçülerde küçük farklılıklar olabilir.</p>
+                    `,
+
+                    // Sıvı Ölçü Birim Dönüştürücü
+                    liquidConverterButton: 'Sıvı Ölçüleri (Mililitre - Bardak/Kaşık)',
+                    liquidConverterTitle: 'Sıvı Ölçüleri Dönüştürücü',
+                    lcAmountLabel: 'Miktar:',
+                    lcFromUnitLabel: 'Başlangıç Birimi:',
+                    lcToUnitLabel: 'Dönüştürülecek Birim:',
+                    lcUnitML: 'Mililitre (ml)',
+                    lcUnitLiter: 'Litre (L)',
+                    lcUnitTeaspoon: 'Çay Kaşığı',
+                    lcUnitTablespoon: 'Yemek Kaşığı',
+                    lcUnitCupWater: 'Su Bardağı',
+                    lcUnitCupTea: 'Çay Bardağı',
+                    lcResultLabel: 'Dönüştürülen Miktar:',
+                    lcExplanation: `
+                        <p>Bu dönüştürücü, sıvı malzemeler için farklı hacim birimleri (mililitre, litre, çay kaşığı, yemek kaşığı, su bardağı, çay bardağı) arasında dönüşüm yapmanızı sağlar. Özellikle Amerikan/İngiliz tariflerindeki sıvı ölçülerini Türk mutfağı ölçülerine uyarlarken çok işe yarar.</p>
+                        <p class="small-text">Dönüşümler, genellikle su yoğunluğu referans alınarak yapılır. Diğer sıvıların (örneğin yağ) yoğunluğu biraz farklı olsa da, mutfak pratikliğinde bu dönüşümler genellikle yeterince doğrudur.</p>
+                    `,
+
+                    // Bilgi Bölümü
+                    infoSectionTitle: 'Mutfakta Ölçü Birimi Dönüşümlerinin Önemi ve Püf Noktaları',
+                    infoSectionP1: 'Mutfakta doğru ölçü birimlerini kullanmak, tariflerin başarılı olması için kritik öneme sahiptir. Özellikle internetten veya farklı kültürlerden tarifler denerken, ölçü birimleri arasındaki farklılıklar (gram, mililitre, cup, tablespoon, teaspoon vb.) kafa karıştırıcı olabilir. Doğru dönüşümler, yemeklerinizin lezzet ve kıvam dengesini tutturmanıza yardımcı olur.',
+                    infoSectionH4_1: 'Sık Kullanılan Mutfak Ölçü Birimleri ve Yaklaşık Karşılıkları:',
+                    infoSectionList1_1: '<strong>Çay Kaşığı (ÇK):</strong> Yaklaşık 5 ml',
+                    infoSectionList1_2: '<strong>Yemek Kaşığı (YK):</strong> Yaklaşık 15 ml',
+                    infoSectionList1_3: '<strong>Su Bardağı (SB):</strong> Yaklaşık 200 ml (Türk mutfağında yaygın)',
+                    infoSectionList1_4: '<strong>Çay Bardağı (ÇB):</strong> Yaklaşık 100 ml (Türk mutfağında yaygın)',
+                    infoSectionList1_5: '<strong>Gram (g):</strong> Kütle birimi',
+                    infoSectionList1_6: '<strong>Mililitre (ml):</strong> Hacim birimi',
+                    infoSectionH4_2: 'Malzemeye Göre Farklılıklar: Neden Önemlidir?',
+                    infoSectionP2: 'Aynı hacimdeki farklı malzemelerin kütlesi (gramı) yoğunlukları nedeniyle değişiklik gösterir. Örneğin, bir su bardağı un ile bir su bardağı toz şeker aynı hacimde olmalarına rağmen farklı gramajlara sahiptirler. Bu durum, tariflerdeki hassasiyeti etkiler:',
+                    infoSectionList2_1: '<strong>Un:</strong> Genellikle havadan kabartıldığı için yoğunluğu düşüktür. Bir su bardağı yaklaşık 120-130 gram gelir.',
+                    infoSectionList2_2: '<strong>Toz Şeker:</strong> Daha yoğundur. Bir su bardağı yaklaşık 180-200 gram gelir.',
+                    infoSectionList2_3: '<strong>Sıvı Yağ (Ayçiçek, Zeytinyağı):</strong> Suya göre daha az yoğundur. 1 litre yağ yaklaşık 920 gram gelirken, 1 litre su 1000 gramdır. Bu nedenle bardak veya kaşık ölçüsüyle alınan yağın gramajı, aynı hacimdeki sudan daha az olacaktır.',
+                    infoSectionList2_4: '<strong>Kakao:</strong> Oldukça hafiftir. Bir yemek kaşığı yaklaşık 5-7 gram gelir.',
+                    infoSectionList2_5: '<strong>Pirinç:</strong> Yoğunluğu yüksek kuru bir malzemedir. Bir su bardağı pirinç yaklaşık 180-200 gram gelir.',
+                    infoSectionH4_3: 'Dönüşümde Dikkat Edilmesi Gerekenler:',
+                    infoSectionList3_1: '<strong>Hassasiyet:</strong> Fırıncılık (kek, kurabiye, ekmek vb.) gibi hassas tariflerde gramaj ölçümü (dijital tartı ile) her zaman en doğru sonucu verir. Hacim ölçüleri, özellikle malzemelerin doldurulma şekline göre farklılık gösterebilir (örneğin, sıkıştırılmış un ile elenmiş unun aynı hacimdeki kütlesi farklıdır).',
+                    infoSectionList3_2: '<strong>Su ve Süt:</strong> Yoğunlukları birbirine yakın olduğu için, sıvı ölçü birimleri genellikle su için verilen değerlerle birebir kullanılabilir.',
+                    infoSectionList3_3: '<strong>Standart Mutfak Aletleri:</strong> Ölçü kaşıkları ve bardakları da markadan markaya veya ülkeden ülkeye küçük farklılıklar gösterebilir.',
+                    infoSectionH4_4: 'Bu Hesaplayıcının Uygulama Alanları:',
+                    infoSectionApp1: 'İnternetten farklı ölçü birimleriyle bulunan tarifleri kendi mutfak ölçülerinize uyarlarken.',
+                    infoSectionApp2: 'Özellikle fırıncılık gibi hassasiyet gerektiren tariflerde yaklaşık gramajları öğrenirken.',
+                    infoSectionApp3: 'Yeni başlayan aşçılar için ölçü birimleri arasındaki ilişkiyi anlamada.',
+                    infoSectionApp4: 'Farklı mutfak kültürlerinin tariflerini denemek isteyenler için pratik bir rehber olarak.',
+                    disclaimerText: 'Bu dönüştürücüdeki ölçüler ve dönüşüm faktörleri, mutfak pratikliğine ve genel kabul görmüş standartlara dayanmaktadır. Ancak malzemelerin nem oranı, sıkıştırma derecesi ve farklı mutfak aletlerinin hacimleri gibi faktörler nedeniyle sonuçlar her zaman %100 kesin olmayabilir. Özellikle profesyonel mutfaklarda veya hassas bilimsel çalışmalarda dijital tartı ve kesin kalibrasyonlu ölçü aletleri kullanılması tavsiye edilir.'
+                },
+                en: {
+                    // General
+                    mainHeading: 'Kitchen Unit Converter',
+                    mainDescription: 'Easily convert kitchen measurements: From spoons to grams, cups to milliliters, and more for various ingredients!',
+                    selectConversionType: 'Select Conversion Type',
+                    calculateButton: 'Calculate',
+                    convertButton: 'Convert',
+                    invalidInput: 'Please enter a valid positive number.',
+                    resultPrefix: 'Result:',
+                    unit_tonCO2e: 'ton CO2e', // Although not used here, kept for consistency if copied from previous pages.
+
+                    // Volume to Weight
+                    volumeToWeightButton: 'Volume to Weight (Spoon/Cup - Grams)',
+                    volumeToWeightTitle: 'Volume to Weight Converter',
+                    vtAmountLabel: 'Amount:',
+                    vtUnitLabel: 'Volume Unit:',
+                    vtUnitTeaspoon: 'Teaspoon',
+                    vtUnitTablespoon: 'Tablespoon',
+                    vtUnitCupWater: 'Water Glass (200ml)',
+                    vtUnitCupTea: 'Tea Glass (100ml)',
+                    vtMaterialLabel: 'Ingredient:',
+                    vtMaterialSugar: 'Granulated Sugar',
+                    vtMaterialFlour: 'Flour',
+                    vtMaterialOil: 'Liquid Oil',
+                    vtMaterialRice: 'Rice',
+                    vtMaterialCocoa: 'Cocoa Powder',
+                    vtMaterialWater: 'Water',
+                    vtMaterialMilk: 'Milk',
+                    vtResultLabel: 'Equivalent in Grams:',
+                    vtUnitGram: 'grams',
+                    vtExplanation: `
+                        <p>This converter translates common kitchen volume measurements (teaspoon, tablespoon, water glass, tea glass) into grams for various ingredients. The gram equivalent of each unit changes based on the density of the ingredient.</p>
+                        <p class="small-text">Conversion factors are based on standard kitchen measurements and average densities of ingredients. Since these values are approximate, it is recommended to use a digital kitchen scale for precise recipes.</p>
+                    `,
+
+                    // Weight to Volume
+                    weightToVolumeButton: 'Weight to Volume (Grams - Spoon/Cup)',
+                    weightToVolumeTitle: 'Weight to Volume Converter',
+                    wtAmountLabel: 'Amount (Grams):',
+                    wtMaterialLabel: 'Ingredient:',
+                    wtTargetUnitLabel: 'Target Volume Unit:',
+                    wtResultLabel: 'Equivalent in Volume:',
+                    wtExplanation: `
+                        <p>This converter translates a given weight in grams into common kitchen volume units (teaspoon, tablespoon, water glass, tea glass) for the selected ingredient. It's especially useful when you want to prepare a recipe given in grams using spoon/cup measurements.</p>
+                        <p class="small-text">The conversion is adjusted based on the ingredient's density. Keep in mind that there might be slight differences in home kitchen measurements.</p>
+                    `,
+
+                    // Liquid Unit Converter
+                    liquidConverterButton: 'Liquid Measurements (Milliliters - Cup/Spoon)',
+                    liquidConverterTitle: 'Liquid Measurements Converter',
+                    lcAmountLabel: 'Amount:',
+                    lcFromUnitLabel: 'Convert From:',
+                    lcToUnitLabel: 'Convert To:',
+                    lcUnitML: 'Milliliters (ml)',
+                    lcUnitLiter: 'Liters (L)',
+                    lcUnitTeaspoon: 'Teaspoon',
+                    lcUnitTablespoon: 'Tablespoon',
+                    lcUnitCupWater: 'Water Glass',
+                    lcUnitCupTea: 'Tea Glass',
+                    lcResultLabel: 'Converted Amount:',
+                    lcExplanation: `
+                        <p>This converter allows you to convert between different volume units for liquid ingredients (milliliters, liters, teaspoon, tablespoon, water glass, tea glass). It's very useful when adapting liquid measurements from American/British recipes to Turkish kitchen standards.</p>
+                        <p class="small-text">Conversions are generally based on the density of water. Although the density of other liquids (e.g., oil) might be slightly different, these conversions are usually accurate enough for kitchen practicality.</p>
+                    `,
+
+                    // Info Section
+                    infoSectionTitle: 'Importance and Tips for Kitchen Unit Conversions',
+                    infoSectionP1: 'Using correct measurements in the kitchen is crucial for successful recipes. Especially when trying recipes from the internet or different cultures, differences in measurement units (grams, milliliters, cups, tablespoons, teaspoons, etc.) can be confusing. Accurate conversions help you achieve the right balance of flavor and consistency in your dishes.',
+                    infoSectionH4_1: 'Commonly Used Kitchen Measurement Units and Approximate Equivalents:',
+                    infoSectionList1_1: '<strong>Teaspoon (tsp):</strong> Approximately 5 ml',
+                    infoSectionList1_2: '<strong>Tablespoon (tbsp):</strong> Approximately 15 ml',
+                    infoSectionList1_3: '<strong>Water Glass (WG):</strong> Approximately 200 ml (Common in Turkish cuisine)',
+                    infoSectionList1_4: '<strong>Tea Glass (TG):</strong> Approximately 100 ml (Common in Turkish cuisine)',
+                    infoSectionList1_5: '<strong>Gram (g):</strong> Unit of mass',
+                    infoSectionList1_6: '<strong>Milliliter (ml):</strong> Unit of volume',
+                    infoSectionH4_2: 'Differences by Ingredient: Why Does It Matter?',
+                    infoSectionP2: 'The mass (grams) of different ingredients with the same volume varies due to their densities. For example, a water glass of flour and a water glass of granulated sugar have different gram weights even though they occupy the same volume. This affects the precision in recipes:',
+                    infoSectionList2_1: '<strong>Flour:</strong> Generally has low density because it\'s airy. One water glass is approximately 120-130 grams.',
+                    infoSectionList2_2: '<strong>Granulated Sugar:</strong> Denser. One water glass is approximately 180-200 grams.',
+                    infoSectionList2_3: '<strong>Liquid Oil (Sunflower, Olive Oil):</strong> Less dense than water. 1 liter of oil is approximately 920 grams, while 1 liter of water is 1000 grams. Therefore, the gram weight of oil measured by cup or spoon will be less than that of the same volume of water.',
+                    infoSectionList2_4: '<strong>Cocoa Powder:</strong> Quite light. One tablespoon is approximately 5-7 grams.',
+                    infoSectionList2_5: '<strong>Rice:</strong> A dense dry ingredient. One water glass of rice is approximately 180-200 grams.',
+                    infoSectionH4_3: 'Points to Consider in Conversion:',
+                    infoSectionList3_1: '<strong>Precision:</strong> For precise recipes like baking (cakes, cookies, bread, etc.), measuring in grams (with a digital kitchen scale) always gives the most accurate result. Volume measurements can vary, especially depending on how ingredients are filled (e.g., packed flour vs. sifted flour will have different masses for the same volume).',
+                    infoSectionList3_2: '<strong>Water and Milk:</strong> Since their densities are similar, liquid measurements can generally be used interchangeably with values given for water.',
+                    infoSectionList3_3: '<strong>Standard Kitchen Tools:</strong> Measuring spoons and cups can also show slight variations from brand to brand or country to country.',
+                    infoSectionH4_4: 'Areas of Application for This Calculator:',
+                    infoSectionApp1: 'When adapting recipes found online with different measurement units to your own kitchen measurements.',
+                    infoSectionApp2: 'When learning approximate gram weights for precise recipes, especially in baking.',
+                    infoSectionApp3: 'For novice cooks to understand the relationship between different measurement units.',
+                    infoSectionApp4: 'As a practical guide for those who want to try recipes from different culinary cultures.',
+                    disclaimerText: 'The measurements and conversion factors in this converter are based on kitchen practicality and generally accepted standards. However, results may not always be 100% accurate due to factors like ingredient moisture content, compaction, and variations in kitchen tools\' volumes. For professional kitchens or precise scientific work, it is recommended to use digital scales and precisely calibrated measuring instruments.'
+                }
+            };
+
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // DOM Elementleri
+            const calcButtons = document.querySelectorAll('.calc-type-button');
+            const calcWrappers = document.querySelectorAll('.calc-wrapper');
+
+            // Başlangıç Metin Güncellemeleri
+            document.querySelector('.hero-section h1').textContent = currentTexts.mainHeading;
+            document.querySelector('.hero-section p').textContent = currentTexts.mainDescription;
+            document.querySelector('.calculator-selection-section h2').textContent = currentTexts.selectConversionType;
+            document.querySelector('.calc-type-button[data-calc-type="volumeToWeight"]').textContent = currentTexts.volumeToWeightButton;
+            document.querySelector('.calc-type-button[data-calc-type="weightToVolume"]').textContent = currentTexts.weightToVolumeButton;
+            document.querySelector('.calc-type-button[data-calc-type="liquidConverter"]').textContent = currentTexts.liquidConverterButton;
+
+            // Hesaplayıcıları göster/gizle fonksiyonu
+            function showCalculator(calcType) {
+                calcWrappers.forEach(wrapper => {
+                    if (wrapper.id === `calculator-${calcType}`) {
+                        wrapper.classList.remove('hidden-calc');
+                    } else {
+                        wrapper.classList.add('hidden-calc');
+                    }
+                });
+
+                calcButtons.forEach(button => {
+                    if (button.dataset.calcType === calcType) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                });
+                // Her kategori değişiminde önceki sonuçları temizle ve gizle
+                document.querySelectorAll('.result-display').forEach(resultDiv => {
+                    resultDiv.innerHTML = '';
+                    resultDiv.style.display = 'none';
+                });
+            }
+
+            // Butonlara tıklama olaylarını ekle
+            calcButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const calcType = this.dataset.calcType;
+                    showCalculator(calcType);
+                });
+            });
+
+            // Sayfa yüklendiğinde varsayılan olarak ilk hesaplayıcıyı göster
+            showCalculator('volumeToWeight');
+
+            // --- Dönüşüm Faktörleri (Yaklaşık Değerler) ---
+            // Bu değerler, 1 birim hacmin (ml cinsinden) veya 1 birim ağırlığın (gram cinsinden)
+            // diğer birimlere dönüşümünde kullanılacak faktörlerdir.
+            // Malzeme yoğunlukları nedeniyle gram/ml oranları farklılık gösterir.
+            const CONVERSION_FACTORS = {
+                // Hacim Birimlerinin ML Karşılıkları (Su için standart)
+                units_to_ml: {
+                    teaspoon: 5,    // 1 çay kaşığı = 5 ml
+                    tablespoon: 15, // 1 yemek kaşığı = 15 ml
+                    cup_water: 200, // 1 su bardağı = 200 ml
+                    cup_tea: 100    // 1 çay bardağı = 100 ml
+                },
+                // Malzemelerin Yoğunluk Faktörleri (gram / ml)
+                // Yani 1 ml malzemenin kaç gram geldiği.
+                // Not: Bu faktörler yaklaşık ve standart mutfak ölçülerine göre belirlenmiştir.
+                material_density_factor: {
+                    sugar: 0.9,     // Toz şeker (yaklaşık 0.85-0.95)
+                    flour: 0.6,     // Un (yaklaşık 0.55-0.65)
+                    oil: 0.92,      // Sıvı yağ (yaklaşık 0.91-0.93)
+                    rice: 0.9,      // Pirinç (yaklaşık 0.88-0.92, kuru)
+                    cocoa: 0.5,     // Kakao (yaklaşık 0.45-0.55)
+                    water: 1.0,     // Su (referans)
+                    milk: 1.03      // Süt (yaklaşık)
+                }
+            };
+
+            // --- Hacimden Kütleye Dönüştürücü (Kaşık/Bardak -> Gram) ---
+            const volumeToWeightForm = document.getElementById('volumeToWeightForm');
+            const volumeToWeightResultDiv = document.getElementById('volumeToWeightResult');
+
+            document.querySelector('#calculator-volumeToWeight h3').innerHTML = `<i class="fas fa-balance-scale-right icon-small"></i> ${currentTexts.volumeToWeightTitle}`;
+            document.getElementById('vt_amount').previousElementSibling.textContent = currentTexts.vtAmountLabel;
+            document.getElementById('vt_unit').previousElementSibling.textContent = currentTexts.vtUnitLabel;
+            document.querySelector('#vt_unit option[value="teaspoon"]').textContent = currentTexts.vtUnitTeaspoon;
+            document.querySelector('#vt_unit option[value="tablespoon"]').textContent = currentTexts.vtUnitTablespoon;
+            document.querySelector('#vt_unit option[value="cup_water"]').textContent = currentTexts.vtUnitCupWater;
+            document.querySelector('#vt_unit option[value="cup_tea"]').textContent = currentTexts.vtUnitCupTea;
+            document.getElementById('vt_material').previousElementSibling.textContent = currentTexts.vtMaterialLabel;
+            document.querySelector('#vt_material option[value="sugar"]').textContent = currentTexts.vtMaterialSugar;
+            document.querySelector('#vt_material option[value="flour"]').textContent = currentTexts.vtMaterialFlour;
+            document.querySelector('#vt_material option[value="oil"]').textContent = currentTexts.vtMaterialOil;
+            document.querySelector('#vt_material option[value="rice"]').textContent = currentTexts.vtMaterialRice;
+            document.querySelector('#vt_material option[value="cocoa"]').textContent = currentTexts.vtMaterialCocoa;
+            document.querySelector('#vt_material option[value="water"]').textContent = currentTexts.vtMaterialWater;
+            document.querySelector('#vt_material option[value="milk"]').textContent = currentTexts.vtMaterialMilk;
+            document.querySelector('#volumeToWeightForm button[type="submit"]').textContent = currentTexts.calculateButton + " " + currentTexts.vtUnitGram;
+            document.querySelector('#calculator-volumeToWeight .calc-explanation').innerHTML = currentTexts.vtExplanation;
+
+            volumeToWeightForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                volumeToWeightResultDiv.innerHTML = '';
+                volumeToWeightResultDiv.style.display = 'none';
+
+                const amount = parseFloat(document.getElementById('vt_amount').value);
+                const unit = document.getElementById('vt_unit').value;
+                const material = document.getElementById('vt_material').value;
+
+                if (isNaN(amount) || amount <= 0) {
+                    volumeToWeightResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                    volumeToWeightResultDiv.style.display = 'block';
+                    return;
+                }
+
+                // Hacmi ml'ye çevir
+                const amount_in_ml = amount * CONVERSION_FACTORS.units_to_ml[unit];
+                // Ml'yi grama çevir (yoğunluk faktörü ile)
+                const amount_in_grams = amount_in_ml * CONVERSION_FACTORS.material_density_factor[material];
+
+                volumeToWeightResultDiv.innerHTML = `
+                    <p>${currentTexts.vtResultLabel} <span class="result-value">${amount_in_grams.toFixed(2)}</span> ${currentTexts.vtUnitGram}</p>
+                `;
+                volumeToWeightResultDiv.style.display = 'block';
+            });
+
+            // --- Kütleden Hacme Dönüştürücü (Gram -> Kaşık/Bardak) ---
+            const weightToVolumeForm = document.getElementById('weightToVolumeForm');
+            const weightToVolumeResultDiv = document.getElementById('weightToVolumeResult');
+
+            document.querySelector('#calculator-weightToVolume h3').innerHTML = `<i class="fas fa-weight-hanging icon-small"></i> ${currentTexts.weightToVolumeTitle}`;
+            document.getElementById('wt_amount').previousElementSibling.textContent = currentTexts.wtAmountLabel;
+            document.getElementById('wt_material').previousElementSibling.textContent = currentTexts.wtMaterialLabel;
+            document.querySelector('#wt_material option[value="sugar"]').textContent = currentTexts.vtMaterialSugar; // Malzeme seçenekleri tekrar kullanılıyor
+            document.querySelector('#wt_material option[value="flour"]').textContent = currentTexts.vtMaterialFlour;
+            document.querySelector('#wt_material option[value="oil"]').textContent = currentTexts.vtMaterialOil;
+            document.querySelector('#wt_material option[value="rice"]').textContent = currentTexts.vtMaterialRice;
+            document.querySelector('#wt_material option[value="cocoa"]').textContent = currentTexts.vtMaterialCocoa;
+            document.querySelector('#wt_material option[value="water"]').textContent = currentTexts.vtMaterialWater;
+            document.querySelector('#wt_material option[value="milk"]').textContent = currentTexts.vtMaterialMilk;
+            document.getElementById('wt_target_unit').previousElementSibling.textContent = currentTexts.wtTargetUnitLabel;
+            document.querySelector('#wt_target_unit option[value="teaspoon"]').textContent = currentTexts.vtUnitTeaspoon;
+            document.querySelector('#wt_target_unit option[value="tablespoon"]').textContent = currentTexts.vtUnitTablespoon;
+            document.querySelector('#wt_target_unit option[value="cup_water"]').textContent = currentTexts.vtUnitCupWater;
+            document.querySelector('#wt_target_unit option[value="cup_tea"]').textContent = currentTexts.vtUnitCupTea;
+            document.querySelector('#weightToVolumeForm button[type="submit"]').textContent = currentTexts.calculateButton;
+            document.querySelector('#calculator-weightToVolume .calc-explanation').innerHTML = currentTexts.wtExplanation;
+
+            weightToVolumeForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                weightToVolumeResultDiv.innerHTML = '';
+                weightToVolumeResultDiv.style.display = 'none';
+
+                const amount_grams = parseFloat(document.getElementById('wt_amount').value);
+                const material = document.getElementById('wt_material').value;
+                const target_unit = document.getElementById('wt_target_unit').value;
+
+                if (isNaN(amount_grams) || amount_grams <= 0) {
+                    weightToVolumeResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                    weightToVolumeResultDiv.style.display = 'block';
+                    return;
+                }
+
+                // Gramı ml'ye çevir (yoğunluk faktörü ile ters orantılı)
+                // gram / (gram/ml) = ml
+                const amount_in_ml = amount_grams / CONVERSION_FACTORS.material_density_factor[material];
+                // Ml'yi hedef birime çevir
+                const converted_amount = amount_in_ml / CONVERSION_FACTORS.units_to_ml[target_unit];
+
+                weightToVolumeResultDiv.innerHTML = `
+                    <p>${currentTexts.wtResultLabel} <span class="result-value">${converted_amount.toFixed(2)}</span> ${currentTexts['vtUnit' + target_unit.replace('_', '')]}</p>
+                `;
+                weightToVolumeResultDiv.style.display = 'block';
+            });
+
+            // --- Sıvı Ölçü Birim Dönüştürücü (Mililitre - Bardak/Kaşık) ---
+            const liquidConverterForm = document.getElementById('liquidConverterForm');
+            const liquidConverterResultDiv = document.getElementById('liquidConverterResult');
+
+            document.querySelector('#calculator-liquidConverter h3').innerHTML = `<i class="fas fa-tint icon-small"></i> ${currentTexts.liquidConverterTitle}`;
+            document.getElementById('lc_amount').previousElementSibling.textContent = currentTexts.lcAmountLabel;
+            document.getElementById('lc_from_unit').previousElementSibling.textContent = currentTexts.lcFromUnitLabel;
+            document.querySelector('#lc_from_unit option[value="ml"]').textContent = currentTexts.lcUnitML;
+            document.querySelector('#lc_from_unit option[value="liter"]').textContent = currentTexts.lcUnitLiter;
+            document.querySelector('#lc_from_unit option[value="teaspoon"]').textContent = currentTexts.lcUnitTeaspoon;
+            document.querySelector('#lc_from_unit option[value="tablespoon"]').textContent = currentTexts.lcUnitTablespoon;
+            document.querySelector('#lc_from_unit option[value="cup_water"]').textContent = currentTexts.lcUnitCupWater;
+            document.querySelector('#lc_from_unit option[value="cup_tea"]').textContent = currentTexts.lcUnitCupTea;
+            document.getElementById('lc_to_unit').previousElementSibling.textContent = currentTexts.lcToUnitLabel;
+            document.querySelector('#lc_to_unit option[value="ml"]').textContent = currentTexts.lcUnitML;
+            document.querySelector('#lc_to_unit option[value="liter"]').textContent = currentTexts.lcUnitLiter;
+            document.querySelector('#lc_to_unit option[value="teaspoon"]').textContent = currentTexts.lcUnitTeaspoon;
+            document.querySelector('#lc_to_unit option[value="tablespoon"]').textContent = currentTexts.lcUnitTablespoon;
+            document.querySelector('#lc_to_unit option[value="cup_water"]').textContent = currentTexts.lcUnitCupWater;
+            document.querySelector('#lc_to_unit option[value="cup_tea"]').textContent = currentTexts.lcUnitCupTea;
+            document.querySelector('#liquidConverterForm button[type="submit"]').textContent = currentTexts.convertButton;
+            document.querySelector('#calculator-liquidConverter .calc-explanation').innerHTML = currentTexts.lcExplanation;
+
+
+            liquidConverterForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                liquidConverterResultDiv.innerHTML = '';
+                liquidConverterResultDiv.style.display = 'none';
+
+                const amount = parseFloat(document.getElementById('lc_amount').value);
+                const from_unit = document.getElementById('lc_from_unit').value;
+                const to_unit = document.getElementById('lc_to_unit').value;
+
+                if (isNaN(amount) || amount <= 0) {
+                    liquidConverterResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                    liquidConverterResultDiv.style.display = 'block';
+                    return;
+                }
+
+                let amount_in_ml;
+
+                // Önce her şeyi ml'ye çevir
+                if (from_unit === 'ml') {
+                    amount_in_ml = amount;
+                } else if (from_unit === 'liter') {
+                    amount_in_ml = amount * 1000;
+                } else { // Kaşık/Bardak birimleri
+                    amount_in_ml = amount * CONVERSION_FACTORS.units_to_ml[from_unit];
+                }
+
+                let converted_amount;
+                let converted_unit_label;
+
+                // Sonra ml'den hedef birime çevir
+                if (to_unit === 'ml') {
+                    converted_amount = amount_in_ml;
+                    converted_unit_label = currentTexts.lcUnitML.replace(' (ml)', '');
+                } else if (to_unit === 'liter') {
+                    converted_amount = amount_in_ml / 1000;
+                    converted_unit_label = currentTexts.lcUnitLiter.replace(' (L)', '');
+                } else { // Kaşık/Bardak birimleri
+                    converted_amount = amount_in_ml / CONVERSION_FACTORS.units_to_ml[to_unit];
+                    // Dönüştürülen birimin etiketini texts objesinden al (örneğin 'teaspoon' için 'Çay Kaşığı')
+                    converted_unit_label = currentTexts['lcUnit' + to_unit.replace('_', '')];
+                }
+
+                liquidConverterResultDiv.innerHTML = `
+                    <p>${currentTexts.lcResultLabel} <span class="result-value">${converted_amount.toFixed(2)}</span> ${converted_unit_label}</p>
+                `;
+                liquidConverterResultDiv.style.display = 'block';
+            });
+
+
+            // Bilgi Bölümü Metin Güncelleme
+            function updateInfoSectionContent() {
+                document.querySelector('.info-section h3').textContent = currentTexts.infoSectionTitle;
+                document.querySelector('.info-section p:nth-of-type(1)').innerHTML = currentTexts.infoSectionP1;
+                document.querySelector('.info-section h4:nth-of-type(1)').textContent = currentTexts.infoSectionH4_1;
+                
+                const ul1 = document.querySelector('.info-section ul:nth-of-type(1)');
+                if (ul1) {
+                    ul1.innerHTML = `
+                        <li>${currentTexts.infoSectionList1_1}</li>
+                        <li>${currentTexts.infoSectionList1_2}</li>
+                        <li>${currentTexts.infoSectionList1_3}</li>
+                        <li>${currentTexts.infoSectionList1_4}</li>
+                        <li>${currentTexts.infoSectionList1_5}</li>
+                        <li>${currentTexts.infoSectionList1_6}</li>
+                    `;
+                }
+
+                document.querySelector('.info-section h4:nth-of-type(2)').textContent = currentTexts.infoSectionH4_2;
+                document.querySelector('.info-section p:nth-of-type(2)').innerHTML = currentTexts.infoSectionP2;
+                const ul2 = document.querySelector('.info-section ul:nth-of-type(2)');
+                if (ul2) {
+                    ul2.innerHTML = `
+                        <li>${currentTexts.infoSectionList2_1}</li>
+                        <li>${currentTexts.infoSectionList2_2}</li>
+                        <li>${currentTexts.infoSectionList2_3}</li>
+                        <li>${currentTexts.infoSectionList2_4}</li>
+                        <li>${currentTexts.infoSectionList2_5}</li>
+                    `;
+                }
+
+                document.querySelector('.info-section h4:nth-of-type(3)').textContent = currentTexts.infoSectionH4_3;
+                const ul3 = document.querySelector('.info-section ul:nth-of-type(3)');
+                if (ul3) {
+                    ul3.innerHTML = `
+                        <li>${currentTexts.infoSectionList3_1}</li>
+                        <li>${currentTexts.infoSectionList3_2}</li>
+                        <li>${currentTexts.infoSectionList3_3}</li>
+                    `;
+                }
+
+                document.querySelector('.info-section h4:nth-of-type(4)').textContent = currentTexts.infoSectionH4_4;
+                const ul4 = document.querySelector('.info-section ul:nth-of-type(4)');
+                if (ul4) {
+                    ul4.innerHTML = `
+                        <li>${currentTexts.infoSectionApp1}</li>
+                        <li>${currentTexts.infoSectionApp2}</li>
+                        <li>${currentTexts.infoSectionApp3}</li>
+                        <li>${currentTexts.infoSectionApp4}</li>
+                    `;
+                }
+                
+                document.querySelector('.info-section .disclaimer-text').textContent = currentTexts.disclaimerText;
+            }
+            updateInfoSectionContent(); // Sayfa yüklendiğinde bilgi bölümünü güncelle
+        });
+    </script>
+</body>
+</html>

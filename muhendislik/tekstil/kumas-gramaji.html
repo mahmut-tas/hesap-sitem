@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Kumaş Gramajı Hesaplama - Hesapkolik</title>
+
+    <meta content="Kumaşın metrekare (gr/m²) ve metretül (gr/mt) gramajını hesaplayın. Dokuma, örme ve nonwoven kumaşlar için pratik gramaj hesaplama aracı ve sistem bilgileri." name="description"/>
+    <meta content="kumaş gramajı, metrekare gramaj, metretül gramaj, gr/m2, gr/mt, kumaş ağırlığı, kumaş yoğunluğu, tekstil mühendisliği hesaplamaları, hesapkolik tekstil" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <style>
+        /* Genel Ayarlar ve Font */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Sade ve ferah bir arka plan */
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Koyu tema başlık/altlık ile uyumlu */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Bölümü */
+        .calculator-section { /* Yeni isim */
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff;
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 { /* Yeni başlık stili */
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        /* Form Elemanları */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .input-with-unit-group, .input-with-unit { /* Bu iki sınıfı birleştirdim */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .input-with-unit-group label, .input-with-unit label {
+            flex-basis: auto;
+            width: 100%;
+            margin-bottom: 0;
+            text-align: left;
+        }
+        .input-with-unit-group input[type="number"], .input-with-unit-group select,
+        .input-with-unit input[type="number"], .input-with-unit select {
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+        .form-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        /* Form butonları */
+        .calculator-form-container button[type="submit"] {
+            background-color: #28a745; /* Onay yeşili */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button[type="submit"]:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Sonuç Ekranı */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+            display: none; /* Varsayılan olarak gizli */
+        }
+        .result-display .result-value {
+            color: #e74c3c;
+        }
+        .result-display .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+        .result-display p { /* Sonuç paragrafı için düzeltme */
+            padding: 0;
+            margin: 5px 0;
+            text-align: center;
+            font-size: 1.2em; /* Biraz küçültelim */
+            line-height: 1.4;
+        }
+        .result-display h3 {
+            font-size: 1.8em; /* H3 boyutunu küçültelim */
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #2c3e50; /* Kırmızı olmasın */
+        }
+
+
+        /* Açıklama bölümleri */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        /* Yeni Karbon Ayak İzi başlık stili */
+        .calc-wrapper h4 {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+            text-align: left; /* Başlıkların sola hizalanması */
+        }
+        .calculator-form-container p.small-text { /* Form içindeki küçük metin */
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1.4em;
+            }
+            .input-with-unit-group, .input-with-unit {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+            }
+            .input-with-unit-group label, .input-with-unit label {
+                margin-bottom: 5px;
+                text-align: left;
+            }
+            .input-with-unit-group input[type="number"], .input-with-unit-group select,
+            .input-with-unit input[type="number"], .input-with-unit select {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            .result-display {
+                font-size: 1em;
+                padding: 15px;
+            }
+            .result-display .result-value {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Kumaş Gramajı Hesaplayıcı</h1>
+                <p>Kumaşın birim alan ağırlığı (gramaj), tekstil endüstrisinde kumaşın maliyetini, tuşesini ve kullanım alanını belirleyen kritik bir faktördür. Bu hesaplayıcı ile kumaş numunesi ölçülerine göre metrekare (gr/m²) ve metretül (gr/mt) gramajını kolayca hesaplayabilirsiniz.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper active-calc" id="calculator-fabricGramage">
+                    <h3><i class="fas fa-weight-hanging icon-small"></i> Kumaş Gramajını Hesapla</h3>
+                    <div class="calculator-form-container">
+                        <form id="fabricGramageForm">
+                            <div class="input-with-unit-group">
+                                <label for="sampleWeight">Numune Ağırlığı (gram):</label>
+                                <input id="sampleWeight" min="0.001" placeholder="Örn: 5.25" required="" step="0.001" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="sampleLength">Numune Uzunluğu (cm):</label>
+                                <input id="sampleLength" min="0.1" placeholder="Örn: 20" required="" step="0.1" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="sampleWidth">Numune Genişliği (cm):</label>
+                                <input id="sampleWidth" min="0.1" placeholder="Örn: 20" required="" step="0.1" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="fabricWidth">Kumaş Eni (cm):</label>
+                                <input id="fabricWidth" min="0.1" placeholder="Örn: 150" required="" step="0.1" type="number"/>
+                            </div>
+                            <button type="submit">Hesapla</button>
+                        </form>
+                        <div class="result-display" id="resultBox">
+                            <h3>Sonuçlar:</h3>
+                            <p><strong>Metrekare Gramaj (gr/m²):</strong> <span class="result-value" id="resultGrm2"></span></p>
+                            <p><strong>Metretül Gramaj (gr/mt):</strong> <span class="result-value" id="resultGrmt"></span></p>
+                        </div>
+                        <div class="calc-explanation">
+                            <p class="small-text">Numune boyutlarını ve kumaş enini doğru girdiğinizden emin olun. Hesaplamalar numunenin homojen olduğunu varsayar.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>Kumaş Gramajı Nedir?</h3>
+            <p><strong>Kumaş gramajı</strong>, bir kumaşın birim alanındaki ağırlığını ifade eder ve genellikle gram/metrekare (gr/m² veya GSM - Grams per Square Meter) cinsinden belirtilir. Metretül (gr/mt) gramajı ise kumaşın standart eni üzerinden 1 metre uzunluğunun ağırlığını gösterir. Bu değer, kumaşın doku yoğunluğu, kullanılan ipliklerin cinsi ve numarası gibi faktörlere bağlı olarak değişir.</p>
+            <p>Gramaj, tekstil ürünlerinin maliyet, performans ve kullanım alanlarını doğrudan etkileyen önemli bir kalite parametresidir. Örneğin, daha yüksek gramaja sahip kumaşlar genellikle daha kalın, daha dayanıklı ve daha tok bir yapıya sahipken, düşük gramajlı kumaşlar daha hafif ve incedir.</p>
+            <h4>Kumaş Gramajı Nasıl Hesaplanır?</h4>
+            <p>Temel olarak, kumaş gramajı bilinen bir alan veya uzunluktaki kumaş numunesinin ağırlığı ölçülerek hesaplanır.</p>
+            <p class="formula-text">
+                $$\text{Metrekare Gramaj (gr/m²)} = \frac{\text{Numune Ağırlığı (gr)}}{\text{Numune Uzunluğu (cm)} \times \text{Numune Genişliği (cm)}} \times 10000$$
+            </p>
+            <p class="formula-text">
+                $$\text{Metretül Gramaj (gr/mt)} = \text{Metrekare Gramaj (gr/m²)} \times \frac{\text{Kumaş Eni (cm)}}{100}$$
+            </p>
+            <p>
+                Kumaş eni (genişliği) metretül gramajı hesaplamasında kritik öneme sahiptir çünkü metretül, kumaşın o standart endeki 1 metrelik uzunluğunun ağırlığını ifade eder.
+            </p>
+            <h4>Uygulama Alanları:</h4>
+            <ul>
+                <li><strong>Maliyet Hesaplaması:</strong> Kumaşın metrekare veya metretül bazında maliyetinin belirlenmesi.</li>
+                <li><strong>Üretim Planlaması:</strong> Belirli bir ürün için ne kadar kumaş gerekeceğinin tahmin edilmesi.</li>
+                <li><strong>Kalite Kontrol:</strong> Üretilen kumaşın belirlenen standartlara uygun olup olmadığının denetlenmesi.</li>
+                <li><strong>Ürün Tasarımı:</strong> Giysi veya ev tekstili gibi ürünlerin ağırlık ve tuşe özelliklerinin ayarlanması.</li>
+                <li><strong>İthalat/İhracat:</strong> Ticari işlemlerde kumaşın standart ağırlık birimleriyle belirtilmesi.</li>
+            </ul>
+            <p class="disclaimer-text">
+                Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Gerçek üretimde ve ticarette, numune alma yöntemleri, nem oranları ve test standartları gibi faktörler sonuçları etkileyebilir. Hassas ticari veya endüstriyel uygulamalar için sertifikalı laboratuvar testleri ve uluslararası standartlar esas alınmalıdır. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize
+                <a href="../../iletisim.html">
+                iletişim
+                </a>
+                sayfamızdan ulaşın.
+            </p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header ve Footer yükleme fonksiyonları
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            // Yüklenen HTML içindeki script etiketlerini bul ve çalıştır
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // URL'ye göre header ve footer yükleme
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // Metinleri dile göre tanımlayan bir obje
+            const texts = {
+                tr: {
+                    mainHeading: 'Kumaş Gramajı Hesaplayıcı',
+                    mainDescription: 'Kumaşın birim alan ağırlığı (gramaj), tekstil endüstrisinde kumaşın maliyetini, tuşesini ve kullanım alanını belirleyen kritik bir faktördür. Bu hesaplayıcı ile kumaş numunesi ölçülerine göre metrekare (gr/m²) ve metretül (gr/mt) gramajını kolayca hesaplayabilirsiniz.',
+                    calculatorTitle: 'Kumaş Gramajını Hesapla',
+                    sampleWeightLabel: 'Numune Ağırlığı (gram):',
+                    sampleLengthLabel: 'Numune Uzunluğu (cm):',
+                    sampleWidthLabel: 'Numune Genişliği (cm):',
+                    fabricWidthLabel: 'Kumaş Eni (cm):',
+                    calculateButton: 'Hesapla',
+                    invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                    resultTitle: 'Sonuçlar:',
+                    grm2Label: 'Metrekare Gramaj (gr/m²):',
+                    grmtLabel: 'Metretül Gramaj (gr/mt):',
+                    explanation: 'Numune boyutlarını ve kumaş enini doğru girdiğinizden emin olun. Hesaplamalar numunenin homojen olduğunu varsayar.',
+
+                    infoSectionTitle: 'Kumaş Gramajı Nedir?',
+                    infoSectionP1: 'Kumaş gramajı, bir kumaşın birim alanındaki ağırlığını ifade eder ve genellikle gram/metrekare (gr/m² veya GSM - Grams per Square Meter) cinsinden belirtilir. Metretül (gr/mt) gramajı ise kumaşın standart eni üzerinden 1 metre uzunluğunun ağırlığını gösterir. Bu değer, kumaşın doku yoğunluğu, kullanılan ipliklerin cinsi ve numarası gibi faktörlere bağlı olarak değişir.',
+                    infoSectionP2: 'Gramaj, tekstil ürünlerinin maliyet, performans ve kullanım alanlarını doğrudan etkileyen önemli bir kalite parametresidir. Örneğin, daha yüksek gramaja sahip kumaşlar genellikle daha kalın, daha dayanıklı ve daha tok bir yapıya sahipken, düşük gramajlı kumaşlar daha hafif ve incedir.',
+                    infoSectionH4_1: 'Kumaş Gramajı Nasıl Hesaplanır?',
+                    infoSectionP3: 'Temel olarak, kumaş gramajı bilinen bir alan veya uzunluktaki kumaş numunesinin ağırlığı ölçülerek hesaplanır.',
+                    infoSectionFormula1: '$$\\text{Metrekare Gramaj (gr/m²)} = \\frac{\\text{Numune Ağırlığı (gr)}}{\\text{Numune Uzunluğu (cm)} \\times \\text{Numune Genişliği (cm)}} \\times 10000$$',
+                    infoSectionFormula2: '$$\\text{Metretül Gramaj (gr/mt)} = \\text{Metrekare Gramaj (gr/m²)} \\times \\frac{\\text{Kumaş Eni (cm)}}{100}$$',
+                    infoSectionP4: 'Kumaş eni (genişliği) metretül gramajı hesaplamasında kritik öneme sahiptir çünkü metretül, kumaşın o standart endeki 1 metrelik uzunluğunun ağırlığını ifade eder.',
+                    infoSectionH4_2: 'Uygulama Alanları:',
+                    infoSectionList1_1: '<strong>Maliyet Hesaplaması:</strong> Kumaşın metrekare veya metretül bazında maliyetinin belirlenmesi.',
+                    infoSectionList1_2: '<strong>Üretim Planlaması:</strong> Belirli bir ürün için ne kadar kumaş gerekeceğinin tahmin edilmesi.',
+                    infoSectionList1_3: '<strong>Kalite Kontrol:</strong> Üretilen kumaşın belirlenen standartlara uygun olup olmadığının denetlenmesi.',
+                    infoSectionList1_4: '<strong>Ürün Tasarımı:</strong> Giysi veya ev tekstili gibi ürünlerin ağırlık ve tuşe özelliklerinin ayarlanması.',
+                    infoSectionList1_5: '<strong>İthalat/İhracat:</strong> Ticari işlemlerde kumaşın standart ağırlık birimleriyle belirtilmesi.',
+                    disclaimerText: 'Bu hesaplayıcı genel bilgi amaçlıdır ve teorik hesaplamalar sunar. Gerçek üretimde ve ticarette, numune alma yöntemleri, nem oranları ve test standartları gibi faktörler sonuçları etkileyebilir. Hassas ticari veya endüstriyel uygulamalar için sertifikalı laboratuvar testleri ve uluslararası standartlar esas alınmalıdır. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize <a href="../../iletisim.html">iletişim</a> sayfamızdan ulaşın.'
+                },
+                en: {
+                    mainHeading: 'Fabric Grammage Calculator',
+                    mainDescription: 'Fabric unit area weight (grammage) is a critical factor in the textile industry that determines the cost, hand-feel, and usage area of the fabric. With this calculator, you can easily calculate the grammage per square meter (gr/m² or GSM) and per linear meter (gr/mt) based on fabric sample measurements.',
+                    calculatorTitle: 'Calculate Fabric Grammage',
+                    sampleWeightLabel: 'Sample Weight (grams):',
+                    sampleLengthLabel: 'Sample Length (cm):',
+                    sampleWidthLabel: 'Sample Width (cm):',
+                    fabricWidthLabel: 'Fabric Width (cm):',
+                    calculateButton: 'Calculate',
+                    invalidInput: 'Please enter valid positive numbers for all fields.',
+                    resultTitle: 'Results:',
+                    grm2Label: 'Weight per square meter (gr/m²):',
+                    grmtLabel: 'Weight per linear meter (gr/m):',
+                    explanation: 'Ensure you enter the sample dimensions and fabric width correctly. The calculations assume that the sample is homogeneous.',
+
+                    infoSectionTitle: 'What is Fabric Grammage?',
+                    infoSectionP1: 'Fabric grammage refers to the weight of a fabric per unit area and is generally expressed in grams/square meter (gr/m² or GSM - Grams per Square Meter). Linear meter grammage (gr/mt) indicates the weight of 1 meter length of fabric based on its standard width. This value varies depending on factors such as the fabric\'s texture density, the type and count of yarns used.',
+                    infoSectionP2: 'Grammage is an important quality parameter that directly affects the cost, performance, and usage areas of textile products. For example, fabrics with higher grammage are generally thicker, more durable, and have a fuller structure, while low grammage fabrics are lighter and thinner.',
+                    infoSectionH4_1: 'How to Calculate Fabric Grammage?',
+                    infoSectionP3: 'Basically, fabric grammage is calculated by measuring the weight of a fabric sample of a known area or length.',
+                    infoSectionFormula1: '$$\\text{Grammage per Square Meter (gr/m²)} = \\frac{\\text{Sample Weight (gr)}}{\\text{Sample Length (cm)} \\times \\text{Sample Width (cm)}} \\times 10000$$',
+                    infoSectionFormula2: '$$\\text{Grammage per Linear Meter (gr/mt)} = \\text{Grammage per Square Meter (gr/m²)} \\times \\frac{\\text{Fabric Width (cm)}}{100}$$',
+                    infoSectionP4: 'Fabric width is critical in calculating linear meter grammage because linear meter refers to the weight of 1 meter length of fabric at that standard width.',
+                    infoSectionH4_2: 'Application Areas:',
+                    infoSectionList1_1: '<strong>Cost Calculation:</strong> Determining the cost of fabric per square meter or linear meter.',
+                    infoSectionList1_2: '<strong>Production Planning:</strong> Estimating how much fabric will be required for a specific product.',
+                    infoSectionList1_3: '<strong>Quality Control:</strong> Verifying whether the produced fabric complies with specified standards.',
+                    infoSectionList1_4: '<strong>Product Design:</strong> Adjusting the weight and hand-feel properties of products such as garments or home textiles.',
+                    infoSectionList1_5: '<strong>Import/Export:</strong> Specifying fabric in standard weight units for commercial transactions.',
+                    disclaimerText: 'This calculator is for general informational purposes and provides theoretical calculations. In actual production and trade, factors such as sampling methods, moisture content, and testing standards can affect the results. For precise commercial or industrial applications, certified laboratory tests and international standards should be used. If you encounter any problems with your calculations, please contact us via our <a href="../../contact.html">contact</a> page.'
+                }
+            };
+
+            // Select active language texts
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // --- DOM Elements ---
+            const fabricGramageForm = document.getElementById('fabricGramageForm');
+            const sampleWeightInput = document.getElementById('sampleWeight');
+            const sampleLengthInput = document.getElementById('sampleLength');
+            const sampleWidthInput = document.getElementById('sampleWidth');
+            const fabricWidthInput = document.getElementById('fabricWidth');
+            const resultGrm2Span = document.getElementById('resultGrm2');
+            const resultGrmtSpan = document.getElementById('resultGrmt');
+            const resultBox = document.getElementById('resultBox');
+            const calculateButton = fabricGramageForm.querySelector('button[type="submit"]'); // Changed to type="submit" for consistency
+
+            // Update main heading and description
+            document.querySelector('.hero-section h1').textContent = currentTexts.mainHeading;
+            document.querySelector('.hero-section p').textContent = currentTexts.mainDescription;
+
+            // Update calculator section heading and input labels
+            document.querySelector('#calculator-fabricGramage h3').innerHTML = `<i class="fas fa-weight-hanging icon-small"></i> ${currentTexts.calculatorTitle}`;
+            document.querySelector('label[for="sampleWeight"]').textContent = currentTexts.sampleWeightLabel;
+            document.querySelector('label[for="sampleLength"]').textContent = currentTexts.sampleLengthLabel;
+            document.querySelector('label[for="sampleWidth"]').textContent = currentTexts.sampleWidthLabel;
+            document.querySelector('label[for="fabricWidth"]').textContent = currentTexts.fabricWidthLabel;
+            calculateButton.textContent = currentTexts.calculateButton;
+
+            // Update result box elements and initial hidden state
+            resultBox.querySelector('h3').textContent = currentTexts.resultTitle;
+            resultBox.querySelector('p:nth-of-type(1) strong').textContent = currentTexts.grm2Label;
+            resultBox.querySelector('p:nth-of-type(2) strong').textContent = currentTexts.grmtLabel;
+            resultBox.style.display = 'none'; // Ensure it's hidden by default
+
+            // Update calculator explanation text below the result box
+            document.querySelector('.calc-explanation p.small-text').textContent = currentTexts.explanation;
+
+
+            // Bilgi Bölümü Metin Güncelleme
+            function updateInfoSectionContent() {
+                document.querySelector('.info-section h3').textContent = currentTexts.infoSectionTitle;
+                document.querySelector('.info-section p:nth-of-type(1)').innerHTML = currentTexts.infoSectionP1;
+                document.querySelector('.info-section p:nth-of-type(2)').innerHTML = currentTexts.infoSectionP2;
+                document.querySelector('.info-section h4:nth-of-type(1)').textContent = currentTexts.infoSectionH4_1;
+                document.querySelector('.info-section p:nth-of-type(3)').textContent = currentTexts.infoSectionP3;
+                document.querySelector('.info-section .formula-text:nth-of-type(1)').innerHTML = currentTexts.infoSectionFormula1;
+                document.querySelector('.info-section .formula-text:nth-of-type(2)').innerHTML = currentTexts.infoSectionFormula2;
+                document.querySelector('.info-section p:nth-of-type(4)').textContent = currentTexts.infoSectionP4;
+                document.querySelector('.info-section h4:nth-of-type(2)').textContent = currentTexts.infoSectionH4_2;
+                
+                const ul1 = document.querySelector('.info-section ul:nth-of-type(1)');
+                if (ul1) {
+                    ul1.innerHTML = `
+                        <li>${currentTexts.infoSectionList1_1}</li>
+                        <li>${currentTexts.infoSectionList1_2}</li>
+                        <li>${currentTexts.infoSectionList1_3}</li>
+                        <li>${currentTexts.infoSectionList1_4}</li>
+                        <li>${currentTexts.infoSectionList1_5}</li>
+                    `;
+                }
+                document.querySelector('.info-section .disclaimer-text').innerHTML = currentTexts.disclaimerText;
+            }
+            updateInfoSectionContent(); // Sayfa yüklendiğinde bilgi bölümünü güncelle
+
+
+            // --- Calculation Function ---
+            fabricGramageForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                let sampleWeight = parseFloat(sampleWeightInput.value);
+                let sampleLength = parseFloat(sampleLengthInput.value);
+                let sampleWidth = parseFloat(sampleWidthInput.value);
+                let fabricWidth = parseFloat(fabricWidthInput.value);
+
+                // Clear previous results and hide result box initially
+                resultBox.innerHTML = `<h3>${currentTexts.resultTitle}</h3><p><strong>${currentTexts.grm2Label}</strong> <span class="result-value" id="resultGrm2"></span></p><p><strong>${currentTexts.grmtLabel}</strong> <span class="result-value" id="resultGrmt"></span></p>`; // Reset content including spans
+                resultBox.style.display = 'none';
+
+                // --- Input Validation ---
+                if (isNaN(sampleWeight) || isNaN(sampleLength) || isNaN(sampleWidth) || isNaN(fabricWidth) ||
+                    sampleWeight <= 0 || sampleLength <= 0 || sampleWidth <= 0 || fabricWidth <= 0) {
+                    resultBox.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                    resultBox.style.display = 'block';
+                    return;
+                }
+
+                // --- Perform Calculations ---
+                // Sample area in cm²
+                const sampleAreaCm2 = sampleLength * sampleWidth;
+
+                // Grams per square meter (gr/m²)
+                // (Sample Weight (gr) / Sample Area (cm²)) * 10000 (to convert cm² to m²)
+                const grm2 = (sampleWeight / sampleAreaCm2) * 10000;
+
+                // Grams per meter (gr/m)
+                // (Grammage in gr/m² * Fabric Width (cm)) / 100 (to convert cm to m)
+                const grmt = grm2 * (fabricWidth / 100);
+
+                // --- Display Results ---
+                document.getElementById('resultGrm2').textContent = grm2.toFixed(2);
+                document.getElementById('resultGrmt').textContent = grmt.toFixed(2);
+                resultBox.style.display = 'block'; // Show the result box
+            });
+        });
+    </script>
+</body>
+</html>

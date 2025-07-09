@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Random Number Generator - Calculus Hub</title>
+    
+    <meta content="Generate random numbers within a specified range. Set the quantity, minimum and maximum values. Option to generate numbers with or without duplicates." name="description"/>
+    <meta content="random number generator, random number, generate numbers, rng, number range, numbers with duplicates, numbers without duplicates, calculushub random" name="keywords"/>
+    
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    
+    <style>
+        /* General Settings and Font */
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f7f6; /* Simple and fresh background */
+            color: #333; 
+            line-height: 1.6;
+        }
+        .container { 
+            max-width: 960px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Compatible with dark header/footer */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Calculator Section */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff; /* White card background */
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50; /* Dark text color */
+            font-size: 2.2em;
+        }
+        .calc-wrapper { 
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        /* Form Elements */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"],
+        .calc-wrapper input[type="text"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper input[type="text"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        .checkbox-group {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #555;
+            font-weight: 600;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-bottom: 0;
+        }
+
+        /* Form buttons */
+        .calculator-form-container button[type="submit"] {
+            background-color: #28a745; /* Success green */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button[type="submit"]:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Result Display */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+            display: none; /* Hidden by default */
+            white-space: pre-wrap; /* Ensures results appear on new lines */
+            word-wrap: break-word;
+        }
+        .result-display .result-value {
+            color: #e74c3c;
+            font-size: 1.6em;
+            display: block;
+            margin-top: 10px;
+        }
+        .result-display .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        /* Description sections */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text { 
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1.2em;
+            }
+            .result-display .result-value {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            .result-display {
+                font-size: 0.9em;
+                padding: 10px;
+            }
+            .result-display .result-value {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+    
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1 id="main-heading">Random Number Generator</h1>
+                <p id="main-description">Generate random numbers within a specified range. Set the quantity, minimum, and maximum values.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper">
+                    <h3 id="calculator-title"><i class="fas fa-dice icon-small"></i> Generate Random Numbers</h3>
+                    <div class="calculator-form-container">
+                        <form id="randomNumberForm">
+                            <label for="quantity" id="quantity-label">Quantity of Numbers to Generate:</label>
+                            <input id="quantity" type="number" min="1" max="1000" value="1" required/>
+
+                            <label for="min-val" id="min-val-label">Minimum Value:</label>
+                            <input id="min-val" type="number" value="1" required/>
+
+                            <label for="max-val" id="max-val-label">Maximum Value:</label>
+                            <input id="max-val" type="number" value="100" required/>
+
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="allow-duplicates">
+                                <label for="allow-duplicates" id="allow-duplicates-label">Allow Duplicates</label>
+                            </div>
+                            
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="sort-numbers" checked>
+                                <label for="sort-numbers" id="sort-numbers-label">Sort Numbers Ascending</label>
+                            </div>
+
+                            <button type="submit" id="generate-button">Generate Numbers</button>
+                        </form>
+                        <div class="result-display" id="randomNumberResult"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3 id="info-section-title">Random Number Generation and Its Importance</h3>
+            <p id="info-section-p1">
+                **Random numbers** are numbers that do not have a discernible pattern or predictable sequence. While true randomness is often derived from natural processes, computers generate "pseudo-random" numbers. These numbers are produced using a specific algorithm but behave statistically like random numbers.
+            </p>
+            <h4>Uses and Importance:</h4>
+            <ul>
+                <li id="info-list-1">
+                    <strong>Gaming and Entertainment:</strong> Used in various areas like games of chance, video games (enemy behavior, item drop rates), and card dealing.
+                </li>
+                <li id="info-list-2">
+                    <strong>Simulation and Modeling:</strong> Utilized in scientific research (weather, economic models, nuclear reactions), engineering (stress tests), and financial analysis (risk simulations) to mimic real-world scenarios.
+                </li>
+                <li id="info-list-3">
+                    <strong>Security and Cryptography:</strong> A fundamental component in creating encryption keys, security tokens, and random passwords. Security in cryptography relies on the quality of generated randomness.
+                </li>
+                <li id="info-list-4">
+                    <strong>Statistics and Sampling:</strong> Important for random sample selection in surveys, statistical experiment design, and data analysis. This ensures that the results are more generalizable.
+                </li>
+                <li id="info-list-5">
+                    <strong>Testing and Debugging:</strong> Used in software testing to simulate unexpected inputs or to see how systems behave under random conditions.
+                </li>
+            </ul>
+            <h4>Numbers with and Without Duplicates:</h4>
+            <ul>
+                <li id="duplicates-info-1">
+                    <strong>Numbers with Duplicates:</strong> Means that generated numbers can be the same as previously generated numbers. For example, when rolling a die, you might get a 1 multiple times. Most standard random number generation allows duplicates.
+                </li>
+                <li id="duplicates-info-2">
+                    <strong>Numbers Without Duplicates:</strong> Means that generated numbers must be unique, i.e., a number is generated only once. For example, in a lottery draw, the same number does not appear twice. In this case, the quantity of numbers to be generated cannot be greater than the difference between the minimum and maximum values.
+                </li>
+            </ul>
+            <p class="disclaimer-text" id="disclaimer-text">
+                This random number generator is for general use and entertainment purposes. It is not designed for applications requiring cryptographic security or high scientific precision. The generated numbers are "pseudo-random," and hardware-based random number generators should be preferred for true randomness.
+            </p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+            const texts = {
+                tr: {
+                    mainHeading: 'Rastgele Sayı Üreteci',
+                    mainDescription: 'Belirli bir aralıkta rastgele sayılar üretin. Sayı miktarını, minimum ve maksimum değerleri belirleyin.',
+                    calculatorTitle: 'Rastgele Sayı Üret',
+                    quantityLabel: 'Üretilecek Sayı Miktarı:',
+                    minValLabel: 'Minimum Değer:',
+                    maxValLabel: 'Maksimum Değer:',
+                    allowDuplicatesLabel: 'Tekrarlı Sayılara İzin Ver',
+                    sortNumbersLabel: 'Sayıları Küçükten Büyüğe Sırala',
+                    generateButton: 'Sayıları Üret',
+                    invalidInput: 'Lütfen geçerli değerler girin. Üretilecek sayı miktarı 1 ile 1000 arasında olmalı, minimum değer maksimum değerden küçük veya eşit olmalıdır. Tekrarsız sayı istiyorsanız, aralık üretilecek sayı miktarından büyük olmalıdır.',
+                    resultPrefix: 'Üretilen Rastgele Sayılar:',
+                    infoSectionTitle: 'Rastgele Sayı Üretimi ve Önemi',
+                    infoSectionP1: '**Rastgele sayılar**, belirli bir örüntüye veya tahmin edilebilir bir sıraya sahip olmayan sayılardır. Gerçek rastgelelik genellikle doğal süreçlerden türetilirken, bilgisayarlar "sözde rastgele" sayılar üretir. Bu sayılar, belirli bir algoritma kullanılarak üretilir ancak istatistiksel olarak rastgele gibi davranır.',
+                    infoList1: '<strong>Oyunlar ve Eğlence:</strong> Şans oyunları, video oyunları (düşman davranışları, eşya düşürme oranları), kart dağıtımı gibi birçok alanda kullanılır.',
+                    infoList2: '<strong>Simülasyon ve Modelleme:</strong> Bilimsel araştırmalarda (hava durumu, ekonomik modeller, nükleer reaksiyonlar), mühendislikte (stres testleri) ve finansal analizlerde (risk simülasyonları) gerçek dünya senaryolarını taklit etmek için kullanılır.',
+                    infoList3: '<strong>Güvenlik ve Kriptografi:</strong> Şifreleme anahtarları, güvenlik token\'ları ve rastgele parolalar oluşturmada temel bir bileşendir. Kriptografideki güvenlik, üretilen rastgeleliğin kalitesine bağlıdır.',
+                    infoList4: '<strong>İstatistik ve Örnekleme:</strong> Anketlerde rastgele örneklem seçimi, istatistiksel deney tasarımı ve veri analizi için önemlidir. Bu, sonuçların daha genellenebilir olmasını sağlar.',
+                    infoList5: '<strong>Test Etme ve Hata Ayıklama:</strong> Yazılım testlerinde beklenmedik girdileri simüle etmek veya sistemlerin rastgele koşullar altında nasıl davrandığını görmek için kullanılır.',
+                    duplicatesTitle: 'Tekrarlı ve Tekrarsız Sayılar:',
+                    duplicatesInfo1: '<strong>Tekrarlı Sayılar (With Duplicates):</strong> Üretilen sayıların daha önce üretilmiş sayılarla aynı olabileceği anlamına gelir. Örneğin bir zar attığınızda her seferinde 1 gelebilir. Çoğu standart rastgele sayı üretimi tekrara izin verir.',
+                    duplicatesInfo2: '<strong>Tekrarsız Sayılar (Without Duplicates):</strong> Üretilen sayıların benzersiz olması, yani bir sayının sadece bir kez üretilmesi anlamına gelir. Örneğin bir loto çekilişinde aynı numara iki kez çıkmaz. Bu durumda, üretilecek sayı miktarı, minimum ve maksimum değerler arasındaki farktan büyük olamaz.',
+                    disclaimerText: 'Bu rastgele sayı üreteci, genel kullanım ve eğlence amaçlıdır. Kriptografik güvenlik veya yüksek bilimsel hassasiyet gerektiren uygulamalar için tasarlanmamıştır. Üretilen sayılar "sözde rastgele" olup, gerçek rastgelelik için donanım tabanlı rastgele sayı üreteçleri tercih edilmelidir.'
+                },
+                en: {
+                    mainHeading: 'Random Number Generator',
+                    mainDescription: 'Generate random numbers within a specified range. Set the quantity, minimum, and maximum values.',
+                    calculatorTitle: 'Generate Random Numbers',
+                    quantityLabel: 'Quantity of Numbers to Generate:',
+                    minValLabel: 'Minimum Value:',
+                    maxValLabel: 'Maximum Value:',
+                    allowDuplicatesLabel: 'Allow Duplicates',
+                    sortNumbersLabel: 'Sort Numbers Ascending',
+                    generateButton: 'Generate Numbers',
+                    invalidInput: 'Please enter valid values. The quantity of numbers must be between 1 and 1000, and the minimum value must be less than or equal to the maximum value. If you want unique numbers, the range must be greater than or equal to the quantity.',
+                    resultPrefix: 'Generated Random Numbers:',
+                    infoSectionTitle: 'Random Number Generation and Its Importance',
+                    infoSectionP1: '**Random numbers** are numbers that do not have a discernible pattern or predictable sequence. While true randomness is often derived from natural processes, computers generate "pseudo-random" numbers. These numbers are produced using a specific algorithm but behave statistically like random numbers.',
+                    infoList1: '<strong>Gaming and Entertainment:</strong> Used in various areas like games of chance, video games (enemy behavior, item drop rates), and card dealing.',
+                    infoList2: '<strong>Simulation and Modeling:</strong> Utilized in scientific research (weather, economic models, nuclear reactions), engineering (stress tests), and financial analysis (risk simulations) to mimic real-world scenarios.',
+                    infoList3: '<strong>Security and Cryptography:</strong> A fundamental component in creating encryption keys, security tokens, and random passwords. Security in cryptography relies on the quality of generated randomness.',
+                    infoList4: '<strong>Statistics and Sampling:</strong> Important for random sample selection in surveys, statistical experiment design, and data analysis. This ensures that the results are more generalizable.',
+                    infoList5: '<strong>Testing and Debugging:</strong> Used in software testing to simulate unexpected inputs or to see how systems behave under random conditions.',
+                    duplicatesTitle: 'Numbers with and Without Duplicates:',
+                    duplicatesInfo1: '<strong>Numbers with Duplicates:</strong> Means that generated numbers can be the same as previously generated numbers. For example, when rolling a die, you might get a 1 multiple times. Most standard random number generation allows duplicates.',
+                    duplicatesInfo2: '<strong>Numbers Without Duplicates:</strong> Means that generated numbers must be unique, i.e., a number is generated only once. For example, in a lottery draw, the same number does not appear twice. In this case, the quantity of numbers to be generated cannot be greater than the difference between the minimum and maximum values.',
+                    disclaimerText: 'This random number generator is for general use and entertainment purposes. It is not designed for applications requiring cryptographic security or high scientific precision. The generated numbers are "pseudo-random," and hardware-based random number generators should be preferred for true randomness.'
+                }
+            };
+
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // Functions to load header and footer partials
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            // Execute scripts within the loaded HTML
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // Update text content based on language
+            document.getElementById('main-heading').textContent = currentTexts.mainHeading;
+            document.getElementById('main-description').textContent = currentTexts.mainDescription;
+            document.getElementById('calculator-title').innerHTML = `<i class="fas fa-dice icon-small"></i> ${currentTexts.calculatorTitle}`;
+            document.getElementById('quantity-label').textContent = currentTexts.quantityLabel;
+            document.getElementById('min-val-label').textContent = currentTexts.minValLabel;
+            document.getElementById('max-val-label').textContent = currentTexts.maxValLabel;
+            document.getElementById('allow-duplicates-label').textContent = currentTexts.allowDuplicatesLabel;
+            document.getElementById('sort-numbers-label').textContent = currentTexts.sortNumbersLabel;
+            document.getElementById('generate-button').textContent = currentTexts.generateButton;
+            document.getElementById('info-section-title').textContent = currentTexts.infoSectionTitle;
+            document.getElementById('info-section-p1').innerHTML = currentTexts.infoSectionP1;
+            document.getElementById('info-list-1').innerHTML = currentTexts.infoList1;
+            document.getElementById('info-list-2').innerHTML = currentTexts.infoList2;
+            document.getElementById('info-list-3').innerHTML = currentTexts.infoList3;
+            document.getElementById('info-list-4').innerHTML = currentTexts.infoList4;
+            document.getElementById('info-list-5').innerHTML = currentTexts.infoList5;
+            document.querySelector('.info-section h4').textContent = currentTexts.duplicatesTitle; // Selects the h4 after the first p
+            document.getElementById('duplicates-info-1').innerHTML = currentTexts.duplicatesInfo1;
+            document.getElementById('duplicates-info-2').innerHTML = currentTexts.duplicatesInfo2;
+            document.getElementById('disclaimer-text').textContent = currentTexts.disclaimerText;
+
+
+            const randomNumberForm = document.getElementById('randomNumberForm');
+            const quantityInput = document.getElementById('quantity');
+            const minValInput = document.getElementById('min-val');
+            const maxValInput = document.getElementById('max-val');
+            const allowDuplicatesCheckbox = document.getElementById('allow-duplicates');
+            const sortNumbersCheckbox = document.getElementById('sort-numbers');
+            const randomNumberResultDiv = document.getElementById('randomNumberResult');
+
+            randomNumberForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                randomNumberResultDiv.innerHTML = '';
+                randomNumberResultDiv.style.display = 'none';
+
+                const quantity = parseInt(quantityInput.value);
+                const minVal = parseInt(minValInput.value);
+                const maxVal = parseInt(maxValInput.value);
+                const allowDuplicates = allowDuplicatesCheckbox.checked;
+                const sortNumbers = sortNumbersCheckbox.checked;
+
+                // Input validation
+                if (isNaN(quantity) || quantity < 1 || quantity > 1000 || 
+                    isNaN(minVal) || isNaN(maxVal) || minVal > maxVal) {
+                    randomNumberResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                    randomNumberResultDiv.style.display = 'block';
+                    return;
+                }
+
+                if (!allowDuplicates && (maxVal - minVal + 1) < quantity) {
+                    randomNumberResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                    randomNumberResultDiv.style.display = 'block';
+                    return;
+                }
+
+                let generatedNumbers = [];
+                const possibleNumbers = [];
+                for (let i = minVal; i <= maxVal; i++) {
+                    possibleNumbers.push(i);
+                }
+
+                if (allowDuplicates) {
+                    for (let i = 0; i < quantity; i++) {
+                        const randomIndex = Math.floor(Math.random() * possibleNumbers.length);
+                        generatedNumbers.push(possibleNumbers[randomIndex]);
+                    }
+                } else {
+                    if (quantity > possibleNumbers.length) {
+                             randomNumberResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                             randomNumberResultDiv.style.display = 'block';
+                             return;
+                    }
+                    // Fisher-Yates shuffle algorithm to select unique numbers
+                    for (let i = possibleNumbers.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [possibleNumbers[i], possibleNumbers[j]] = [possibleNumbers[j], possibleNumbers[i]]; // Swap
+                    }
+                    generatedNumbers = possibleNumbers.slice(0, quantity);
+                }
+
+                if (sortNumbers) {
+                    generatedNumbers.sort((a, b) => a - b);
+                }
+
+                randomNumberResultDiv.innerHTML = `
+                    <p>${currentTexts.resultPrefix}</p>
+                    <span class="result-value">${generatedNumbers.join(', ')}</span>
+                `;
+                randomNumberResultDiv.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>

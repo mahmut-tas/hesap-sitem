@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Fiber Mixture Ratio Calculation - Hesapkolik</title>
+
+    <meta content="Calculate the percentage ratio of textile fibers (cotton, polyester, viscose, etc.) in a blend. Critical tool for fiber blend quality and production cost." name="description"/>
+    <meta content="fiber blend ratio, textile fibers, cotton polyester blend, viscose blend, fiber percentage, textile engineering calculations, hesapkolik textile" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <style>
+        /* General Settings and Font */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Simple and fresh background */
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section (Uyarlanmış Ana Başlık Bölümü) */
+        .hero-section {
+            background-color: #34495e; /* Compatible with dark theme header/footer */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Grubu Bölümü (Karbon Ayak İzi stiline benzer) */
+        .calculator-group-section { /* Yeni bölüm adı */
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff; /* White card background */
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-group-section h2 { /* Sayfa içindeki ana başlık */
+            margin-bottom: 30px;
+            color: #2c3e50; /* Dark text color */
+            font-size: 2.2em;
+        }
+
+        /* Hesaplayıcı Kutusu (calc-wrapper ile aynı stil) */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px; /* Merkeze hizalama için */
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c; /* Hesaplayıcı başlık rengi */
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db; /* İkon rengi */
+        }
+
+        /* Form Elemanları */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"],
+        .calc-wrapper input[type="text"] { /* Text input için eklendi */
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper input[type="text"]:focus { /* Text input focus için eklendi */
+            border-color: #3498db;
+            outline: none;
+        }
+        /* input-with-unit için düzenleme */
+        .input-with-unit {
+            display: flex;
+            align-items: center; /* Label ve input/select'i dikeyde ortala */
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Küçük ekranlarda alta geçebilir */
+            position: relative; /* Remove button positioning */
+        }
+        .input-with-unit label {
+            flex-basis: 40%; /* Label için daha fazla alan */
+            margin-right: 10px;
+            text-align: left;
+            min-width: 120px; /* Minimum genişlik */
+            margin-bottom: 0; /* Align items will handle vertical spacing */
+        }
+        .input-with-unit input.fiber-name {
+            flex-basis: 55%; /* Ad inputu için daha fazla alan */
+            flex-grow: 1;
+            margin-right: 10px; /* input ile input arasında boşluk */
+            margin-bottom: 0;
+        }
+        .input-with-unit input.fiber-weight {
+            flex-basis: 30%; /* Miktar inputu için daha az alan */
+            flex-grow: 1;
+            margin-right: 0; /* Remove button'dan önce boşluk yok */
+            margin-bottom: 0;
+        }
+
+        /* Dinamik eklenen satırlardaki "Kaldır" butonu */
+        .remove-fiber-button {
+            background: none;
+            border: none;
+            color: #e74c3c; /* Kırmızı renk */
+            font-size: 1.5em; /* İkon boyutu */
+            cursor: pointer;
+            margin-left: 10px; /* Input ile buton arasına boşluk */
+            transition: color 0.3s ease;
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px; /* Buton alanını genişlet */
+            height: 30px; /* Buton alanını genişlet */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .remove-fiber-button:hover {
+            color: #c0392b;
+        }
+        /* Dinamik olarak eklenen label ve inputların düzeni için,
+           fiber-input-row içindeki label'ları ve input'ları hizalamak için düzenleme */
+        .fiber-input-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px; /* Elemanlar arası varsayılan boşluk */
+            margin-bottom: 15px; /* Her satır arasına boşluk */
+            padding-right: 40px; /* Remove butonu için sağdan boşluk */
+            border-bottom: 1px dashed #eee; /* Her bir madde arasına çizgi */
+            padding-bottom: 10px;
+        }
+        .fiber-input-row:last-of-type {
+            border-bottom: none; /* Son madde altında çizgi olmasın */
+        }
+        .fiber-input-row label {
+            flex-basis: 100%; /* Label yeni satıra geçsin */
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        .fiber-input-row input {
+            flex-grow: 1; /* Inputlar kalan alanı doldursun */
+            margin-bottom: 0;
+        }
+        /* Lif Adı ve Miktar inputları yan yana durmalı */
+        .fiber-input-row .fiber-name {
+            width: calc(60% - 15px); /* İki input ve boşluklar için */
+            margin-right: 10px;
+        }
+        .fiber-input-row .fiber-weight {
+            width: calc(40% - 15px);
+        }
+
+        .form-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        /* Form Butonları */
+        .calculator-form-container button[type="button"] { /* Type 'button' olarak değişti */
+            background-color: #28a745; /* Confirmation green */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button[type="button"]:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Yeni Lif Ekle butonu */
+        .add-fiber-button {
+            background-color: #3498db !important; /* Mavi renk, !important ile override */
+            margin-top: 20px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .add-fiber-button:hover {
+            background-color: #2980b9 !important;
+        }
+
+        /* Sonuç Alanı */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.1em; /* Daha küçük font boyutu */
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+            display: none; /* Hidden by default */
+            line-height: 1.4;
+        }
+        .result-display h3 {
+            font-size: 1.5em; /* Sonuç başlığı için uygun boyut */
+            margin-bottom: 15px;
+            color: #e74c3c;
+        }
+        .result-display .result-value {
+            color: #e74c3c;
+            font-size: 1.2em; /* Değerler biraz daha büyük */
+            margin-left: 5px;
+        }
+        .result-display .error {
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        .result-display p { /* İç p etiketleri için stil */
+            margin: 5px 0;
+            font-size: 0.8em; /* Genel result-display fontundan farklı */
+        }
+        .result-display strong {
+            font-weight: 600;
+            color: #444;
+        }
+
+
+        /* Bilgilendirme Bölümleri */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+            text-align: left; /* Bilgi yazılarının sola hizalanması */
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px; /* İç boşluk */
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        /* Yeni başlık stili (Form içindeki h4'ler için) */
+        .calc-wrapper h4 {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1.2em;
+            }
+            /* Dinamik eklenen satırlar için responsive düzenleme */
+            .fiber-input-row {
+                flex-direction: column;
+                align-items: flex-start;
+                padding-right: 0; /* Buton için boşluğu kaldır */
+            }
+            .fiber-input-row label,
+            .fiber-input-row input {
+                width: 100%;
+                margin-right: 0;
+            }
+            .fiber-input-row .remove-fiber-button {
+                position: static; /* Butonu normal akışa al */
+                transform: none;
+                margin-left: 0;
+                margin-top: 10px; /* Üstteki inputtan boşluk bırak */
+                width: 100%;
+                text-align: right; /* Butonu sağa hizala */
+                padding-right: 0; /* Padding'i sıfırla */
+                justify-content: flex-end; /* İçeriği sağa yasla */
+                font-size: 1.2em; /* Buton ikon boyutunu ayarla */
+                padding: 5px 0;
+            }
+            /* Sadece ikonu göstermek için metni gizle */
+            .remove-fiber-button::before {
+                content: ''; /* Metni gizle */
+            }
+            .remove-fiber-button::after { /* İkonu tekrar ekle */
+                font-family: "Font Awesome 5 Free";
+                font-weight: 900;
+                content: "\f057"; /* fa-times-circle kodu */
+                margin-left: 5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-group-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            .result-display {
+                font-size: 0.9em;
+                padding: 15px;
+            }
+            .result-display .result-value {
+                font-size: 1.1em;
+            }
+            .info-section p {
+                padding: 0 10px;
+            }
+            .info-section ul {
+                margin-left: 20px;
+            }
+            /* Responsive'de input-with-unit düzeni */
+            .input-with-unit label,
+            .input-with-unit input {
+                flex-basis: 100%; /* Küçük ekranlarda tam genişlik */
+                margin-right: 0;
+            }
+            .input-with-unit input.fiber-name,
+            .input-with-unit input.fiber-weight {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Fiber Mix Ratio Calculator</h1>
+                <p>Easily determine the percentage ratios of different fibers in your textile blends.</p>
+            </div>
+        </section>
+
+        <section class="calculator-group-section">
+            <div class="container">
+                <h2>Calculate Fiber Ratios</h2>
+
+                <div class="calc-wrapper"> <h3><i class="fas fa-percentage icon-small"></i> Fiber Ratio Calculation</h3>
+                    <div class="calculator-form-container">
+                        <form id="fiberBlendForm">
+                            <p class="small-text">Please enter the amount of each fiber in the mixture (in grams or kilograms). You can add as many fibers as you want.</p>
+
+                            <div id="fiberInputs">
+                                <div class="input-with-unit fiber-input-row" data-fiber-id="1">
+                                    <label for="fiber1Name">Fiber Name 1:</label>
+                                    <input class="fiber-name" id="fiber1Name" placeholder="Ex: Cotton" type="text"/>
+                                    <label for="fiber1Weight">Amount (gr/kg):</label>
+                                    <input class="fiber-weight" id="fiber1Weight" min="0" placeholder="Ex: 500" required="" step="0.01" type="number"/>
+                                    </div>
+                                <div class="input-with-unit fiber-input-row" data-fiber-id="2">
+                                    <label for="fiber2Name">Fiber Name 2:</label>
+                                    <input class="fiber-name" id="fiber2Name" placeholder="Ex: Polyester" type="text"/>
+                                    <label for="fiber2Weight">Amount (gr/kg):</label>
+                                    <input class="fiber-weight" id="fiber2Weight" min="0" placeholder="Ex: 500" required="" step="0.01" type="number"/>
+                                    </div>
+                            </div>
+
+                            <button class="add-fiber-button" type="button">
+                                <i class="fas fa-plus"></i> Add New Fiber
+                            </button>
+                            <button type="button" onclick="calculateFiberBlend()">
+                                Calculate
+                            </button>
+                        </form>
+
+                        <div class="result-display" id="resultBox">
+                            <h3>Results:</h3>
+                            </div>
+
+                        <p class="small-text">Make sure you enter quantities in the same unit (all grams or all kilograms).</p>
+                    </div>
+                </div>
+
+                <section class="info-section container">
+                    <h3>What is the Fiber Mixing Ratio?</h3>
+                    <p>
+                        <strong>Fiber blend ratio</strong> refers to the ratio of different types of fibers used in a textile product (yarn, fabric, etc.) to the total mass. This ratio is usually stated as a percentage (%). For example, a 60% Cotton / 40% Polyester blend indicates that 60% of the total fibers are cotton and 40% are polyester.
+                    </p>
+                    <p>
+                        Blending different fibers is done to obtain combinations of properties that no single fiber can have. This has a direct impact on the performance, feel, cost and aesthetics of the product.
+                    </p>
+                    <h4>Why is Fiber Blend Made?</h4>
+                    <ul>
+                        <li><strong>Performance Improvement:</strong> For example, the moisture absorbency of cotton can be combined with the durability and wrinkle resistance of polyester.</li>
+                        <li><strong>Cost Optimization:</strong> Reducing cost by blending a more expensive fiber (e.g. wool) with a cheaper fiber (e.g. acrylic).</li>
+                        <li><strong>Touch and Comfort:</strong> Providing certain tactile properties such as a silky feel or softness.</li>
+                        <li><strong>Visual and Aesthetic Properties:</strong> To obtain gloss, matte finish or different painting properties.</li>
+                        <li><strong>Easy Care:</strong> Addition of features such as fast drying and easy ironing.</li>
+                    </ul>
+                    <h4>How to Calculate Fiber Mixture Ratio?</h4>
+                    <p>
+                        The percentage of each fiber in the mixture is found by dividing the amount of that fiber by the total amount of fiber and multiplying by 100.
+                    </p>
+                    <p class="formula-text">
+                        Fiber A Percentage (%) = (Fiber A Amount / Total Fiber Amount) * 100
+                    </p>
+                    <p>
+                        This calculator finds the total amount by adding up all the fiber amounts you entered and then presents the percentage of each fiber that makes up that total.
+                    </p>
+                    <h4>Application Areas:</h4>
+                    <ul>
+                        <li>Creating correct blend recipes in yarn production.</li>
+                        <li>Raw material control and quality assurance in fabric production.</li>
+                        <li>Ensuring compliance with labeling standards for textile products.</li>
+                        <li>Testing new fiber combinations in R&amp;D studies.</li>
+                        <li>Cost analysis and inventory management.</li>
+                    </ul>
+                    <p class="disclaimer-text">
+                        This calculator is for general information purposes only and provides theoretical calculations. In actual production and trade, factors such as fiber moisture content, testing standards and homogeneous blending may affect the results. For sensitive commercial or industrial applications, certified laboratory tests and international standards should be used as a basis. If you have any problems with your calculations, please contact us.
+                        <a href="../../contact.html">communication</a> reach us from our page.
+                    </p>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header and Footer loading functions
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // Load header and footer based on URL
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // --- JavaScript for Fiber Blend Ratio Calculation ---
+
+            // Language detection & texts
+            const texts = {
+                tr: {
+                    mainHeading: 'Elyaf Karışım Oranı Hesaplayıcı',
+                    mainDescription: 'Tekstil elyaflarının (pamuk, polyester, viskon vb.) bir karışım içindeki yüzde oranını hesaplayın.',
+                    calculateRatiosTitle: 'Elyaf Oranlarını Hesapla',
+                    inputInstruction: 'Lütfen karışımdaki her bir elyafın miktarını (gram veya kilogram olarak) girin. İstediğiniz kadar elyaf ekleyebilirsiniz.',
+                    fiberNameLabel: 'Elyaf Adı {num}:',
+                    fiberWeightLabel: 'Miktar (gr/kg):',
+                    fiberNamePlaceholder: 'Örn: Pamuk',
+                    fiberWeightPlaceholder: 'Örn: 500',
+                    addFiberButtonText: '<i class="fas fa-plus"></i> Yeni Elyaf Ekle',
+                    calculateButtonText: 'Hesapla',
+                    resultsTitle: 'Sonuçlar:',
+                    totalWeightResult: 'Toplam Miktar:',
+                    totalPercentageResult: 'Toplam Yüzde:', // Added for completeness, should be 100%
+                    unit_percent: '%',
+                    bottomNote: 'Miktarları aynı birimde (hepsi gram veya hepsi kilogram) girdiğinizden emin olun.',
+                    invalidInput: 'Lütfen tüm elyaf miktarları için geçerli pozitif sayılar girin ve elyaf adlarını boş bırakmayın.',
+                    totalWeightZero: 'Toplam elyaf miktarı sıfır olamaz. Lütfen en az bir elyaf için pozitif bir miktar girin.',
+                    removeFiberText: 'Kaldır',
+                    defaultFiberName: 'Elyaf' // For unnamed fibers
+                },
+                en: {
+                    mainHeading: 'Fiber Mix Ratio Calculator',
+                    mainDescription: 'Calculate the percentage ratio of textile fibers (cotton, polyester, viscose, etc.) in a blend.',
+                    calculateRatiosTitle: 'Calculate Fiber Ratios',
+                    inputInstruction: 'Please enter the amount of each fiber in the mixture (in grams or kilograms). You can add as many fibers as you want.',
+                    fiberNameLabel: 'Fiber Name {num}:',
+                    fiberWeightLabel: 'Quantity (gr/kg):',
+                    fiberNamePlaceholder: 'Ex: Cotton',
+                    fiberWeightPlaceholder: 'Ex: 500',
+                    addFiberButtonText: '<i class="fas fa-plus"></i> Add New Fiber',
+                    calculateButtonText: 'Calculate',
+                    resultsTitle: 'Results:',
+                    totalWeightResult: 'Total Quantity:',
+                    totalPercentageResult: 'Total Percentage:',
+                    unit_percent: '%',
+                    bottomNote: 'Make sure you enter quantities in the same unit (all grams or all kilograms).',
+                    invalidInput: 'Please enter valid positive numbers for all fiber amounts and do not leave fiber names empty.',
+                    totalWeightZero: 'Total fiber amount cannot be zero. Please enter a positive amount for at least one fiber.',
+                    removeFiberText: 'Remove',
+                    defaultFiberName: 'Fiber'
+                }
+            };
+
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // Update main titles and descriptions
+            document.querySelector('.hero-section h1').textContent = currentTexts.mainHeading;
+            document.querySelector('.hero-section p').textContent = currentTexts.mainDescription;
+            document.querySelector('.calculator-group-section h2').textContent = currentTexts.calculateRatiosTitle;
+
+            // --- DOM Elements ---
+            const fiberBlendForm = document.getElementById('fiberBlendForm');
+            const fiberInputsDiv = document.getElementById('fiberInputs');
+            const addFiberButton = document.querySelector('.add-fiber-button');
+            const calculateButton = fiberBlendForm.querySelector('button[onclick="calculateFiberBlend()"]');
+            const resultBox = document.getElementById('resultBox');
+            const explanationParagraph = document.querySelector('.calculator-form-container > p.small-text'); // Corrected selector
+
+            let fiberCount = fiberInputsDiv.children.length; // Starting with existing fiber input rows
+
+            // Update form specific labels and placeholders
+            document.querySelector('.calc-wrapper h3').innerHTML = `<i class="fas fa-percentage icon-small"></i> ${currentTexts.calculateRatiosTitle}`;
+            fiberBlendForm.querySelector('p.small-text').textContent = currentTexts.inputInstruction;
+            addFiberButton.innerHTML = currentTexts.addFiberButtonText;
+            calculateButton.textContent = currentTexts.calculateButtonText;
+            explanationParagraph.textContent = currentTexts.bottomNote;
+
+            // Update initial static fiber labels and placeholders
+            function updateStaticFiberLabels() {
+                for (let i = 1; i <= fiberCount; i++) { // For fiber1, fiber2 etc.
+                    const nameLabel = document.querySelector(`label[for="fiber${i}Name"]`);
+                    const weightLabel = document.querySelector(`label[for="fiber${i}Weight"]`);
+                    const nameInput = document.getElementById(`fiber${i}Name`);
+                    const weightInput = document.getElementById(`fiber${i}Weight`);
+
+                    if (nameLabel) {
+                        nameLabel.textContent = currentTexts.fiberNameLabel.replace('{num}', i);
+                    }
+                    if (weightLabel) {
+                        weightLabel.textContent = currentTexts.fiberWeightLabel;
+                    }
+                    if (nameInput) {
+                        nameInput.placeholder = currentTexts.fiberNamePlaceholder;
+                    }
+                    if (weightInput) {
+                        weightInput.placeholder = currentTexts.fiberWeightPlaceholder;
+                    }
+                }
+            }
+            updateStaticFiberLabels(); // Call on load to update static labels
+
+
+            // --- Add Fiber Input Function ---
+            window.addFiberInput = function() {
+                fiberCount++;
+                const newFiberRow = document.createElement('div');
+                newFiberRow.classList.add('input-with-unit', 'fiber-input-row');
+                newFiberRow.setAttribute('data-fiber-id', fiberCount);
+
+                newFiberRow.innerHTML = `
+                    <label for="fiber${fiberCount}Name">${currentTexts.fiberNameLabel.replace('{num}', fiberCount)}:</label>
+                    <input class="fiber-name" id="fiber${fiberCount}Name" placeholder="${currentTexts.fiberNamePlaceholder}" type="text"/>
+                    <label for="fiber${fiberCount}Weight">${currentTexts.fiberWeightLabel}</label>
+                    <input class="fiber-weight" id="fiber${fiberCount}Weight" min="0" placeholder="${currentTexts.fiberWeightPlaceholder}" required="" step="0.01" type="number"/>
+                    <button type="button" class="remove-fiber-button" title="${currentTexts.removeFiberText}"><i class="fas fa-times-circle"></i></button>
+                `;
+                fiberInputsDiv.appendChild(newFiberRow);
+
+                // Add event listener for the new remove button
+                newFiberRow.querySelector('.remove-fiber-button').addEventListener('click', function() {
+                    newFiberRow.remove();
+                    // Re-calculate results after removal if results are currently displayed
+                    if (resultBox.style.display === 'block') {
+                        calculateFiberBlend();
+                    }
+                });
+            };
+
+            // --- Calculate Fiber Blend Function ---
+            window.calculateFiberBlend = function() {
+                const fiberRows = fiberInputsDiv.querySelectorAll('.fiber-input-row');
+                let totalWeight = 0;
+                let fiberData = [];
+                let hasError = false;
+
+                // Clear previous results
+                resultBox.innerHTML = `<h3>${currentTexts.resultsTitle}</h3>`;
+                resultBox.style.display = 'none';
+
+                // Collect data and validate inputs
+                fiberRows.forEach(row => {
+                    const nameInput = row.querySelector('.fiber-name');
+                    const weightInput = row.querySelector('.fiber-weight');
+
+                    let name = nameInput ? nameInput.value.trim() : '';
+                    let weight = parseFloat(weightInput ? weightInput.value : '');
+
+                    // Only process rows with valid positive weight
+                    if (isNaN(weight) || weight < 0) {
+                        resultBox.innerHTML = `<h3>${currentTexts.resultsTitle}</h3><p class="error">${currentTexts.invalidInput}</p>`;
+                        resultBox.style.display = 'block';
+                        hasError = true;
+                        return; // Exit forEach
+                    }
+
+                    if (weight > 0) { // Only add if weight is positive
+                        if (name === '') { // If name is empty but weight is positive, use default name
+                            name = `${currentTexts.defaultFiberName} ${row.getAttribute('data-fiber-id')}`;
+                        }
+                        fiberData.push({ name: name, weight: weight });
+                        totalWeight += weight;
+                    }
+                });
+
+                if (hasError) return; // Stop if any error occurred during validation
+
+                if (totalWeight === 0) {
+                    resultBox.innerHTML = `<h3>${currentTexts.resultsTitle}</h3><p class="error">${currentTexts.totalWeightZero}</p>`;
+                    resultBox.style.display = 'block';
+                    return;
+                }
+
+                // Calculate and display percentages
+                let resultsHtmlContent = '';
+                fiberData.forEach(fiber => {
+                    const percentage = (fiber.weight / totalWeight) * 100;
+                    resultsHtmlContent += `
+                        <div class="result-item">
+                            <strong>${fiber.name}:</strong> <span class="result-value">${percentage.toFixed(2)} ${currentTexts.unit_percent}</span>
+                        </div>
+                    `;
+                });
+
+                resultBox.innerHTML += resultsHtmlContent;
+                resultBox.innerHTML += `
+                    <hr class="form-divider" style="margin: 15px 0;">
+                    <div class="result-item">
+                        <strong>${currentTexts.totalWeightResult}</strong>
+                        <span class="result-value">${totalWeight.toFixed(2)} ${currentTexts.fiberWeightLabel.split('(')[1].replace(')', '')}</span>
+                    </div>
+                    <div class="result-item">
+                        <strong>${currentTexts.totalPercentageResult}</strong>
+                        <span class="result-value">100.00 ${currentTexts.unit_percent}</span>
+                    </div>
+                `;
+                resultBox.style.display = 'block'; // Show the result box
+            };
+
+            // Update Info Section Text
+            function updateInfoSectionContent() {
+                // Main Info Section Title
+                document.querySelector('.info-section h3').textContent = isEnglishPage ? 'What is the Fiber Mixing Ratio?' : 'Elyaf Karışım Oranı Nedir?';
+
+                // First paragraph
+                document.querySelector('.info-section p:nth-of-type(1)').innerHTML = isEnglishPage ?
+                    `<strong>Fiber blend ratio</strong> refers to the ratio of different types of fibers used in a textile product (yarn, fabric, etc.) to the total mass. This ratio is usually stated as a percentage (%). For example, a 60% Cotton / 40% Polyester blend indicates that 60% of the total fibers are cotton and 40% are polyester.` :
+                    `<strong>Elyaf karışım oranı</strong>, bir tekstil ürününde (iplik, kumaş vb.) kullanılan farklı elyaf türlerinin toplam kütleye oranını ifade eder. Bu oran genellikle yüzde (%) olarak belirtilir. Örneğin, %60 Pamuk / %40 Polyester karışımı, toplam elyafın %60'ının pamuk, %40'ının polyester olduğunu gösterir.`;
+                document.querySelector('.info-section p:nth-of-type(2)').innerHTML = isEnglishPage ?
+                    `Blending different fibers is done to obtain combinations of properties that no single fiber can have. This has a direct impact on the performance, feel, cost and aesthetics of the product.` :
+                    `Farklı elyafların karıştırılması, tek bir elyafın sahip olamayacağı özellik kombinasyonlarını elde etmek amacıyla yapılır. Bu durum, ürünün performansı, tuşesi, maliyeti ve estetiği üzerinde doğrudan etkilidir.`;
+
+                // Why Important section
+                document.querySelector('.info-section h4:nth-of-type(1)').textContent = isEnglishPage ? 'Why is Fiber Blend Made?' : 'Elyaf Karışımı Neden Yapılır?';
+                const ul1 = document.querySelector('.info-section ul:nth-of-type(1)');
+                if (ul1) {
+                    ul1.innerHTML = `
+                        <li>${isEnglishPage ? '<strong>Performance Improvement:</strong> For example, the moisture absorbency of cotton can be combined with the durability and wrinkle resistance of polyester.' : '<strong>Performans İyileştirme:</strong> Örneğin, pamuğun nem emiciliği, polyesterin dayanıklılığı ve kırışıklık direnci ile birleştirilebilir.'}</li>
+                        <li>${isEnglishPage ? '<strong>Cost Optimization:</strong> Reducing cost by blending a more expensive fiber (e.g. wool) with a cheaper fiber (e.g. acrylic).' : '<strong>Maliyet Optimizasyonu:</strong> Daha pahalı bir elyafı (örn. yün) daha ucuz bir elyafla (örn. akrilik) karıştırarak maliyeti düşürmek.'}</li>
+                        <li>${isEnglishPage ? '<strong>Touch and Comfort:</strong> Providing certain tactile properties such as a silky feel or softness.' : '<strong>Tuşe ve Konfor:</strong> İpeksi bir his veya yumuşaklık gibi belirli dokunsal özellikler sağlamak.'}</li>
+                        <li>${isEnglishPage ? '<strong>Visual and Aesthetic Properties:</strong> To obtain gloss, matte finish or different painting properties.' : '<strong>Görsel ve Estetik Özellikler:</strong> Parlaklık, matlık veya farklı boyama özellikleri elde etmek.'}</li>
+                        <li>${isEnglishPage ? '<strong>Easy Care:</strong> Addition of features such as fast drying and easy ironing.' : '<strong>Kolay Bakım:</strong> Hızlı kuruma ve kolay ütülenme gibi özellikler katmak.'}</li>
+                    `;
+                }
+
+                // How to Calculate section
+                document.querySelector('.info-section h4:nth-of-type(2)').textContent = isEnglishPage ? 'How to Calculate Fiber Mixture Ratio?' : 'Elyaf Karışım Oranı Nasıl Hesaplanır?';
+                document.querySelector('.info-section p:nth-of-type(3)').innerHTML = isEnglishPage ?
+                    'The percentage of each fiber in the mixture is found by dividing the amount of that fiber by the total amount of fiber and multiplying by 100.' :
+                    'Karışımdaki her bir elyafın yüzdesi, o elyafın miktarını toplam elyaf miktarına bölüp 100 ile çarparak bulunur.';
+                document.querySelector('.info-section p.formula-text').textContent = isEnglishPage ?
+                    'Fiber A Percentage (%) = (Fiber A Amount / Total Fiber Amount) * 100' :
+                    'Elyaf A Yüzdesi (%) = (Elyaf A Miktarı / Toplam Elyaf Miktarı) * 100';
+                document.querySelector('.info-section p:nth-of-type(5)').innerHTML = isEnglishPage ?
+                    'This calculator finds the total amount by adding up all the fiber amounts you entered and then presents the percentage of each fiber that makes up that total.' :
+                    'Bu hesaplayıcı, girdiğiniz tüm elyaf miktarlarını toplayarak toplam miktarı bulur ve ardından her bir elyafın bu toplamın yüzde kaçını oluşturduğunu sunar.';
+
+                // Application Areas section
+                document.querySelector('.info-section h4:nth-of-type(3)').textContent = isEnglishPage ? 'Application Areas:' : 'Uygulama Alanları:';
+                const ul2 = document.querySelector('.info-section ul:nth-of-type(2)');
+                if (ul2) {
+                    ul2.innerHTML = `
+                        <li>${isEnglishPage ? 'Creating correct blend recipes in yarn production.' : 'İplik üretiminde doğru karışım reçeteleri oluşturma.'}</li>
+                        <li>${isEnglishPage ? 'Raw material control and quality assurance in fabric production.' : 'Kumaş üretiminde hammadde kontrolü ve kalite güvencesi.'}</li>
+                        <li>${isEnglishPage ? 'Ensuring compliance with labeling standards for textile products.' : 'Tekstil ürünleri için etiketleme standartlarına uygunluğu sağlama.'}</li>
+                        <li>${isEnglishPage ? 'Testing new fiber combinations in R&D studies.' : 'Ar-Ge çalışmalarında yeni elyaf kombinasyonlarını test etme.'}</li>
+                        <li>${isEnglishPage ? 'Cost analysis and inventory management.' : 'Maliyet analizi ve envanter yönetimi.'}</li>
+                    `;
+                }
+
+                // Disclaimer
+                const disclaimerLinkText = isEnglishPage ? 'communication' : 'iletişim';
+                document.querySelector('.info-section .disclaimer-text').innerHTML = isEnglishPage ?
+                    `This calculator is for general information purposes only and provides theoretical calculations. In actual production and trade, factors such as fiber moisture content, testing standards and homogeneous blending may affect the results. For sensitive commercial or industrial applications, certified laboratory tests and international standards should be used as a basis. If you have any problems with your calculations, please contact us. <a href="../../contact.html">${disclaimerLinkText}</a> reach us from our page.` :
+                    `Bu hesaplayıcı genel bilgi amaçlıdır ve sadece teorik hesaplamalar sunar. Gerçek üretim ve ticarette elyaf nem içeriği, test standartları ve homojen karışım gibi faktörler sonuçları etkileyebilir. Hassas ticari veya endüstriyel uygulamalar için sertifikalı laboratuvar testleri ve uluslararası standartlar esas alınmalıdır. Hesaplamalarınızla ilgili bir sorun yaşarsanız, <a href="../../contact.html">${disclaimerLinkText}</a> sayfamızdan bize ulaşın.`;
+            }
+            updateInfoSectionContent(); // Update info section on page load
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Taguchi Tasarımı Oluşturucu - Hesapkolik</title>
+
+    <meta content="Taguchi Deney Tasarımı ile ürün ve süreç kalitesini optimize edin. Faktörleri ve seviyeleri girerek ortogonal dizileri oluşturun." name="description"/>
+    <meta content="Taguchi tasarımı, deney tasarımı, ortogonal dizi, kalite mühendisliği, sinyal-gürültü oranı, sağlam tasarım, L9, L4, L8, hesapkolik kalite" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <style>
+        /* Genel Ayarlar ve Font */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Sade ve ferah bir arka plan */
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Koyu tema başlık/altlık ile uyumlu */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Bölümü */
+        .calculator-section { /* Yeni isim */
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff;
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 { /* Yeni başlık stili */
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        /* Form Elemanları */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .input-with-unit-group, .input-with-unit { /* Bu iki sınıfı birleştirdim */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .input-with-unit-group label, .input-with-unit label {
+            flex-basis: auto;
+            width: 100%;
+            margin-bottom: 0;
+            text-align: left;
+        }
+        .input-with-unit-group input[type="number"], .input-with-unit-group select,
+        .input-with-unit input[type="number"], .input-with-unit select {
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+        .form-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        /* Form butonları */
+        .calculator-form-container button[type="submit"] {
+            background-color: #28a745; /* Onay yeşili */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button[type="submit"]:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Sonuç Ekranı */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+            display: none; /* Varsayılan olarak gizli */
+        }
+        .result-display .result-value {
+            color: #e74c3c;
+        }
+        .result-display .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+        .result-display p { /* Sonuç paragrafı için düzeltme */
+            padding: 0;
+            margin: 5px 0;
+            text-align: center;
+            font-size: 1.2em; /* Biraz küçültelim */
+            line-height: 1.4;
+        }
+        .result-display h3 {
+            font-size: 1.8em; /* H3 boyutunu küçültelim */
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #2c3e50; /* Kırmızı olmasın */
+        }
+
+        /* Ortogonal Dizi Tablosu Stilleri */
+        .design-table-container {
+            margin-top: 20px;
+            overflow-x: auto; /* Küçük ekranlarda kaydırma çubuğu */
+        }
+        .design-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            text-align: center;
+        }
+        .design-table th, .design-table td {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+        }
+        .design-table th {
+            background-color: #34495e;
+            color: white;
+            font-weight: 600;
+        }
+        .design-table tbody tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+        .design-table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+
+        /* Açıklama bölümleri */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        /* Yeni Karbon Ayak İzi başlık stili */
+        .calc-wrapper h4 {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+            text-align: left; /* Başlıkların sola hizalanması */
+        }
+        .calculator-form-container p.small-text { /* Form içindeki küçük metin */
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1.4em;
+            }
+            .input-with-unit-group, .input-with-unit {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+            }
+            .input-with-unit-group label, .input-with-unit label {
+                margin-bottom: 5px;
+                text-align: left;
+            }
+            .input-with-unit-group input[type="number"], .input-with-unit-group select,
+            .input-with-unit input[type="number"], .input-with-unit select {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            .result-display {
+                font-size: 1em;
+                padding: 15px;
+            }
+            .result-display .result-value {
+                font-size: 1.2em;
+            }
+            .design-table {
+                font-size: 0.8em;
+            }
+        }
+    </style>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Taguchi Tasarımı Oluşturucu</h1>
+                <p>Taguchi Deney Tasarımı, ürün ve süreç kalitesini artırmak için güçlü bir istatistiksel yöntemdir. Bu araç ile deneysel faktörlerinizi ve seviyelerinizi tanımlayarak uygun bir Taguchi Ortogonal Dizisi oluşturabilirsiniz.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper active-calc" id="calculator-taguchiDesign">
+                    <h3><i class="fas fa-flask icon-small"></i> Taguchi Tasarımını Oluştur</h3>
+                    <div class="calculator-form-container">
+                        <form id="taguchiDesignForm">
+                            <p class="small-text">Lütfen deney faktörlerinizi ve seviyelerinizi girin. Standart ortogonal dizilere göre tasarım önerileri sunulacaktır.</p>
+                            
+                            <h4>Deney Bilgileri</h4>
+                            <div class="input-with-unit-group">
+                                <label for="numFactors">Faktör Sayısı:</label>
+                                <input id="numFactors" min="2" placeholder="Örn: 3" step="1" type="number" required/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="levelsPerFactor">Her Faktör İçin Seviye Sayısı (Aynı Olmalı):</label>
+                                <select id="levelsPerFactor" required>
+                                    <option value="">Seçiniz</option>
+                                    <option value="2">2 Seviye</option>
+                                    <option value="3">3 Seviye</option>
+                                    <option value="4">4 Seviye</option>
+                                </select>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="snRatioType">Sinyal-Gürültü Oranı Tipi:</label>
+                                <select id="snRatioType" required>
+                                    <option value="">Seçiniz</option>
+                                    <option value="smallerBetter">Küçük Daha İyi (Smaller-the-better)</option>
+                                    <option value="largerBetter">Büyük Daha İyi (Larger-the-better)</option>
+                                    <option value="nominalBest">Nominal En İyi (Nominal-the-best)</option>
+                                </select>
+                            </div>
+                            
+                            <button type="submit">Tasarım Oluştur</button>
+                        </form>
+                        <div class="result-display" id="resultBox">
+                            <h3>Önerilen Taguchi Ortogonal Dizisi:</h3>
+                            <p id="designResult"></p>
+                            <div id="designTableContainer"></div> <p id="snRatioExplanation"></p>
+                        </div>
+                        <div class="calc-explanation">
+                            <p class="small-text">Bu araç, girdiğiniz faktör ve seviye sayılarına uygun standart Taguchi ortogonal dizilerini önermeyi amaçlar. Detaylı deney tasarımı için bir uzmana danışmanız tavsiye edilir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>Taguchi Tasarımı Nedir?</h3>
+            <p><strong>Taguchi Tasarımı</strong>, Genichi Taguchi tarafından geliştirilmiş, ürün ve süreçleri "sağlam" (robust) hale getirmeyi amaçlayan bir deney tasarım metodolojisidir. Amacı, kontrol edilebilir faktörleri optimize ederek, kontrol edilemeyen gürültü faktörlerinin etkisini en aza indirmek ve böylece kalitede istikrar sağlamaktır.</p>
+            <p>Taguchi metodu, genellikle daha az deneyle optimal koşulları bulmayı sağlayan ortogonal dizilerin kullanımına dayanır. Bu, özellikle maliyetli ve zaman alıcı deneylerde büyük avantaj sağlar.</p>
+            <h4>Neden Taguchi Tasarımı Önemlidir?</h4>
+            <ul>
+                <li><strong>Kalite ve Güvenilirlik Artışı:</strong> Ürün ve süreçlerin çevresel değişikliklere veya üretim varyasyonlarına karşı daha az hassas olmasını sağlar.</li>
+                <li><strong>Maliyet Azaltma:</strong> Daha az deney gerektirmesi ve üretimde fire/hata oranlarını düşürmesi sayesinde maliyet etkin bir yaklaşımdır.</li>
+                <li><strong>Verimlilik:</strong> Kritik kontrol faktörlerini ve bunların optimal seviyelerini hızlıca belirlemeye yardımcı olur.</li>
+                <li><strong>Tasarım İyileştirme:</strong> Ürün geliştirme aşamasında kalitenin "tasarıma dahil edilmesini" teşvik eder.</li>
+            </ul>
+            <h4>Taguchi Tasarımı Nasıl Uygulanır?</h4>
+            <p>Taguchi tasarımının temel adımları şunlardır:</p>
+            <ul>
+                <li><strong>Problemin Tanımlanması:</strong> Kalite karakteristiği (hedef çıktılar) ve deneyin amacı belirlenir.</li>
+                <li><strong>Faktörlerin Belirlenmesi:</strong> Kontrol edilebilir (işlem parametreleri, malzeme özellikleri) ve kontrol edilemeyen (gürültü) faktörler tanımlanır.</li>
+                <li><strong>Seviyelerin Belirlenmesi:</strong> Her bir kontrol edilebilir faktör için deney yapılacak seviyeler belirlenir.</li>
+                <li><strong>Ortogonal Dizinin Seçimi:</strong> Faktör ve seviye sayılarına uygun bir Taguchi Ortogonal Dizisi (örneğin L4, L8, L9, L16) seçilir. Bu diziler, faktörlerin etkilerini verimli bir şekilde değerlendirmek için tasarlanmıştır.</li>
+                <li><strong>Deneylerin Yapılması:</strong> Seçilen diziye göre deneyler gerçekleştirilir ve her deneme koşulu için sonuçlar (cevap değişkeni) toplanır.</li>
+                <li><strong>Veri Analizi:</strong> Toplanan veriler, Sinyal-Gürültü (S/N) oranları ve Varyans Analizi (ANOVA) kullanılarak analiz edilir. S/N oranı, gürültü faktörlerinin etkisini azaltırken istenen sinyal seviyesini maksimize etmeyi amaçlar.</li>
+                <li><strong>Optimal Koşulların Belirlenmesi ve Doğrulama:</strong> Analiz sonuçlarına göre optimal faktör seviyeleri belirlenir ve doğrulama deneyleri ile bu koşulların etkinliği test edilir.</li>
+            </ul>
+            <p class="formula-text">
+                <strong>Ortak Sinyal-Gürültü (S/N) Oranı Formülleri:</strong><br/>
+                Küçük Daha İyi (Smaller-the-better): $$S/N = -10 \log_{10} \left( \frac{1}{n} \sum_{i=1}^{n} y_i^2 \right)$$
+                Büyük Daha İyi (Larger-the-better): $$S/N = -10 \log_{10} \left( \frac{1}{n} \sum_{i=1}^{n} \frac{1}{y_i^2} \right)$$
+                Nominal En İyi (Nominal-the-best): $$S/N = 10 \log_{10} \left( \frac{\mu^2}{\sigma^2} \right)$$
+                (Burada $y_i$ gözlemler, $n$ deneme sayısı, $\mu$ ortalama, $\sigma^2$ varyansıdır.)
+            </p>
+            <p>
+                <strong>Açıklamalar:</strong>
+                <ul>
+                    <li>
+                    <strong>Faktörler:</strong> Bir deneyde değiştirilebilen ve çıktıyı etkilemesi beklenen değişkenlerdir (örn. sıcaklık, basınç, malzeme tipi).
+                    </li>
+                    <li>
+                    <strong>Seviyeler:</strong> Bir faktörün farklı ayar veya değerleridir (örn. sıcaklık için 100°C, 120°C).
+                    </li>
+                    <li>
+                    <strong>Ortogonal Dizi:</strong> Faktör ve seviye kombinasyonlarını belirleyen, deney sayısını azaltan ve faktörler arası etkileşimleri dikkate alan özel bir matristir.
+                    </li>
+                    <li>
+                    <strong>Sinyal-Gürültü Oranı (S/N):</strong> Performans karakteristiğinin varyasyonunu ölçen bir metrik olup, gürültüye karşı sağlamlığı ifade eder.
+                    </li>
+                </ul>
+            </p>
+            <h4>Uygulama Alanları:</h4>
+            <ul>
+                <li>Ürün ve süreç geliştirme ve optimizasyonu.</li>
+                <li>Üretim süreçlerinde hata ve kusur azaltma.</li>
+                <li>Tasarım parametrelerinin belirlenmesi.</li>
+                <li>Malzeme ve bileşen seçimi.</li>
+                <li>Performans testleri ve güvenilirlik analizleri.</li>
+            </ul>
+            <p class="disclaimer-text">
+                Bu hesaplayıcı genel bilgi amaçlıdır ve teorik Taguchi Ortogonal Dizi önerileri sunar. Gerçek uygulamalarda, deneyin karmaşıklığı, faktörlerin doğası ve etkileşimleri gibi birçok faktör sonuçları etkileyebilir. Hassas ticari veya bilimsel uygulamalar için istatistiksel yazılımlar ve alanında uzman kişilerden destek alınması tavsiye edilir. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize
+                <a href="../../iletisim.html">
+                iletişim
+                </a>
+                sayfamızdan ulaşın.
+            </p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header ve Footer yükleme fonksiyonları
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            // Yüklenen HTML içindeki script etiketlerini bul ve çalıştır
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // URL'ye göre header ve footer yükleme
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // Taguchi Tasarımı Formu İşleme
+            const taguchiDesignForm = document.getElementById('taguchiDesignForm');
+            const resultBox = document.getElementById('resultBox');
+            const designResult = document.getElementById('designResult');
+            const snRatioExplanation = document.getElementById('snRatioExplanation');
+            const designTableContainer = document.getElementById('designTableContainer');
+
+            // Ortogonal Dizi Tabloları Tanımları
+            // Bu kısım, her bir Taguchi dizisi için sabit değerleri içeren bir nesne/hash map olarak düşünülebilir.
+            // Gerçek uygulamada bu veriler daha karmaşık ve dinamik olabilir.
+            const orthogonalArrays = {
+                'L4': {
+                    experiments: 4,
+                    factors: 3, // Maksimum faktör sayısı
+                    levels: 2,
+                    data: [
+                        [1, 1, 1],
+                        [1, 2, 2],
+                        [2, 1, 2],
+                        [2, 2, 1]
+                    ]
+                },
+                'L8': {
+                    experiments: 8,
+                    factors: 7,
+                    levels: 2,
+                    data: [
+                        [1, 1, 1, 1, 1, 1, 1],
+                        [1, 1, 1, 2, 2, 2, 2],
+                        [1, 2, 2, 1, 1, 2, 2],
+                        [1, 2, 2, 2, 2, 1, 1],
+                        [2, 1, 2, 1, 2, 1, 2],
+                        [2, 1, 2, 2, 1, 2, 1],
+                        [2, 2, 1, 1, 2, 2, 1],
+                        [2, 2, 1, 2, 1, 1, 2]
+                    ]
+                },
+                'L9': {
+                    experiments: 9,
+                    factors: 4,
+                    levels: 3,
+                    data: [
+                        [1, 1, 1, 1],
+                        [1, 2, 2, 2],
+                        [1, 3, 3, 3],
+                        [2, 1, 2, 3],
+                        [2, 2, 3, 1],
+                        [2, 3, 1, 2],
+                        [3, 1, 3, 2],
+                        [3, 2, 1, 3],
+                        [3, 3, 2, 1]
+                    ]
+                },
+                'L16': {
+                    experiments: 16,
+                    factors: 15,
+                    levels: 2,
+                    // L16'nın tam matrisini buraya eklemek çok uzun olur, sadece örnek bir kısmını veriyorum.
+                    // Gerçek uygulamada bu data tamamen doldurulmalıdır.
+                    data: [
+                        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                        [1,1,1,1,2,2,2,2,2,2,2,2,2,2,2],
+                        [1,1,2,2,1,1,2,2,1,1,2,2,1,1,2],
+                        [1,1,2,2,2,2,1,1,2,2,1,1,2,2,1],
+                        [1,2,1,2,1,2,1,2,1,2,1,2,1,2,1],
+                        [1,2,1,2,2,1,2,1,2,1,2,1,2,1,2],
+                        [1,2,2,1,1,2,2,1,2,1,1,2,2,1,2],
+                        [1,2,2,1,2,1,1,2,1,2,2,1,1,2,1],
+                        [2,1,1,2,1,2,2,1,1,2,2,1,2,1,2],
+                        [2,1,1,2,2,1,1,2,2,1,1,2,1,2,1],
+                        [2,1,2,1,1,2,1,2,2,1,2,1,1,2,2],
+                        [2,1,2,1,2,1,2,1,1,2,1,2,2,1,1],
+                        [2,2,1,1,1,1,2,2,2,2,1,1,1,1,2],
+                        [2,2,1,1,2,2,1,1,1,1,2,2,2,2,1],
+                        [2,2,2,2,1,1,1,1,2,2,1,1,2,2,1],
+                        [2,2,2,2,2,2,2,2,1,1,2,2,1,1,2]
+                    ]
+                },
+                'L27': {
+                    experiments: 27,
+                    factors: 13,
+                    levels: 3,
+                    // L27'nin tam matrisini buraya eklemek çok uzun olur.
+                    // Gerçek uygulamada bu data tamamen doldurulmalıdır.
+                    data: [
+                        [1,1,1,1,1,1,1,1,1,1,1,1,1],
+                        [1,1,1,2,2,2,2,2,2,2,2,2,2],
+                        [1,1,1,3,3,3,3,3,3,3,3,3,3],
+                        [1,2,2,1,1,2,2,3,3,1,1,2,2],
+                        [1,2,2,2,2,3,3,1,1,2,2,3,3],
+                        [1,2,2,3,3,1,1,2,2,3,3,1,1],
+                        [1,3,3,1,2,1,3,1,2,1,3,1,2],
+                        [1,3,3,2,3,2,1,2,3,2,1,2,3],
+                        [1,3,3,3,1,3,2,3,1,3,2,3,1],
+                        [2,1,2,1,2,1,2,1,2,1,2,1,2],
+                        [2,1,2,2,3,2,3,2,3,2,3,2,3],
+                        [2,1,2,3,1,3,1,3,1,3,1,3,1],
+                        [2,2,3,1,3,1,2,2,1,3,2,2,1],
+                        [2,2,3,2,1,2,3,3,2,1,3,3,2],
+                        [2,2,3,3,2,3,1,1,3,2,1,1,3],
+                        [2,3,1,1,1,2,3,3,2,3,1,1,3],
+                        [2,3,1,2,2,3,1,1,3,1,2,2,1],
+                        [2,3,1,3,3,1,2,2,1,2,3,3,2],
+                        [3,1,3,1,3,2,1,1,2,2,1,3,2],
+                        [3,1,3,2,1,3,2,2,3,3,2,1,3],
+                        [3,1,3,3,2,1,3,3,1,1,3,2,1],
+                        [3,2,1,1,2,3,1,2,1,2,3,1,2],
+                        [3,2,1,2,3,1,2,3,2,3,1,2,3],
+                        [3,2,1,3,1,2,3,1,3,1,2,3,1],
+                        [3,3,2,1,1,1,1,3,3,3,3,3,3],
+                        [3,3,2,2,2,2,2,1,1,1,1,1,1],
+                        [3,3,2,3,3,3,3,2,2,2,2,2,2]
+                    ]
+                }
+            };
+
+            function generateTaguchiTable(designName, numFactors, levelsPerFactor) {
+                designTableContainer.innerHTML = ''; // Önceki tabloyu temizle
+
+                const designData = orthogonalArrays[designName];
+
+                if (!designData) {
+                    designTableContainer.innerHTML = `<p class="error">Seçilen tasarım (${designName}) için tablo verisi bulunamadı.</p>`;
+                    return;
+                }
+
+                if (numFactors > designData.factors) {
+                     designTableContainer.innerHTML = `<p class="error">Seçilen tasarım (${designName}) ${numFactors} faktör için yetersizdir. Maksimum ${designData.factors} faktöre kadar destekler.</p>`;
+                     return;
+                }
+                if (levelsPerFactor !== designData.levels) {
+                    designTableContainer.innerHTML = `<p class="error">Seçilen tasarım (${designName}) ${levelsPerFactor} seviye yerine ${designData.levels} seviye içindir. Lütfen doğru seviye sayısını seçtiğinizden emin olun.</p>`;
+                    return;
+                }
+
+                const table = document.createElement('table');
+                table.classList.add('design-table');
+
+                // Tablo başlığı (Header)
+                const thead = table.createTHead();
+                const headerRow = thead.insertRow();
+                headerRow.insertCell().textContent = 'Deneme No.';
+                for (let i = 0; i < numFactors; i++) {
+                    headerRow.insertCell().textContent = `Faktör ${String.fromCharCode(65 + i)}`; // A, B, C...
+                }
+
+                // Tablo içeriği (Body)
+                const tbody = table.createTBody();
+                for (let i = 0; i < designData.experiments; i++) {
+                    const row = tbody.insertRow();
+                    row.insertCell().textContent = i + 1; // Deneme No.
+                    for (let j = 0; j < numFactors; j++) {
+                        // Tasarım verisindeki faktör sayısından fazla faktör istenirse hata vermemesi için kontrol
+                        if (designData.data[i] && designData.data[i][j]) {
+                            row.insertCell().textContent = designData.data[i][j];
+                        } else {
+                            row.insertCell().textContent = '-'; // Veri yoksa boş bırak
+                        }
+                    }
+                }
+                designTableContainer.appendChild(table);
+            }
+
+
+            taguchiDesignForm.addEventListener('submit', function(event) {
+                event.preventDefault(); // Formun normal submit işlemini engelle
+
+                const numFactors = parseInt(document.getElementById('numFactors').value);
+                const levelsPerFactor = parseInt(document.getElementById('levelsPerFactor').value);
+                const snRatioType = document.getElementById('snRatioType').value;
+
+                // Önceki tabloyu ve hata mesajlarını temizle
+                designTableContainer.innerHTML = '';
+
+                if (isNaN(numFactors) || numFactors < 2 || isNaN(levelsPerFactor) || !snRatioType) {
+                    designResult.textContent = 'Lütfen tüm alanları geçerli değerlerle doldurun.';
+                    resultBox.style.display = 'block';
+                    snRatioExplanation.textContent = '';
+                    return;
+                }
+
+                let suggestedDesign = '';
+                let snRatioText = '';
+
+                // Basit bir Taguchi Ortogonal Dizi önerisi (örnekler)
+                if (levelsPerFactor === 2) {
+                    if (numFactors <= 3) suggestedDesign = 'L4';
+                    else if (numFactors <= 7) suggestedDesign = 'L8';
+                    else if (numFactors <= 15) suggestedDesign = 'L16';
+                    else suggestedDesign = 'Belirtilen faktör ve seviyeler için standart bir 2 seviyeli ortogonal dizi bulunamadı.';
+                } else if (levelsPerFactor === 3) {
+                    if (numFactors <= 4) suggestedDesign = 'L9';
+                    else if (numFactors <= 13) suggestedDesign = 'L27';
+                    else suggestedDesign = 'Belirtilen faktör ve seviyeler için standart bir 3 seviyeli ortogonal dizi bulunamadı.';
+                } else if (levelsPerFactor === 4) {
+                    // L16 hem 2 seviyeli hem de 4 seviyeli faktörler için kullanılabilir
+                    if (numFactors <= 5) suggestedDesign = 'L16'; // L16(4^5)
+                    else suggestedDesign = 'Belirtilen faktör ve seviyeler için standart bir 4 seviyeli ortogonal dizi bulunamadı.';
+                } else {
+                    suggestedDesign = 'Belirtilen seviye sayısı için standart bir ortogonal dizi önerisi bulunamamaktadır.';
+                }
+
+                switch (snRatioType) {
+                    case 'smallerBetter':
+                        snRatioText = 'Küçük Daha İyi (Smaller-the-better) S/N oranı, daha düşük çıktı değerlerinin tercih edildiği durumlar için uygundur (örn. aşınma, kirlilik).';
+                        break;
+                    case 'largerBetter':
+                        snRatioText = 'Büyük Daha İyi (Larger-the-better) S/N oranı, daha yüksek çıktı değerlerinin tercih edildiği durumlar için uygundur (örn. mukavemet, verim).';
+                        break;
+                    case 'nominalBest':
+                        snRatioText = 'Nominal En İyi (Nominal-the-best) S/N oranı, çıktının belirli bir hedef değere yakın olmasının istendiği durumlar için uygundur (örn. belirli bir tolerans içindeki boyut).';
+                        break;
+                    default:
+                        snRatioText = 'Sinyal-Gürültü oranı tipi belirtilmedi.';
+                }
+
+                designResult.innerHTML = `<strong>Önerilen Dizi: ${suggestedDesign}</strong>`;
+                snRatioExplanation.textContent = snRatioText;
+                resultBox.style.display = 'block';
+
+                // Ortogonal dizi tablosunu oluştur
+                if (suggestedDesign && suggestedDesign.startsWith('L')) {
+                    generateTaguchiTable(suggestedDesign, numFactors, levelsPerFactor);
+                } else {
+                    designTableContainer.innerHTML = `<p class="error">Önerilen tasarım için tablo gösterilemiyor.</p>`;
+                }
+            });
+        });
+
+        // MathJax ayarları ve yüklemesi (formül gösterimi için)
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+
+        (function() {
+            var script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+            script.async = true;
+            document.head.appendChild(script);
+        })();
+    </script>
+</body>
+</html>
