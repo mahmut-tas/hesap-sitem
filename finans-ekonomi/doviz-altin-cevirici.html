@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Döviz ve Altın Çevirici - Hesapkolik</title>
+    
+    <meta content="Anlık döviz kurları ve altın fiyatları ile istediğiniz para birimi veya altın cinsi arasında hızlı ve kolay dönüşüm yapın." name="description"/>
+    <meta content="döviz çevirici, altın çevirici, kur çevirici, para birimi dönüştürücü, altın fiyatları, canlı kur, hesapkolik döviz" name="keywords"/>
+    
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    
+    <style>
+        /* Genel Ayarlar ve Font */
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f7f6; /* Sade ve ferah bir arka plan */
+            color: #333; 
+            line-height: 1.6;
+        }
+        .container { 
+            max-width: 960px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Koyu tema başlık/altlık ile uyumlu */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Calculator Section */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff; /* Beyaz kart arka planı */
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50; /* Koyu metin rengi */
+            font-size: 2.2em;
+        }
+        .calc-wrapper { 
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 750px; /* Biraz daha geniş olabilir tablo için */
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        /* Form Elemanları */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"], .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus, .calc-wrapper select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        /* Form butonları */
+        .calculator-form-container button[type="submit"] {
+            background-color: #28a745; /* Onay yeşili */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button[type="submit"]:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Sonuç Ekranı */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+            display: none; /* Varsayılan olarak gizli */
+        }
+        .result-display .total-result-value {
+            color: #e74c3c;
+            font-size: 1.8em;
+            display: block;
+            margin-top: 10px;
+        }
+        .result-display .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+        /* Açıklama bölümleri */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text { 
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1em;
+            }
+            .result-display .total-result-value {
+                font-size: 1.5em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            .result-display {
+                font-size: 0.9em;
+                padding: 10px;
+            }
+            .result-display .total-result-value {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+    
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1 id="main-heading">Döviz ve Altın Çevirici</h1>
+                <p id="main-description">Anlık döviz kurları ve altın fiyatları ile istediğiniz para birimi veya altın cinsi arasında hızlı ve kolay dönüşüm yapın.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper">
+                    <h3 id="calculator-title"><i class="fas fa-coins icon-small"></i> Dönüşüm Yap</h3>
+                    <div class="calculator-form-container">
+                        <form id="currencyGoldConverterForm">
+                            <label for="amount" id="amount-label">Miktar:</label>
+                            <input id="amount" type="number" min="0.01" value="1" step="0.01" required/>
+
+                            <label for="from-currency" id="from-currency-label">Şu Birimden:</label>
+                            <select id="from-currency" required>
+                                <option value="TRY">Türk Lirası (TRY)</option>
+                                <option value="USD">Amerikan Doları (USD)</option>
+                                <option value="EUR">Euro (EUR)</option>
+                                <option value="GBP">İngiliz Sterlini (GBP)</option>
+                                <option value="XAU_GRAM">Gram Altın (XAU)</option>
+                                <option value="XAU_ONS">Ons Altın (XAU)</option>
+                                <option value="XAU_CUMHURIYET">Cumhuriyet Altını (XAU)</option>
+                                </select>
+
+                            <label for="to-currency" id="to-currency-label">Şu Birime:</label>
+                            <select id="to-currency" required>
+                                <option value="USD">Amerikan Doları (USD)</option>
+                                <option value="EUR">Euro (EUR)</option>
+                                <option value="GBP">İngiliz Sterlini (GBP)</option>
+                                <option value="TRY" selected>Türk Lirası (TRY)</option>
+                                <option value="XAU_GRAM">Gram Altın (XAU)</option>
+                                <option value="XAU_ONS">Ons Altın (XAU)</option>
+                                <option value="XAU_CUMHURIYET">Cumhuriyet Altını (XAU)</option>
+                                </select>
+                            
+                            <button type="submit" id="calculate-button">Çevir</button>
+                        </form>
+                        <div class="result-display" id="conversionResult"></div>
+                        <p class="small-text" id="last-updated-text">Kurlar anlık olarak güncellenmektedir. (Varsayımsal)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3 id="info-section-title">Döviz ve Altın Çeviricinin Önemi</h3>
+            <p id="info-section-p1">
+                **Döviz ve altın çevirici**, uluslararası ticaret yapanlar, yurt dışına seyahat edenler, yatırımcılar ve günlük hayatında farklı para birimleriyle işlem yapan herkes için vazgeçilmez bir araçtır. Anlık piyasa verileriyle doğru dönüşümler yaparak finansal kararlarınızı daha bilinçli alabilirsiniz.
+            </p>
+            <h4>Neden Anlık Kurlar Önemli?</h4>
+            <ul>
+                <li id="info-list-1">
+                    <strong>Piyasa Volatilitesi:</strong> Döviz ve altın piyasaları sürekli dalgalanır. Anlık kurlar, alım-satım kararlarınızı en güncel verilere göre vermenizi sağlar.
+                </li>
+                <li id="info-list-2">
+                    <strong>Doğru Hesaplama:</strong> Özellikle büyük miktarlı işlemlerde küçük kur farkları bile önemli kazanç veya kayıplara yol açabilir. Çevirici, doğru miktarı belirlemenize yardımcı olur.
+                </li>
+                <li id="info-list-3">
+                    <strong>Yatırım Takibi:</strong> Altın veya döviz yatırımlarınızın değerini anlık olarak takip ederek portföyünüzün performansını izleyebilirsiniz.
+                </li>
+            </ul>
+            <h4>Altın Fiyatları Neye Göre Değişir?</h4>
+            <ul>
+                <li id="components-list-1">
+                    <strong>Küresel Ekonomik Durum:</strong> Dünya ekonomisindeki belirsizlikler, savaşlar veya krizler altın fiyatlarını artırabilir, çünkü altın güvenli liman olarak görülür.
+                </li>
+                <li id="components-list-2">
+                    <strong>Faiz Oranları:</strong> Faiz oranları arttığında, getirili varlıklara olan ilgi artar ve faiz getirmeyen altının cazibesi azalabilir.
+                </li>
+                <li id="components-list-3">
+                    <strong>Dolar Kuru:</strong> Altın genellikle ABD Doları üzerinden fiyatlandığı için, doların küresel değeri altın fiyatlarını doğrudan etkiler. Dolar zayıfladığında, altın genellikle dolar dışı yatırımcılar için daha ucuz hale gelir ve fiyatı artabilir.
+                </li>
+                <li id="components-list-4">
+                    <strong>Talep ve Arz:</strong> Mücevherat sektörü, sanayi talebi ve merkez bankalarının altın rezervi alımları arz-talep dengesini etkiler.
+                </li>
+            </ul>
+            <p class="disclaimer-text" id="disclaimer-text">
+                Bu döviz ve altın çevirici, genel bilgi amaçlıdır ve verilen kurlar varsayımsal değerlerdir. Gerçek piyasa kurları ve fiyatları bankalar, döviz büroları veya altın piyasalarındaki güncel verilere göre değişiklik gösterebilir. Büyük finansal işlemler yapmadan önce güncel ve resmi kaynaklardan bilgi almanız tavsiye edilir.
+            </p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+            const texts = {
+                tr: {
+                    mainHeading: 'Döviz ve Altın Çevirici',
+                    mainDescription: 'Anlık döviz kurları ve altın fiyatları ile istediğiniz para birimi veya altın cinsi arasında hızlı ve kolay dönüşüm yapın.',
+                    calculatorTitle: 'Dönüşüm Yap',
+                    amountLabel: 'Miktar:',
+                    fromCurrencyLabel: 'Şu Birimden:',
+                    toCurrencyLabel: 'Şu Birime:',
+                    calculateButton: 'Çevir',
+                    invalidInput: 'Lütfen geçerli bir miktar girin.',
+                    conversionResult: 'Dönüştürülen Tutar:',
+                    lastUpdatedText: 'Kurlar anlık olarak güncellenmektedir. (Varsayımsal)',
+                    infoSectionTitle: 'Döviz ve Altın Çeviricinin Önemi',
+                    infoSectionP1: '**Döviz ve altın çevirici**, uluslararası ticaret yapanlar, yurt dışına seyahat edenler, yatırımcılar ve günlük hayatında farklı para birimleriyle işlem yapan herkes için vazgeçilmez bir araçtır. Anlık piyasa verileriyle doğru dönüşümler yaparak finansal kararlarınızı daha bilinçli alabilirsiniz.',
+                    whyInstantRatesTitle: 'Neden Anlık Kurlar Önemli?',
+                    infoList1: '<strong>Piyasa Volatilitesi:</strong> Döviz ve altın piyasaları sürekli dalgalanır. Anlık kurlar, alım-satım kararlarınızı en güncel verilere göre vermenizi sağlar.',
+                    infoList2: '<strong>Doğru Hesaplama:</strong> Özellikle büyük miktarlı işlemlerde küçük kur farkları bile önemli kazanç veya kayıplara yol açabilir. Çevirici, doğru miktarı belirlemenize yardımcı olur.',
+                    infoList3: '<strong>Yatırım Takibi:</strong> Altın veya döviz yatırımlarınızın değerini anlık olarak takip ederek portföyünüzün performansını izleyebilirsiniz.',
+                    goldPriceFactorsTitle: 'Altın Fiyatları Neye Göre Değişir?',
+                    componentsList1: '<strong>Küresel Ekonomik Durum:</strong> Dünya ekonomisindeki belirsizlikler, savaşlar veya krizler altın fiyatlarını artırabilir, çünkü altın güvenli liman olarak görülür.',
+                    componentsList2: '<strong>Faiz Oranları:</strong> Faiz oranları arttığında, getirili varlıklara olan ilgi artar ve faiz getirmeyen altının cazibesi azalabilir.',
+                    componentsList3: '<strong>Dolar Kuru:</strong> Altın genellikle ABD Doları üzerinden fiyatlandığı için, doların küresel değeri altın fiyatlarını doğrudan etkiler. Dolar zayıfladığında, altın genellikle dolar dışı yatırımcılar için daha ucuz hale gelir ve fiyatı artabilir.',
+                    componentsList4: '<strong>Talep ve Arz:</strong> Mücevherat sektörü, sanayi talebi ve merkez bankalarının altın rezervi alımları arz-talep dengesini etkiler.',
+                    disclaimerText: 'Bu döviz ve altın çevirici, genel bilgi amaçlıdır ve verilen kurlar varsayımsal değerlerdir. Gerçek piyasa kurları ve fiyatları bankalar, döviz büroları veya altın piyasalarındaki güncel verilere göre değişiklik gösterebilir. Büyük finansal işlemler yapmadan önce güncel ve resmi kaynaklardan bilgi almanız tavsiye edilir.'
+                },
+                en: {
+                    mainHeading: 'Currency and Gold Converter',
+                    mainDescription: 'Convert between desired currencies or gold types quickly and easily with live exchange rates and gold prices.',
+                    calculatorTitle: 'Convert Now',
+                    amountLabel: 'Amount:',
+                    fromCurrencyLabel: 'From:',
+                    toCurrencyLabel: 'To:',
+                    calculateButton: 'Convert',
+                    invalidInput: 'Please enter a valid amount.',
+                    conversionResult: 'Converted Amount:',
+                    lastUpdatedText: 'Rates are updated instantly. (Hypothetical)',
+                    infoSectionTitle: 'Importance of Currency and Gold Converter',
+                    infoSectionP1: '**Currency and gold converter** is an indispensable tool for international traders, travelers abroad, investors, and anyone dealing with different currencies in their daily lives. By making accurate conversions with live market data, you can make more informed financial decisions.',
+                    whyInstantRatesTitle: 'Why Are Live Rates Important?',
+                    infoList1: '<strong>Market Volatility:</strong> Currency and gold markets constantly fluctuate. Live rates allow you to make buying and selling decisions based on the most up-to-date data.',
+                    infoList2: '<strong>Accurate Calculation:</strong> Even small rate differences can lead to significant gains or losses, especially in large transactions. The converter helps you determine the correct amount.',
+                    infoList3: '<strong>Investment Tracking:</strong> You can track the value of your gold or currency investments instantly and monitor your portfolio\'s performance.',
+                    goldPriceFactorsTitle: 'What Affects Gold Prices?',
+                    componentsList1: '<strong>Global Economic Situation:</strong> Global economic uncertainties, wars, or crises can increase gold prices, as gold is seen as a safe haven.',
+                    componentsList2: '<strong>Interest Rates:</strong> When interest rates rise, interest in income-generating assets increases, and the appeal of non-interest-bearing gold may decrease.',
+                    components3: '<strong>Dollar Exchange Rate:</strong> Since gold is generally priced in US Dollars, the global value of the dollar directly affects gold prices. When the dollar weakens, gold typically becomes cheaper for non-dollar investors, and its price may increase.',
+                    components4: '<strong>Supply and Demand:</strong> The jewelry sector, industrial demand, and central banks\' gold reserve purchases affect the supply-demand balance.',
+                    disclaimerText: 'This currency and gold converter is for general informational purposes only, and the rates provided are hypothetical values. Actual market rates and prices may vary based on current data from banks, exchange offices, or gold markets. It is recommended to obtain information from current and official sources before making large financial transactions.'
+                }
+            };
+
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // Header ve Footer yükleme fonksiyonları (Mevcut kodunuzdan kopyalanmıştır)
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // Metinleri güncelle
+            document.getElementById('main-heading').textContent = currentTexts.mainHeading;
+            document.getElementById('main-description').textContent = currentTexts.mainDescription;
+            document.getElementById('calculator-title').innerHTML = `<i class="fas fa-coins icon-small"></i> ${currentTexts.calculatorTitle}`;
+            document.getElementById('amount-label').textContent = currentTexts.amountLabel;
+            document.getElementById('from-currency-label').textContent = currentTexts.fromCurrencyLabel;
+            document.getElementById('to-currency-label').textContent = currentTexts.toCurrencyLabel;
+            document.getElementById('calculate-button').textContent = currentTexts.calculateButton;
+            document.getElementById('last-updated-text').textContent = currentTexts.lastUpdatedText;
+
+            document.getElementById('info-section-title').textContent = currentTexts.infoSectionTitle;
+            document.getElementById('info-section-p1').innerHTML = currentTexts.infoSectionP1;
+            document.querySelector('#info-section-title + p + h4').textContent = currentTexts.whyInstantRatesTitle;
+            document.getElementById('info-list-1').innerHTML = currentTexts.infoList1;
+            document.getElementById('info-list-2').innerHTML = currentTexts.infoList2;
+            document.getElementById('info-list-3').innerHTML = currentTexts.infoList3;
+            document.querySelector('#info-section-title + p + h4 + ul + h4').textContent = currentTexts.goldPriceFactorsTitle;
+            document.getElementById('components-list-1').innerHTML = currentTexts.componentsList1;
+            document.getElementById('components-list-2').innerHTML = currentTexts.componentsList2;
+            document.getElementById('components-list-3').innerHTML = currentTexts.componentsList3;
+            document.getElementById('components-list-4').innerHTML = currentTexts.componentsList4;
+            document.getElementById('disclaimer-text').textContent = currentTexts.disclaimerText;
+
+
+            const converterForm = document.getElementById('currencyGoldConverterForm');
+            const amountInput = document.getElementById('amount');
+            const fromCurrencySelect = document.getElementById('from-currency');
+            const toCurrencySelect = document.getElementById('to-currency');
+            const conversionResultDiv = document.getElementById('conversionResult');
+
+            // Varsayımsal Kur ve Altın Fiyatları (Bu kısım gerçek bir API'den gelmelidir)
+            // Canlı kurları almak için güvenilir bir API (örneğin, TCMB veya finansal veri sağlayıcıları) kullanmanız önerilir.
+            // Bu örnekte sabit varsayımsal değerler kullanılmıştır.
+            const rates = {
+                "USD_TRY": 32.50, // 1 USD = 32.50 TRY
+                "EUR_TRY": 35.00, // 1 EUR = 35.00 TRY
+                "GBP_TRY": 40.50, // 1 GBP = 40.50 TRY
+                "XAU_GRAM_TRY": 2500.00, // 1 Gram Altın = 2500 TL (alış)
+                "XAU_ONS_TRY": 80000.00, // 1 Ons Altın = 80000 TL (alış) - 1 Ons = ~31.1035 gram
+                "XAU_CUMHURIYET_TRY": 18000.00 // 1 Cumhuriyet Altını = 18000 TL (alış) - 1 Cumhuriyet = 7.216 gram
+            };
+
+            converterForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                conversionResultDiv.innerHTML = '';
+                conversionResultDiv.style.display = 'none';
+
+                const amount = parseFloat(amountInput.value);
+                const fromCurrency = fromCurrencySelect.value;
+                const toCurrency = toCurrencySelect.value;
+
+                if (isNaN(amount) || amount <= 0) {
+                    conversionResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                    conversionResultDiv.style.display = 'block';
+                    return;
+                }
+
+                let convertedAmount = 0;
+                let baseAmountInTRY = 0;
+
+                // Önce tüm birimleri TRY'ye çevir
+                if (fromCurrency === "TRY") {
+                    baseAmountInTRY = amount;
+                } else if (fromCurrency === "USD") {
+                    baseAmountInTRY = amount * rates["USD_TRY"];
+                } else if (fromCurrency === "EUR") {
+                    baseAmountInTRY = amount * rates["EUR_TRY"];
+                } else if (fromCurrency === "GBP") {
+                    baseAmountInTRY = amount * rates["GBP_TRY"];
+                } else if (fromCurrency === "XAU_GRAM") {
+                    baseAmountInTRY = amount * rates["XAU_GRAM_TRY"];
+                } else if (fromCurrency === "XAU_ONS") {
+                    baseAmountInTRY = amount * rates["XAU_ONS_TRY"];
+                } else if (fromCurrency === "XAU_CUMHURIYET") {
+                    baseAmountInTRY = amount * rates["XAU_CUMHURIYET_TRY"];
+                }
+
+                // Sonra TRY'den hedef birime çevir
+                if (toCurrency === "TRY") {
+                    convertedAmount = baseAmountInTRY;
+                } else if (toCurrency === "USD") {
+                    convertedAmount = baseAmountInTRY / rates["USD_TRY"];
+                } else if (toCurrency === "EUR") {
+                    convertedAmount = baseAmountInTRY / rates["EUR_TRY"];
+                } else if (toCurrency === "GBP") {
+                    convertedAmount = baseAmountInTRY / rates["GBP_TRY"];
+                } else if (toCurrency === "XAU_GRAM") {
+                    convertedAmount = baseAmountInTRY / rates["XAU_GRAM_TRY"];
+                } else if (toCurrency === "XAU_ONS") {
+                    convertedAmount = baseAmountInTRY / rates["XAU_ONS_TRY"];
+                } else if (toCurrency === "XAU_CUMHURIYET") {
+                    convertedAmount = baseAmountInTRY / rates["XAU_CUMHURIYET_TRY"];
+                }
+
+                conversionResultDiv.innerHTML = `
+                    <p><strong>${currentTexts.conversionResult}</strong> <span class="total-result-value">${convertedAmount.toFixed(4)} ${toCurrency.replace("XAU_", "").replace("_", " ")}</span></p>
+                `;
+                conversionResultDiv.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>
