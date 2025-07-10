@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>BES Birikim Hesaplama Aracı - Hesapkolik</title>
+    
+    <meta content="Türkiye'deki Bireysel Emeklilik Sistemi (BES) kapsamında aylık düzenli yatırımlarınızın devlet katkısı, fon getirisi ve vergiler dahil gelecekteki toplam birikimini ve emeklilik sonrası net tutarı hesaplayın." name="description"/>
+    <meta content="BES hesaplama, bireysel emeklilik, devlet katkısı, emeklilik birikimi, fon getirisi, vergi avantajı, BES vergisi, hesapkolik BES" name="keywords"/>
+    
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    
+    <style>
+        /* Genel Ayarlar ve Font */
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f7f6; /* Sade ve ferah bir arka plan */
+            color: #333; 
+            line-height: 1.6;
+        }
+        .container { 
+            max-width: 960px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Koyu tema başlık/altlık ile uyumlu */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Calculator Section */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff; /* Beyaz kart arka planı */
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50; /* Koyu metin rengi */
+            font-size: 2.2em;
+        }
+        .calc-wrapper { 
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 750px; /* Biraz daha geniş olabilir tablo için */
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        /* Form Elemanları */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"] {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .calc-wrapper input.error {
+            border-color: red !important;
+        }
+
+        /* Form butonları */
+        .calculator-form-container button[type="submit"] {
+            background-color: #28a745; /* Onay yeşili */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button[type="submit"]:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Sonuç Ekranı */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe4;
+            display: none; /* Varsayılan olarak gizli */
+        }
+        .result-display .total-result-value {
+            color: #e74c3c;
+            font-size: 1.8em;
+            display: block;
+            margin-top: 10px;
+        }
+        .result-display .error {
+            color: #e74c3c;
+            font-size: 0.8em;
+        }
+
+        /* Birikim Tablosu Stilleri */
+        .savings-table-container {
+            margin-top: 30px;
+            overflow-x: auto; /* Küçük ekranlarda tablo kaydırma çubuğu */
+        }
+        .savings-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+            text-align: left;
+        }
+        .savings-table th, .savings-table td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+        }
+        .savings-table th {
+            background-color: #3498db;
+            color: white;
+            font-weight: 600;
+            white-space: nowrap; /* Başlıkların tek satırda kalmasını sağlar */
+        }
+        .savings-table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .savings-table tbody tr:hover {
+            background-color: #e8f0fe;
+        }
+
+        /* Açıklama bölümleri */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text { 
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1em;
+            }
+            .result-display .total-result-value {
+                font-size: 1.5em;
+            }
+            .savings-table th, .savings-table td {
+                padding: 10px 8px; /* Tablo hücrelerini küçült */
+            }
+            .savings-table {
+                font-size: 0.8em; /* Tablo fontunu küçült */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            .result-display {
+                font-size: 0.9em;
+                padding: 10px;
+            }
+            .result-display .total-result-value {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+    
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1 id="main-heading">BES Birikim ve Emeklilik Hesaplama Aracı</h1>
+                <p id="main-description">Türkiye'deki Bireysel Emeklilik Sistemi (BES) kapsamında aylık düzenli yatırımlarınızın devlet katkısı, fon getirisi ve emeklilik sonrası vergi kesintileri dahil gelecekteki birikimini ve net tutarı hesaplayın.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper">
+                    <h3 id="calculator-title"><i class="fas fa-piggy-bank icon-small"></i> BES Birikim Hedefinizi Hesaplayın</h3>
+                    <div class="calculator-form-container">
+                        <form id="besCalculatorForm">
+                            <label for="initial-savings" id="initial-savings-label">Başlangıç Birikimi (TL):</label>
+                            <input id="initial-savings" type="number" min="0" value="0" step="0.01" required/>
+
+                            <label for="monthly-contribution" id="monthly-contribution-label">Aylık Katkı Payı (TL):</label>
+                            <input id="monthly-contribution" type="number" min="0" value="1000" step="0.01" required/>
+
+                            <label for="investment-return" id="investment-return-label">Yıllık Ortalama Fon Getiri Oranı (%):</label>
+                            <input id="investment-return" type="number" min="0" max="100" value="15" step="0.01" required/>
+
+                            <label for="inflation-rate" id="inflation-rate-label">Yıllık Ortalama Enflasyon Oranı (%):</label>
+                            <input id="inflation-rate" type="number" min="0" max="100" value="5" step="0.01" required/>
+
+                            <label for="investment-period" id="investment-period-label">BES'te Kalma Süresi (Yıl):</label>
+                            <input id="investment-period" type="number" min="1" max="65" value="10" step="1" required/>
+
+                            <label for="age" id="age-label">Yaşınız (BES'e Giriş Yaşı):</label>
+                            <input id="age" type="number" min="18" max="64" value="30" step="1" required/>
+
+                            <button type="submit" id="calculate-button">BES Birikimini Hesapla</button>
+                        </form>
+                        <div class="result-display" id="besResult"></div>
+                        <div class="savings-table-container" id="besTableContainer"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3 id="info-section-title">Bireysel Emeklilik Sistemi (BES) ve Hesaplamanın Detayları</h3>
+            <p id="info-section-p1">
+                **Bireysel Emeklilik Sistemi (BES)**, çalışma hayatınız boyunca yaptığınız tasarrufları, uzman fon yöneticileri aracılığıyla yatırıma yönlendirerek emeklilik döneminizde ek bir gelir elde etmenizi sağlayan bir sistemdir. BES hesaplamaları, devlet katkısı, fon getirileri ve çıkış anındaki vergilendirmeler gibi dinamikleri içerir.
+            </p>
+            <h4>BES'in Temel Avantajları ve Bileşenleri:</h4>
+            <ul>
+                <li id="info-list-1">
+                    <strong>%30 Devlet Katkısı:</strong> Yatırılan her katkı payına ek olarak devlet tarafından %30 oranında katkı sağlanır. Yıllık olarak belirlenen brüt asgari ücretin belirli bir katı ile sınırlıdır.
+                </li>
+                <li id="info-list-2">
+                    <strong>Fon Çeşitliliği ve Getiri:</strong> Birikimleriniz, risk tercihlerinize göre çeşitli emeklilik yatırım fonlarında değerlendirilir. Fonların getiri performansı toplam birikimi doğrudan etkiler.
+                </li>
+                <li id="info-list-3">
+                    <strong>Vergi Avantajları:</strong> Sistemden ayrılırken uygulanan vergi oranları, sistemde kalma süresine göre farklılık gösterir. Ne kadar uzun süre kalırsanız, vergi avantajınız o kadar artar.
+                </li>
+                <li id="info-list-4">
+                    <strong>Yönetim Gider Kesintileri:</strong> BES fonları genellikle yönetim gider kesintilerine tabidir. Bu kesintiler toplam birikimden düşülür. Hesaplamamızda basitleştirilmiş bir ortalama kesinti oranı kullanılmıştır.
+                </li>
+            </ul>
+            <h4>BES'ten Ayrılma ve Vergilendirme:</h4>
+            <p id="disclaimer-text">
+                BES'ten ayrılma durumunda, devlet katkısı ve fon getirileri üzerinden belirli oranlarda stopaj (vergi) kesintisi uygulanır. Bu kesinti oranları, sistemde kalınan süreye ve emeklilik hakkı kazanıp kazanılmadığına göre değişir:
+            </p>
+            <ul>
+                <li><strong>10 yıldan az sürede ayrılma veya emeklilik hakkı kazanmadan ayrılma:</strong> Devlet katkısı getirisi üzerinden %15 stopaj. Varsa diğer getiriler üzerinden de vergi uygulanabilir.</li>
+                <li><strong>10 yıl ve üzeri sürede kalanlar ancak emeklilik hakkı kazanmadan ayrılma:</strong> Devlet katkısı getirisi üzerinden %10 stopaj. Varsa diğer getiriler üzerinden de vergi uygulanabilir.</li>
+                <li><strong>Emeklilik hakkı kazananlar (10 yıl sistemde kalma ve 56 yaşını tamamlama):</strong> Devlet katkısı ve fon getirileri üzerinden %5 stopaj.</li>
+            </ul>
+            <p class="small-text">
+                Bu hesaplama aracı, yukarıdaki genel kabul görmüş BES kuralları ve varsayımlar üzerinden bir tahmin sunar. Gerçek getiriler, fon performansına, enflasyona, mevzuattaki değişikliklere ve uygulanan kesintilere göre farklılık gösterebilir. Yatırım yapmadan önce detaylı bilgi ve finansal danışmanlık almanız önerilir. Özellikle yönetim gider kesintileri ve fon işletim giderleri her şirkete göre değişebilir.
+            </p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+            const texts = {
+                tr: {
+                    mainHeading: 'BES Birikim ve Emeklilik Hesaplama Aracı',
+                    mainDescription: 'Türkiye\'deki Bireysel Emeklilik Sistemi (BES) kapsamında aylık düzenli yatırımlarınızın devlet katkısı, fon getirisi ve emeklilik sonrası vergi kesintileri dahil gelecekteki birikimini ve net tutarı hesaplayın.',
+                    calculatorTitle: 'BES Birikim Hedefinizi Hesaplayın',
+                    initialSavingsLabel: 'Başlangıç Birikimi (TL):',
+                    monthlyContributionLabel: 'Aylık Katkı Payı (TL):',
+                    investmentReturnLabel: 'Yıllık Ortalama Fon Getiri Oranı (%):',
+                    inflationRateLabel: 'Yıllık Ortalama Enflasyon Oranı (%):',
+                    investmentPeriodLabel: 'BES\'te Kalma Süresi (Yıl):',
+                    ageLabel: 'Yaşınız (BES\'e Giriş Yaşı):',
+                    calculateButton: 'BES Birikimini Hesapla',
+                    invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin. Getiri, Enflasyon oranı %0-100 arasında, Yaş 18-64 arasında ve Süre 1-65 arasında olmalıdır.',
+                    totalSavingsBeforeTax: 'Hesaplanan Brüt BES Birikimi:',
+                    totalGovContribution: 'Toplam Devlet Katkısı:',
+                    totalNetSavings: 'Emeklilik Sonrası Tahmini Net Tutar:',
+                    taxApplied: 'Uygulanan Vergi Oranı:',
+                    tableYear: 'Yıl',
+                    tableStartBalance: 'Yıl Başı Bakiyesi (TL)',
+                    tableMonthlyContribution: 'Yıllık Katkı (TL)',
+                    tableGovContribution: 'Devlet Katkısı (TL)',
+                    tableInterestEarned: 'Kazanılan Getiri (TL)',
+                    tableEndBalance: 'Yıl Sonu Brüt Bakiye (TL)',
+                    tableNetAfterTax: 'Emeklilik Sonrası Net (TL)',
+                    infoSectionTitle: 'Bireysel Emeklilik Sistemi (BES) ve Hesaplamanın Detayları',
+                    infoSectionP1: '**Bireysel Emeklilik Sistemi (BES)**, çalışma hayatınız boyunca yaptığınız tasarrufları, uzman fon yöneticileri aracılığıyla yatırıma yönlendirerek emeklilik döneminizde ek bir gelir elde etmenizi sağlayan bir sistemdir. BES hesaplamaları, devlet katkısı, fon getirileri ve çıkış anındaki vergilendirmeler gibi dinamikleri içerir.',
+                    advantagesTitle: 'BES\'in Temel Avantajları ve Bileşenleri:',
+                    infoList1: '<strong>%30 Devlet Katkısı:</strong> Yatırılan her katkı payına ek olarak devlet tarafından %30 oranında katkı sağlanır. Yıllık olarak belirlenen brüt asgari ücretin belirli bir katı ile sınırlıdır.',
+                    infoList2: '<strong>Fon Çeşitliliği ve Getiri:</strong> Birikimleriniz, risk tercihlerinize göre çeşitli emeklilik yatırım fonlarında değerlendirilir. Fonların getiri performansı toplam birikimi doğrudan etkiler.',
+                    infoList3: '<strong>Vergi Avantajları:</strong> Sistemden ayrılırken uygulanan vergi oranları, sistemde kalma süresine göre farklılık gösterir. Ne kadar uzun süre kalırsanız, vergi avantajınız o kadar artar.',
+                    infoList4: '<strong>Yönetim Gider Kesintileri:</strong> BES fonları genellikle yönetim gider kesintilerine tabidir. Bu kesintiler toplam birikimden düşülür. Hesaplamamızda basitleştirilmiş bir ortalama kesinti oranı kullanılmıştır.',
+                    taxSectionTitle: 'BES\'ten Ayrılma ve Vergilendirme:',
+                    taxDesc: 'BES\'ten ayrılma durumunda, devlet katkısı ve fon getirileri üzerinden belirli oranlarda stopaj (vergi) kesintisi uygulanır. Bu kesinti oranları, sistemde kalınan süreye ve emeklilik hakkı kazanıp kazanılmadığına göre değişir:',
+                    taxRate1: '<strong>10 yıldan az sürede ayrılma veya emeklilik hakkı kazanmadan ayrılma:</strong> Devlet katkısı getirisi üzerinden %15 stopaj. Varsa diğer getiriler üzerinden de vergi uygulanabilir.',
+                    taxRate2: '<strong>10 yıl ve üzeri sürede kalanlar ancak emeklilik hakkı kazanmadan ayrılma:</strong> Devlet katkısı getirisi üzerinden %10 stopaj. Varsa diğer getiriler üzerinden de vergi uygulanabilir.',
+                    taxRate3: '<strong>Emeklilik hakkı kazananlar (10 yıl sistemde kalma ve 56 yaşını tamamlama):</strong> Devlet katkısı ve fon getirileri üzerinden %5 stopaj.',
+                    disclaimerText: 'Bu hesaplama aracı, yukarıdaki genel kabul görmüş BES kuralları ve varsayımlar üzerinden bir tahmin sunar. Gerçek getiriler, fon performansına, enflasyona, mevzuattaki değişikliklere ve uygulanan kesintilere göre farklılık gösterebilir. Yatırım yapmadan önce detaylı bilgi ve finansal danışmanlık almanız önerilir. Özellikle yönetim gider kesintileri ve fon işletim giderleri her şirkete göre değişebilir.'
+                },
+                en: {
+                    mainHeading: 'Individual Pension System (BES) Savings & Retirement Calculator',
+                    mainDescription: 'Calculate your total future savings and net retirement amount under Turkey\'s Individual Pension System (BES), including state contribution, fund returns, and post-retirement tax deductions.',
+                    calculatorTitle: 'Calculate Your BES Savings Goal',
+                    initialSavingsLabel: 'Initial Savings (TL):',
+                    monthlyContributionLabel: 'Monthly Contribution (TL):',
+                    investmentReturnLabel: 'Annual Average Fund Return Rate (%):',
+                    inflationRateLabel: 'Annual Average Inflation Rate (%):',
+                    investmentPeriodLabel: 'Time in BES (Years):',
+                    ageLabel: 'Your Age (Age at BES Entry):',
+                    calculateButton: 'Calculate BES Savings',
+                    invalidInput: 'Please enter valid positive numbers for all fields. Return and Inflation rates must be between 0-100%, Age between 18-64, and Period between 1-65.',
+                    totalSavingsBeforeTax: 'Calculated Gross BES Savings:',
+                    totalGovContribution: 'Total State Contribution:',
+                    totalNetSavings: 'Estimated Net Amount After Retirement:',
+                    taxApplied: 'Applied Tax Rate:',
+                    tableYear: 'Year',
+                    tableStartBalance: 'Start of Year Balance (TL)',
+                    tableMonthlyContribution: 'Annual Contribution (TL)',
+                    tableGovContribution: 'State Contribution (TL)',
+                    tableInterestEarned: 'Interest Earned (TL)',
+                    tableEndBalance: 'End of Year Gross Balance (TL)',
+                    tableNetAfterTax: 'Net After Retirement (TL)',
+                    infoSectionTitle: 'Individual Pension System (BES) and Calculation Details',
+                    infoSectionP1: '**Individual Pension System (BES)** is a system that allows you to earn additional income during your retirement by investing your savings through expert fund managers. BES calculations include dynamics such as state contribution, fund returns, and taxation at the time of exit.',
+                    advantagesTitle: 'Key Advantages and Components of BES:',
+                    infoList1: '<strong>30% State Contribution:</strong> In addition to each contribution paid, a 30% state contribution is provided. This is limited to a certain multiple of the annual gross minimum wage.',
+                    infoList2: '<strong>Fund Diversity and Return:</strong> Your savings are invested in various pension investment funds according to your risk preferences. The return performance of the funds directly affects the total savings.',
+                    infoList3: '<strong>Tax Advantages:</strong> Tax rates applied when exiting the system vary depending on the duration of stay in the system. The longer you stay, the greater your tax advantage.',
+                    infoList4: '<strong>Management Expense Ratios:</strong> BES funds are generally subject to management expense ratios. These deductions are subtracted from the total savings. Our calculation uses a simplified average expense ratio.',
+                    taxSectionTitle: 'Exiting BES and Taxation:',
+                    taxDesc: 'Upon exiting BES, a certain percentage of withholding tax is applied on the state contribution and fund returns. These withholding tax rates vary depending on the duration of stay in the system and whether retirement eligibility has been met:',
+                    taxRate1: '<strong>Exit in less than 10 years or without meeting retirement eligibility:</strong> 15% withholding tax on state contribution returns. Taxes may also apply to other returns, if any.',
+                    taxRate2: '<strong>Stay for 10 years or more but exit without meeting retirement eligibility:</strong> 10% withholding tax on state contribution returns. Taxes may also apply to other returns, if any.',
+                    taxRate3: '<strong>Those who meet retirement eligibility (10 years in the system and completion of age 56):</strong> 5% withholding tax on state contribution and fund returns.',
+                    disclaimerText: 'This calculation tool provides an estimate based on the generally accepted BES rules and assumptions. Actual returns may vary significantly depending on fund performance, inflation, regulatory changes, and applied deductions. It is recommended to seek detailed information and financial advice before making investment decisions. Especially, management expense ratios and fund operating expenses may vary by company.'
+                }
+            };
+
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // Header ve Footer yükleme fonksiyonları
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // Metinleri güncelle
+            document.getElementById('main-heading').textContent = currentTexts.mainHeading;
+            document.getElementById('main-description').textContent = currentTexts.mainDescription;
+            document.getElementById('calculator-title').innerHTML = `<i class="fas fa-piggy-bank icon-small"></i> ${currentTexts.calculatorTitle}`;
+            document.getElementById('initial-savings-label').textContent = currentTexts.initialSavingsLabel;
+            document.getElementById('monthly-contribution-label').textContent = currentTexts.monthlyContributionLabel;
+            document.getElementById('investment-return-label').textContent = currentTexts.investmentReturnLabel;
+            document.getElementById('inflation-rate-label').textContent = currentTexts.inflationRateLabel;
+            document.getElementById('investment-period-label').textContent = currentTexts.investmentPeriodLabel;
+            document.getElementById('age-label').textContent = currentTexts.ageLabel;
+            document.getElementById('calculate-button').textContent = currentTexts.calculateButton;
+            
+            document.getElementById('info-section-title').textContent = currentTexts.infoSectionTitle;
+            document.getElementById('info-section-p1').innerHTML = currentTexts.infoSectionP1;
+            document.querySelector('#info-section-title + p + h4').textContent = currentTexts.advantagesTitle;
+            document.getElementById('info-list-1').innerHTML = currentTexts.infoList1;
+            document.getElementById('info-list-2').innerHTML = currentTexts.infoList2;
+            document.getElementById('info-list-3').innerHTML = currentTexts.infoList3;
+            document.getElementById('info-list-4').innerHTML = currentTexts.infoList4;
+            
+            // Tax section
+            const taxSectionH4 = document.createElement('h4');
+            taxSectionH4.textContent = currentTexts.taxSectionTitle;
+            const taxSectionP = document.createElement('p');
+            taxSectionP.innerHTML = currentTexts.taxDesc;
+            const taxUl = document.createElement('ul');
+            const taxLi1 = document.createElement('li');
+            taxLi1.innerHTML = currentTexts.taxRate1;
+            const taxLi2 = document.createElement('li');
+            taxLi2.innerHTML = currentTexts.taxRate2;
+            const taxLi3 = document.createElement('li');
+            taxLi3.innerHTML = currentTexts.taxRate3;
+            taxUl.appendChild(taxLi1);
+            taxUl.appendChild(taxLi2);
+            taxUl.appendChild(taxLi3);
+
+            const infoSection = document.querySelector('.info-section');
+            infoSection.insertBefore(taxSectionH4, document.getElementById('disclaimer-text'));
+            infoSection.insertBefore(taxSectionP, document.getElementById('disclaimer-text'));
+            infoSection.insertBefore(taxUl, document.getElementById('disclaimer-text'));
+
+            document.querySelector('.small-text').textContent = currentTexts.disclaimerText;
+
+
+            const besCalculatorForm = document.getElementById('besCalculatorForm');
+            const initialSavingsInput = document.getElementById('initial-savings');
+            const monthlyContributionInput = document.getElementById('monthly-contribution');
+            const investmentReturnInput = document.getElementById('investment-return');
+            const inflationRateInput = document.getElementById('inflation-rate');
+            const investmentPeriodInput = document.getElementById('investment-period');
+            const ageInput = document.getElementById('age');
+            const besResultDiv = document.getElementById('besResult');
+            const besTableContainer = document.getElementById('besTableContainer');
+
+            besCalculatorForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                besResultDiv.innerHTML = '';
+                besResultDiv.style.display = 'none';
+                besTableContainer.innerHTML = ''; // Tabloyu temizle
+
+                const initialSavings = parseFloat(initialSavingsInput.value);
+                const monthlyContribution = parseFloat(monthlyContributionInput.value);
+                const annualReturnRate = parseFloat(investmentReturnInput.value) / 100;
+                const annualInflationRate = parseFloat(inflationRateInput.value) / 100;
+                const investmentPeriodYears = parseInt(investmentPeriodInput.value);
+                const currentAge = parseInt(ageInput.value);
+
+                // Input doğrulama
+                if (isNaN(initialSavings) || isNaN(monthlyContribution) || isNaN(annualReturnRate) || 
+                    isNaN(annualInflationRate) || isNaN(investmentPeriodYears) || isNaN(currentAge) ||
+                    initialSavings < 0 || monthlyContribution < 0 || annualReturnRate < 0 || annualReturnRate > 1 ||
+                    annualInflationRate < 0 || annualInflationRate > 1 ||
+                    investmentPeriodYears < 1 || investmentPeriodYears > 65 ||
+                    currentAge < 18 || currentAge > 64) {
+                    besResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                    besResultDiv.style.display = 'block';
+                    return;
+                }
+
+                const monthlyReturnRate = annualReturnRate / 12;
+                const monthlyInflationRate = annualInflationRate / 12;
+                const totalMonths = investmentPeriodYears * 12;
+
+                let currentBalance = initialSavings;
+                let totalGovContribution = 0;
+                let totalPaidContribution = initialSavings; // initial savings are also 'paid' initially
+                const yearlyData = [];
+
+                // Constants for BES
+                const GOVERNMENT_CONTRIBUTION_RATE = 0.30; // %30 devlet katkısı
+                // Bu değer 2024 yılı için brüt asgari ücretin 1 katıdır (20.002,50 TL). Yıllık maksimum devlet katkısı limiti.
+                // Gerçek dünya uygulamasında bu limit her yıl güncellenir.
+                // Burada basitleştirilmiş bir hesaplama için doğrudan bir limit kullanılmamıştır.
+                // Ancak isterseniz dinamik olarak yıllık asgari ücreti çekip kullanabilirsiniz.
+                // Basitlik adına, doğrudan aylık katkının %30'u alınmıştır.
+                const MANAGEMENT_EXPENSE_RATIO = 0.008; // Yıllık ortalama %0.8 yönetim gider kesintisi (Örnek değer)
+                                                        // Bu oran şirketlere ve fonlara göre değişir.
+                
+                // Emeklilik hakkı için yaş ve süre kontrolü
+                const isEligibleForRetirement = (investmentPeriodYears >= 10 && (currentAge + investmentPeriodYears) >= 56);
+
+                for (let year = 1; year <= investmentPeriodYears; year++) {
+                    const yearStartBalance = currentBalance;
+                    let annualPaidContribution = 0;
+                    let annualGovContribution = 0;
+                    let annualInterestEarned = 0;
+
+                    for (let month = 1; month <= 12; month++) {
+                        // Aylık katkı ekle
+                        currentBalance += monthlyContribution;
+                        annualPaidContribution += monthlyContribution;
+
+                        // Devlet katkısı (aylık bazda hesaplanıp ekleniyor)
+                        const govContributionThisMonth = monthlyContribution * GOVERNMENT_CONTRIBUTION_RATE;
+                        currentBalance += govContributionThisMonth;
+                        annualGovContribution += govContributionThisMonth;
+
+                        // Yönetim gider kesintisi (aylık) - basitleştirilmiş, genellikle fonlardan düşülür
+                        const monthlyManagementFee = currentBalance * (MANAGEMENT_EXPENSE_RATIO / 12);
+                        currentBalance -= monthlyManagementFee;
+
+                        // Kazanılan fon getirisi (aylık bazda bileşik)
+                        const interestEarnedThisMonth = currentBalance * monthlyReturnRate;
+                        currentBalance += interestEarnedThisMonth;
+                        annualInterestEarned += interestEarnedThisMonth;
+                    }
+
+                    totalPaidContribution += annualPaidContribution; // İlk başlangıç birikimi hariç
+                    totalGovContribution += annualGovContribution;
+
+                    yearlyData.push({
+                        year: year,
+                        startingBalance: yearStartBalance,
+                        annualMonthlyContribution: annualPaidContribution,
+                        annualGovContribution: annualGovContribution,
+                        annualInterestEarned: annualInterestEarned,
+                        endBalance: currentBalance,
+                    });
+                }
+
+                const finalGrossBESBalance = currentBalance;
+                
+                // Vergi Hesaplaması
+                let taxRateOnInvestmentGain; // Yatırım getirisinden alınacak vergi oranı
+                let taxRateOnGovContributionGain; // Devlet katkısı getirisinden alınacak vergi oranı
+
+                // Gerçek getiri = (Toplam Brüt Birikim - Katkı Payı + Kesintiler) - (Devlet Katkısı)
+                // Daha basit bir yaklaşım: Gerçek getiriyi tüm birikimden (Katkı Payları + Devlet Katkıları) düşerek bulalım.
+                const totalContributionsAndGovSupport = initialSavings + (monthlyContribution * totalMonths) + totalGovContribution;
+                const totalInvestmentGain = finalGrossBESBalance - totalContributionsAndGovSupport;
+
+
+                if (isEligibleForRetirement) {
+                    // Emeklilik hakkı kazananlar: %5 stopaj
+                    taxRateOnInvestmentGain = 0.05;
+                    taxRateOnGovContributionGain = 0.05;
+                } else if (investmentPeriodYears >= 10) {
+                    // 10 yıl ve üzeri kalanlar ancak emeklilik hakkı kazanmayanlar: %10 stopaj
+                    taxRateOnInvestmentGain = 0.10;
+                    taxRateOnGovContributionGain = 0.10;
+                } else {
+                    // 10 yıldan az kalanlar: %15 stopaj
+                    taxRateOnInvestmentGain = 0.15;
+                    taxRateOnGovContributionGain = 0.15;
+                }
+
+                // Vergiyi doğrudan brüt birikim üzerinden hesaplayalım (Basitleştirilmiş)
+                // Gerçekte vergi, devlet katkısının getirisi ve fon getirisi üzerinden ayrı ayrı hesaplanır.
+                // Ancak kullanıcı için basitleştirilmiş bir toplam vergi kesintisi göstereceğiz.
+                let totalTaxAmount = 0;
+
+                // Fon getirisinden vergi:
+                const taxOnInvestmentGain = totalInvestmentGain > 0 ? totalInvestmentGain * taxRateOnInvestmentGain : 0;
+                totalTaxAmount += taxOnInvestmentGain;
+
+                // Devlet katkısından vergi (sadece getirisi değil, tamamı üzerinden %x alınabilir veya getiri üzerinden)
+                // Basitlik için tüm devlet katkısı toplamı üzerinden kesinti yapalım.
+                // Türkiye'de vergi mevzuatında bu kısım sürekli güncellenebilir.
+                // Şu anki durumda devlet katkısının *getirisi* üzerinden vergi alınır.
+                // Ancak "kaçıncı yıl çıkarsa eline ne kadar para geçeceğini tahminleyen bir hesaplama aracı" talebine uygun olarak,
+                // devlet katkısının da bir kısmı veya getirisi üzerinden vergi kesintisi uygulanmalıdır.
+                // Burada basitleştirilmiş model için, çıkan tutarın tamamına uygulanan bir vergi oranı gibi düşünebiliriz.
+                // Veya devlet katkısının da getirisi ayrı hesaplanıp ona göre vergi alınabilir.
+                // Mevcut yapıda, toplam getiriden vergi alınıyor, bu da devlet katkısı getirisini de kapsayacaktır.
+                
+                // BES mevzuatına göre vergi, devlet katkısı ve fon getirileri üzerinden alınır.
+                // Basit bir yaklaşımla toplam brüt birikimden ödenen ana parayı çıkararak bir "toplam getiri" hesaplayıp, bu getiriye vergi uygulayabiliriz.
+                const taxableGain = finalGrossBESBalance - (initialSavings + (monthlyContribution * totalMonths));
+                const totalTaxOnGrossGain = taxableGain * taxRateOnInvestmentGain; // Fon getirisi ve devlet katkısı getirisini kapsayan vergi
+
+                const netBESBalance = finalGrossBESBalance - totalTaxOnGrossGain;
+
+
+                // Sonuçları göster
+                besResultDiv.innerHTML = `
+                    <p><strong>${currentTexts.totalSavingsBeforeTax}</strong> <span class="total-result-value">${finalGrossBESBalance.toFixed(2)} TL</span></p>
+                    <p><strong>${currentTexts.totalGovContribution}</strong> <span class="total-result-value">${totalGovContribution.toFixed(2)} TL</span></p>
+                    <p><strong>${currentTexts.taxApplied}</strong> <span class="total-result-value">%${(taxRateOnInvestmentGain * 100).toFixed(2)}</span></p>
+                    <p><strong>${currentTexts.totalNetSavings}</strong> <span class="total-result-value">${netBESBalance.toFixed(2)} TL</span></p>
+                `;
+                besResultDiv.style.display = 'block';
+
+                // Tablo oluştur
+                let tableHtml = `
+                    <table class="savings-table">
+                        <thead>
+                            <tr>
+                                <th>${currentTexts.tableYear}</th>
+                                <th>${currentTexts.tableStartBalance}</th>
+                                <th>${currentTexts.tableMonthlyContribution}</th>
+                                <th>${currentTexts.tableGovContribution}</th>
+                                <th>${currentTexts.tableInterestEarned}</th>
+                                <th>${currentTexts.tableEndBalance}</th>
+                                <th>${currentTexts.tableNetAfterTax}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                yearlyData.forEach(data => {
+                    // Her yıl sonu için o yılın sonunda sistemden çıkılması durumunda net tutarı hesapla
+                    let annualTaxRateOnInvestmentGain;
+                    let annualTaxRateOnGovContributionGain;
+                    const accumulatedYears = data.year;
+                    const ageAtExit = currentAge + accumulatedYears;
+                    const isAnnualEligibleForRetirement = (accumulatedYears >= 10 && ageAtExit >= 56);
+
+                    if (isAnnualEligibleForRetirement) {
+                        annualTaxRateOnInvestmentGain = 0.05;
+                        annualTaxRateOnGovContributionGain = 0.05;
+                    } else if (accumulatedYears >= 10) {
+                        annualTaxRateOnInvestmentGain = 0.10;
+                        annualTaxRateOnGovContributionGain = 0.10;
+                    } else {
+                        annualTaxRateOnInvestmentGain = 0.15;
+                        annualTaxRateOnGovContributionGain = 0.15;
+                    }
+
+                    const accumulatedContributionsAndGovSupport = initialSavings + (monthlyContribution * accumulatedYears * 12) + yearlyData.filter((_,idx) => idx < accumulatedYears).reduce((sum, d) => sum + d.annualGovContribution, 0);
+                    const accumulatedInvestmentGain = data.endBalance - accumulatedContributionsAndGovSupport;
+                    const annualTaxOnGrossGain = accumulatedInvestmentGain * annualTaxRateOnInvestmentGain;
+                    const annualNetBESBalance = data.endBalance - annualTaxOnGrossGain;
+
+
+                    tableHtml += `
+                        <tr>
+                            <td>${data.year}</td>
+                            <td>${data.startingBalance.toFixed(2)} TL</td>
+                            <td>${data.annualMonthlyContribution.toFixed(2)} TL</td>
+                            <td>${data.annualGovContribution.toFixed(2)} TL</td>
+                            <td>${data.annualInterestEarned.toFixed(2)} TL</td>
+                            <td>${data.endBalance.toFixed(2)} TL</td>
+                            <td>${annualNetBESBalance.toFixed(2)} TL</td>
+                        </tr>
+                    `;
+                });
+
+                tableHtml += `
+                        </tbody>
+                    </table>
+                `;
+                savingsTableContainer.innerHTML = tableHtml;
+            });
+        });
+    </script>
+</body>
+</html>
