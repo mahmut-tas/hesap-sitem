@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>
+      Bebek Persentil Hesaplayıcı - Hesapkolik
+    </title>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/header.css" rel="stylesheet"/>
+    <meta content="Bebeğinizin yaş, cinsiyet, boy ve kilo bilgilerini girerek persentil değerlerini hesaplayın ve gelişimini takip edin." name="description"/>
+    <meta content="bebek persentil, persentil hesaplama, bebek gelişimi, boy persentil, kilo persentil, bebek boy kilo" name="keywords"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+    </script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+    </script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-3655KNY8CP');
+    </script>
+    <style>
+      /* Bu stil blokları doğrudan HTML'e entegre edilmiştir. Normalde CSS dosyasına taşınabilir. */
+      .calculator-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+        justify-content: center;
+        margin-top: 30px;
+      }
+      .calculator-card-wrapper {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        width: 100%;
+        max-width: 450px;
+        transition: transform 0.3s ease;
+      }
+      .calculator-card-wrapper:hover {
+        transform: translateY(-5px);
+      }
+      .calculator-header {
+        background-color: #4CAF50;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+      .calculator-header i {
+        font-size: 28px;
+      }
+      .calculator-header h2 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 600;
+      }
+      .calculator-form-container {
+        padding: 30px;
+      }
+      .calculator-form-container form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+      .calculator-form-container label {
+        font-weight: 600;
+        color: #333;
+        font-size: 16px;
+        margin-bottom: 5px;
+      }
+      .calculator-form-container input[type="number"],
+      .calculator-form-container select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        color: #555;
+        box-sizing: border-box;
+      }
+      .calculator-form-container input[type="number"]:focus,
+      .calculator-form-container select:focus {
+        border-color: #4CAF50;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+      }
+      .calculator-form-container button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 15px 25px;
+        border: none;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        margin-top: 20px;
+      }
+      .calculator-form-container button:hover {
+        background-color: #45a049;
+        transform: translateY(-2px);
+      }
+      .result-display {
+        margin-top: 25px;
+        padding: 15px;
+        background-color: #e8f5e9;
+        border: 1px solid #c8e6c9;
+        border-radius: 8px;
+        text-align: center;
+        font-size: 18px;
+        color: #2e7d32;
+        font-weight: 600;
+        display: none; /* JavaScript ile görünür olacak */
+      }
+      .category-display {
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #fff3e0;
+        border: 1px solid #ffe0b2;
+        border-radius: 8px;
+        text-align: center;
+        font-size: 18px;
+        color: #ef6c00;
+        font-weight: 600;
+        display: none; /* JavaScript ile görünür olacak */
+      }
+      .result-value {
+        color: #1b5e20;
+        font-weight: 700;
+      }
+      .result-category {
+        font-weight: 700;
+      }
+      .category-underweight { color: #f44336; } /* Kırmızı */
+      .category-normal { color: #4CAF50; } /* Yeşil */
+      .category-overweight { color: #ff9800; } /* Turuncu */
+      .category-obese-i, .category-obese-ii, .category-obese-iii { color: #d32f2f; } /* Koyu Kırmızı */
+      .error {
+        color: #d32f2f;
+        font-weight: 600;
+        margin-top: 10px;
+      }
+
+      .info-section {
+        background-color: #f9f9f9;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        margin-top: 40px;
+        line-height: 1.7;
+        color: #444;
+      }
+      .info-section h3 {
+        color: #333;
+        font-size: 26px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      .info-section h4 {
+        color: #555;
+        font-size: 20px;
+        margin-top: 30px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+      }
+      .info-section p {
+        margin-bottom: 15px;
+      }
+      .info-section ul {
+        list-style-type: disc;
+        margin-left: 20px;
+        margin-bottom: 15px;
+      }
+      .info-section ul li {
+        margin-bottom: 8px;
+      }
+      .info-section table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      .info-section th, .info-section td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+      }
+      .info-section th {
+        background-color: #f2f2f2;
+        font-weight: 600;
+        color: #333;
+      }
+      .info-section tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+      .formula-text {
+        font-family: 'Courier New', monospace;
+        background-color: #eee;
+        padding: 10px;
+        border-radius: 5px;
+        text-align: center;
+        font-size: 1.1em;
+        font-weight: bold;
+        margin: 20px 0;
+      }
+      .disclaimer-text {
+        font-size: 0.9em;
+        color: #777;
+        margin-top: 30px;
+        text-align: center;
+        border-top: 1px dashed #eee;
+        padding-top: 20px;
+      }
+
+      /* Responsive Düzenlemeler */
+      @media (max-width: 768px) {
+        .calculator-group {
+          flex-direction: column;
+          align-items: center;
+        }
+        .calculator-card-wrapper {
+          max-width: 100%;
+        }
+        .info-section {
+          padding: 20px;
+          margin-top: 30px;
+        }
+        .main-title {
+          font-size: 28px;
+        }
+        .section-description {
+          font-size: 16px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .calculator-form-container {
+          padding: 20px;
+        }
+        .calculator-header h2 {
+          font-size: 20px;
+        }
+        .calculator-header i {
+          font-size: 24px;
+        }
+        .calculator-form-container button {
+          font-size: 16px;
+          padding: 12px 20px;
+        }
+        .info-section h3 {
+          font-size: 22px;
+        }
+        .info-section h4 {
+          font-size: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header-placeholder">
+    </div>
+    <main>
+      <section class="health-calculators-section">
+        <div class="container">
+          <h1 class="main-title">
+            Bebek Persentil Hesaplayıcı 👶
+          </h1>
+          <p class="section-description">
+            Bebeğinizin yaşını, cinsiyetini, boyunu (cm) ve kilosunu (kg) girerek persentil değerlerini hesaplayın ve gelişimini takip edin.
+          </p>
+          <div class="calculator-group">
+            <div class="calculator-card-wrapper">
+              <div class="calculator-header">
+                <i class="fas fa-baby icon-small">
+                </i>
+                <h2>
+                  Persentil Hesapla
+                </h2>
+              </div>
+              <div class="calculator-form-container">
+                <form id="persentilForm">
+                  <label for="baby_age">
+                    Yaş (Ay):
+                  </label>
+                  <input id="baby_age" max="60" min="0" name="age" placeholder="Örn: 12" required="" type="number"/>
+                  <label for="baby_gender">
+                    Cinsiyet:
+                  </label>
+                  <select id="baby_gender" name="gender" required="">
+                    <option value="">
+                      Seçiniz
+                    </option>
+                    <option value="male">
+                      Erkek
+                    </option>
+                    <option value="female">
+                      Kız
+                    </option>
+                  </select>
+                  <label for="baby_height">
+                    Boy (cm):
+                  </label>
+                  <input id="baby_height" max="150" min="40" name="height" placeholder="Örn: 75" required="" type="number"/>
+                  <label for="baby_weight">
+                    Kilo (kg):
+                  </label>
+                  <input id="baby_weight" max="30" min="1" name="weight" placeholder="Örn: 9.5" required="" step="0.1" type="number"/>
+                  <button type="submit">
+                    Persentil Hesapla
+                  </button>
+                </form>
+                <div class="result-display" id="persentilResult">
+                </div>
+                <div class="category-display" id="persentilCategory">
+                </div>
+                <canvas id="persentilChart" style="margin-top: 20px; display: none;"></canvas>
+              </div>
+            </div>
+            <section class="info-section">
+              <h3>
+                Bebek Persentil Nedir ve Neden Önemlidir?
+              </h3>
+              <p>
+                **Bebek persentil eğrileri**, bebeklerin yaş ve cinsiyetlerine göre boy ve kilo gelişimlerini değerlendirmek için kullanılan standart referans tablolarıdır. Bu eğriler, bebeklerin gelişimlerinin sağlıklı bir aralıkta olup olmadığını anlamak için doktorlar ve ebeveynler tarafından kullanılır. Bir bebeğin persentil değeri, aynı yaş ve cinsiyetteki 100 bebek arasında kaçıncı sırada olduğunu gösterir.
+                Örneğin, bir bebek 50. persentildeyse, aynı yaştaki bebeklerin %50'sinden daha büyük ve %50'sinden daha küçük olduğu anlamına gelir.
+              </p>
+              <p>
+                Persentil takibi, bebeğin yeterli beslenip beslenmediği, büyüme hormonu sorunları veya diğer gelişimsel gecikmeler gibi potansiyel sağlık sorunlarının erken teşhisi için kritik öneme sahiptir. Düzenli kontrollerde doktorlar, bebeğin persentil değerlerini zaman içindeki değişimini izleyerek gelişim trendleri hakkında bilgi edinirler.
+              </p>
+              <h4>
+                Persentil Değerleri Nasıl Yorumlanır?
+              </h4>
+              <p>
+                Genel olarak kabul gören persentil aralıkları ve anlamları şöyledir:
+              </p>
+              <table>
+                <thead>
+                  <tr>
+                    <th>
+                      Persentil Aralığı
+                    </th>
+                    <th>
+                      Yorum
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      < 3. Persentil
+                    </td>
+                    <td>
+                      Çok düşük (olası yetersiz beslenme veya gelişim geriliği)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      3. - 10. Persentil
+                    </td>
+                    <td>
+                      Düşük (takip gerektirebilir)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      10. - 90. Persentil
+                    </td>
+                    <td>
+                      Normal aralıkta (sağlıklı gelişim)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      90. - 97. Persentil
+                    </td>
+                    <td>
+                      Yüksek (takip gerektirebilir, özellikle kilo için)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      > 97. Persentil
+                    </td>
+                    <td>
+                      Çok yüksek (olası obezite riski veya hızlı büyüme)
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <p class="disclaimer-text">
+                Unutulmamalıdır ki persentil değerleri tek başına bir tanı koymaz. Bebeğinizin gelişimi hakkında en doğru değerlendirme ve yorum için her zaman bir çocuk doktoruna danışmanız önemlidir. Bu araç sadece bilgilendirme amaçlıdır.
+              </p>
+            </section>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div id="footer-placeholder">
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+        const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+        const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+        // Header Yükleme
+        fetch(headerPath)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+                }
+                return response.text();
+            })
+            .then(data => {
+                const headerPlaceholder = document.getElementById('header-placeholder');
+                if (headerPlaceholder) {
+                    headerPlaceholder.innerHTML = data;
+                    const scriptElement = headerPlaceholder.querySelector('script');
+                    if (scriptElement) {
+                        const newScript = document.createElement('script');
+                        newScript.textContent = scriptElement.textContent;
+                        document.body.appendChild(newScript);
+                        scriptElement.remove();
+                    }
+                }
+            })
+            .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+        // Footer Yükleme
+        fetch(footerPath)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+                }
+                return response.text();
+            })
+            .then(data => {
+                const footerPlaceholder = document.getElementById('footer-placeholder');
+                if (footerPlaceholder) {
+                    footerPlaceholder.innerHTML = data;
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = data;
+                    const footerElement = tempDiv.querySelector('footer');
+                    if (footerElement) {
+                        footerPlaceholder.replaceWith(footerElement);
+                    }
+                }
+            })
+            .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+
+        const texts = {
+            tr: {
+                calculateButtonText: 'Persentil Hesapla',
+                ageLabel: 'Yaş (Ay):',
+                genderLabel: 'Cinsiyet:',
+                heightLabel: 'Boy (cm):',
+                weightLabel: 'Kilo (kg):',
+                genderSelectPlaceholder: 'Seçiniz',
+                genderMale: 'Erkek',
+                genderFemale: 'Kız',
+                invalidInput: 'Lütfen geçerli pozitif sayılar ve bir cinsiyet seçimi yapın.',
+                resultHeightPercentile: 'Boy Persentili:',
+                resultWeightPercentile: 'Kilo Persentili:',
+                interpretation: 'Bu değerler yaklaşık değerlerdir ve kesin bir tanı için doktorunuza danışınız.',
+                categoryVeryLow: 'Çok düşük (< 3. Persentil)',
+                categoryLow: 'Düşük (3. - 10. Persentil)',
+                categoryNormal: 'Normal aralıkta (10. - 90. Persentil)',
+                categoryHigh: 'Yüksek (90. - 97. Persentil)',
+                categoryVeryHigh: 'Çok yüksek (> 97. Persentil)',
+                chartTitle: 'Bebek Boy ve Kilo Persentil Grafiği',
+                chartHeightLabel: 'Boy (cm)',
+                chartWeightLabel: 'Kilo (kg)',
+                chartAgeLabel: 'Yaş (Ay)',
+                chartYourBaby: 'Bebeğiniz'
+            },
+            en: {
+                calculateButtonText: 'Calculate Percentile',
+                ageLabel: 'Age (Months):',
+                genderLabel: 'Gender:',
+                heightLabel: 'Height (cm):',
+                weightLabel: 'Weight (kg):',
+                genderSelectPlaceholder: 'Select',
+                genderMale: 'Male',
+                genderFemale: 'Female',
+                invalidInput: 'Please enter valid positive numbers and select a gender.',
+                resultHeightPercentile: 'Height Percentile:',
+                resultWeightPercentile: 'Weight Percentile:',
+                interpretation: 'These values are approximate. Consult your doctor for a definitive diagnosis.',
+                categoryVeryLow: 'Very Low (< 3rd Percentile)',
+                categoryLow: 'Low (3rd - 10th Percentile)',
+                categoryNormal: 'Normal Range (10th - 90th Percentile)',
+                categoryHigh: 'High (90th - 97th Percentile)',
+                categoryVeryHigh: 'Very High (> 97th Percentile)',
+                chartTitle: 'Baby Height and Weight Percentile Chart',
+                chartHeightLabel: 'Height (cm)',
+                chartWeightLabel: 'Weight (kg)',
+                chartAgeLabel: 'Age (Months)',
+                chartYourBaby: 'Your Baby'
+            }
+        };
+
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        const persentilForm = document.getElementById('persentilForm');
+        const babyAgeInput = document.getElementById('baby_age');
+        const babyGenderSelect = document.getElementById('baby_gender');
+        const babyHeightInput = document.getElementById('baby_height');
+        const babyWeightInput = document.getElementById('baby_weight');
+        const persentilResultDiv = document.getElementById('persentilResult');
+        const persentilCategoryDiv = document.getElementById('persentilCategory');
+        const calculateButton = persentilForm.querySelector('button[type="submit"]');
+        const persentilChartCanvas = document.getElementById('persentilChart');
+        let persentilChartInstance = null; // Chart instance'ını saklamak için
+
+        // Form etiketlerini ve yer tutucuları güncelle
+        document.querySelector('label[for="baby_age"]').textContent = currentTexts.ageLabel;
+        document.querySelector('label[for="baby_gender"]').textContent = currentTexts.genderLabel;
+        document.querySelector('label[for="baby_height"]').textContent = currentTexts.heightLabel;
+        document.querySelector('label[for="baby_weight"]').textContent = currentTexts.weightLabel;
+        babyGenderSelect.querySelector('option[value=""]').textContent = currentTexts.genderSelectPlaceholder;
+        babyGenderSelect.querySelector('option[value="male"]').textContent = currentTexts.genderMale;
+        babyGenderSelect.querySelector('option[value="female"]').textContent = currentTexts.genderFemale;
+        babyAgeInput.placeholder = currentTexts.tr.ageLabel.split(' ')[1].replace(':', '') + ": 12"; // Simplified placeholder
+        babyHeightInput.placeholder = currentTexts.tr.heightLabel.split(' ')[1].replace(':', '') + ": 75"; // Simplified placeholder
+        babyWeightInput.placeholder = currentTexts.tr.weightLabel.split(' ')[1].replace(':', '') + ": 9.5"; // Simplified placeholder
+        calculateButton.textContent = currentTexts.calculateButtonText;
+
+        // Basit persentil verileri (Örnek veriler - Gerçek persentil verileri çok daha kapsamlıdır)
+        // Bu veriler tamamen örnek amaçlıdır ve gerçek tıbbi veriler değildir.
+        // Gerçek bir uygulama için DSÖ (WHO) veya CDC gibi güvenilir kaynaklardan alınmış kapsamlı persentil tabloları kullanılmalıdır.
+        const percentileData = {
+          male: {
+            // Yaş: [3.P, 10.P, 50.P, 90.P, 97.P]
+            height: {
+              0: [44, 46, 49, 52, 54], // Yeni doğan (0. ay)
+              1: [48, 50, 53, 56, 58],
+              3: [54, 56, 60, 64, 66],
+              6: [61, 63, 67, 71, 73],
+              12: [69, 71, 76, 81, 83],
+              24: [78, 80, 86, 91, 93],
+              36: [85, 87, 93, 99, 101],
+              48: [90, 92, 99, 105, 107],
+              60: [95, 97, 104, 110, 112]
+            },
+            weight: {
+              0: [2.5, 2.9, 3.5, 4.2, 4.7], // Yeni doğan (0. ay)
+              1: [3.4, 3.9, 4.5, 5.2, 5.7],
+              3: [4.8, 5.4, 6.3, 7.3, 7.9],
+              6: [6.4, 7.0, 7.9, 9.1, 9.8],
+              12: [8.5, 9.1, 10.2, 11.7, 12.5],
+              24: [10.5, 11.2, 12.5, 14.2, 15.2],
+              36: [12.0, 12.8, 14.3, 16.2, 17.3],
+              48: [13.5, 14.4, 16.0, 18.0, 19.2],
+              60: [15.0, 16.0, 17.8, 20.0, 21.3]
+            }
+          },
+          female: {
+            height: {
+              0: [43, 45, 48, 51, 53],
+              1: [47, 49, 52, 55, 57],
+              3: [53, 55, 59, 63, 65],
+              6: [60, 62, 66, 70, 72],
+              12: [68, 70, 75, 80, 82],
+              24: [77, 79, 85, 90, 92],
+              36: [84, 86, 92, 98, 100],
+              48: [89, 91, 98, 104, 106],
+              60: [94, 96, 103, 109, 111]
+            },
+            weight: {
+              0: [2.4, 2.8, 3.4, 4.1, 4.6],
+              1: [3.2, 3.7, 4.3, 5.0, 5.5],
+              3: [4.5, 5.1, 6.0, 7.0, 7.6],
+              6: [6.0, 6.6, 7.5, 8.7, 9.4],
+              12: [8.0, 8.6, 9.7, 11.2, 12.0],
+              24: [10.0, 10.7, 12.0, 13.7, 14.7],
+              36: [11.5, 12.3, 13.8, 15.7, 16.8],
+              48: [13.0, 13.9, 15.5, 17.5, 18.7],
+              60: [14.5, 15.5, 17.3, 19.5, 20.8]
+            }
+          }
+        };
+
+        function getPercentile(value, age, gender, type) {
+          const data = percentileData[gender][type];
+          const ages = Object.keys(data).map(Number).sort((a, b) => a - b);
+
+          if (age < ages[0]) return 0; // En düşük yaştan küçükse
+          if (age > ages[ages.length - 1]) return 100; // En yüksek yaştan büyükse
+
+          let lowerAge = ages.filter(a => a <= age).pop();
+          let upperAge = ages.filter(a => a >= age).shift();
+
+          let percentiles;
+          if (lowerAge === upperAge) {
+            percentiles = data[lowerAge];
+          } else {
+            // Basit doğrusal interpolasyon
+            const lowerData = data[lowerAge];
+            const upperData = data[upperAge];
+            const factor = (age - lowerAge) / (upperAge - lowerAge);
+
+            percentiles = lowerData.map((d, i) => d + (upperData[i] - d) * factor);
+          }
+
+          if (value <= percentiles[0]) return 3; // < 3. persentil
+          if (value <= percentiles[1]) return interpolatePercentile(value, percentiles[0], percentiles[1], 3, 10);
+          if (value <= percentiles[2]) return interpolatePercentile(value, percentiles[1], percentiles[2], 10, 50);
+          if (value <= percentiles[3]) return interpolatePercentile(value, percentiles[2], percentiles[3], 50, 90);
+          if (value <= percentiles[4]) return interpolatePercentile(value, percentiles[3], percentiles[4], 90, 97);
+          return 97; // > 97. persentil
+        }
+
+        function interpolatePercentile(value, lowerBound, upperBound, lowerP, upperP) {
+          if (lowerBound === upperBound) return lowerP; // Bölme sıfır olmaması için
+          return lowerP + (upperP - lowerP) * ((value - lowerBound) / (upperBound - lowerBound));
+        }
+
+        function getPercentileCategory(percentile) {
+          if (percentile < 3) return { category: currentTexts.categoryVeryLow, color: 'category-underweight' };
+          if (percentile <= 10) return { category: currentTexts.categoryLow, color: 'category-underweight' };
+          if (percentile <= 90) return { category: currentTexts.categoryNormal, color: 'category-normal' };
+          if (percentile <= 97) return { category: currentTexts.categoryHigh, color: 'category-overweight' };
+          return { category: currentTexts.categoryVeryHigh, color: 'category-obese-i' };
+        }
+
+        function calculatePercentile(event) {
+          event.preventDefault();
+
+          let age = parseFloat(babyAgeInput.value);
+          let gender = babyGenderSelect.value;
+          let height = parseFloat(babyHeightInput.value);
+          let weight = parseFloat(babyWeightInput.value);
+
+          persentilResultDiv.innerHTML = '';
+          persentilCategoryDiv.innerHTML = '';
+          persentilResultDiv.style.display = 'none';
+          persentilCategoryDiv.style.display = 'none';
+          persentilChartCanvas.style.display = 'none'; // Grafik görünürlüğünü sıfırla
+
+          if (isNaN(age) || isNaN(height) || isNaN(weight) || age < 0 || height <= 0 || weight <= 0 || !gender) {
+            persentilResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            persentilResultDiv.style.display = 'block';
+            return;
+          }
+
+          // Persentil hesaplamaları
+          const heightPercentile = getPercentile(height, age, gender, 'height');
+          const weightPercentile = getPercentile(weight, age, gender, 'weight');
+
+          const heightCategory = getPercentileCategory(heightPercentile);
+          const weightCategory = getPercentileCategory(weightPercentile);
+
+          persentilResultDiv.innerHTML = `
+            <p><strong>${currentTexts.resultHeightPercentile}</strong> <span class="result-value">${heightPercentile.toFixed(1)}%</span></p>
+            <p><strong>${currentTexts.resultWeightPercentile}</strong> <span class="result-value">${weightPercentile.toFixed(1)}%</span></p>
+          `;
+          persentilResultDiv.style.display = 'block';
+
+          persentilCategoryDiv.innerHTML = `
+            <p>Boy Gelişimi: <span class="result-category ${heightCategory.color}">${heightCategory.category}</span></p>
+            <p>Kilo Gelişimi: <span class="result-category ${weightCategory.color}">${weightCategory.category}</span></p>
+            <p class="disclaimer-text">${currentTexts.interpretation}</p>
+          `;
+          persentilCategoryDiv.style.display = 'block';
+
+          // Grafik oluşturma/güncelleme
+          drawPercentileChart(age, gender, height, weight);
+        }
+
+        function drawPercentileChart(babyAge, babyGender, babyHeight, babyWeight) {
+            persentilChartCanvas.style.display = 'block'; // Grafiği görünür yap
+
+            const ages = Object.keys(percentileData[babyGender].height).map(Number).sort((a, b) => a - b);
+
+            const height50th = ages.map(age => percentileData[babyGender].height[age][2]); // 50. persentil boy
+            const weight50th = ages.map(age => percentileData[babyGender].weight[age][2]); // 50. persentil kilo
+
+            const height3rd = ages.map(age => percentileData[babyGender].height[age][0]); // 3. persentil boy
+            const height97th = ages.map(age => percentileData[babyGender].height[age][4]); // 97. persentil boy
+
+            const weight3rd = ages.map(age => percentileData[babyGender].weight[age][0]); // 3. persentil kilo
+            const weight97th = ages.map(age => percentileData[babyGender].weight[age][4]); // 97. persentil kilo
+
+            // Bebeğin kendi verileri
+            const babyHeightPoint = { x: babyAge, y: babyHeight };
+            const babyWeightPoint = { x: babyAge, y: babyWeight };
+
+            if (persentilChartInstance) {
+                persentilChartInstance.destroy(); // Mevcut grafiği yok et
+            }
+
+            const ctx = persentilChartCanvas.getContext('2d');
+            persentilChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ages,
+                    datasets: [
+                        {
+                            label: 'Boy (50. Persentil)',
+                            data: height50th,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            fill: false,
+                            tension: 0.3,
+                            pointRadius: 3
+                        },
+                        {
+                            label: 'Kilo (50. Persentil)',
+                            data: weight50th,
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                            fill: false,
+                            tension: 0.3,
+                            pointRadius: 3
+                        },
+                        {
+                          label: 'Boy (3. Persentil)',
+                          data: height3rd,
+                          borderColor: 'rgba(255, 99, 132, 0.5)',
+                          backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                          fill: false,
+                          borderDash: [5, 5],
+                          pointRadius: 0,
+                          tension: 0.3
+                        },
+                        {
+                          label: 'Boy (97. Persentil)',
+                          data: height97th,
+                          borderColor: 'rgba(255, 99, 132, 0.5)',
+                          backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                          fill: '-1', // 50. persentil ile doldur
+                          borderDash: [5, 5],
+                          pointRadius: 0,
+                          tension: 0.3
+                        },
+                        {
+                          label: 'Kilo (3. Persentil)',
+                          data: weight3rd,
+                          borderColor: 'rgba(54, 162, 235, 0.5)',
+                          backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                          fill: false,
+                          borderDash: [5, 5],
+                          pointRadius: 0,
+                          tension: 0.3
+                        },
+                        {
+                          label: 'Kilo (97. Persentil)',
+                          data: weight97th,
+                          borderColor: 'rgba(54, 162, 235, 0.5)',
+                          backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                          fill: '-1', // 50. persentil ile doldur
+                          borderDash: [5, 5],
+                          pointRadius: 0,
+                          tension: 0.3
+                        },
+                        {
+                            label: `${currentTexts.chartYourBaby} (Boy)`,
+                            data: [babyHeightPoint],
+                            borderColor: 'rgba(255, 206, 86, 1)',
+                            backgroundColor: 'rgba(255, 206, 86, 0.8)',
+                            type: 'scatter', // Tek nokta için scatter
+                            pointRadius: 8,
+                            pointBackgroundColor: 'rgba(255, 206, 86, 1)',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                        },
+                        {
+                            label: `${currentTexts.chartYourBaby} (Kilo)`,
+                            data: [babyWeightPoint],
+                            borderColor: 'rgba(255, 159, 64, 1)',
+                            backgroundColor: 'rgba(255, 159, 64, 0.8)',
+                            type: 'scatter', // Tek nokta için scatter
+                            pointRadius: 8,
+                            pointBackgroundColor: 'rgba(255, 159, 64, 1)',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: currentTexts.chartTitle,
+                            font: {
+                                size: 18,
+                                weight: 'bold'
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: currentTexts.chartAgeLabel
+                            },
+                            beginAtZero: true
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: `${currentTexts.chartHeightLabel} / ${currentTexts.chartWeightLabel}`
+                            },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        persentilForm.addEventListener('submit', calculatePercentile);
+      });
+    </script>
+  </body>
+</html>
