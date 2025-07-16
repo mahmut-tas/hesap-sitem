@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yakıt Tasarrufu Rehberi - Akıllı Sürüş ve Bakım | Hesapkolik Blog</title>
+    <meta name="description" content="Araç sahipleri için kapsamlı yakıt tasarrufu rehberi. Akıllı sürüş teknikleri, araç bakımı ipuçları, donanım etkileri ve yaygın yanılgılarla yakıt tüketiminizi azaltın.">
+    <meta name="keywords" content="yakıt tasarrufu, benzin tasarrufu, dizel tasarrufu, araç bakımı, sürüş teknikleri, yakıt tüketimi, Hesapkolik">
+    
+    <!-- Hesapkolik Genel CSS Dosyaları -->
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <!-- Hesapkolik Fontları -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    
+    <!-- Bu yazı için özel Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Bu yazı için özel Chart.js kütüphanesi -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google AdSense ve Analytics scriptleri (ana sayfadan kopyalandı) -->
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3655KNY8CP');
+    </script>
+    
+    <!-- Chosen Palette: Calm Harmony (Warm Off-White, Muted Teal, Dark Gray, Warm Ochre - Adapted to Hesapkolik style/colors) -->
+    <!-- Application Structure Plan: A tab-based dashboard structure was chosen over a linear document format to enhance user engagement and facilitate non-linear exploration. The structure begins with an interactive calculator to immediately personalize the benefits of fuel saving. This is followed by tabbed sections for "Sürüş Alışkanlıkları", "Araç Bakımı", "Donanım & Yük", and "Yaygın Yanılgılar", allowing users to directly access the topics most relevant to them. This user-centric design transforms the report from a passive text into an active tool, prioritizing usability and quick access to actionable insights within a blog post context. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Fuel consumption vs. speed. Goal: Compare. Viz: Interactive Bar Chart. Interaction: Buttons to change speed dynamically update the chart, visually demonstrating the 'sweet spot'. Justification: More impactful than a static table, directly showing impact. Library: Chart.js.
+        - Report Info: Impact of aggressive driving. Goal: Compare. Viz: Donut Chart. Interaction: Hovering over segments shows the percentage increase in consumption. Justification: A simple, clear visual for a key comparison. Library: Chart.js.
+        - Report Info: Maintenance benefits (tires, oil, filters). Goal: Organize/Inform. Viz: Grid of interactive cards. Interaction: Clicking a card reveals detailed information. Justification: Breaks down dense information into digestible, user-initiated chunks. Library: HTML/CSS/JS.
+        - Report Info: AC vs. Open Windows. Goal: Clarify a myth. Viz: Interactive toggle diagram. Interaction: A toggle switch for "High/Low Speed" changes the recommended action. Justification: Provides a clear, situation-based answer to a common question. Library: HTML/CSS/JS.
+        - Report Info: Impact of extra weight. Goal: Quantify impact. Viz: Slider with dynamic text update. Interaction: User slides to see impact. Justification: Direct, immediate feedback on a common issue. Library: HTML/CSS/JS.
+        - Report Info: Common myths. Goal: Debunk misconceptions. Viz: Flip cards. Interaction: Hover/click to reveal truth. Justification: Engaging and memorable way to present facts vs. myths. Library: HTML/CSS/JS.
+        - Textual content: All detailed explanations from the source report are integrated into dedicated text sections to ensure comprehensive coverage as a blog post.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        /* Hesapkolik ana stilini korumak için bazı temel CSS varsayılanlarını ayarladım */
+        body {
+            font-family: 'Poppins', sans-serif; /* Hesapkolik ana fontu */
+            background-color: #f8f7f4; /* Hesapkolik ana arka plan rengi */
+            color: #333; /* Hesapkolik ana metin rengi */
+        }
+
+        /* Başlıklar ve alt başlıklar için Hesapkolik'in ana sayfadaki stillerine benzer düzenlemeler */
+        .section-title {
+            font-size: 2.2em; /* style.css'deki h2 boyutu */
+            color: #2c3e50; /* style.css'deki h2 rengi */
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 20px; /* Bölümler arasında biraz boşluk */
+        }
+        .section-subtitle {
+            font-size: 1.1em; /* style.css'deki p'ye yakın bir boyut */
+            text-align: center;
+            color: #666; /* style.css'deki p rengi */
+            max-width: 800px; /* Metin için daha geniş alan */
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 30px;
+        }
+
+        /* Kartlar için Hesapkolik ana sayfa stili */
+        .card {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Hafif gölge */
+            border: 1px solid #ddd; /* İnce kenarlık */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Yumuşak geçiş efektleri */
+        }
+        .card:hover {
+            transform: translateY(-2px); /* Hafif yukarı kalkma */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12); /* Biraz daha belirgin gölge */
+        }
+
+        /* Hero bölümü için Hesapkolik ana sayfa stili */
+        .hero {
+            background-color: #3498db; /* Hesapkolik ana hero rengi */
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+        }
+        .hero h1 { /* Başlık font-size'ını blog başlığına uygun ayarladım */
+            font-size: 2.8em;
+            margin-bottom: 20px;
+        }
+        .hero p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .hero .cta-button {
+            display: inline-block;
+            background-color: #2ecc71; /* Ana sayfadaki yeşil buton rengi */
+            color: white;
+            padding: 15px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .hero .cta-button:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        /* Chart Container Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height, adjust with media queries or use Tailwind for responsive heights */
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        
+        /* Range slider thumb stilleri (Hesapkolik mavi rengine ayarlandı) */
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #3498db; /* Hesapkolik mavi */
+            cursor: pointer;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: #3498db; /* Hesapkolik mavi */
+            cursor: pointer;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        }
+
+        /* Specific styles for interactive elements */
+        .tab-active { border-color: #3498db; color: #3498db; background-color: #EBF5FB; } /* Hesapkolik mavi tonları */
+        .tab-inactive { border-color: transparent; color: #4A4A4A; }
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .flip-card { perspective: 1000px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 1rem; border-radius: 0.75rem; }
+        .flip-card-back { transform: rotateY(180deg); }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2em;
+            }
+            .hero p {
+                font-size: 1em;
+            }
+            .section-title {
+                font-size: 1.8em;
+            }
+            .section-subtitle {
+                font-size: 1em;
+            }
+        }
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.8em;
+            }
+            .hero p {
+                font-size: 0.9em;
+            }
+            .section-title {
+                font-size: 1.6em;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Hesapkolik Header'ı Buraya Gelecek -->
+    <div id="header-placeholder"></div>
+
+    <main>
+        <!-- HERO Section -->
+        <section id="hero" class="py-20 bg-blue-600">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight">
+                    <span class="text-green-300">Akıllı Sürüşle</span> Yakıt Tasarrufu
+                </h1>
+                <p class="mt-6 text-xl text-white max-w-3xl mx-auto">
+                    Hem cüzdanınızı hem de çevreyi korumak için pratik ipuçları ve interaktif araçlarla dolu kapsamlı rehberiniz.
+                </p>
+                <a href="#calculator-section" class="mt-8 inline-block bg-green-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-green-600 transition-transform transform hover:scale-105">Tasarruf Hesapla</a>
+            </div>
+        </section>
+
+        <!-- Interactive Calculator Section -->
+        <section id="calculator-section" class="py-16 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">Tasarruf Potansiyelinizi Keşfedin</h2>
+                <p class="section-subtitle">
+                    Bu bölümde, sürüş alışkanlıklarınızı ve aracınızın temel bilgilerini girerek ne kadar yakıt ve para tasarrufu yapabileceğinizi yaklaşık olarak hesaplayabilirsiniz. Bu kişisel tahmin, yakıt verimliliğinin bütçeniz üzerindeki doğrudan etkisini görmenize yardımcı olacaktır.
+                </p>
+                <div class="card max-w-4xl mx-auto p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                        <div>
+                            <label for="avg-km" class="block text-sm font-medium text-gray-700">Haftalık Ortalama KM:</label>
+                            <input type="number" id="avg-km" value="250" class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-blue-600 focus:border-blue-600">
+                        </div>
+                        <div>
+                            <label for="fuel-consumption" class="block text-sm font-medium text-gray-700">Aracın Tüketimi (L/100km):</label>
+                            <input type="number" id="fuel-consumption" value="7.5" step="0.1" class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-blue-600 focus:border-blue-600">
+                        </div>
+                        <div>
+                            <label for="fuel-price" class="block text-sm font-medium text-gray-700">Yakıt Litre Fiyatı (₺):</label>
+                            <input type="number" id="fuel-price" value="42.50" step="0.01" class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-blue-600 focus:border-blue-600">
+                        </div>
+                    </div>
+                    <div class="text-center mt-8">
+                        <p class="text-lg text-gray-700">Potansiyel Yıllık Tasarrufunuz:</p>
+                        <p id="savings-result" class="text-3xl font-bold text-green-600 mt-2">~ ₺5,738</p>
+                        <p class="text-sm text-gray-500 mt-1">(%15'lik bir yakıt tasarrufu varsayımıyla)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+            
+        <!-- Main Content with Tabs -->
+        <section id="main-content" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">Yakıt Tasarrufunda Temel Alanlar</h2>
+                <p class="section-subtitle">
+                    Yakıt tüketiminizi etkileyen ana faktörleri ve bu alanlarda yapabileceğiniz iyileştirmeleri keşfedin.
+                </p>
+                <div class="card p-2">
+                    <!-- Tab Navigation -->
+                    <nav class="flex flex-wrap justify-center border-b border-gray-200 mb-6">
+                        <button data-tab="sürüş" class="tab-button py-3 px-4 sm:px-6 font-semibold border-b-2 transition-colors duration-300 tab-active">🚗 Sürüş Alışkanlıkları</button>
+                        <button data-tab="bakım" class="tab-button py-3 px-4 sm:px-6 font-semibold border-b-2 transition-colors duration-300 tab-inactive">🔧 Araç Bakımı</button>
+                        <button data-tab="ekipman" class="tab-button py-3 px-4 sm:px-6 font-semibold border-b-2 transition-colors duration-300 tab-inactive">⚙️ Donanım & Yük</button>
+                        <button data-tab="yanılgılar" class="tab-button py-3 px-4 sm:px-6 font-semibold border-b-2 transition-colors duration-300 tab-inactive">❓ Yaygın Yanılgılar</button>
+                    </nav>
+
+                    <!-- Tab Content -->
+                    <div id="tab-content">
+                        
+                        <!-- Sürüş Alışkanlıkları Content -->
+                        <div id="sürüş" class="tab-pane fade-in">
+                            <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">Direksiyon başındaki kararlarınız yakıt tüketiminizi doğrudan etkiler. Bu bölümde, akıcı sürüş, doğru hız ve vites kullanımı gibi alışkanlıkların yakıt verimliliğini nasıl artırdığını interaktif grafiklerle keşfedeceksiniz. Küçük değişikliklerin ne kadar büyük farklar yaratabileceğini görün.</p>
+                            
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                <div class="p-6 bg-gray-50 rounded-xl">
+                                    <h3 class="text-xl font-bold text-center mb-4 text-slate-800">Hızın Tüketime Etkisi</h3>
+                                    <div class="chart-container h-64 sm:h-80">
+                                        <canvas id="speedChart"></canvas>
+                                    </div>
+                                    <p class="text-sm text-center text-gray-500 mt-4">Optimum hız aralığı 50-80 km/s'dir. Hız arttıkça hava direnci katlanarak yakıt tüketimini artırır.</p>
+                                    <div class="flex justify-center space-x-2 mt-4">
+                                        <button class="speed-btn bg-blue-600 text-white px-3 py-1 rounded-full text-sm hover:bg-blue-700 transition-colors" data-speed="80">80 km/s</button>
+                                        <button class="speed-btn bg-gray-300 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-400 transition-colors" data-speed="100">100 km/s</button>
+                                        <button class="speed-btn bg-gray-300 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-400 transition-colors" data-speed="120">120 km/s</button>
+                                        <button class="speed-btn bg-gray-300 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-400 transition-colors" data-speed="140">140 km/s</button>
+                                    </div>
+                                </div>
+
+                                <div class="p-6 bg-gray-50 rounded-xl">
+                                    <h3 class="text-xl font-bold text-center mb-4 text-slate-800">Agresif Sürüşün Bedeli</h3>
+                                     <div class="chart-container h-64 sm:h-80">
+                                        <canvas id="aggressiveDrivingChart"></canvas>
+                                    </div>
+                                    <p class="text-sm text-center text-gray-500 mt-4">Ani hızlanma ve frenleme, yakıt tüketimini %40'a kadar artırabilir. Sakin ve öngörülü sürüş tasarruf sağlar.</p>
+                                </div>
+                            </div>
+
+                             <div class="mt-8 p-6 bg-gray-50 rounded-xl">
+                                <h3 class="text-xl font-bold text-center mb-4 text-slate-800">Diğer Önemli Sürüş Teknikleri</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                                    <div>
+                                        <div class="text-4xl mb-2">⏱️</div>
+                                        <h4 class="font-bold text-slate-800">Rölantiyi Azaltın</h4>
+                                        <p class="text-sm text-gray-600">30 saniyeden uzun beklemelerde motoru kapatmak, rölantide çalışmaktan daha verimlidir. Modern araçlar, rölantide bile saatte 0.5 ila 1 litre yakıt tüketebilir. Özellikle dur-kalk trafiğinde veya uzun beklemelerde motoru kapatmak, hem yakıt tasarrufu sağlar hem de emisyonları azaltır.</p>
+                                    </div>
+                                    <div>
+                                        <div class="text-4xl mb-2">⚙️</div>
+                                        <h4 class="font-bold text-slate-800">Doğru Vites Kullanımı</h4>
+                                        <p class="text-sm text-gray-600">Motoru bağırtmadan, mümkün olan en düşük devirde vites yükseltin. Düşük devirde yüksek vites, motorun daha az zorlanmasını ve daha az yakıt tüketmesini sağlar. Otomatik vitesli araçlarda da ani hızlanmalardan kaçınarak vites geçişlerinin daha yumuşak olmasını sağlayın.</p>
+                                    </div>
+                                     <div>
+                                        <div class="text-4xl mb-2">🗺️</div>
+                                        <h4 class="font-bold text-slate-800">Rota Planlaması</h4>
+                                        <p class="text-sm text-gray-600">Yola çıkmadan önce trafik yoğunluğunu ve yol durumunu kontrol edin. En kısa yol her zaman en ekonomik yol olmayabilir. Trafiksiz ve akıcı rotaları tercih etmek, dur-kalkları ve gereksiz frenlemeleri azaltarak yakıt tasarrufu sağlar. Navigasyon uygulamaları bu konuda size yardımcı olabilir.</p>
+                                    </div>
+                                    <div>
+                                        <div class="text-4xl mb-2">💨</div>
+                                        <h4 class="font-bold text-slate-800">Akıcı Sürüş</h4>
+                                        <p class="text-sm text-gray-600">Ani hızlanma ve ani frenlemeden kaçının. Trafik akışına uyum sağlayarak, öndeki araçla güvenli takip mesafesi bırakarak ve virajlara yavaş girip çıkışta nazikçe hızlanarak yakıt tüketiminizi önemli ölçüde azaltabilirsiniz. Bu, aynı zamanda sürüş güvenliğinizi de artırır.</p>
+                                    </div>
+                                    <div>
+                                        <div class="text-4xl mb-2">🛑</div>
+                                        <h4 class="font-bold text-slate-800">Motor Freni Kullanımı</h4>
+                                        <p class="text-sm text-gray-600">Yokuş aşağı inerken veya kırmızı ışığa yaklaşırken ayağınızı gazdan çekerek motor frenini kullanın. Bu, yakıt enjeksiyonunu keser ve sıfır yakıt tüketimiyle yavaşlamanızı sağlar. Fren balatalarınızın ömrünü de uzatır.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Araç Bakımı Content -->
+                        <div id="bakım" class="tab-pane hidden fade-in">
+                            <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">Aracınızın sağlığı, yakıt verimliliğinin anahtarıdır. Bu bölümde, düzenli bakımın önemini ve lastik basıncı, motor yağı, filtreler gibi kritik bileşenlerin yakıt tüketimine etkilerini inceleyeceğiz. Unutmayın, bakımlı bir araç hem daha az yakar hem de daha güvenlidir.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                
+                                <div class="maintenance-card p-6 bg-gray-50 rounded-xl cursor-pointer hover:shadow-md transition-shadow">
+                                    <h4 class="font-bold text-lg mb-2 text-slate-800">🔵 Lastik Basıncı</h4>
+                                    <p class="text-sm text-gray-600">Doğru basınç, yuvarlanma direncini azaltır. Düşük basınçlı lastikler tüketimi %3-%10 artırır.</p>
+                                    <div class="details hidden mt-2 text-sm text-blue-800 bg-blue-100 p-3 rounded-lg">
+                                        Lastik basıncını ayda bir, lastikler soğukken kontrol edin. Üreticinin önerdiği değerler genellikle sürücü kapısının içinde veya yakıt deposu kapağında yazar. Doğru basınç sadece tasarruf sağlamaz, aynı zamanda lastik ömrünü uzatır ve sürüş güvenliğini artırır. Yanlış basınç, lastiklerin düzensiz aşınmasına ve patlama riskine yol açabilir.
+                                    </div>
+                                </div>
+
+                                 <div class="maintenance-card p-6 bg-gray-50 rounded-xl cursor-pointer hover:shadow-md transition-shadow">
+                                    <h4 class="font-bold text-lg mb-2 text-slate-800">💧 Motor Yağı</h4>
+                                    <p class="text-sm text-gray-600">Doğru ve temiz yağ, motor içi sürtünmeyi azaltarak %3'e varan tasarruf sağlar.</p>
+                                     <div class="details hidden mt-2 text-sm text-green-800 bg-green-100 p-3 rounded-lg">
+                                        Üreticinin önerdiği viskozitede kaliteli motor yağı kullanmak, motorun daha verimli çalışmasını sağlar. Yağ değişimi periyotlarını aksatmayın. Eskimiş veya yanlış yağ kullanımı, motor parçaları arasındaki sürtünmeyi artırarak performansı düşürür ve yakıt tüketimini artırır.
+                                    </div>
+                                </div>
+
+                                 <div class="maintenance-card p-6 bg-gray-50 rounded-xl cursor-pointer hover:shadow-md transition-shadow">
+                                    <h4 class="font-bold text-lg mb-2 text-slate-800">🌬️ Hava Filtresi</h4>
+                                    <p class="text-sm text-gray-600">Temiz bir filtre, motorun rahat nefes almasını sağlar ve tüketimi %5'e kadar düşürür.</p>
+                                     <div class="details hidden mt-2 text-sm text-yellow-800 bg-yellow-100 p-3 rounded-lg">
+                                        Kirli bir hava filtresi, motora giren hava akışını kısıtlayarak yanma verimini düşürür. Bu da daha fazla yakıt harcanmasına ve motorun performans kaybına neden olur. Filtrenizi düzenli aralıklarla (genellikle 15.000-20.000 km'de bir) kontrol edip değiştirin, özellikle tozlu ortamlarda daha sık değişim gerekebilir.
+                                    </div>
+                                </div>
+
+                                <div class="maintenance-card p-6 bg-gray-50 rounded-xl cursor-pointer hover:shadow-md transition-shadow">
+                                    <h4 class="font-bold text-lg mb-2 text-slate-800">⚡ Bujiler</h4>
+                                    <p class="text-sm text-gray-600">Yeni bujiler, verimli ateşleme ile yakıtın tam yanmasını sağlar ve performansı artırır.</p>
+                                    <div class="details hidden mt-2 text-sm text-purple-800 bg-purple-100 p-3 rounded-lg">
+                                       Eskimiş veya arızalı bujiler, silindirlerdeki yakıt-hava karışımının tam olarak yanmamasına neden olur. Bu durum, hem yakıt israfına yol açar hem de motorun düzensiz çalışmasına ve güç kaybına neden olabilir. Üreticinin önerdiği değişim aralıklarına uyun.
+                                    </div>
+                                </div>
+
+                                <div class="maintenance-card p-6 bg-gray-50 rounded-xl cursor-pointer hover:shadow-md transition-shadow">
+                                    <h4 class="font-bold text-lg mb-2 text-slate-800">⛽ Yakıt Filtresi</h4>
+                                    <p class="text-sm text-gray-600">Temiz bir yakıt filtresi, motorun düzenli yakıt akışını garanti eder ve performansı korur.</p>
+                                    <div class="details hidden mt-2 text-sm text-red-800 bg-red-100 p-3 rounded-lg">
+                                        Tıkanmış bir yakıt filtresi, yakıt pompasına ve enjektörlere zarar verebilir, ayrıca motora yeterli yakıtın ulaşmasını engeller. Bu da motorun zorlanmasına, performans düşüşüne ve yakıt tüketiminin artmasına neden olur. Periyodik olarak değiştirilmesi, yakıt sisteminin sağlığı için hayati öneme sahiptir.
+                                    </div>
+                                </div>
+
+                                <div class="maintenance-card p-6 bg-gray-50 rounded-xl cursor-pointer hover:shadow-md transition-shadow">
+                                    <h4 class="font-bold text-lg mb-2 text-slate-800">📏 Tekerlek Hizalaması (Rot Ayarı)</h4>
+                                    <p class="text-sm text-gray-600">Doğru hizalama, lastiklerin yola düzgün basmasını sağlayarak sürtünmeyi azaltır.</p>
+                                    <div class="details hidden mt-2 text-sm text-indigo-800 bg-indigo-100 p-3 rounded-lg">
+                                        Bozuk rot ayarı, lastiklerin yolda sürüklenmesine veya yanlış açıyla durmasına neden olur, bu da hem yakıt tüketimini artırır hem de lastiklerin düzensiz ve hızlı aşınmasına yol açar. Özellikle çukura düştükten veya kaldırıma çarptıktan sonra kontrol ettirmek önemlidir.
+                                    </div>
+                                </div>
+                                <div class="maintenance-card p-6 bg-gray-50 rounded-xl cursor-pointer hover:shadow-md transition-shadow">
+                                    <h4 class="font-bold text-lg mb-2 text-slate-800">⚙️ Şanzıman Bakımı</h4>
+                                    <p class="text-sm text-gray-600">Şanzıman yağı ve filtresinin düzenli değişimi, vites geçişlerini optimize eder.</p>
+                                    <div class="details hidden mt-2 text-sm text-orange-800 bg-orange-100 p-3 rounded-lg">
+                                        Otomatik veya manuel şanzıman fark etmeksizin, şanzıman yağı zamanla özelliğini kaybeder. Düzenli şanzıman yağı ve filtresi değişimi, vites geçişlerinin daha pürüzsüz olmasını sağlar, bu da motorun daha verimli çalışmasına ve yakıt tüketiminin azalmasına yardımcı olur. Üreticinin belirlediği periyotlara uymak önemlidir.
+                                    </div>
+                                </div>
+                                <div class="maintenance-card p-6 bg-gray-50 rounded-xl cursor-pointer hover:shadow-md transition-shadow">
+                                    <h4 class="font-bold text-lg mb-2 text-slate-800">🧪 Enjektör Temizliği</h4>
+                                    <p class="text-sm text-gray-600">Tıkalı enjektörler yakıtın düzensiz püskürtülmesine neden olur, temizliği verimi artırır.</p>
+                                    <div class="details hidden mt-2 text-sm text-pink-800 bg-pink-100 p-3 rounded-lg">
+                                        Yakıt enjektörleri, yakıtı silindirlere püskürten kritik parçalardır. Zamanla karbon birikintileri nedeniyle tıkanabilirler. Tıkalı enjektörler, yakıtın homojen olmayan bir şekilde yanmasına ve dolayısıyla yakıt tüketiminin artmasına neden olur. Belirli aralıklarla enjektör temizleyici katkı maddeleri kullanmak veya profesyonel temizlik yaptırmak faydalı olabilir.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ekipman ve Yük Content -->
+                        <div id="ekipman" class="tab-pane hidden fade-in">
+                             <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">Aracınızın üzerindeki her fazlalık ve yaptığınız her konfor tercihi, yakıt faturanıza yansır. Bu bölümde, gereksiz ağırlıkların, aerodinamik yapıyı bozan aksesuarların ve klima kullanımının yakıt tüketimine etkilerini ele alacağız. Daha hafif ve akıcı bir araç, daha az yakıt demektir.</p>
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                                <div class="p-6 bg-gray-50 rounded-xl">
+                                    <h3 class="text-xl font-bold text-center mb-4 text-slate-800">Gereksiz Yükün Etkisi</h3>
+                                    <div class="text-center text-6xl mb-4">🏋️</div>
+                                    <p class="text-center mb-4">Araçtaki her 25 kg fazladan ağırlık, yakıt tüketimini yaklaşık %1 artırır.</p>
+                                    <input type="range" id="weight-slider" min="0" max="100" value="0" step="25" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" style="accent-color: #3498db;">
+                                    <div class="text-center mt-2 font-bold text-blue-600 text-lg">
+                                        <span id="added-weight">0 kg</span> Yük = Yaklaşık <span id="consumption-increase">%0</span> Tüketim Artışı
+                                    </div>
+                                    <p class="text-sm text-gray-500 text-center mt-2">Bagajınızı ve aracınızın içini gereksiz eşyalardan arındırın. Özellikle kış lastiklerini yazın taşımak, spor ekipmanlarını sürekli arabada bulundurmak gibi alışkanlıklar yakıt tüketiminizi artırır. Sadece ihtiyacınız olan eşyaları taşıyın.</p>
+                                </div>
+                                 <div class="p-6 bg-gray-50 rounded-xl">
+                                    <h3 class="text-xl font-bold text-center mb-4 text-slate-800">Klima vs. Açık Cam</h3>
+                                    <div class="w-full p-4 bg-white rounded-lg">
+                                        <div class="flex justify-center mb-4">
+                                            <span class="mr-3 text-gray-600">Düşük Hız</span>
+                                            <label for="speedToggle" class="flex items-center cursor-pointer">
+                                                <div class="relative">
+                                                    <input type="checkbox" id="speedToggle" class="sr-only">
+                                                    <div class="block bg-gray-300 w-14 h-8 rounded-full"></div>
+                                                    <div class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition"></div>
+                                                </div>
+                                            </label>
+                                            <span class="ml-3 text-gray-600">Yüksek Hız</span>
+                                        </div>
+                                        <div id="ac-recommendation" class="text-center">
+                                            <p class="font-bold text-lg text-blue-600">Tavsiye: Camları Aç</p>
+                                            <p class="text-sm text-gray-600 mt-1">Düşük hızlarda (yaklaşık 80 km/s altı) klima motoru daha fazla zorlar ve yakıt tüketimini artırır. Bu hızlarda camları açmak daha verimlidir.</p>
+                                        </div>
+                                    </div>
+                                     <p class="text-sm text-gray-500 text-center mt-4">Portbagaj, bisiklet taşıyıcı gibi aerodinamik yapıyı bozan aksesuarlar, hava direncini artırarak yakıt tüketimini %10 ila %20'ye kadar artırabilir. Bu tür ekipmanları sadece gerektiğinde kullanın ve kullanmadığınız zamanlarda araçtan çıkarın.</p>
+                                </div>
+                            </div>
+                            <div class="mt-8 p-6 bg-gray-50 rounded-xl">
+                                <h3 class="text-xl font-bold text-center mb-4 text-slate-800">Diğer Ekipman ve Yük İpuçları</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-center">
+                                    <div>
+                                        <div class="text-4xl mb-2">💡</div>
+                                        <h4 class="font-bold text-slate-800">Gereksiz Elektrik Yükü</h4>
+                                        <p class="text-sm text-gray-600">Kullanmadığınız elektrikli aksesuarları (koltuk ısıtma, arka cam rezistansı vb.) kapatın. Her elektrikli cihaz, alternatörden güç çekerek motoru daha fazla çalışmaya zorlar ve yakıt tüketimini artırır.</p>
+                                    </div>
+                                    <div>
+                                        <div class="text-4xl mb-2">🚗</div>
+                                        <h4 class="font-bold text-slate-800">Doğru Lastik Seçimi</h4>
+                                        <p class="text-sm text-gray-600">Düşük yuvarlanma direncine sahip lastikler, yakıt verimliliğini artırabilir. Aracınız için uygun ebat ve tipte lastik seçimi, uzun vadede önemli tasarruf sağlar.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Yaygın Yanılgılar Content -->
+                        <div id="yanılgılar" class="tab-pane hidden fade-in">
+                            <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">Yakıt tasarrufu hakkında doğru bilinen birçok yanlış vardır. Bu bölümde, sürücüler arasındaki yaygın inanışları ele alıp gerçekleri ortaya çıkarıyoruz. Kartların üzerine gelerek veya dokunarak doğru bilgiyi öğrenin ve daha bilinçli kararlar verin.</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                
+                                <div class="flip-card h-56">
+                                    <div class="flip-card-inner">
+                                        <div class="flip-card-front bg-teal-100 text-teal-800">
+                                            <h4 class="font-bold text-lg">Yanılgı:</h4>
+                                            <p>Motoru ısıtmak için rölantide beklemek gerekir.</p>
+                                        </div>
+                                        <div class="flip-card-back bg-blue-600 text-white">
+                                            <h4 class="font-bold text-lg">Doğrusu:</h4>
+                                            <p>Modern motorlar, çalıştıktan hemen sonra hareket etmeye hazırdır ve ısınmaya ihtiyaç duymaz. Rölantide beklemek sadece yakıt israfıdır ve emisyonları artırır. En verimli ısınma, sürüş sırasında gerçekleşir.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flip-card h-56">
+                                    <div class="flip-card-inner">
+                                        <div class="flip-card-front bg-amber-100 text-amber-800">
+                                            <h4 class="font-bold text-lg">Yanılgı:</h4>
+                                            <p>Yüksek oktanlı benzin her zaman daha iyidir ve tasarruf sağlar.</p>
+                                        </div>
+                                        <div class="flip-card-back bg-orange-600 text-white">
+                                            <h4 class="font-bold text-lg">Doğrusu:</h4>
+                                            <p>Yüksek oktanlı benzin, sadece aracınızın motoru için öneriliyorsa faydalıdır (genellikle yüksek performanslı motorlar). Aracınızın kullanım kılavuzunda belirtilen oktan seviyesinden daha yüksek bir oktan kullanmak, performansı veya yakıt verimliliğini artırmaz, sadece para israfıdır.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                 <div class="flip-card h-56">
+                                    <div class="flip-card-inner">
+                                        <div class="flip-card-front bg-indigo-100 text-indigo-800">
+                                            <h4 class="font-bold text-lg">Yanılgı:</h4>
+                                            <p>Yakıt katkıları her zaman ciddi tasarruf sağlar.</p>
+                                        </div>
+                                        <div class="flip-card-back bg-indigo-500 text-white">
+                                            <h4 class="font-bold text-lg">Doğrusu:</h4>
+                                            <p>Piyasada bulunan yakıt katkılarının çoğu, doğrudan yakıt tasarrufu sağlamaz. Bazı enjektör temizleyici veya sistem koruyucu katkılar, yakıt sisteminin verimliliğini artırarak dolaylı yoldan fayda sağlayabilir, ancak mucizevi bir etki beklememek gerekir.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flip-card h-56">
+                                    <div class="flip-card-inner">
+                                        <div class="flip-card-front bg-purple-100 text-purple-800">
+                                            <h4 class="font-bold text-lg">Yanılgı:</h4>
+                                            <p>Depoyu her zaman tam doldurmak daha iyidir.</p>
+                                        </div>
+                                        <div class="flip-card-back bg-purple-600 text-white">
+                                            <h4 class="font-bold text-lg">Doğrusu:</h4>
+                                            <p>Tam dolu depo, araca fazladan ağırlık yapar ve bu da yakıt tüketimini artırır. Depoyu yarıdan fazla doldurmak, hem bu ağırlık etkisini azaltır hem de yakıtın buharlaşmasını minimize edebilir.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flip-card h-56">
+                                    <div class="flip-card-inner">
+                                        <div class="flip-card-front bg-red-100 text-red-800">
+                                            <h4 class="font-bold text-lg">Yanılgı:</h4>
+                                            <p>Boş viteste (N) veya debriyaja basarak yokuş aşağı inmek yakıt tasarrufu sağlar.</p>
+                                        </div>
+                                        <div class="flip-card-back bg-red-500 text-white">
+                                            <h4 class="font-bold text-lg">Doğrusu:</h4>
+                                            <p>Modern araçlarda, viteste (motor freni kullanarak) yokuş aşağı inerken yakıt enjeksiyonu kesilir ve sıfır yakıt tüketimi sağlanır. Boş viteste inmek ise motorun rölantide çalışmasına neden olur ve yakıt tüketir. Ayrıca güvenlik açısından da tehlikelidir.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Hesapkolik Footer'ı Buraya Gelecek -->
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+            let speedChart, aggressiveDrivingChart;
+
+            function initCharts() {
+                const speedCtx = document.getElementById('speedChart')?.getContext('2d');
+                if (speedCtx && !speedChart) {
+                    speedChart = new Chart(speedCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Tüketim (L/100km)'],
+                            datasets: [{
+                                label: 'Mevcut Hız',
+                                data: [7],
+                                backgroundColor: ['#3498db'], /* Hesapkolik mavi */
+                                borderColor: ['#3498db'],
+                                borderWidth: 1,
+                                barPercentage: 0.5,
+                            }, {
+                                label: 'Optimum',
+                                data: [5.5],
+                                backgroundColor: ['#2ecc71'], /* Hesapkolik yeşil */
+                                borderColor: ['#2ecc71'],
+                                borderWidth: 1,
+                                barPercentage: 0.5,
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            indexAxis: 'y',
+                            scales: {
+                                x: { beginAtZero: true, max: 20, title: { display: true, text: 'Litre', font: { family: 'Poppins' } } },
+                                y: { grid: { display: false }, ticks: { font: { family: 'Poppins' } } }
+                            },
+                            plugins: {
+                                legend: { display: true, position: 'bottom', labels: { font: { family: 'Poppins' } } },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            return `${context.dataset.label}: ${context.raw} L/100km`;
+                                        }
+                                    },
+                                    bodyFont: { family: 'Poppins' },
+                                    titleFont: { family: 'Poppins' }
+                                }
+                            }
+                        }
+                    });
+                }
+                
+                const aggressiveCtx = document.getElementById('aggressiveDrivingChart')?.getContext('2d');
+                if (aggressiveCtx && !aggressiveDrivingChart) {
+                    aggressiveDrivingChart = new Chart(aggressiveCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Normal Tüketim', 'Agresif Sürüş Farkı (%)'],
+                            datasets: [{
+                                label: 'Yakıt Tüketim Artışı',
+                                data: [100, 30],
+                                backgroundColor: ['#3498db', '#e74c3c'], /* Hesapkolik mavi ve kırmızı */
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                             plugins: {
+                                legend: { display: true, position: 'bottom', labels: { font: { family: 'Poppins' } } },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            if (context.dataIndex === 0) return `Normal Tüketim`;
+                                            return `Tüketim Artışı: %${context.raw}`;
+                                        }
+                                    },
+                                    bodyFont: { family: 'Poppins' },
+                                    titleFont: { family: 'Poppins' }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+            
+            initCharts();
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.dataset.tab;
+
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('tab-active');
+                        btn.classList.add('tab-inactive');
+                    });
+                    button.classList.add('tab-active');
+                    button.classList.remove('tab-inactive');
+
+                    tabPanes.forEach(pane => {
+                        if (pane.id === tabId) {
+                            pane.classList.remove('hidden');
+                        } else {
+                            pane.classList.add('hidden');
+                        }
+                    });
+                    
+                    if(tabId === 'sürüş' && (!speedChart || !aggressiveDrivingChart)) {
+                       setTimeout(initCharts, 50);
+                    }
+                });
+            });
+            
+            const speedButtons = document.querySelectorAll('.speed-btn');
+            speedButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const speed = parseInt(button.dataset.speed);
+                    let consumption;
+                    if (speed <= 80) consumption = 7;
+                    else if (speed <= 100) consumption = 8.5;
+                    else if (speed <= 120) consumption = 11;
+                    else consumption = 14;
+
+                    speedChart.data.datasets[0].data[0] = consumption;
+                    speedChart.update();
+                    
+                    speedButtons.forEach(btn => {
+                        btn.classList.remove('bg-blue-600', 'text-white');
+                        btn.classList.add('bg-gray-300', 'text-gray-700');
+                    });
+                    button.classList.add('bg-blue-600', 'text-white');
+                    button.classList.remove('bg-gray-300', 'text-gray-700');
+                });
+            });
+
+            const maintenanceCards = document.querySelectorAll('.maintenance-card');
+            maintenanceCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const details = card.querySelector('.details');
+                    const isVisible = !details.classList.contains('hidden');
+                    
+                    document.querySelectorAll('.maintenance-card .details').forEach(d => d.classList.add('hidden'));
+
+                    if (!isVisible) {
+                        details.classList.remove('hidden');
+                    }
+                });
+            });
+
+            const weightSlider = document.getElementById('weight-slider');
+            const addedWeightEl = document.getElementById('added-weight');
+            const consumptionIncreaseEl = document.getElementById('consumption-increase');
+            weightSlider.addEventListener('input', (e) => {
+                const weight = parseInt(e.target.value);
+                const increase = Math.round(weight / 25);
+                addedWeightEl.textContent = `${weight} kg`;
+                consumptionIncreaseEl.textContent = `%${increase}`;
+            });
+
+            const speedToggle = document.getElementById('speedToggle');
+            const acRecommendation = document.getElementById('ac-recommendation');
+            speedToggle.addEventListener('change', () => {
+                const dot = speedToggle.nextElementSibling.querySelector('.dot');
+                if(speedToggle.checked) { // Yüksek Hız
+                    acRecommendation.innerHTML = `
+                        <p class="font-bold text-lg text-blue-600">Tavsiye: Klimayı Kullan</p>
+                        <p class="text-sm text-gray-600 mt-1">Yüksek hızda açık camlar, aerodinamiği bozarak daha fazla yakıt harcar.</p>
+                    `;
+                    dot.style.transform = 'translateX(100%)';
+                    dot.parentElement.style.backgroundColor = '#3498db';
+                } else { // Düşük Hız
+                     acRecommendation.innerHTML = `
+                        <p class="font-bold text-lg text-blue-600">Tavsiye: Camları Aç</p>
+                        <p class="text-sm text-gray-600 mt-1">Düşük hızlarda (yaklaşık 80 km/s altı) klima motoru daha fazla zorlar ve yakıt tüketimini artırır. Bu hızlarda camları açmak daha verimlidir.</p>
+                    `;
+                    dot.style.transform = 'translateX(0)';
+                    dot.parentElement.style.backgroundColor = '#ccc';
+                }
+            });
+            
+            const avgKmInput = document.getElementById('avg-km');
+            const consumptionInput = document.getElementById('fuel-consumption');
+            const priceInput = document.getElementById('fuel-price');
+            const savingsResultEl = document.getElementById('savings-result');
+
+            function calculateSavings() {
+                const avgKm = parseFloat(avgKmInput.value) || 0;
+                const consumption = parseFloat(consumptionInput.value) || 0;
+                const price = parseFloat(priceInput.value) || 0;
+
+                if(avgKm > 0 && consumption > 0 && price > 0) {
+                    const weeklyLiters = (avgKm / 100) * consumption;
+                    const annualCost = weeklyLiters * 52 * price;
+                    const potentialSavings = annualCost * 0.15; // %15 tasarruf varsayımı
+                    savingsResultEl.textContent = `~ ₺${potentialSavings.toLocaleString('tr-TR', { maximumFractionDigits: 0 })}`;
+                } else {
+                    savingsResultEl.textContent = '₺0';
+                }
+            }
+
+            avgKmInput.addEventListener('input', calculateSavings);
+            consumptionInput.addEventListener('input', calculateSavings);
+            priceInput.addEventListener('input', calculateSavings);
+            
+            calculateSavings();
+
+            // Hesapkolik Header ve Footer yükleme (mevcut koddan alındı)
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            // Header Yükleme
+            fetch(headerPath)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    const headerPlaceholder = document.getElementById('header-placeholder');
+                    if (headerPlaceholder) {
+                        headerPlaceholder.innerHTML = data;
+                        const scriptElement = headerPlaceholder.querySelector('script');
+                        if (scriptElement) {
+                            const newScript = document.createElement('script');
+                            newScript.textContent = scriptElement.textContent;
+                            document.body.appendChild(newScript);
+                            scriptElement.remove();
+                        }
+                    }
+                })
+                .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+            // Footer Yükleme
+            fetch(footerPath)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    const footerPlaceholder = document.getElementById('footer-placeholder');
+                    if (footerPlaceholder) {
+                        footerPlaceholder.innerHTML = data;
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = data;
+                        const footerElement = tempDiv.querySelector('footer');
+                        if (footerElement) {
+                            footerPlaceholder.replaceWith(footerElement);
+                        }
+                    }
+                })
+                .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+        });
+    </script>
+</body>
+</html>
