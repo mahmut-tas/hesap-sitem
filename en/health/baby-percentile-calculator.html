@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Baby Percentile Calculator - Hesapkolik</title>
+
+    <meta content="Enter your baby's age, gender, height, and weight to calculate percentile values and monitor their development." name="description"/>
+    <meta content="baby percentile, percentile calculator, baby development, height percentile, weight percentile, baby height weight" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <style>
+        /* General Settings and Font */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Light and fresh background */
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Dark theme to match header/footer */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Calculator Section */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff;
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        /* General style for each calculator form */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #4CAF50; /* Green theme color */
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #4CAF50; /* Green theme color */
+        }
+
+        /* Form Elements */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #4CAF50; /* Green theme color */
+            outline: none;
+        }
+        .input-with-unit-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .input-with-unit-group label {
+            flex-basis: auto;
+            width: 100%;
+            margin-bottom: 0;
+            text-align: left;
+        }
+        .input-with-unit-group input[type="number"],
+        .input-with-unit-group select {
+            width: 100%;
+            margin-bottom: 0;
+        }
+        .form-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        /* Form buttons */
+        .calculator-form-container button[type="submit"] {
+            background-color: #4CAF50; /* Green theme color */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button[type="submit"]:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+
+        /* Result Display */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #e8f5e9; /* Greenish background */
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #c8e6c9; /* Greenish border */
+            display: none; /* Hidden by default */
+        }
+        .result-display .result-value {
+            color: #2e7d32; /* Dark green */
+        }
+        .category-display {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #fff3e0; /* Orangish tone */
+            border: 1px solid #ffe0b2;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1em;
+            color: #ef6c00;
+            font-weight: 600;
+            display: none; /* Will be visible with JavaScript */
+        }
+        .category-underweight { color: #f44336; } /* Red */
+        .category-normal { color: #4CAF50; } /* Green */
+        .category-overweight { color: #ff9800; } /* Orange */
+        .category-obese-i, .category-obese-ii, .category-obese-iii { color: #d32f2f; } /* Dark Red */
+        .error {
+            color: #d32f2f; /* Red error message */
+            font-size: 0.8em;
+        }
+
+        /* Info Sections */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #4CAF50; /* Green theme color */
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #4CAF50; /* Green theme color */
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .calc-wrapper h4 {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+            text-align: left; /* Left align headings */
+        }
+        .calculator-form-container p.small-text { /* Small text within the form */
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        #persentilChart {
+            max-height: 400px; /* Limit chart height */
+            width: 100%;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.8em;
+            }
+            .result-display {
+                font-size: 1.4em;
+            }
+            .input-with-unit-group, .input-with-unit {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+            }
+            .input-with-unit-group label, .input-with-unit label {
+                margin-bottom: 5px;
+                text-align: left;
+            }
+            .input-with-unit-group input[type="number"], .input-with-unit-group select,
+            .input-with-unit input[type="number"], .input-with-unit select {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.4em;
+            }
+            .result-display {
+                font-size: 1em;
+                padding: 15px;
+            }
+            .result-display .result-value {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Baby Percentile Calculator 👶</h1>
+                <p>Enter your baby's age, gender, height, and weight to calculate percentile values and monitor their development.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper active-calc" id="calculator-persentil">
+                    <h3><i class="fas fa-baby icon-small"></i> Calculate Percentile</h3>
+                    <div class="calculator-form-container">
+                        <form id="persentilForm">
+                            <p class="small-text">Please enter your baby's information:</p>
+                            <h4>Baby's Information</h4>
+                            <div class="input-with-unit-group">
+                                <label for="baby_age">Age (Months):</label>
+                                <input id="baby_age" max="60" min="0" name="age" placeholder="Ex: 12" required="" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="baby_gender">Gender:</label>
+                                <select id="baby_gender" name="gender" required="">
+                                    <option value="">Select</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="baby_height">Height (cm):</label>
+                                <input id="baby_height" max="150" min="40" name="height" placeholder="Ex: 75" required="" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="baby_weight">Weight (kg):</label>
+                                <input id="baby_weight" max="30" min="1" name="weight" placeholder="Ex: 9.5" required="" step="0.1" type="number"/>
+                            </div>
+                            <button type="submit">Calculate</button>
+                        </form>
+                        <div class="result-display" id="persentilResult">
+                        </div>
+                        <div class="category-display" id="persentilCategory">
+                        </div>
+                        <canvas id="persentilChart" style="margin-top: 20px; display: none;"></canvas>
+                        <div class="calc-explanation">
+                            <p class="small-text">The development percentiles of your baby based on the entered information are shown above. These values are average reference points.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>What is Baby Percentile and Why is it Important?</h3>
+            <p><strong>Baby percentile curves</strong> are standard reference tables used to evaluate babies' height and weight development according to their age and gender. These curves are used by doctors and parents to understand whether a baby's development is within a healthy range. A baby's percentile value indicates their rank among 100 babies of the same age and gender. For example, if a baby is in the 50th percentile, it means they are larger than 50% and smaller than 50% of babies of the same age.</p>
+            <p>Percentile tracking is critical for early diagnosis of potential health issues such as inadequate nutrition, growth hormone problems, or other developmental delays. During regular check-ups, doctors monitor the baby's percentile values over time to gain insight into developmental trends.</p>
+            <h4>How to Interpret Percentile Values?</h4>
+            <p>Generally accepted percentile ranges and their meanings are as follows:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Percentile Range</th>
+                        <th>Interpretation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>&lt; 3rd Percentile</td><td>Very Low (possible malnutrition or developmental delay)</td></tr>
+                    <tr><td>3rd - 10th Percentile</td><td>Low (may require follow-up)</td></tr>
+                    <tr><td>10th - 90th Percentile</td><td>Normal Range (healthy development)</td></tr>
+                    <tr><td>90th - 97th Percentile</td><td>High (may require follow-up, especially for weight)</td></tr>
+                    <tr><td>&gt; 97th Percentile</td><td>Very High (possible obesity risk or rapid growth)</td></tr>
+                </tbody>
+            </table>
+            <p class="disclaimer-text">It should be noted that percentile values alone do not constitute a diagnosis. For the most accurate assessment and interpretation of your baby's development, it is always important to consult a pediatrician. This tool is for informational purposes only.</p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header and Footer loading functions
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            // Find and execute script tags within the loaded HTML
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // Load header and footer based on URL
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            const texts = {
+                tr: {
+                    mainHeading: 'Bebek Persentil Hesaplayıcı 👶',
+                    mainDescription: 'Bebeğinizin yaş, cinsiyet, boy ve kilo bilgilerini girerek persentil değerlerini hesaplayın ve gelişimini takip edin.',
+                    calculatorTitle: 'Persentil Hesapla',
+                    formIntro: 'Lütfen bebeğinizin bilgilerini girin:',
+                    babyInfoTitle: 'Bebeğin Bilgileri',
+                    ageLabel: 'Yaş (Ay):',
+                    genderLabel: 'Cinsiyet:',
+                    heightLabel: 'Boy (cm):',
+                    weightLabel: 'Kilo (kg):',
+                    genderSelectPlaceholder: 'Seçiniz',
+                    genderMale: 'Erkek',
+                    genderFemale: 'Kız',
+                    calculateButton: 'Hesapla',
+                    invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin ve bir cinsiyet seçimi yapın.',
+                    resultHeightPercentile: 'Boy Persentili:',
+                    resultWeightPercentile: 'Kilo Persentili:',
+                    interpretation: 'Bu değerler yaklaşık değerlerdir ve kesin bir tanı için doktorunuza danışınız.',
+                    categoryVeryLow: 'Çok düşük (< 3. Persentil)',
+                    categoryLow: 'Düşük (3. - 10. Persentil)',
+                    categoryNormal: 'Normal aralıkta (10. - 90. Persentil)',
+                    categoryHigh: 'Yüksek (90. - 97. Persentil)',
+                    categoryVeryHigh: 'Çok yüksek (> 97. Persentil)',
+                    chartTitle: 'Bebek Boy ve Kilo Persentil Grafiği',
+                    chartHeightLabel: 'Boy (cm)',
+                    chartWeightLabel: 'Kilo (kg)',
+                    chartAgeLabel: 'Yaş (Ay)',
+                    chartYourBaby: 'Bebeğiniz',
+                    calcExplanationText: 'Girilen bilgilere göre bebeğinizin gelişim persentilleri yukarıda gösterilmiştir. Bu değerler ortalama referans noktalarıdır.',
+
+                    infoSectionTitle: 'Bebek Persentil Nedir ve Neden Önemlidir?',
+                    infoSectionP1: '<strong>Bebek persentil eğrileri</strong>, bebeklerin yaş ve cinsiyetlerine göre boy ve kilo gelişimlerini değerlendirmek için kullanılan standart referans tablolardır. Bu eğriler, bebeklerin gelişimlerinin sağlıklı bir aralıkta olup olmadığını anlamak için doktorlar ve ebeveynler tarafından kullanılır. Bir bebeğin persentil değeri, aynı yaş ve cinsiyetteki 100 bebek arasında kaçıncı sırada olduğunu gösterir. Örneğin, bir bebek 50. persentildeyse, aynı yaştaki bebeklerin %50\'sinden daha büyük ve %50\'sinden daha küçük olduğu anlamına gelir.',
+                    infoSectionP2: 'Persentil takibi, bebeğin yeterli beslenip beslenmediği, büyüme hormonu sorunları veya diğer gelişimsel gecikmeler gibi potansiyel sağlık sorunlarının erken teşhisi için kritik öneme sahiptir. Düzenli kontrollerde doktorlar, bebeğin persentil değerlerini zaman içindeki değişimini izleyerek gelişim trendleri hakkında bilgi edinirler.',
+                    infoSectionH4_1: 'Persentil Değerleri Nasıl Yorumlanır?',
+                    infoSectionTableContent: `
+                        <tr><td>&lt; 3. Persentil</td><td>Çok düşük (olası yetersiz beslenme veya gelişim geriliği)</td></tr>
+                        <tr><td>3. - 10. Persentil</td><td>Düşük (takip gerektirebilir)</td></tr>
+                        <tr><td>10. - 90. Persentil</td><td>Normal aralıkta (sağlıklı gelişim)</td></tr>
+                        <tr><td>90. - 97. Persentil</td><td>Yüksek (takip gerektirebilir, özellikle kilo için)</td></tr>
+                        <tr><td>&gt; 97. Persentil</td><td>Çok yüksek (olası obezite riski veya hızlı büyüme)</td></tr>
+                    `,
+                    disclaimerTextInfo: 'Unutulmamalıdır ki persentil değerleri tek başına bir tanı koymaz. Bebeğinizin gelişimi hakkında en doğru değerlendirme ve yorum için her zaman bir çocuk doktoruna danışmanız önemlidir. Bu araç sadece bilgilendirme amaçlıdır.'
+                },
+                en: {
+                    mainHeading: 'Baby Percentile Calculator 👶',
+                    mainDescription: 'Enter your baby\'s age, gender, height, and weight to calculate percentile values and monitor their development.',
+                    calculatorTitle: 'Calculate Percentile',
+                    formIntro: 'Please enter your baby\'s information:',
+                    babyInfoTitle: 'Baby\'s Information',
+                    ageLabel: 'Age (Months):',
+                    genderLabel: 'Gender:',
+                    heightLabel: 'Height (cm):',
+                    weightLabel: 'Weight (kg):',
+                    genderSelectPlaceholder: 'Select',
+                    genderMale: 'Male',
+                    genderFemale: 'Female',
+                    calculateButton: 'Calculate',
+                    invalidInput: 'Please enter valid positive numbers for all fields and select a gender.',
+                    resultHeightPercentile: 'Height Percentile:',
+                    resultWeightPercentile: 'Weight Percentile:',
+                    interpretation: 'These values are approximate. Consult your doctor for a definitive diagnosis.',
+                    categoryVeryLow: 'Very Low (< 3rd Percentile)',
+                    categoryLow: 'Low (3rd - 10th Percentile)',
+                    categoryNormal: 'Normal Range (10th - 90th Percentile)',
+                    categoryHigh: 'High (90th - 97th Percentile)',
+                    categoryVeryHigh: 'Very High (> 97th Percentile)',
+                    chartTitle: 'Baby Height and Weight Percentile Chart',
+                    chartHeightLabel: 'Height (cm)',
+                    chartWeightLabel: 'Weight (kg)',
+                    chartAgeLabel: 'Age (Months)',
+                    chartYourBaby: 'Your Baby',
+                    calcExplanationText: 'The development percentiles of your baby based on the entered information are shown above. These values are average reference points.',
+
+                    infoSectionTitle: 'What is Baby Percentile and Why is it Important?',
+                    infoSectionP1: '<strong>Baby percentile curves</strong> are standard reference tables used to evaluate babies\' height and weight development according to their age and gender. These curves are used by doctors and parents to understand whether a baby\'s development is within a healthy range. A baby\'s percentile value indicates their rank among 100 babies of the same age and gender. For example, if a baby is in the 50th percentile, it means 50% of babies of the same age are smaller and 50% are larger.',
+                    infoSectionP2: 'Percentile tracking is critical for early diagnosis of potential health issues such as inadequate nutrition, growth hormone problems, or other developmental delays. During regular check-ups, doctors monitor the baby\'s percentile values over time to gain insight into developmental trends.',
+                    infoSectionH4_1: 'How to Interpret Percentile Values?',
+                    infoSectionTableContent: `
+                        <tr><td>&lt; 3rd Percentile</td><td>Very Low (possible malnutrition or developmental delay)</td></tr>
+                        <tr><td>3rd - 10th Percentile</td><td>Low (may require follow-up)</td></tr>
+                        <tr><td>10th - 90th Percentile</td><td>Normal Range (healthy development)</td></tr>
+                        <tr><td>90th - 97th Percentile</td><td>High (may require follow-up, especially for weight)</td></tr>
+                        <tr><td>&gt; 97th Percentile</td><td>Very High (possible obesity risk or rapid growth)</td></tr>
+                    `,
+                    disclaimerTextInfo: 'It should be noted that percentile values alone do not constitute a diagnosis. For the most accurate assessment and interpretation of your baby\'s development, it is always important to consult a pediatrician. This tool is for informational purposes only.'
+                }
+            };
+
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // DOM Elements
+            const persentilForm = document.getElementById('persentilForm');
+            const babyAgeInput = document.getElementById('baby_age');
+            const babyGenderSelect = document.getElementById('baby_gender');
+            const babyHeightInput = document.getElementById('baby_height');
+            const babyWeightInput = document.getElementById('baby_weight');
+            const persentilResultDiv = document.getElementById('persentilResult');
+            const persentilCategoryDiv = document.getElementById('persentilCategory');
+            const persentilChartCanvas = document.getElementById('persentilChart');
+            let persentilChartInstance = null; // To store Chart instance
+
+            // Update text based on language
+            document.querySelector('.hero-section h1').textContent = currentTexts.mainHeading;
+            document.querySelector('.hero-section p').textContent = currentTexts.mainDescription;
+            document.querySelector('#calculator-persentil h3').innerHTML = `<i class="fas fa-baby icon-small"></i> ${currentTexts.calculatorTitle}`;
+            document.querySelector('#persentilForm p.small-text').textContent = currentTexts.formIntro;
+            document.querySelector('#persentilForm h4').textContent = currentTexts.babyInfoTitle;
+
+            document.getElementById('baby_age').previousElementSibling.textContent = currentTexts.ageLabel;
+            document.getElementById('baby_gender').previousElementSibling.textContent = currentTexts.genderLabel;
+            document.getElementById('baby_gender').querySelector('option[value=""]').textContent = currentTexts.genderSelectPlaceholder;
+            document.getElementById('baby_gender').querySelector('option[value="male"]').textContent = currentTexts.genderMale;
+            document.getElementById('baby_gender').querySelector('option[value="female"]').textContent = currentTexts.genderFemale;
+            document.getElementById('baby_height').previousElementSibling.textContent = currentTexts.heightLabel;
+            document.getElementById('baby_weight').previousElementSibling.textContent = currentTexts.weightLabel;
+            document.querySelector('#persentilForm button[type="submit"]').textContent = currentTexts.calculateButton;
+            document.querySelector('.calc-explanation p.small-text').textContent = currentTexts.calcExplanationText;
+
+            // Update Info Section Text
+            function updateInfoSectionContent() {
+                document.querySelector('.info-section h3').textContent = currentTexts.infoSectionTitle;
+                document.querySelector('.info-section p:nth-of-type(1)').innerHTML = currentTexts.infoSectionP1;
+                document.querySelector('.info-section p:nth-of-type(2)').innerHTML = currentTexts.infoSectionP2;
+                document.querySelector('.info-section h4:nth-of-type(1)').textContent = currentTexts.infoSectionH4_1;
+                document.querySelector('.info-section table tbody').innerHTML = currentTexts.infoSectionTableContent;
+                document.querySelector('.info-section .disclaimer-text').innerHTML = currentTexts.disclaimerTextInfo;
+            }
+            updateInfoSectionContent(); // Update info section when page loads
+
+            // Simplified percentile data (example data - Real percentile data is much more comprehensive)
+            // This data is for example purposes only and is not real medical data.
+            // For a real application, comprehensive percentile tables from reliable sources like WHO or CDC should be used.
+            const percentileData = {
+              male: {
+                // Age: [3rd P, 10th P, 50th P, 90th P, 97th P]
+                height: {
+                  0: [44, 46, 49, 52, 54], // Newborn (0 months)
+                  1: [48, 50, 53, 56, 58],
+                  3: [54, 56, 60, 64, 66],
+                  6: [61, 63, 67, 71, 73],
+                  12: [69, 71, 76, 81, 83],
+                  24: [78, 80, 86, 91, 93],
+                  36: [85, 87, 93, 99, 101],
+                  48: [90, 92, 99, 105, 107],
+                  60: [95, 97, 104, 110, 112]
+                },
+                weight: {
+                  0: [2.5, 2.9, 3.5, 4.2, 4.7], // Newborn (0 months)
+                  1: [3.4, 3.9, 4.5, 5.2, 5.7],
+                  3: [4.8, 5.4, 6.3, 7.3, 7.9],
+                  6: [6.4, 7.0, 7.9, 9.1, 9.8],
+                  12: [8.5, 9.1, 10.2, 11.7, 12.5],
+                  24: [10.5, 11.2, 12.5, 14.2, 15.2],
+                  36: [12.0, 12.8, 14.3, 16.2, 17.3],
+                  48: [13.5, 14.4, 16.0, 18.0, 19.2],
+                  60: [15.0, 16.0, 17.8, 20.0, 21.3]
+                }
+              },
+              female: {
+                height: {
+                  0: [43, 45, 48, 51, 53],
+                  1: [47, 49, 52, 55, 57],
+                  3: [53, 55, 59, 63, 65],
+                  6: [60, 62, 66, 70, 72],
+                  12: [68, 70, 75, 80, 82],
+                  24: [77, 79, 85, 90, 92],
+                  36: [84, 86, 92, 98, 100],
+                  48: [89, 91, 98, 104, 106],
+                  60: [94, 96, 103, 109, 111]
+                },
+                weight: {
+                  0: [2.4, 2.8, 3.4, 4.1, 4.6],
+                  1: [3.2, 3.7, 4.3, 5.0, 5.5],
+                  3: [4.5, 5.1, 6.0, 7.0, 7.6],
+                  6: [6.0, 6.6, 7.5, 8.7, 9.4],
+                  12: [8.0, 8.6, 9.7, 11.2, 12.0],
+                  24: [10.0, 10.7, 12.0, 13.7, 14.7],
+                  36: [11.5, 12.3, 13.8, 15.7, 16.8],
+                  48: [13.0, 13.9, 15.5, 17.5, 18.7],
+                  60: [14.5, 15.5, 17.3, 19.5, 20.8]
+                }
+              }
+            };
+
+            function getPercentile(value, age, gender, type) {
+              const data = percentileData[gender][type];
+              const ages = Object.keys(data).map(Number).sort((a, b) => a - b);
+
+              if (age < ages[0]) return 0;
+              if (age > ages[ages.length - 1]) return 100;
+
+              let lowerAge = ages.filter(a => a <= age).pop();
+              let upperAge = ages.filter(a => a >= age).shift();
+
+              let percentiles;
+              if (lowerAge === upperAge) {
+                percentiles = data[lowerAge];
+              } else {
+                const lowerData = data[lowerAge];
+                const upperData = data[upperAge];
+                const factor = (age - lowerAge) / (upperAge - lowerAge);
+                percentiles = lowerData.map((d, i) => d + (upperData[i] - d) * factor);
+              }
+
+              if (value <= percentiles[0]) return 3;
+              if (value <= percentiles[1]) return interpolatePercentile(value, percentiles[0], percentiles[1], 3, 10);
+              if (value <= percentiles[2]) return interpolatePercentile(value, percentiles[1], percentiles[2], 10, 50);
+              if (value <= percentiles[3]) return interpolatePercentile(value, percentiles[2], percentiles[3], 50, 90);
+              if (value <= percentiles[4]) return interpolatePercentile(value, percentiles[3], percentiles[4], 90, 97);
+              return 97;
+            }
+
+            function interpolatePercentile(value, lowerBound, upperBound, lowerP, upperP) {
+              if (lowerBound === upperBound) return lowerP;
+              return lowerP + (upperP - lowerP) * ((value - lowerBound) / (upperBound - lowerBound));
+            }
+
+            function getPercentileCategory(percentile) {
+              if (percentile < 3) return { category: currentTexts.categoryVeryLow, color: 'category-underweight' };
+              if (percentile <= 10) return { category: currentTexts.categoryLow, color: 'category-underweight' };
+              if (percentile <= 90) return { category: currentTexts.categoryNormal, color: 'category-normal' };
+              if (percentile <= 97) return { category: currentTexts.categoryHigh, color: 'category-overweight' };
+              return { category: currentTexts.categoryVeryHigh, color: 'category-obese-i' };
+            }
+
+            function calculatePercentile(event) {
+              event.preventDefault();
+
+              let age = parseFloat(babyAgeInput.value);
+              let gender = babyGenderSelect.value;
+              let height = parseFloat(babyHeightInput.value);
+              let weight = parseFloat(babyWeightInput.value);
+
+              persentilResultDiv.innerHTML = '';
+              persentilCategoryDiv.innerHTML = '';
+              persentilResultDiv.style.display = 'none';
+              persentilCategoryDiv.style.display = 'none';
+              persentilChartCanvas.style.display = 'none';
+
+              if (isNaN(age) || isNaN(height) || isNaN(weight) || age < 0 || height <= 0 || weight <= 0 || !gender) {
+                persentilResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                persentilResultDiv.style.display = 'block';
+                return;
+              }
+
+              const heightPercentile = getPercentile(height, age, gender, 'height');
+              const weightPercentile = getPercentile(weight, age, gender, 'weight');
+
+              const heightCategory = getPercentileCategory(heightPercentile);
+              const weightCategory = getPercentileCategory(weightPercentile);
+
+              persentilResultDiv.innerHTML = `
+                <p><strong>${currentTexts.resultHeightPercentile}</strong> <span class="result-value">${heightPercentile.toFixed(1)}%</span></p>
+                <p><strong>${currentTexts.resultWeightPercentile}</strong> <span class="result-value">${weightPercentile.toFixed(1)}%</span></p>
+              `;
+              persentilResultDiv.style.display = 'block';
+
+              persentilCategoryDiv.innerHTML = `
+                <p>Height Development: <span class="result-category ${heightCategory.color}">${heightCategory.category}</span></p>
+                <p>Weight Development: <span class="result-category ${weightCategory.color}">${weightCategory.category}</span></p>
+                <p class="small-text">${currentTexts.interpretation}</p>
+              `;
+              persentilCategoryDiv.style.display = 'block';
+
+              drawPercentileChart(age, gender, height, weight);
+            }
+
+            function drawPercentileChart(babyAge, babyGender, babyHeight, babyWeight) {
+                persentilChartCanvas.style.display = 'block';
+
+                const ages = Object.keys(percentileData[babyGender].height).map(Number).sort((a, b) => a - b);
+
+                const height50th = ages.map(age => percentileData[babyGender].height[age][2]);
+                const weight50th = ages.map(age => percentileData[babyGender].weight[age][2]);
+
+                const height3rd = ages.map(age => percentileData[babyGender].height[age][0]);
+                const height97th = ages.map(age => percentileData[babyGender].height[age][4]);
+
+                const weight3rd = ages.map(age => percentileData[babyGender].weight[age][0]);
+                const weight97th = ages.map(age => percentileData[babyGender].weight[age][4]);
+
+                const babyHeightPoint = { x: babyAge, y: babyHeight };
+                const babyWeightPoint = { x: babyAge, y: babyWeight };
+
+                if (persentilChartInstance) {
+                    persentilChartInstance.destroy();
+                }
+
+                const ctx = persentilChartCanvas.getContext('2d');
+                persentilChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ages,
+                        datasets: [
+                            {
+                                label: currentTexts.chartHeightLabel + ' (50th Percentile)',
+                                data: height50th,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                fill: false,
+                                tension: 0.3,
+                                pointRadius: 3
+                            },
+                            {
+                                label: currentTexts.chartWeightLabel + ' (50th Percentile)',
+                                data: weight50th,
+                                borderColor: 'rgba(153, 102, 255, 1)',
+                                backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                                fill: false,
+                                tension: 0.3,
+                                pointRadius: 3
+                            },
+                            {
+                              label: currentTexts.chartHeightLabel + ' (3rd Percentile)',
+                              data: height3rd,
+                              borderColor: 'rgba(255, 99, 132, 0.5)',
+                              backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                              fill: false,
+                              borderDash: [5, 5],
+                              pointRadius: 0,
+                              tension: 0.3
+                            },
+                            {
+                              label: currentTexts.chartHeightLabel + ' (97th Percentile)',
+                              data: height97th,
+                              borderColor: 'rgba(255, 99, 132, 0.5)',
+                              backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                              fill: '-1',
+                              borderDash: [5, 5],
+                              pointRadius: 0,
+                              tension: 0.3
+                            },
+                            {
+                              label: currentTexts.chartWeightLabel + ' (3rd Percentile)',
+                              data: weight3rd,
+                              borderColor: 'rgba(54, 162, 235, 0.5)',
+                              backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                              fill: false,
+                              borderDash: [5, 5],
+                              pointRadius: 0,
+                              tension: 0.3
+                            },
+                            {
+                              label: currentTexts.chartWeightLabel + ' (97th Percentile)',
+                              data: weight97th,
+                              borderColor: 'rgba(54, 162, 235, 0.5)',
+                              backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                              fill: '-1',
+                              borderDash: [5, 5],
+                              pointRadius: 0,
+                              tension: 0.3
+                            },
+                            {
+                                label: `${currentTexts.chartYourBaby} (${currentTexts.chartHeightLabel})`,
+                                data: [babyHeightPoint],
+                                borderColor: 'rgba(255, 206, 86, 1)',
+                                backgroundColor: 'rgba(255, 206, 86, 0.8)',
+                                type: 'scatter',
+                                pointRadius: 8,
+                                pointBackgroundColor: 'rgba(255, 206, 86, 1)',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                            },
+                            {
+                                label: `${currentTexts.chartYourBaby} (${currentTexts.chartWeightLabel})`,
+                                data: [babyWeightPoint],
+                                borderColor: 'rgba(255, 159, 64, 1)',
+                                backgroundColor: 'rgba(255, 159, 64, 0.8)',
+                                type: 'scatter',
+                                pointRadius: 8,
+                                pointBackgroundColor: 'rgba(255, 159, 64, 1)',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: currentTexts.chartTitle,
+                                font: {
+                                    size: 18,
+                                    weight: 'bold'
+                                }
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: currentTexts.chartAgeLabel
+                                },
+                                beginAtZero: true
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: `${currentTexts.chartHeightLabel} / ${currentTexts.chartWeightLabel}`
+                                },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            persentilForm.addEventListener('submit', calculatePercentile);
+        });
+    </script>
+</body>
+</html>
