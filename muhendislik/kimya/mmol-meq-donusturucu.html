@@ -362,7 +362,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Header ve Footer yükleme fonksiyonları
+            // Header ve Footer yükleme fonksiyonları (mevcut kodunuzdan)
             function loadPartial(elementId, url) {
                 fetch(url)
                     .then(response => {
@@ -393,17 +393,13 @@
                     });
             }
 
-            // **Hata Düzeltme:** isEnglishPage değişkenini sadece bir kez tanımlıyoruz.
             const isEnglishPage = window.location.pathname.startsWith('/en/');
-
-            // URL'ye göre header ve footer yükleme
             const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
             const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
 
             loadPartial('header-placeholder', headerPath);
             loadPartial('footer-placeholder', footerPath);
 
-            // Metinleri dile göre tanımlayan bir obje
             const texts = {
                 tr: {
                     mainHeading: 'Mmol - mEq Dönüşüm Hesaplayıcı 🧪',
@@ -429,7 +425,6 @@
                     convertedValueLabel: 'Dönüştürülen Değer:',
                     resultUnit: 'mEq',
                     formExplanation: 'Lütfen tüm değerleri doğru birimlerde girdiğinizden emin olun.',
-
                     infoSectionTitle: 'Mmol (Milimol) ve mEq (Milieşdeğer) Dönüşümü Nedir?',
                     infoSectionP1: '<strong>Milimol (mmol)</strong> ve <strong>milieşdeğer (mEq)</strong>, özellikle kimya ve tıp alanında kullanılan, maddelerin miktarını ve kimyasal aktivitesini ifade eden birimlerdir. Bir maddenin **milimolü**, moleküler ağırlığına dayalı olarak o maddenin kaç molünün binde birine sahip olduğunu gösterirken, **milieşdeğeri** ise iyonun kimyasal birleşme veya reaktivite gücünü, yani taşıdığı net elektrik yükünü dikkate alır. Bu fark, özellikle vücut sıvılarındaki elektrolit dengesi gibi fizyolojik süreçlerin anlaşılması için kritiktir.',
                     infoSectionH4_1: 'Mmol\'den mEq\'ye Dönüşüm',
@@ -445,7 +440,7 @@
                     infoSectionFormula3: '$$\\text{mEq} = \\text{mmol} \\times \\text{Valans (Değerlik)}$$',
                     infoSectionH4_3: 'Neden Mmol ve mEq Birimleri Kullanılır?',
                     infoSectionList2_1: '<strong>Mmol:</strong> Maddenin gerçek miktarını, yani molekül sayısını ifade eder. Kimyasal reaksiyonların stoikiyometrik hesaplamaları için temel bir birimdir.',
-                    infoSectionList2_2: '<strong>mEq:</strong> Özellikle biyolojik sıvılardaki ve ilaç dozajlarındaki iyonların kimyasal reaktivitesini ve elektriksel dengeyi daha iyi yansıtır. Vücut sıvılarındaki elektrolit dengesi (örn: kan, idrar) mEq/L cinsinden ifade edilir, çünkü bu, iyonların fonksiyonel konsantrasyonunu gösterir ve elektriksel yük dengesini anlamak için daha pratiktir.',
+                    infoSectionList2_2: '<strong>mEq:</strong> Özellikle biyolojik sıvılardaki ve ilaç dozajlarındaki iyonların kimyasal reaktivitesini ve elektriksel dengeyi daha iyi yansıtır. Vücut sıvılarıdaki elektrolit dengesi (örn: kan, idrar) mEq/L cinsinden ifade edilir, çünkü bu, iyonların fonksiyonel konsantrasyonunu gösterir ve elektriksel yük dengesini anlamak için daha pratiktir.',
                     disclaimerTextInfo: 'Bu hesaplayıcı bilgilendirme amaçlıdır ve teorik dönüşümler sunar. Özellikle tıbbi dozaj veya klinik karar verme süreçlerinde, daima bir sağlık profesyoneline danışmanız ve laboratuvar değerlerini dikkate almanız önemlidir. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize <a href="../../iletisim.html">iletişim</a> sayfamızdan ulaşın.'
                 },
                 en: {
@@ -472,7 +467,6 @@
                     convertedValueLabel: 'Converted Value:',
                     resultUnit: 'mEq',
                     formExplanation: 'Please ensure all values are entered in the correct units.',
-
                     infoSectionTitle: 'What is Mmol (Millimole) and mEq (Milliequivalent) Conversion?',
                     infoSectionP1: '<strong>Millimole (mmol)</strong> and <strong>milliequivalent (mEq)</strong> are units used particularly in chemistry and medicine to express the quantity and chemical activity of substances. While a substance\'s **millimole** indicates how many thousandths of a mole it possesses based on its molecular weight, its **milliequivalent** takes into account the ion\'s chemical combining or reactivity power, i.e., its net electrical charge. This difference is critical for understanding physiological processes such as electrolyte balance in body fluids.',
                     infoSectionH4_1: 'Mmol to mEq Conversion',
@@ -502,12 +496,10 @@
             const molecularWeightInput = document.getElementById('molecularWeight');
             const valenceInput = document.getElementById('valence');
             const resultBox = document.getElementById('resultBox');
-            const convertedValueSpan = document.getElementById('convertedValue');
+            const convertedValueSpan = document.getElementById('convertedValue'); // Bu değişken hala var ama direkt kullanılmayacak
 
-            // Set initial language from URL or default to TR
             const currentTexts = isEnglishPage ? texts.en : texts.tr;
 
-            // Function to update all text content based on current language
             function updateContent() {
                 document.querySelector('.hero-section h1').textContent = currentTexts.mainHeading;
                 document.querySelector('.hero-section p').textContent = currentTexts.mainDescription;
@@ -528,10 +520,8 @@
                 document.getElementById('molecularWeight').previousElementSibling.textContent = currentTexts.molecularWeightLabel;
                 document.getElementById('molecularWeight').placeholder = currentTexts.molecularWeightPlaceholder;
 
-                // Dinamik olarak doğru h4'ü seçmek için daha sağlam bir yaklaşım
                 const h4Elements = document.querySelectorAll('.calculator-form-container h4');
-                // Genellikle üçüncü h4 "İyon Bilgileri" başlığıdır.
-                if (h4Elements.length >= 3) {
+                if (h4Elements.length >= 3) { // This selects the "İyon Bilgileri" heading
                     h4Elements[2].textContent = currentTexts.ionInfoTitle;
                 }
                 
@@ -539,16 +529,20 @@
                 document.getElementById('valence').placeholder = currentTexts.valencePlaceholder;
 
                 document.querySelector('#conversionForm button[type="submit"]').textContent = currentTexts.calculateButton;
-                document.querySelector('#resultBox p strong').textContent = currentTexts.convertedValueLabel;
-                // convertedValueSpan.textContent will be set by calculation
-                document.querySelector('.calc-explanation p.small-text').textContent = currentTexts.formExplanation;
+                // resultBox'ın içindeki P elementini güncelliyoruz, span'i değil.
+                // Bu kısım artık direkt olarak resultBox.innerHTML tarafından yönetileceği için burada sabitlemeye gerek yok.
+                // updateContent çağrıldığında, resultBox varsayılan haline dönmeli veya gizlenmeli.
+                const resultDisplayP = resultBox.querySelector('p');
+                if (resultDisplayP) {
+                    resultDisplayP.innerHTML = `<strong>${currentTexts.convertedValueLabel}</strong> <span class="result-value" id="convertedValue"></span> ${currentTexts.resultUnit}`;
+                }
 
+                document.querySelector('.calc-explanation p.small-text').textContent = currentTexts.formExplanation;
 
                 // Info Section updates
                 document.querySelector('.info-section h3').textContent = currentTexts.infoSectionTitle;
                 document.querySelector('.info-section p:nth-of-type(1)').innerHTML = currentTexts.infoSectionP1;
 
-                // Bilgi bölümündeki h4 başlıklarını güncellerken daha dikkatli seçiciler kullanabiliriz
                 const infoH4Elements = document.querySelectorAll('.info-section h4');
                 if (infoH4Elements.length >= 1) {
                     infoH4Elements[0].textContent = currentTexts.infoSectionH4_1;
@@ -580,43 +574,50 @@
                 document.querySelector('.info-section .disclaimer-text').innerHTML = currentTexts.disclaimerTextInfo;
             }
 
-            // Initial content update
+            // Sayfa yüklendiğinde içeriği bir kez güncelle
             updateContent();
 
-            // Toggle input groups based on conversion type selection
+            // Dönüşüm tipi seçimi değiştiğinde input gruplarını ayarla
             conversionTypeSelect.addEventListener('change', function() {
                 if (this.value === 'mmolToMeq') {
                     mmolInputGroup.style.display = 'block';
                     mgInputGroup.style.display = 'none';
-                    // Clear mg inputs when switching
+                    // Değerleri temizle
                     mgValueInput.value = '';
                     molecularWeightInput.value = '';
-                    mmolValueInput.setAttribute('required', '');
+                    // Gereklilikleri ayarla
+                    mmolValueInput.setAttribute('required', 'true');
                     mgValueInput.removeAttribute('required');
                     molecularWeightInput.removeAttribute('required');
-                } else {
+                } else { // mgToMeq
                     mmolInputGroup.style.display = 'none';
                     mgInputGroup.style.display = 'block';
-                    // Clear mmol input when switching
+                    // Değerleri temizle
                     mmolValueInput.value = '';
-                    mgValueInput.setAttribute('required', '');
-                    molecularWeightInput.setAttribute('required', '');
+                    // Gereklilikleri ayarla
+                    mgValueInput.setAttribute('required', 'true');
+                    molecularWeightInput.setAttribute('required', 'true');
                     mmolValueInput.removeAttribute('required');
                 }
-                resultBox.style.display = 'none'; // Hide results when changing type
+                resultBox.style.display = 'none'; // Tür değiştiğinde sonuçları gizle
             });
 
-            conversionForm.addEventListener('submit', function(event) {
-                event.preventDefault();
+            // Sayfa yüklendiğinde varsayılan dönüşüm tipine göre input gruplarını ayarla
+            conversionTypeSelect.dispatchEvent(new Event('change'));
 
-                resultBox.style.display = 'none'; // Hide previous results
-                convertedValueSpan.textContent = ''; // Clear result value
+
+            // Form gönderildiğinde hesaplamayı yap
+            conversionForm.addEventListener('submit', function(event) {
+                event.preventDefault(); // Formun varsayılan gönderimini engelle
+
+                resultBox.style.display = 'none'; // Önceki sonuçları gizle
 
                 const conversionType = conversionTypeSelect.value;
                 let convertedMeq;
                 let isValid = true;
                 const valence = parseFloat(valenceInput.value);
 
+                // Valans kontrolü
                 if (isNaN(valence) || valence <= 0) {
                     isValid = false;
                 }
@@ -643,8 +644,8 @@
                     resultBox.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
                     resultBox.style.display = 'block';
                 } else {
-                    convertedValueSpan.textContent = convertedMeq.toFixed(3);
-                    resultBox.innerHTML = `<p><strong>${currentTexts.convertedValueLabel}</strong> <span class="result-value" id="convertedValue">${convertedMeq.toFixed(3)}</span> ${currentTexts.resultUnit}</p>`;
+                    // Sonuç kutusunu doğru değerle ve birimle doldur
+                    resultBox.innerHTML = `<p><strong>${currentTexts.convertedValueLabel}</strong> <span class="result-value">${convertedMeq.toFixed(3)}</span> ${currentTexts.resultUnit}</p>`;
                     resultBox.style.display = 'block';
                 }
             });
