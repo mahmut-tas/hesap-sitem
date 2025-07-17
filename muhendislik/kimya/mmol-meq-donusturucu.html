@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Mmol - mEq Dönüşüm Hesaplayıcı - Hesapkolik</title>
+
+    <meta content="Milimol (mmol) ile Milieşdeğer (mEq) arasında dönüşüm yapın. Elektrolit konsantrasyonları ve kimyasal aktivite hesaplamalarınız için pratik bir araç." name="description"/>
+    <meta content="mmol mEq dönüşüm, milimol milieşdeğer, elektrolit hesaplama, valans, değerlik, kimya hesaplayıcı, tıp hesaplayıcı" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <style>
+        /* Genel Ayarlar ve Font */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Sade ve ferah bir arka plan */
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Koyu tema başlık/altlık ile uyumlu */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Bölümü */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff;
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #1a73e8; /* Mavi tema rengi - tıp/kimya hissi */
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #1a73e8; /* Mavi tema rengi */
+        }
+
+        /* Form Elemanları */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #1a73e8; /* Mavi tema rengi */
+            outline: none;
+        }
+        .input-with-unit-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .input-with-unit-group label {
+            flex-basis: auto;
+            width: 100%;
+            margin-bottom: 0;
+            text-align: left;
+        }
+        .input-with-unit-group input[type="number"],
+        .input-with-unit-group select {
+            width: 100%;
+            margin-bottom: 0;
+        }
+        .form-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        /* Form butonları */
+        .calculator-form-container button[type="submit"] {
+            background-color: #1a73e8; /* Mavi tema rengi */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .calculator-form-container button[type="submit"]:hover {
+            background-color: #155cb8;
+            transform: translateY(-2px);
+        }
+
+        /* Sonuç Ekranı */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #e3f2fd; /* Mavi tonlu arka plan */
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #bbdefb; /* Mavi tonlu kenarlık */
+            display: none; /* Varsayılan olarak gizli */
+        }
+        .result-display .result-value {
+            color: #0d47a1; /* Koyu mavi */
+        }
+        .error {
+            color: #d32f2f; /* Kırmızı hata mesajı */
+            font-size: 0.8em;
+        }
+
+        /* Info Sections */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #1a73e8; /* Mavi tema rengi */
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #1a73e8; /* Mavi tema rengi */
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .calc-wrapper h4 {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+            text-align: left;
+        }
+        .calculator-form-container p.small-text {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+    </style>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Mmol - mEq Dönüşüm Hesaplayıcı 🧪</h1>
+                <p>Milimol (mmol) ile Milieşdeğer (mEq) arasında kolayca dönüşüm yapın. Kimyasal ve tıbbi hesaplamalarınız için pratik bir araç.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper active-calc" id="calculator-mmol-meq">
+                    <h3><i class="fas fa-flask icon-small"></i> Dönüşüm Yap</h3>
+                    <div class="calculator-form-container">
+                        <form id="conversionForm">
+                            <p class="small-text">Lütfen dönüşüm yapmak istediğiniz değeri ve ilgili bilgileri girin:</p>
+                            <h4>Dönüşüm Türü Seçimi</h4>
+                            <div class="input-with-unit-group">
+                                <label for="conversionType">Dönüşüm Yöntemi:</label>
+                                <select id="conversionType" name="conversionType">
+                                    <option value="mmolToMeq">mmol'den mEq'ye</option>
+                                    <option value="mgToMeq">mg'dan mEq'ye</option>
+                                </select>
+                            </div>
+                            <hr class="form-divider"/>
+
+                            <div id="mmolInputGroup">
+                                <h4>Miktar (mmol)</h4>
+                                <div class="input-with-unit-group">
+                                    <label for="mmolValue">Miktar (mmol):</label>
+                                    <input id="mmolValue" min="0" placeholder="Örn: 10" required="" step="0.01" type="number"/>
+                                </div>
+                            </div>
+
+                            <div id="mgInputGroup" style="display: none;">
+                                <h4>Miktar (mg)</h4>
+                                <div class="input-with-unit-group">
+                                    <label for="mgValue">Miktar (mg):</label>
+                                    <input id="mgValue" min="0" placeholder="Örn: 117" required="" step="0.01" type="number"/>
+                                </div>
+                                <div class="input-with-unit-group">
+                                    <label for="molecularWeight">Moleküler Ağırlık (g/mol veya mg/mmol):</label>
+                                    <input id="molecularWeight" min="0.01" placeholder="Örn: 58.5" required="" step="0.01" type="number"/>
+                                </div>
+                            </div>
+
+                            <h4>İyon Bilgileri</h4>
+                            <div class="input-with-unit-group">
+                                <label for="valence">İyon Valansı (Değerliği):</label>
+                                <input id="valence" min="1" placeholder="Örn: 1 (Na+, Cl-), 2 (Ca2+, Mg2+)" required="" step="1" type="number"/>
+                            </div>
+
+                            <button type="submit">Hesapla</button>
+                        </form>
+                        <div class="result-display" id="resultBox">
+                            <p><strong>Dönüştürülen Değer:</strong> <span class="result-value" id="convertedValue"></span> mEq</p>
+                        </div>
+                        <div class="calc-explanation">
+                            <p class="small-text">Lütfen tüm değerleri doğru birimlerde girdiğinizden emin olun.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>Mmol (Milimol) ve mEq (Milieşdeğer) Dönüşümü Nedir?</h3>
+            <p><strong>Milimol (mmol)</strong> ve <strong>milieşdeğer (mEq)</strong>, özellikle kimya ve tıp alanında kullanılan, maddelerin miktarını ve kimyasal aktivitesini ifade eden birimlerdir. Bir maddenin **milimolü**, moleküler ağırlığına dayalı olarak o maddenin kaç molünün binde birine sahip olduğunu gösterirken, **milieşdeğeri** ise iyonun kimyasal birleşme veya reaktivite gücünü, yani taşıdığı net elektrik yükünü dikkate alır. Bu fark, özellikle vücut sıvılarındaki elektrolit dengesi gibi fizyolojik süreçlerin anlaşılması için kritiktir.</p>
+            <h4>Mmol'den mEq'ye Dönüşüm</h4>
+            <p>Bu dönüşüm, iyonun **valansına (değerliğine)**, yani sahip olduğu net elektrik yüküne bağlıdır:</p>
+            <p class="formula-text">$$\text{mEq} = \text{mmol} \times \text{Valans (Değerlik)}$$</p>
+            <ul>
+                <li>**Monovalent (Tek Değerli) İyonlar:** Na$^+$, K$^+$, Cl$^-$ gibi iyonların valansı 1'dir. Bu durumda, mmol değeri mEq değerine eşittir (1 mmol = 1 mEq).</li>
+                <li>**Divalent (İki Değerli) İyonlar:** Ca$^{2+}$, Mg$^{2+}$, SO$_4^{2-}$ gibi iyonların valansı 2'dir. Bu durumda, mEq değeri mmol değerinin iki katıdır.</li>
+                <li>**Trivalent (Üç Değerli) İyonlar:** Al$^{3+}$, PO$_4^{3-}$ gibi iyonların valansı 3'tür. Bu durumda, mEq değeri mmol değerinin üç katıdır.</li>
+            </ul>
+            <h4>Mg'dan mEq'ye Dönüşüm</h4>
+            <p>Bir maddenin miligram (mg) cinsinden miktarını doğrudan milieşdeğere dönüştürmek için önce miligramı milimole çevirmemiz gerekir. Bunun için maddenin **moleküler ağırlığına** ihtiyaç duyarız.</p>
+            <p class="formula-text">$$\text{mmol} = \frac{\text{Miktar (mg)}}{\text{Moleküler Ağırlık (g/mol veya mg/mmol)}}$$</p>
+            <p>Bu adımdan sonra, elde edilen mmol değerini yukarıdaki formülü kullanarak mEq'ye çeviririz:</p>
+            <p class="formula-text">$$\text{mEq} = \text{mmol} \times \text{Valans (Değerlik)}$$</p>
+            <h4>Neden Mmol ve mEq Birimleri Kullanılır?</h4>
+            <ul>
+                <li>**Mmol:** Maddenin gerçek miktarını, yani molekül sayısını ifade eder. Kimyasal reaksiyonların stoikiyometrik hesaplamaları için temel bir birimdir.</li>
+                <li>**mEq:** Özellikle biyolojik sıvılardaki ve ilaç dozajlarındaki iyonların kimyasal reaktivitesini ve elektriksel dengeyi daha iyi yansıtır. Vücut sıvılarıdaki elektrolit dengesi (örn: kan, idrar) mEq/L cinsinden ifade edilir, çünkü bu, iyonların fonksiyonel konsantrasyonunu gösterir ve elektriksel yük dengesini anlamak için daha pratiktir.</li>
+            </ul>
+            <p class="disclaimer-text">Bu hesaplayıcı bilgilendirme amaçlıdır ve teorik dönüşümler sunar. Özellikle tıbbi dozaj veya klinik karar verme süreçlerinde, daima bir sağlık profesyoneline danışmanız ve laboratuvar değerlerini dikkate almanız önemlidir. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize <a href="../../iletisim.html">iletişim</a> sayfamızdan ulaşın.</p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header ve Footer yükleme fonksiyonları
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // **Hata Düzeltme:** isEnglishPage değişkenini sadece bir kez tanımlıyoruz.
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+            // URL'ye göre header ve footer yükleme
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // Metinleri dile göre tanımlayan bir obje
+            const texts = {
+                tr: {
+                    mainHeading: 'Mmol - mEq Dönüşüm Hesaplayıcı 🧪',
+                    mainDescription: 'Milimol (mmol) ile Milieşdeğer (mEq) arasında kolayca dönüşüm yapın. Kimyasal ve tıbbi hesaplamalarınız için pratik bir araç.',
+                    calculatorTitle: 'Dönüşüm Yap',
+                    formIntro: 'Lütfen dönüşüm yapmak istediğiniz değeri ve ilgili bilgileri girin:',
+                    conversionTypeLabel: 'Dönüşüm Yöntemi:',
+                    optionMmolToMeq: 'mmol\'den mEq\'ye',
+                    optionMgToMeq: 'mg\'dan mEq\'ye',
+                    mmolInputTitle: 'Miktar (mmol)',
+                    mmolValueLabel: 'Miktar (mmol):',
+                    mmolValuePlaceholder: 'Örn: 10',
+                    mgInputTitle: 'Miktar (mg)',
+                    mgValueLabel: 'Miktar (mg):',
+                    mgValuePlaceholder: 'Örn: 117',
+                    molecularWeightLabel: 'Moleküler Ağırlık (g/mol veya mg/mmol):',
+                    molecularWeightPlaceholder: 'Örn: 58.5',
+                    ionInfoTitle: 'İyon Bilgileri',
+                    valenceLabel: 'İyon Valansı (Değerliği):',
+                    valencePlaceholder: 'Örn: 1 (Na+, Cl-), 2 (Ca2+, Mg2+)',
+                    calculateButton: 'Hesapla',
+                    invalidInput: 'Lütfen tüm alanlara geçerli pozitif sayılar girin.',
+                    convertedValueLabel: 'Dönüştürülen Değer:',
+                    resultUnit: 'mEq',
+                    formExplanation: 'Lütfen tüm değerleri doğru birimlerde girdiğinizden emin olun.',
+
+                    infoSectionTitle: 'Mmol (Milimol) ve mEq (Milieşdeğer) Dönüşümü Nedir?',
+                    infoSectionP1: '<strong>Milimol (mmol)</strong> ve <strong>milieşdeğer (mEq)</strong>, özellikle kimya ve tıp alanında kullanılan, maddelerin miktarını ve kimyasal aktivitesini ifade eden birimlerdir. Bir maddenin **milimolü**, moleküler ağırlığına dayalı olarak o maddenin kaç molünün binde birine sahip olduğunu gösterirken, **milieşdeğeri** ise iyonun kimyasal birleşme veya reaktivite gücünü, yani taşıdığı net elektrik yükünü dikkate alır. Bu fark, özellikle vücut sıvılarındaki elektrolit dengesi gibi fizyolojik süreçlerin anlaşılması için kritiktir.',
+                    infoSectionH4_1: 'Mmol\'den mEq\'ye Dönüşüm',
+                    infoSectionP2: 'Bu dönüşüm, iyonun **valansına (değerliğine)**, yani sahip olduğu net elektrik yüküne bağlıdır:',
+                    infoSectionFormula1: '$$\\text{mEq} = \\text{mmol} \\times \\text{Valans (Değerlik)}$$',
+                    infoSectionList1_1: '<strong>Monovalent (Tek Değerli) İyonlar:</strong> Na$^+$, K$^+$, Cl$^-$ gibi iyonların valansı 1\'dir. Bu durumda, mmol değeri mEq değerine eşittir (1 mmol = 1 mEq).',
+                    infoSectionList1_2: '<strong>Divalent (İki Değerli) İyonlar:</strong> Ca$^{2+}$, Mg$^{2+}$, SO$_4^{2-}$ gibi iyonların valansı 2\'dir. Bu durumda, mEq değeri mmol değerinin iki katıdır.',
+                    infoSectionList1_3: '<strong>Trivalent (Üç Değerli) İyonlar:</strong> Al$^{3+}$, PO$_4^{3-}$ gibi iyonların valansı 3\'tür. Bu durumda, mEq değeri mmol değerinin üç katıdır.',
+                    infoSectionH4_2: 'Mg\'dan mEq\'ye Dönüşüm',
+                    infoSectionP3: 'Bir maddenin miligram (mg) cinsinden miktarını doğrudan milieşdeğere dönüştürmek için önce miligramı milimole çevirmemiz gerekir. Bunun için maddenin **moleküler ağırlığına** ihtiyaç duyarız.',
+                    infoSectionFormula2: '$$\\text{mmol} = \\frac{\\text{Miktar (mg)}}{\\text{Moleküler Ağırlık (g/mol veya mg/mmol)}}$$',
+                    infoSectionP4: 'Bu adımdan sonra, elde edilen mmol değerini yukarıdaki formülü kullanarak mEq\'ye çeviririz:',
+                    infoSectionFormula3: '$$\\text{mEq} = \\text{mmol} \\times \\text{Valans (Değerlik)}$$',
+                    infoSectionH4_3: 'Neden Mmol ve mEq Birimleri Kullanılır?',
+                    infoSectionList2_1: '<strong>Mmol:</strong> Maddenin gerçek miktarını, yani molekül sayısını ifade eder. Kimyasal reaksiyonların stoikiyometrik hesaplamaları için temel bir birimdir.',
+                    infoSectionList2_2: '<strong>mEq:</strong> Özellikle biyolojik sıvılardaki ve ilaç dozajlarındaki iyonların kimyasal reaktivitesini ve elektriksel dengeyi daha iyi yansıtır. Vücut sıvılarındaki elektrolit dengesi (örn: kan, idrar) mEq/L cinsinden ifade edilir, çünkü bu, iyonların fonksiyonel konsantrasyonunu gösterir ve elektriksel yük dengesini anlamak için daha pratiktir.',
+                    disclaimerTextInfo: 'Bu hesaplayıcı bilgilendirme amaçlıdır ve teorik dönüşümler sunar. Özellikle tıbbi dozaj veya klinik karar verme süreçlerinde, daima bir sağlık profesyoneline danışmanız ve laboratuvar değerlerini dikkate almanız önemlidir. Hesaplamalarınızda bir sorun yaşarsanız, lütfen bize <a href="../../iletisim.html">iletişim</a> sayfamızdan ulaşın.'
+                },
+                en: {
+                    mainHeading: 'Mmol - mEq Conversion Calculator 🧪',
+                    mainDescription: 'Easily convert between millimoles (mmol) and milliequivalents (mEq). A practical tool for your chemical and medical calculations.',
+                    calculatorTitle: 'Perform Conversion',
+                    formIntro: 'Please enter the value you want to convert and relevant information:',
+                    conversionTypeLabel: 'Conversion Method:',
+                    optionMmolToMeq: 'mmol to mEq',
+                    optionMgToMeq: 'mg to mEq',
+                    mmolInputTitle: 'Quantity (mmol)',
+                    mmolValueLabel: 'Quantity (mmol):',
+                    mmolValuePlaceholder: 'Ex: 10',
+                    mgInputTitle: 'Quantity (mg)',
+                    mgValueLabel: 'Quantity (mg):',
+                    mgValuePlaceholder: 'Ex: 117',
+                    molecularWeightLabel: 'Molecular Weight (g/mol or mg/mmol):',
+                    molecularWeightPlaceholder: 'Ex: 58.5',
+                    ionInfoTitle: 'Ion Information',
+                    valenceLabel: 'Ion Valence:',
+                    valencePlaceholder: 'Ex: 1 (Na+, Cl-), 2 (Ca2+, Mg2+)',
+                    calculateButton: 'Calculate',
+                    invalidInput: 'Please enter valid positive numbers for all fields.',
+                    convertedValueLabel: 'Converted Value:',
+                    resultUnit: 'mEq',
+                    formExplanation: 'Please ensure all values are entered in the correct units.',
+
+                    infoSectionTitle: 'What is Mmol (Millimole) and mEq (Milliequivalent) Conversion?',
+                    infoSectionP1: '<strong>Millimole (mmol)</strong> and <strong>milliequivalent (mEq)</strong> are units used particularly in chemistry and medicine to express the quantity and chemical activity of substances. While a substance\'s **millimole** indicates how many thousandths of a mole it possesses based on its molecular weight, its **milliequivalent** takes into account the ion\'s chemical combining or reactivity power, i.e., its net electrical charge. This difference is critical for understanding physiological processes such as electrolyte balance in body fluids.',
+                    infoSectionH4_1: 'Mmol to mEq Conversion',
+                    infoSectionP2: 'This conversion depends on the ion\'s **valence**, which is its net electrical charge:',
+                    infoSectionFormula1: '$$\\text{mEq} = \\text{mmol} \\times \\text{Valence}$$',
+                    infoSectionList1_1: '<strong>Monovalent Ions:</strong> Ions like Na$^+$, K$^+$, Cl$^-$ have a valence of 1. In this case, the mmol value is equal to the mEq value (1 mmol = 1 mEq).',
+                    infoSectionList1_2: '<strong>Divalent Ions:</strong> Ions like Ca$^{2+}$, Mg$^{2+}$, SO$_4^{2-}$ have a valence of 2. In this case, the mEq value is double the mmol value.',
+                    infoSectionList1_3: '<strong>Trivalent Ions:</strong> Ions like Al$^{3+}$, PO$_4^{3-}$ have a valence of 3. In this case, the mEq value is triple the mmol value.',
+                    infoSectionH4_2: 'Mg to mEq Conversion',
+                    infoSectionP3: 'To directly convert a substance\'s quantity in milligrams (mg) to milliequivalents, we first need to convert milligrams to millimoles. For this, we need the substance\'s **molecular weight**.',
+                    infoSectionFormula2: '$$\\text{mmol} = \\frac{\\text{Quantity (mg)}}{\\text{Molecular Weight (g/mol or mg/mmol)}}$$',
+                    infoSectionP4: 'After this step, we convert the resulting mmol value to mEq using the formula above:',
+                    infoSectionFormula3: '$$\\text{mEq} = \\text{mmol} \\times \\text{Valence}$$',
+                    infoSectionH4_3: 'Why Are Mmol and mEq Units Used?',
+                    infoSectionList2_1: '<strong>Mmol:</strong> Expresses the true quantity of a substance, i.e., the number of molecules. It is a fundamental unit for stoichiometric calculations of chemical reactions.',
+                    infoSectionList2_2: '<strong>mEq:</strong> More accurately reflects the chemical reactivity and electrical balance of ions, especially in biological fluids and drug dosages. Electrolyte balance in body fluids (e.g., blood, urine) is expressed in mEq/L, as this shows the functional concentration of ions and is more practical for understanding electrical charge balance.',
+                    disclaimerTextInfo: 'This calculator is for informational purposes and provides theoretical conversions. Especially in medical dosage or clinical decision-making processes, it is always important to consult a healthcare professional and consider laboratory values. If you encounter any problems with your calculations, please contact us via our <a href="../../contact.html">contact</a> page.'
+                }
+            };
+
+            const conversionForm = document.getElementById('conversionForm');
+            const conversionTypeSelect = document.getElementById('conversionType');
+            const mmolInputGroup = document.getElementById('mmolInputGroup');
+            const mgInputGroup = document.getElementById('mgInputGroup');
+            const mmolValueInput = document.getElementById('mmolValue');
+            const mgValueInput = document.getElementById('mgValue');
+            const molecularWeightInput = document.getElementById('molecularWeight');
+            const valenceInput = document.getElementById('valence');
+            const resultBox = document.getElementById('resultBox');
+            const convertedValueSpan = document.getElementById('convertedValue');
+
+            // Set initial language from URL or default to TR
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // Function to update all text content based on current language
+            function updateContent() {
+                document.querySelector('.hero-section h1').textContent = currentTexts.mainHeading;
+                document.querySelector('.hero-section p').textContent = currentTexts.mainDescription;
+                document.querySelector('#calculator-mmol-meq h3').innerHTML = `<i class="fas fa-flask icon-small"></i> ${currentTexts.calculatorTitle}`;
+                document.querySelector('#conversionForm p.small-text').textContent = currentTexts.formIntro;
+
+                document.getElementById('conversionType').previousElementSibling.textContent = currentTexts.conversionTypeLabel;
+                document.getElementById('conversionType').options[0].textContent = currentTexts.optionMmolToMeq;
+                document.getElementById('conversionType').options[1].textContent = currentTexts.optionMgToMeq;
+
+                document.querySelector('#mmolInputGroup h4').textContent = currentTexts.mmolInputTitle;
+                document.getElementById('mmolValue').previousElementSibling.textContent = currentTexts.mmolValueLabel;
+                document.getElementById('mmolValue').placeholder = currentTexts.mmolValuePlaceholder;
+
+                document.querySelector('#mgInputGroup h4').textContent = currentTexts.mgInputTitle;
+                document.getElementById('mgValue').previousElementSibling.textContent = currentTexts.mgValueLabel;
+                document.getElementById('mgValue').placeholder = currentTexts.mgValuePlaceholder;
+                document.getElementById('molecularWeight').previousElementSibling.textContent = currentTexts.molecularWeightLabel;
+                document.getElementById('molecularWeight').placeholder = currentTexts.molecularWeightPlaceholder;
+
+                // Dinamik olarak doğru h4'ü seçmek için daha sağlam bir yaklaşım
+                const h4Elements = document.querySelectorAll('.calculator-form-container h4');
+                // Genellikle üçüncü h4 "İyon Bilgileri" başlığıdır.
+                if (h4Elements.length >= 3) {
+                    h4Elements[2].textContent = currentTexts.ionInfoTitle;
+                }
+                
+                document.getElementById('valence').previousElementSibling.textContent = currentTexts.valenceLabel;
+                document.getElementById('valence').placeholder = currentTexts.valencePlaceholder;
+
+                document.querySelector('#conversionForm button[type="submit"]').textContent = currentTexts.calculateButton;
+                document.querySelector('#resultBox p strong').textContent = currentTexts.convertedValueLabel;
+                // convertedValueSpan.textContent will be set by calculation
+                document.querySelector('.calc-explanation p.small-text').textContent = currentTexts.formExplanation;
+
+
+                // Info Section updates
+                document.querySelector('.info-section h3').textContent = currentTexts.infoSectionTitle;
+                document.querySelector('.info-section p:nth-of-type(1)').innerHTML = currentTexts.infoSectionP1;
+
+                // Bilgi bölümündeki h4 başlıklarını güncellerken daha dikkatli seçiciler kullanabiliriz
+                const infoH4Elements = document.querySelectorAll('.info-section h4');
+                if (infoH4Elements.length >= 1) {
+                    infoH4Elements[0].textContent = currentTexts.infoSectionH4_1;
+                }
+                document.querySelector('.info-section p:nth-of-type(2)').textContent = currentTexts.infoSectionP2;
+                document.querySelector('.info-section .formula-text:nth-of-type(1)').innerHTML = currentTexts.infoSectionFormula1;
+                document.querySelector('.info-section ul:nth-of-type(1)').innerHTML = `
+                    <li>${currentTexts.infoSectionList1_1}</li>
+                    <li>${currentTexts.infoSectionList1_2}</li>
+                    <li>${currentTexts.infoSectionList1_3}</li>
+                `;
+
+                if (infoH4Elements.length >= 2) {
+                    infoH4Elements[1].textContent = currentTexts.infoSectionH4_2;
+                }
+                document.querySelector('.info-section p:nth-of-type(3)').textContent = currentTexts.infoSectionP3;
+                document.querySelector('.info-section .formula-text:nth-of-type(2)').innerHTML = currentTexts.infoSectionFormula2;
+                document.querySelector('.info-section p:nth-of-type(4)').textContent = currentTexts.infoSectionP4;
+                document.querySelector('.info-section .formula-text:nth-of-type(3)').innerHTML = currentTexts.infoSectionFormula3;
+
+
+                if (infoH4Elements.length >= 3) {
+                    infoH4Elements[2].textContent = currentTexts.infoSectionH4_3;
+                }
+                document.querySelector('.info-section ul:nth-of-type(2)').innerHTML = `
+                    <li>${currentTexts.infoSectionList2_1}</li>
+                    <li>${currentTexts.infoSectionList2_2}</li>
+                `;
+                document.querySelector('.info-section .disclaimer-text').innerHTML = currentTexts.disclaimerTextInfo;
+            }
+
+            // Initial content update
+            updateContent();
+
+            // Toggle input groups based on conversion type selection
+            conversionTypeSelect.addEventListener('change', function() {
+                if (this.value === 'mmolToMeq') {
+                    mmolInputGroup.style.display = 'block';
+                    mgInputGroup.style.display = 'none';
+                    // Clear mg inputs when switching
+                    mgValueInput.value = '';
+                    molecularWeightInput.value = '';
+                    mmolValueInput.setAttribute('required', '');
+                    mgValueInput.removeAttribute('required');
+                    molecularWeightInput.removeAttribute('required');
+                } else {
+                    mmolInputGroup.style.display = 'none';
+                    mgInputGroup.style.display = 'block';
+                    // Clear mmol input when switching
+                    mmolValueInput.value = '';
+                    mgValueInput.setAttribute('required', '');
+                    molecularWeightInput.setAttribute('required', '');
+                    mmolValueInput.removeAttribute('required');
+                }
+                resultBox.style.display = 'none'; // Hide results when changing type
+            });
+
+            conversionForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                resultBox.style.display = 'none'; // Hide previous results
+                convertedValueSpan.textContent = ''; // Clear result value
+
+                const conversionType = conversionTypeSelect.value;
+                let convertedMeq;
+                let isValid = true;
+                const valence = parseFloat(valenceInput.value);
+
+                if (isNaN(valence) || valence <= 0) {
+                    isValid = false;
+                }
+
+                if (conversionType === 'mmolToMeq') {
+                    const mmolValue = parseFloat(mmolValueInput.value);
+                    if (isNaN(mmolValue) || mmolValue < 0) {
+                        isValid = false;
+                    } else if (isValid) {
+                        convertedMeq = mmolValue * valence;
+                    }
+                } else { // mgToMeq
+                    const mgValue = parseFloat(mgValueInput.value);
+                    const molecularWeight = parseFloat(molecularWeightInput.value);
+                    if (isNaN(mgValue) || mgValue < 0 || isNaN(molecularWeight) || molecularWeight <= 0) {
+                        isValid = false;
+                    } else if (isValid) {
+                        const mmol = mgValue / molecularWeight;
+                        convertedMeq = mmol * valence;
+                    }
+                }
+
+                if (!isValid) {
+                    resultBox.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+                    resultBox.style.display = 'block';
+                } else {
+                    convertedValueSpan.textContent = convertedMeq.toFixed(3);
+                    resultBox.innerHTML = `<p><strong>${currentTexts.convertedValueLabel}</strong> <span class="result-value" id="convertedValue">${convertedMeq.toFixed(3)}</span> ${currentTexts.resultUnit}</p>`;
+                    resultBox.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
