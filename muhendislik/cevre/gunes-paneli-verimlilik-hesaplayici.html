@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Güneş Paneli Verimlilik Hesaplayıcı - Hesapkolik</title>
+
+    <meta content="Güneş paneli alanınızı, güneşlenme süresini ve verimlilik oranını girerek potansiyel elektrik üretiminizi (kWh) hesaplayın. Enerji maliyetlerinizi düşürmek için bir yol haritası edinin." name="description"/>
+    <meta content="güneş paneli hesaplayıcı, güneş enerjisi, fotovoltaik, elektrik üretimi, enerji verimliliği, kWh hesaplama, yenilenebilir enerji" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <style>
+        /* Genel Ayarlar ve Font */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Sade ve ferah bir arka plan */
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Koyu tema başlık/altlık ile uyumlu */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Bölümü */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff;
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #FFC107; /* Güneş rengi - Sarı/Turuncu */
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #FFC107; /* Güneş rengi - Sarı/Turuncu */
+        }
+
+        /* Form Elemanları */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #FFC107; /* Güneş rengi */
+            outline: none;
+        }
+        .input-with-unit-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .input-with-unit-group label {
+            flex-basis: auto;
+            width: 100%;
+            margin-bottom: 0;
+            text-align: left;
+        }
+        .input-with-unit-group input[type="number"],
+        .input-with-unit-group select {
+            width: 100%;
+            margin-bottom: 0;
+        }
+        .form-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        /* Form butonları */
+        .calculator-form-container button[type="submit"] {
+            background-color: #FFC107; /* Güneş rengi */
+            color: #333; /* Koyu metin */
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        .calculator-form-container button[type="submit"]:hover {
+            background-color: #FFB300;
+            transform: translateY(-2px);
+        }
+
+        /* Sonuç Ekranı */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #FFFDE7; /* Açık sarı arka plan */
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #FFE082; /* Sarı kenarlık */
+            display: none; /* Varsayılan olarak gizli */
+        }
+        .result-display .result-value {
+            color: #FFA000; /* Koyu sarı/turuncu */
+        }
+        .error {
+            color: #d32f2f; /* Kırmızı hata mesajı */
+            font-size: 0.8em;
+        }
+
+        /* Info Sections */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #FFC107; /* Güneş rengi */
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #FFC107; /* Güneş rengi */
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .calc-wrapper h4 {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+            text-align: left;
+        }
+        .calculator-form-container p.small-text {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+    </style>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Güneş Paneli Verimlilik Hesaplayıcı ☀️</h1>
+                <p>Güneş paneli sisteminizin potansiyel elektrik üretimini (kWh) ve tahmini yıllık tasarrufunuzu hesaplayın.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper active-calc" id="calculator-solar-panel">
+                    <h3><i class="fas fa-solar-panel icon-small"></i> Elektrik Üretimi Hesapla</h3>
+                    <div class="calculator-form-container">
+                        <form id="solarPanelForm">
+                            <p class="small-text">Lütfen güneş paneli sisteminizin bilgilerini girin:</p>
+                            <h4>Panel ve Kurulum Bilgileri</h4>
+                            <div class="input-with-unit-group">
+                                <label for="panelArea">Toplam Panel Alanı (m²):</label>
+                                <input id="panelArea" min="0.1" placeholder="Örn: 20" required="" step="0.1" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="solarEfficiency">Panel Verimliliği (%):</label>
+                                <input id="solarEfficiency" max="100" min="0.1" placeholder="Örn: 18" required="" step="0.1" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="peakSunlightHours">Günlük Ortalama Güneşlenme Süresi (saat):</label>
+                                <input id="peakSunlightHours" max="24" min="0" placeholder="Örn: 5" required="" step="0.1" type="number"/>
+                            </div>
+                            <hr class="form-divider"/>
+                            <h4>Maliyet ve Tüketim Bilgileri (Opsiyonel)</h4>
+                            <div class="input-with-unit-group">
+                                <label for="electricityPrice">Elektrik Birim Fiyatı (TL/kWh):</label>
+                                <input id="electricityPrice" min="0" placeholder="Örn: 2.50" step="0.01" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="systemCost">Sistem Kurulum Maliyeti (TL):</label>
+                                <input id="systemCost" min="0" placeholder="Örn: 100000" step="100" type="number"/>
+                            </div>
+                            <button type="submit">Hesapla</button>
+                        </form>
+                        <div class="result-display" id="resultBox">
+                            <p><strong>Günlük Tahmini Üretim:</strong> <span class="result-value" id="dailyKwh"></span> kWh</p>
+                            <p><strong>Aylık Tahmini Üretim:</strong> <span class="result-value" id="monthlyKwh"></span> kWh</p>
+                            <p><strong>Yıllık Tahmini Üretim:</strong> <span class="result-value" id="annualKwh"></span> kWh</p>
+                            <p id="annualSavingsRow" style="display: none;"><strong>Yıllık Tahmini Tasarruf:</strong> <span class="result-value" id="annualSavings"></span> TL</p>
+                            <p id="paybackPeriodRow" style="display: none;"><strong>Yaklaşık Geri Ödeme Süresi:</strong> <span class="result-value" id="paybackPeriod"></span> Yıl</p>
+                        </div>
+                        <div class="calc-explanation">
+                            <p class="small-text">Bu hesaplamalar ortalama değerlere dayanır ve konum, mevsimsel değişiklikler, bakım gibi faktörlere göre değişiklik gösterebilir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>Güneş Paneli Verimlilik Hesaplaması Nedir?</h3>
+            <p><strong>Güneş paneli verimlilik hesaplaması</strong>, bir fotovoltaik (PV) sistemin belirli bir alandan ve güneşlenme süresinden ne kadar elektrik enerjisi üretebileceğini tahmin etme sürecidir. Bu hesaplayıcı, güneş paneli yatırımının potansiyel faydalarını anlamak ve enerji bağımsızlığına doğru atılan adımları planlamak için önemli bir araçtır.</p>
+            <p>Güneş panelleri, güneş ışığını doğrudan elektriğe dönüştürerek çalışır. Üretilen elektrik miktarı; panellerin toplam alanı, verimlilik oranları, bölgesel güneşlenme süreleri ve sistem kayıpları gibi birçok faktöre bağlıdır.</p>
+            <h4>Neden Güneş Paneli Verimlilik Hesaplaması Önemlidir?</h4>
+            <ul>
+                <li><strong>Yatırım Fizibilitesi:</strong> Güneş paneli kurulumunun finansal olarak ne kadar avantajlı olacağını anlamanıza yardımcı olur.</li>
+                <li><strong>Enerji Bağımsızlığı:</strong> Kendi elektriğinizi üretme potansiyelinizi değerlendirerek şebekeden bağımsızlaşma hedeflerinize ulaşmada yol gösterir.</li>
+                <li><strong>Çevre Dostu Çözümler:</strong> Karbon ayak izinizi azaltma ve yenilenebilir enerjiye geçiş hedeflerinize ulaşmada bilgi sağlar.</li>
+                <li><strong>Tasarruf Potansiyeli:</strong> Elektrik faturalarınızda ne kadar tasarruf edebileceğinizi tahmin etmenizi sağlar.</li>
+                <li><strong>Sistem Boyutlandırma:</strong> İhtiyaçlarınıza uygun boyutta bir güneş enerjisi sistemi seçmenize yardımcı olur.</li>
+            </ul>
+            <h4>Güneş Paneli Elektrik Üretimi Nasıl Hesaplanır?</h4>
+            <p>Temel olarak, bir güneş paneli sisteminin üreteceği enerji şu formülle tahmin edilebilir:</p>
+            <p class="formula-text">$$\text{Üretilen Enerji (kWh)} = \text{Panel Alanı (m}^2\text{)} \times \text{Panel Verimliliği (\%)} \times \text{Güneşlenme Süresi (saat)}$$</p>
+            <p>Örneğin, 20 m² toplam panel alanı, %18 verimlilik ve günlük ortalama 5 saat güneşlenme süresi olan bir sistem için günlük üretim:</p>
+            <ul>
+                <li>Günlük Üretim = 20 m² $\times$ (18 / 100) $\times$ 5 saat = <strong>18 kWh</strong></li>
+            </ul>
+            <p>Bu günlük üretim değeri, aylık ve yıllık olarak da kolayca hesaplanabilir. Ayrıca, elektrik birim fiyatı ve sistem kurulum maliyeti bilgileri girildiğinde, sistemin yaklaşık geri ödeme süresi ve yıllık tasarruf potansiyeli de belirlenebilir.</p>
+            <h4>Hesaplamaları Etkileyen Faktörler:</h4>
+            <ul>
+                <li><strong>Konum ve Mevsim:</strong> Güneşlenme süresi coğrafi konuma ve mevsime göre büyük ölçüde değişir.</li>
+                <li><strong>Panel Yönü ve Eğim Açısı:</strong> Panellerin güneye bakması ve optimum eğim açısına sahip olması üretimi artırır.</li>
+                <li><strong>Sıcaklık:</strong> Yüksek sıcaklıklar panel verimliliğini düşürebilir.</li>
+                <li><strong>Gölgelenme:</strong> Ağaçlar, binalar veya diğer engellerden kaynaklanan gölgelenme üretimi önemli ölçüde azaltır.</li>
+                <li><strong>Sistem Kayıpları:</strong> İnverter, kablo, toz ve bakım eksikliği gibi faktörlerden kaynaklanan kayıplar (genellikle %15-25 arası).</li>
+            </ul>
+            <p class="disclaimer-text">Bu hesaplayıcı genel bilgi amaçlıdır ve teorik tahminler sunar. Gerçek üretim ve geri ödeme süreleri, bölgesel güneş radyasyonu, hava koşulları, sistemin kurulum kalitesi, bakım ve elektrik şebekesi ile ilgili düzenlemeler gibi birçok değişkene bağlı olarak farklılık gösterebilir. En doğru ve kişiselleştirilmiş değerlendirme için bir güneş enerjisi uzmanına danışmanız tavsiye edilir.</p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header ve Footer yükleme fonksiyonları
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // Türkçe sayfa için header ve footer yollarını doğrudan belirtiyoruz
+            const headerPath = '/header.html'; // Türkçe header
+            const footerPath = '/footer.html'; // Türkçe footer
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // Tüm metinler doğrudan HTML'de ve JavaScript içinde Türkçe olarak ayarlanmıştır.
+            // Bu nedenle "texts" objesi ve dil seçimi mantığı kaldırılmıştır.
+
+            const solarPanelForm = document.getElementById('solarPanelForm');
+            const panelAreaInput = document.getElementById('panelArea');
+            const solarEfficiencyInput = document.getElementById('solarEfficiency');
+            const peakSunlightHoursInput = document.getElementById('peakSunlightHours');
+            const electricityPriceInput = document.getElementById('electricityPrice');
+            const systemCostInput = document.getElementById('systemCost');
+            const resultBox = document.getElementById('resultBox');
+            const dailyKwhSpan = document.getElementById('dailyKwh');
+            const monthlyKwhSpan = document.getElementById('monthlyKwh');
+            const annualKwhSpan = document.getElementById('annualKwh');
+            const annualSavingsSpan = document.getElementById('annualSavings');
+            const paybackPeriodSpan = document.getElementById('paybackPeriod');
+            const annualSavingsRow = document.getElementById('annualSavingsRow');
+            const paybackPeriodRow = document.getElementById('paybackPeriodRow');
+
+            function calculateSolarPower(event) {
+                event.preventDefault();
+
+                // Sonuçları temizle ve gizle
+                resultBox.style.display = 'none';
+                annualSavingsRow.style.display = 'none';
+                paybackPeriodRow.style.display = 'none';
+
+                const panelArea = parseFloat(panelAreaInput.value);
+                const solarEfficiency = parseFloat(solarEfficiencyInput.value);
+                const peakSunlightHours = parseFloat(peakSunlightHoursInput.value);
+                const electricityPrice = parseFloat(electricityPriceInput.value);
+                const systemCost = parseFloat(systemCostInput.value);
+
+                // Temel giriş doğrulama
+                if (isNaN(panelArea) || panelArea <= 0 ||
+                    isNaN(solarEfficiency) || solarEfficiency <= 0 || solarEfficiency > 100 ||
+                    isNaN(peakSunlightHours) || peakSunlightHours < 0)
+                {
+                    resultBox.innerHTML = `<p class="error">Lütfen tüm zorunlu alanlara geçerli pozitif sayılar girin.</p>`;
+                    resultBox.style.display = 'block';
+                    return;
+                }
+
+                // Günlük üretim (kWh) = Panel Alanı (m²) * (Verimlilik / 100) * Güneşlenme Süresi (saat)
+                // Not: 1000 W/m² (standart test koşullarında güneş radyasyonu) varsayılmıştır.
+                // Bu değer doğrudan formüle dahil edilmiştir. Alan * Verimlilik (kesir olarak) * Saat * (1 kW / m^2)
+                const dailyKwh = panelArea * (solarEfficiency / 100) * peakSunlightHours;
+                const monthlyKwh = dailyKwh * 30.4375; // Ortalama ay
+                const annualKwh = dailyKwh * 365.25; // Ortalama yıl
+
+                dailyKwhSpan.textContent = dailyKwh.toFixed(2);
+                monthlyKwhSpan.textContent = monthlyKwh.toFixed(2);
+                annualKwhSpan.textContent = annualKwh.toFixed(2);
+
+                let savingsContent = '';
+                let paybackContent = '';
+
+                if (!isNaN(electricityPrice) && electricityPrice >= 0) {
+                    const annualSavings = annualKwh * electricityPrice;
+                    savingsContent = `<p><strong>Yıllık Tahmini Tasarruf:</strong> <span class="result-value" id="annualSavings">${annualSavings.toFixed(2)}</span> TL</p>`;
+
+                    if (!isNaN(systemCost) && systemCost >= 0 && annualSavings > 0) {
+                        const paybackPeriod = systemCost / annualSavings;
+                        paybackContent = `<p><strong>Yaklaşık Geri Ödeme Süresi:</strong> <span class="result-value" id="paybackPeriod">${paybackPeriod.toFixed(1)}</span> Yıl</p>`;
+                    }
+                }
+                
+                resultBox.innerHTML = `
+                    <p><strong>Günlük Tahmini Üretim:</strong> <span class="result-value" id="dailyKwh">${dailyKwh.toFixed(2)}</span> kWh</p>
+                    <p><strong>Aylık Tahmini Üretim:</strong> <span class="result-value" id="monthlyKwh">${monthlyKwh.toFixed(2)}</span> kWh</p>
+                    <p><strong>Yıllık Tahmini Üretim:</strong> <span class="result-value" id="annualKwh">${annualKwh.toFixed(2)}</span> kWh</p>
+                    ${savingsContent}
+                    ${paybackContent}
+                `;
+
+                resultBox.style.display = 'block';
+            }
+
+            solarPanelForm.addEventListener('submit', calculateSolarPower);
+        });
+    </script>
+</body>
+</html>

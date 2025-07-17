@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Solar Panel Efficiency Calculator - Hesapkolik</title>
+
+    <meta content="Calculate your solar panel system's potential electricity generation (kWh) and estimated annual savings. Get a roadmap to lower your energy costs." name="description"/>
+    <meta content="solar panel calculator, solar energy, photovoltaic, electricity generation, kWh calculation, renewable energy" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <style>
+        /* General Settings and Font */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Light and fresh background */
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Dark theme to match header/footer */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Calculator Section */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff;
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        /* General style for each calculator form */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #FFC107; /* Sun color - Yellow/Orange */
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #FFC107; /* Sun color - Yellow/Orange */
+        }
+
+        /* Form Elements */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #FFC107; /* Sun color */
+            outline: none;
+        }
+        .input-with-unit-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .input-with-unit-group label {
+            flex-basis: auto;
+            width: 100%;
+            margin-bottom: 0;
+            text-align: left;
+        }
+        .input-with-unit-group input[type="number"],
+        .input-with-unit-group select {
+            width: 100%;
+            margin-bottom: 0;
+        }
+        .form-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        /* Form buttons */
+        .calculator-form-container button[type="submit"] {
+            background-color: #FFC107; /* Sun color */
+            color: #333; /* Dark text */
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        .calculator-form-container button[type="submit"]:hover {
+            background-color: #FFB300;
+            transform: translateY(-2px);
+        }
+
+        /* Result Display */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #FFFDE7; /* Light yellow background */
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #FFE082; /* Yellow border */
+            display: none; /* Hidden by default */
+        }
+        .result-display .result-value {
+            color: #FFA000; /* Dark yellow/orange */
+        }
+        .error {
+            color: #d32f2f; /* Red error message */
+            font-size: 0.8em;
+        }
+
+        /* Info Sections */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #FFC107; /* Sun color */
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #FFC107; /* Sun color */
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .calc-wrapper h4 {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+            text-align: left;
+        }
+        .calculator-form-container p.small-text {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+    </style>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Solar Panel Efficiency Calculator ☀️</h1>
+                <p>Calculate your solar panel system's potential electricity generation (kWh) and estimated annual savings. Get a roadmap to lower your energy costs.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper active-calc" id="calculator-solar-panel">
+                    <h3><i class="fas fa-solar-panel icon-small"></i> Calculate Electricity Generation</h3>
+                    <div class="calculator-form-container">
+                        <form id="solarPanelForm">
+                            <p class="small-text">Please enter your solar panel system information:</p>
+                            <h4>Panel and Installation Information</h4>
+                            <div class="input-with-unit-group">
+                                <label for="panelArea">Total Panel Area (m²):</label>
+                                <input id="panelArea" min="0.1" placeholder="Ex: 20" required="" step="0.1" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="solarEfficiency">Panel Efficiency (%):</label>
+                                <input id="solarEfficiency" max="100" min="0.1" placeholder="Ex: 18" required="" step="0.1" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="peakSunlightHours">Daily Average Sunlight Hours (hours):</label>
+                                <input id="peakSunlightHours" max="24" min="0" placeholder="Ex: 5" required="" step="0.1" type="number"/>
+                            </div>
+                            <hr class="form-divider"/>
+                            <h4>Cost and Consumption Information (Optional)</h4>
+                            <div class="input-with-unit-group">
+                                <label for="electricityPrice">Electricity Unit Price (USD/kWh):</label>
+                                <input id="electricityPrice" min="0" placeholder="Ex: 0.25" step="0.01" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="systemCost">System Installation Cost (USD):</label>
+                                <input id="systemCost" min="0" placeholder="Ex: 10000" step="100" type="number"/>
+                            </div>
+                            <button type="submit">Calculate</button>
+                        </form>
+                        <div class="result-display" id="resultBox">
+                            <p><strong>Estimated Daily Generation:</strong> <span class="result-value" id="dailyKwh"></span> kWh</p>
+                            <p><strong>Estimated Monthly Generation:</strong> <span class="result-value" id="monthlyKwh"></span> kWh</p>
+                            <p><strong>Estimated Annual Generation:</strong> <span class="result-value" id="annualKwh"></span> kWh</p>
+                            <p id="annualSavingsRow" style="display: none;"><strong>Estimated Annual Savings:</strong> <span class="result-value" id="annualSavings"></span> USD</p>
+                            <p id="paybackPeriodRow" style="display: none;"><strong>Approximate Payback Period:</strong> <span class="result-value" id="paybackPeriod"></span> Years</p>
+                        </div>
+                        <div class="calc-explanation">
+                            <p class="small-text">These calculations are based on average values and may vary depending on factors like location, seasonal changes, and maintenance.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>What is Solar Panel Efficiency Calculation?</h3>
+            <p><strong>Solar panel efficiency calculation</strong> is the process of estimating how much electrical energy a photovoltaic (PV) system can generate from a specific area and sunlight duration. This calculator is an important tool for understanding the potential benefits of solar panel investment and planning steps towards energy independence.</p>
+            <p>Solar panels work by converting sunlight directly into electricity. The amount of electricity generated depends on many factors, including the total area of the panels, their efficiency rates, regional sunlight hours, and system losses.</p>
+            <h4>Why is Solar Panel Efficiency Calculation Important?</h4>
+            <ul>
+                <li><strong>Investment Feasibility:</strong> Helps you understand how financially advantageous a solar panel installation will be.</li>
+                <li><strong>Energy Independence:</strong> Guides you in achieving your energy independence goals by evaluating your potential to generate your own electricity.</li>
+                <li><strong>Eco-Friendly Solutions:</strong> Provides information for reducing your carbon footprint and transitioning to renewable energy.</li>
+                <li><strong>Savings Potential:</strong> Allows you to estimate how much you can save on your electricity bills.</li>
+                <li><strong>System Sizing:</strong> Helps you choose a solar energy system of the appropriate size for your needs.</li>
+            </ul>
+            <h4>How is Solar Panel Electricity Generation Calculated?</h4>
+            <p>Fundamentally, the energy a solar panel system will generate can be estimated with the following formula:</p>
+            <p class="formula-text">$$\text{Generated Energy (kWh)} = \text{Panel Area (m}^2\text{)} \times \text{Panel Efficiency (\\%)} \times \text{Sunlight Hours (hours)}$$</p>
+            <p>For example, for a system with a total panel area of 20 m², 18% efficiency, and an average daily sunlight duration of 5 hours, the daily generation is:</p>
+            <ul>
+                <li>Daily Generation = 20 m² $\times$ (18 / 100) $\times$ 5 hours = <strong>18 kWh</strong></li>
+            </ul>
+            <p>This daily generation value can be easily calculated monthly and annually. Additionally, by entering electricity unit price and system installation cost information, the approximate payback period and annual savings potential of the system can be determined.</p>
+            <h4>Factors Affecting Calculations:</h4>
+            <ul>
+                <li><strong>Location and Season:</strong> Sunlight hours vary significantly by geographical location and season.</li>
+                <li><strong>Panel Orientation and Tilt Angle:</strong> Panels facing south and having an optimum tilt angle increase generation.</li>
+                <li><strong>Temperature:</strong> High temperatures can reduce panel efficiency.</li>
+                <li><strong>Shading:</strong> Shading from trees, buildings, or other obstacles significantly reduces generation.</li>
+                <li><strong>System Losses:</strong> Losses due to factors such as inverters, cables, dust, and lack of maintenance (typically between 15-25%).</li>
+            </ul>
+            <p class="disclaimer-text">This calculator is for general informational purposes and provides theoretical estimates. Actual generation and payback periods may vary depending on many variables such as regional solar radiation, weather conditions, system installation quality, maintenance, and electricity grid regulations. It is recommended to consult a solar energy expert for the most accurate and personalized assessment.</p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header and Footer loading functions
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // Define header and footer paths directly for English page
+            const headerPath = '/en/header.html'; // English header
+            const footerPath = '/en/footer.html'; // English footer
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // All texts are directly set in HTML and JavaScript for English.
+            // Therefore, the "texts" object and language selection logic have been removed.
+
+            const solarPanelForm = document.getElementById('solarPanelForm');
+            const panelAreaInput = document.getElementById('panelArea');
+            const solarEfficiencyInput = document.getElementById('solarEfficiency');
+            const peakSunlightHoursInput = document.getElementById('peakSunlightHours');
+            const electricityPriceInput = document.getElementById('electricityPrice');
+            const systemCostInput = document.getElementById('systemCost');
+            const resultBox = document.getElementById('resultBox');
+            const dailyKwhSpan = document.getElementById('dailyKwh');
+            const monthlyKwhSpan = document.getElementById('monthlyKwh');
+            const annualKwhSpan = document.getElementById('annualKwh');
+            const annualSavingsSpan = document.getElementById('annualSavings');
+            const paybackPeriodSpan = document.getElementById('paybackPeriod');
+            const annualSavingsRow = document.getElementById('annualSavingsRow');
+            const paybackPeriodRow = document.getElementById('paybackPeriodRow');
+
+            function calculateSolarPower(event) {
+                event.preventDefault();
+
+                // Clear and hide results
+                resultBox.style.display = 'none';
+                annualSavingsRow.style.display = 'none';
+                paybackPeriodRow.style.display = 'none';
+
+                const panelArea = parseFloat(panelAreaInput.value);
+                const solarEfficiency = parseFloat(solarEfficiencyInput.value);
+                const peakSunlightHours = parseFloat(peakSunlightHoursInput.value);
+                const electricityPrice = parseFloat(electricityPriceInput.value);
+                const systemCost = parseFloat(systemCostInput.value);
+
+                // Basic input validation
+                if (isNaN(panelArea) || panelArea <= 0 ||
+                    isNaN(solarEfficiency) || solarEfficiency <= 0 || solarEfficiency > 100 ||
+                    isNaN(peakSunlightHours) || peakSunlightHours < 0)
+                {
+                    resultBox.innerHTML = `<p class="error">Please enter valid positive numbers for all required fields.</p>`;
+                    resultBox.style.display = 'block';
+                    return;
+                }
+
+                // Daily generation (kWh) = Panel Area (m²) * (Efficiency / 100) * Sunlight Hours (hours)
+                // Note: 1000 W/m² (solar irradiance under standard test conditions) is assumed.
+                // This value is implicitly included in the formula: Area * Efficiency (as fraction) * Hours * (1 kW / m^2)
+                const dailyKwh = panelArea * (solarEfficiency / 100) * peakSunlightHours;
+                const monthlyKwh = dailyKwh * 30.4375; // Average month
+                const annualKwh = dailyKwh * 365.25; // Average year
+
+                dailyKwhSpan.textContent = dailyKwh.toFixed(2);
+                monthlyKwhSpan.textContent = monthlyKwh.toFixed(2);
+                annualKwhSpan.textContent = annualKwh.toFixed(2);
+
+                let savingsContent = '';
+                let paybackContent = '';
+
+                if (!isNaN(electricityPrice) && electricityPrice >= 0) {
+                    const annualSavings = annualKwh * electricityPrice;
+                    savingsContent = `<p><strong>Estimated Annual Savings:</strong> <span class="result-value" id="annualSavings">${annualSavings.toFixed(2)}</span> USD</p>`; // Unit set to USD
+                    if (!isNaN(systemCost) && systemCost >= 0 && annualSavings > 0) {
+                        const paybackPeriod = systemCost / annualSavings;
+                        paybackContent = `<p><strong>Approximate Payback Period:</strong> <span class="result-value" id="paybackPeriod">${paybackPeriod.toFixed(1)}</span> Years</p>`;
+                    }
+                }
+                
+                resultBox.innerHTML = `
+                    <p><strong>Estimated Daily Generation:</strong> <span class="result-value" id="dailyKwh">${dailyKwh.toFixed(2)}</span> kWh</p>
+                    <p><strong>Estimated Monthly Generation:</strong> <span class="result-value" id="monthlyKwh">${monthlyKwh.toFixed(2)}</span> kWh</p>
+                    <p><strong>Estimated Annual Generation:</strong> <span class="result-value" id="annualKwh">${annualKwh.toFixed(2)}</span> kWh</p>
+                    ${savingsContent}
+                    ${paybackContent}
+                `;
+
+                resultBox.style.display = 'block';
+            }
+
+            solarPanelForm.addEventListener('submit', calculateSolarPower);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İnteraktif Karbon Ayak İzi Rehberi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals & Eco Green -->
+    <!-- Application Structure Plan: Bu uygulama, kullanıcıların karmaşık bilgileri kolayca sindirmesini sağlamak için tasarlanmış tematik bir bölüm yapısı kullanır. Raporun lineer akışı yerine, kullanıcıların ilgi alanlarına göre (Ev, Ulaşım, Beslenme vb.) doğrudan ilgili bölüme atlamasına olanak tanıyan ikon tabanlı bir gezinme menüsü sunulmuştur. Bu yaklaşım, kullanıcı katılımını artırır ve bilgiyi daha eyleme geçirilebilir hale getirir. Her bölüm, anahtar bilgileri sunan kartlar ve verileri görselleştiren interaktif grafikler içerir, bu da öğrenme sürecini daha etkili ve akılda kalıcı kılar. Son olarak, tüm raporun ana çıkarımlarını özetleyen yeni bir bölüm eklenmiştir. -->
+    <!-- Visualization & Content Choices: 
+        1. Rapor Bilgisi: Ulaşım yöntemlerinin karşılaştırılması -> Amaç: Farklı ulaşım türlerinin karbon etkisini görsel olarak karşılaştırmak -> Sunum Yöntemi: İnteraktif Yatay Çubuk Grafik -> Etkileşim: Fare ile üzerine gelindiğinde detaylı bilgi ve karşılaştırmalı avantajları gösteren araç ipuçları -> Gerekçe: Grafik, bir tablodan çok daha hızlı ve etkili bir görsel karşılaştırma sağlar. -> Kütüphane: Chart.js.
+        2. Rapor Bilgisi: Gıda ürünlerinin karbon ayak izleri -> Amaç: Hayvansal ve bitkisel gıdalar arasındaki büyük etki farkını vurgulamak -> Sunum Yöntemi: İnteraktif Dikey Çubuk Grafik -> Etkileşim: Fare ile üzerine gelindiğinde kesin CO2 eşdeğeri değerlerini gösteren araç ipuçları -> Gerekçe: Sığır eti ve mercimek gibi ürünler arasındaki görsel fark, mesajı unutulmaz kılar. -> Kütüphane: Chart.js.
+        3. Rapor Bilgisi: Evde enerji, atık yönetimi, su tasarrufu gibi eyleme geçirilebilir ipuçları -> Amaç: Kullanıcılara pratik ve uygulanabilir adımlar sunmak -> Sunum Yöntemi: İkon destekli, ızgara düzeninde yerleştirilmiş bilgi kartları -> Etkileşim: Ana gezinme menüsü aracılığıyla ilgili kategoriye kolay erişim -> Gerekçe: Metin ağırlıklı içeriği, taranabilir, görsel olarak düzenlenmiş ve sindirimi kolay parçalara ayırır. -> Yöntem: HTML/Tailwind.
+        4. Rapor Bilgisi: Metnin can alıcı yerleri -> Amaç: Raporun ana mesajlarını ve önemli istatistikleri özetlemek -> Sunum Yöntemi: Kısa başlıklar ve madde işaretleriyle özet metin bölümü -> Etkileşim: Ana gezinme menüsü aracılığıyla kolay erişim -> Gerekçe: Kullanıcıların tüm raporu okumadan ana çıkarımları hızlıca anlamasını sağlar. -> Yöntem: HTML/Tailwind.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .nav-item.active {
+            background-color: #10B981; /* bg-emerald-500 */
+            color: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .nav-item {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-slate-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+
+        <header class="text-center mb-8 md:mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-emerald-700 mb-2">Karbon Ayak İzinizi Azaltın</h1>
+            <p class="text-lg text-slate-600 max-w-3xl mx-auto">Sürdürülebilir bir gelecek için atabileceğiniz adımları interaktif olarak keşfedin.</p>
+        </header>
+
+        <nav id="main-nav" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 md:gap-4 mb-8 md:mb-12">
+            <button data-target="giris" class="nav-item active flex flex-col items-center justify-center text-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md hover:bg-emerald-100">
+                <span class="text-3xl mb-2">🌍</span>
+                <span class="font-semibold">Giriş</span>
+            </button>
+            <button data-target="ulasim" class="nav-item flex flex-col items-center justify-center text-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md hover:bg-emerald-100">
+                <span class="text-3xl mb-2">🚗</span>
+                <span class="font-semibold">Ulaşım</span>
+            </button>
+            <button data-target="beslenme" class="nav-item flex flex-col items-center justify-center text-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md hover:bg-emerald-100">
+                <span class="text-3xl mb-2">🍽️</span>
+                <span class="font-semibold">Beslenme</span>
+            </button>
+            <button data-target="ev" class="nav-item flex flex-col items-center justify-center text-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md hover:bg-emerald-100">
+                <span class="text-3xl mb-2">🏠</span>
+                <span class="font-semibold">Evde Yaşam</span>
+            </button>
+            <button data-target="tuketim" class="nav-item flex flex-col items-center justify-center text-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md hover:bg-emerald-100">
+                <span class="text-3xl mb-2">♻️</span>
+                <span class="font-semibold">Tüketim & Atık</span>
+            </button>
+             <button data-target="su" class="nav-item flex flex-col items-center justify-center text-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md hover:bg-emerald-100">
+                <span class="text-3xl mb-2">💧</span>
+                <span class="font-semibold">Su Kullanımı</span>
+            </button>
+            <button data-target="ozet" class="nav-item flex flex-col items-center justify-center text-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md hover:bg-emerald-100">
+                <span class="text-3xl mb-2">📝</span>
+                <span class="font-semibold">Özet</span>
+            </button>
+        </nav>
+
+        <main id="content-container">
+            <section id="giris" class="content-section bg-white p-6 md:p-8 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4 text-emerald-600">Karbon Ayak İzi Nedir?</h2>
+                <p class="mb-4">Karbon ayak izi, bir bireyin, kurumun veya ürünün atmosfere saldığı toplam sera gazı miktarının bir ölçüsüdür. Günlük faaliyetlerimiz, ulaşımdan beslenmeye, enerji tüketiminden alışveriş alışkanlıklarımıza kadar her alanda bir iz bırakır. Bu izi anlamak ve azaltmak, iklim değişikliğiyle mücadelede ve gezegenimizin geleceğini korumada atacağımız en önemli adımlardan biridir.</p>
+                <p>Bu rehber, karbon ayak izinizi etkileyen ana faktörleri anlamanıza ve bu etkiyi azaltmak için günlük yaşamınızda uygulayabileceğiniz pratik, etkili ve somut adımları keşfetmenize yardımcı olmak için tasarlanmıştır. Küçük değişikliklerin nasıl büyük bir fark yaratabileceğini görmek için bölümleri keşfedin.</p>
+            </section>
+            
+            <section id="ulasim" class="content-section hidden bg-white p-6 md:p-8 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-2 text-emerald-600">Ulaşım Seçimlerinin Etkisi</h2>
+                <p class="text-slate-600 mb-6">Ulaşım, karbon ayak izimizin en büyük bileşenlerinden biridir. Aşağıdaki grafik, farklı ulaşım yöntemlerinin karbon salımı üzerindeki etkisini karşılaştırmaktadır. Daha sürdürülebilir seçimler yaparak hem çevreyi koruyabilir hem de şehir yaşam kalitesini artırabilirsiniz.</p>
+                <div class="chart-container">
+                    <canvas id="ulasimChart"></canvas>
+                </div>
+            </section>
+
+            <section id="beslenme" class="content-section hidden bg-white p-6 md:p-8 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-2 text-emerald-600">Gıda Tercihlerinin Rolü</h2>
+                <p class="text-slate-600 mb-6">Ne yediğimiz, gezegen üzerinde sandığımızdan daha büyük bir etkiye sahiptir. Gıda üretimi, özellikle hayvancılık, önemli miktarda sera gazı salınımına neden olur. Bu grafik, bazı gıda ürünlerinin üretim süreçlerindeki karbon ayak izlerini göstermektedir.</p>
+                <div class="chart-container">
+                    <canvas id="beslenmeChart"></canvas>
+                </div>
+            </section>
+
+            <section id="ev" class="content-section hidden bg-white p-6 md:p-8 rounded-lg shadow-md">
+                 <h2 class="text-2xl font-bold mb-2 text-emerald-600">Evde Enerji Verimliliği</h2>
+                 <p class="text-slate-600 mb-6">Evlerimizdeki enerji tüketimi, karbon ayak izimizin önemli bir parçasıdır. Enerjiyi verimli kullanarak hem faturalarınızı düşürebilir hem de çevreye olan etkinizi azaltabilirsiniz. İşte evde uygulayabileceğiniz bazı ipuçları:</p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-stone-100 p-6 rounded-lg">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><span class="text-2xl mr-3">💡</span>LED Aydınlatma</h3>
+                        <p>Geleneksel ampulleri LED ampullerle değiştirerek enerji tüketimini %80'e kadar azaltabilirsiniz.</p>
+                    </div>
+                    <div class="bg-stone-100 p-6 rounded-lg">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><span class="text-2xl mr-3">🔌</span>Fişleri Çekin</h3>
+                        <p>Kullanmadığınız elektronik aletleri fişten çekerek veya anahtarlı priz kullanarak "hayalet" enerji tüketimini önleyin.</p>
+                    </div>
+                    <div class="bg-stone-100 p-6 rounded-lg">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><span class="text-2xl mr-3">🌡️</span>Isı Yalıtımı</h3>
+                        <p>İyi bir yalıtım, ısıtma ve soğutma maliyetlerinizi önemli ölçüde düşürür. Pencereleri ve kapıları izole etmekle işe başlayın.</p>
+                    </div>
+                    <div class="bg-stone-100 p-6 rounded-lg">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><span class="text-2xl mr-3">🅰️</span>Verimli Cihazlar</h3>
+                        <p>Yeni bir cihaz alırken yüksek enerji verimliliği sınıfına (A sınıfı) sahip modelleri tercih edin.</p>
+                    </div>
+                    <div class="bg-stone-100 p-6 rounded-lg">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><span class="text-2xl mr-3">☀️</span>Yenilenebilir Enerji</h3>
+                        <p>Mümkünse, güneş panelleri gibi yenilenebilir enerji kaynaklarına yatırım yapmayı veya yeşil enerji tarifesi sunan tedarikçileri seçmeyi düşünün.</p>
+                    </div>
+                    <div class="bg-stone-100 p-6 rounded-lg">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><span class="text-2xl mr-3">🧺</span>Tam Kapasite</h3>
+                        <p>Çamaşır ve bulaşık makinelerinizi tam doluyken çalıştırarak hem enerji hem de su tasarrufu yapın.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="tuketim" class="content-section hidden bg-white p-6 md:p-8 rounded-lg shadow-md">
+                 <h2 class="text-2xl font-bold mb-2 text-emerald-600">Sorumlu Tüketim ve Atık Yönetimi</h2>
+                 <p class="text-slate-600 mb-6">"Al, kullan, at" döngüsünü kırmak, doğal kaynakları korumanın ve atık miktarını azaltmanın anahtarıdır. Daha bilinçli tüketim alışkanlıkları benimseyerek büyük bir fark yaratabilirsiniz.</p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-stone-100 p-6 rounded-lg">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><span class="text-2xl mr-3">🛍️</span>Azalt ve Yeniden Kullan</h3>
+                        <p>Tek kullanımlık ürünler yerine bez çanta, matara gibi yeniden kullanılabilir alternatifleri tercih edin.</p>
+                    </div>
+                    <div class="bg-stone-100 p-6 rounded-lg">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><span class="text-2xl mr-3">♻️</span>Geri Dönüştür</h3>
+                        <p>Kağıt, cam, plastik ve metal atıkları ayrıştırarak geri dönüşüm sürecine katkıda bulunun.</p>
+                    </div>
+                    <div class="bg-stone-100 p-6 rounded-lg">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><span class="text-2xl mr-3">🍎</span>Kompost Yap</h3>
+                        <p>Meyve-sebze artıkları gibi organik atıkları kompost yaparak değerli bir toprağa dönüştürün ve metan gazı salımını önleyin.</p>
+                    </div>
+                    <div class="bg-stone-100 p-6 rounded-lg">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><span class="text-2xl mr-3">🛠️</span>Tamir Et</h3>
+                        <p>Bozulan eşyaları atmak yerine tamir etmeyi veya ettirmeyi deneyin. Dayanıklı ve uzun ömürlü ürünler seçin.</p>
+                    </div>
+                    <div class="bg-stone-100 p-6 rounded-lg">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><span class="text-2xl mr-3">👚</span>İkinci El</h3>
+                        <p>Kıyafet, mobilya ve elektronik eşya alırken ikinci el seçeneklerini değerlendirerek kaynak kullanımını azaltın.</p>
+                    </div>
+                    <div class="bg-stone-100 p-6 rounded-lg">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><span class="text-2xl mr-3">🌳</span>Yeşili Koru</h3>
+                        <p>Ağaç dikme etkinliklerine katılın ve yerel parkların, ormanların korunmasına destek olun. Yeşil alanlar doğal karbon yutaklarıdır.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="su" class="content-section hidden bg-white p-6 md:p-8 rounded-lg shadow-md">
+                 <h2 class="text-2xl font-bold mb-2 text-emerald-600">Bilinçli Su Kullanımı</h2>
+                 <p class="text-slate-600 mb-6">Su tüketimi dolaylı bir karbon ayak izine sahiptir. Suyun arıtılması, pompalanması ve ısıtılması enerji gerektirir. Suyu akıllıca kullanarak bu gizli etkiyi azaltabiliriz.</p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-stone-100 p-6 rounded-lg">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><span class="text-2xl mr-3">💧</span>Kısa Duşlar</h3>
+                        <p>Duş sürenizi sadece birkaç dakika kısaltarak yılda yüzlerce litre su tasarrufu yapabilirsiniz.</p>
+                    </div>
+                    <div class="bg-stone-100 p-6 rounded-lg">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><span class="text-2xl mr-3">🚰</span>Musluğu Kapat</h3>
+                        <p>Dişlerinizi fırçalarken veya bulaşıkları sabunlarken musluğu kapatarak suyun boşa akmasını önleyin.</p>
+                    </div>
+                    <div class="bg-stone-100 p-6 rounded-lg">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><span class="text-2xl mr-3">🔧</span>Sızıntıları Onar</h3>
+                        <p>Damlayan bir musluk, günde onlarca litre su israfına neden olabilir. Sızıntıları hemen onarın.</p>
+                    </div>
+                     <div class="bg-stone-100 p-6 rounded-lg">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><span class="text-2xl mr-3">🧺</span>Makineleri Doldur</h3>
+                        <p>Bulaşık ve çamaşır makinelerini tam kapasiteyle çalıştırarak su kullanımını optimize edin.</p>
+                    </div>
+                     <div class="bg-stone-100 p-6 rounded-lg">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><span class="text-2xl mr-3">🌿</span>Akıllı Sulama</h3>
+                        <p>Bahçenizi sabah erken veya akşam geç saatlerde sulayarak buharlaşma nedeniyle oluşan su kaybını azaltın.</p>
+                    </div>
+                     <div class="bg-stone-100 p-6 rounded-lg">
+                        <h3 class="font-bold text-lg mb-2 flex items-center"><span class="text-2xl mr-3">🚿</span>Tasarruflu Başlıklar</h3>
+                        <p>Su tasarruflu musluk ve duş başlıkları kullanarak performanstan ödün vermeden su tüketimini azaltın.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ozet" class="content-section hidden bg-white p-6 md:p-8 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4 text-emerald-600">Özet ve Temel Çıkarımlar</h2>
+                <p class="mb-6 text-slate-600">Karbon ayak izimizi düşürmek, gezegenimizin geleceği için hayati bir sorumluluktur. İşte raporun ana hatları ve atabileceğiniz somut adımlar:</p>
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="font-bold text-xl mb-2 text-emerald-700">Karbon Ayak İzi Nedir?</h3>
+                        <ul class="list-disc list-inside space-y-1 text-slate-700">
+                            <li>Karbon ayak izi, faaliyetlerimiz sonucunda atmosfere saldığımız toplam sera gazı (CO₂ eşdeğeri) miktarıdır.</li>
+                            <li>Küresel ısınmanın ana nedenidir ve deniz seviyesi yükselmesi, aşırı hava olayları gibi çok boyutlu etkilere yol açar.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-xl mb-2 text-emerald-700">Temel Etkileyen Faktörler</h3>
+                        <ul class="list-disc list-inside space-y-1 text-slate-700">
+                            <li>Fosil yakıt kullanımı, ulaşım (özellikle uçak ve bireysel araç), evdeki enerji tüketimi, bilinçsiz tüketim alışkanlıkları ve atıklar en büyük etkenlerdir.</li>
+                            <li>Gıda üretimi, özellikle hayvancılık (sığır eti 99 kg CO2-eq/kg, mercimek 0.9 kg CO2-eq/kg), önemli bir karbon kaynağıdır.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-xl mb-2 text-emerald-700">Etkili Azaltma Yolları</h3>
+                        <ul class="list-disc list-inside space-y-1 text-slate-700">
+                            <li><strong class="text-emerald-600">Evde Enerji:</strong> LED ampuller, fişleri çekme, iyi yalıtım, enerji verimli cihazlar ve yenilenebilir enerji kullanımı.</li>
+                            <li><strong class="text-emerald-600">Ulaşım:</strong> Yürüme, bisiklet, toplu taşıma (bireysel araca göre 7 kat az salım) ve tren tercih etmek.</li>
+                            <li><strong class="text-emerald-600">Beslenme:</strong> Bitki bazlı diyetlere yönelme, yerel ve mevsimlik ürünleri tercih etme, gıda israfını önleme.</li>
+                            <li><strong class="text-emerald-600">Atık Yönetimi:</strong> Azaltma, yeniden kullanma (bez çanta, matara), geri dönüştürme ve organik atıklardan kompost yapma.</li>
+                            <li><strong class="text-emerald-600">Su Kullanımı:</strong> Kısa duşlar, muslukları kapatma, sızıntıları onarma ve su tasarruflu armatürler kullanma.</li>
+                            <li><strong class="text-emerald-600">Sorumlu Tüketim:</strong> Dayanıklı ve ikinci el ürünleri tercih etme, yeşil alanları koruma ve ağaç dikme.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-xl mb-2 text-emerald-700">Toplumsal Sorumluluk</h3>
+                        <ul class="list-disc list-inside space-y-1 text-slate-700">
+                            <li>Karbon ayak izini azaltma, bireysel çabaların ötesinde şirketlerin ve tüm toplumun ortak görevidir.</li>
+                            <li>Çevre bilincini artırmak ve sürdürülebilirlik hedeflerine ulaşmak için iş birliği hayati önem taşır.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navContainer = document.getElementById('main-nav');
+            const contentSections = document.querySelectorAll('.content-section');
+            const navItems = document.querySelectorAll('.nav-item');
+
+            let ulasimChartInstance, beslenmeChartInstance;
+
+            function switchTab(targetId) {
+                contentSections.forEach(section => {
+                    section.classList.add('hidden');
+                });
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                const activeSection = document.getElementById(targetId);
+                const activeNavItem = document.querySelector(`[data-target="${targetId}"]`);
+
+                if (activeSection) {
+                    activeSection.classList.remove('hidden');
+                }
+                if (activeNavItem) {
+                    activeNavItem.classList.add('active');
+                }
+
+                if (targetId === 'ulasim' && !ulasimChartInstance) {
+                    createUlasimChart();
+                } else if (targetId === 'beslenme' && !beslenmeChartInstance) {
+                    createBeslenmeChart();
+                }
+            }
+
+            navContainer.addEventListener('click', (e) => {
+                const button = e.target.closest('.nav-item');
+                if (button && button.dataset.target) {
+                    switchTab(button.dataset.target);
+                }
+            });
+
+            function createUlasimChart() {
+                const ctx = document.getElementById('ulasimChart').getContext('2d');
+                const ulasimData = {
+                    labels: ['Yürüme/Bisiklet', 'Toplu Taşıma', 'Tren', 'Bireysel Araç', 'Uçak'],
+                    datasets: [{
+                        label: 'Karbon Salımı (Göreceli Etki)',
+                        data: [0.5, 15, 20, 75, 100],
+                        backgroundColor: [
+                            '#34D399', // emerald-400
+                            '#6EE7B7', // emerald-300
+                            '#A7F3D0', // emerald-200
+                            '#FBBF24', // amber-400
+                            '#EF4444'  // red-500
+                        ],
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                };
+                ulasimChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: ulasimData,
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        const value = context.raw;
+                                        const labels_desc = [
+                                            "Sıfır emisyon ve sağlıklı.",
+                                            "Bireysel araca göre ~7 kat daha az salım.",
+                                            "Uçaktan ~5 kat daha az salım.",
+                                            "Trafikte salım 2.5 kat artar.",
+                                            "En yüksek karbon ayak izine sahip ulaşım türü."
+                                        ]
+                                        label += labels_desc[context.dataIndex];
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Göreceli Karbon Etkisi'
+                                },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            function createBeslenmeChart() {
+                const ctx = document.getElementById('beslenmeChart').getContext('2d');
+                const beslenmeData = {
+                    labels: ['Mercimek', 'Bezelye', 'Soya', 'Tahıllar', 'Domuz Eti', 'Karides', 'Koyun Eti', 'Sığır Eti'],
+                    datasets: [{
+                        label: 'Karbon Ayak İzi (kg CO2-eq / kg ürün)',
+                        data: [0.9, 0.44, 1.98, 2.71, 7.61, 18.19, 20, 99],
+                        backgroundColor: [
+                           '#34D399', '#34D399', '#6EE7B7', '#A7F3D0', 
+                           '#FCD34D', '#FBBF24', '#F59E0B', '#EF4444'
+                        ],
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                };
+
+                beslenmeChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: beslenmeData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                             legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label = ` ${context.raw} kg CO2-eq / kg ürün`;
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                             y: {
+                                title: {
+                                    display: true,
+                                    text: 'Karbon Ayak İzi (kg CO2-eq / kg)'
+                                },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+            
+            switchTab('giris');
+        });
+    </script>
+</body>
+</html>
