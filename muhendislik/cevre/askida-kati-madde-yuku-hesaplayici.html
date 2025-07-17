@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Askıda Katı Madde (AKM) Yükü Hesaplayıcı - Hesapkolik</title>
+
+    <meta content="Atık su debisi ve askıda katı madde konsantrasyonunu girerek günlük AKM yükünü (kg/gün) hesaplayın. Arıtma tesisi performansı ve deşarj limitleri için önemli bir araç." name="description"/>
+    <meta content="askıda katı madde, akm yükü, ss yükü, atık su arıtma, çevresel mühendislik, kirlilik yükü, kg/gün hesaplama" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <style>
+        /* Genel Ayarlar ve Font */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Sade ve ferah bir arka plan */
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Koyu tema başlık/altlık ile uyumlu */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Hesaplayıcı Bölümü */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff;
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        /* Her bir hesaplayıcı formu için genel stil */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #20B2AA; /* Çevre mühendisliği temalı renk */
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #20B2AA; /* Çevre mühendisliği temalı renk */
+        }
+
+        /* Form Elemanları */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #20B2AA; /* Çevre mühendisliği temalı renk */
+            outline: none;
+        }
+        .input-with-unit-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .input-with-unit-group label {
+            flex-basis: auto;
+            width: 100%;
+            margin-bottom: 0;
+            text-align: left;
+        }
+        .input-with-unit-group input[type="number"],
+        .input-with-unit-group select {
+            width: 100%;
+            margin-bottom: 0;
+        }
+        .form-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        /* Form butonları */
+        .calculator-form-container button[type="submit"] {
+            background-color: #20B2AA; /* Çevre mühendisliği temalı renk */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        .calculator-form-container button[type="submit"]:hover {
+            background-color: #198c86;
+            transform: translateY(-2px);
+        }
+
+        /* Sonuç Ekranı */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #E0FFFF; /* Açık su mavisi arka plan */
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #AFEEEE; /* Su mavisi kenarlık */
+            display: none; /* Varsayılan olarak gizli */
+        }
+        .result-display .result-value {
+            color: #008B8B; /* Koyu su mavisi */
+        }
+        .error {
+            color: #d32f2f; /* Kırmızı hata mesajı */
+            font-size: 0.8em;
+        }
+
+        /* Info Sections */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #20B2AA; /* Çevre mühendisliği temalı renk */
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #20B2AA; /* Çevre mühendisliği temalı renk */
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .calc-wrapper h4 {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+            text-align: left;
+        }
+        .calculator-form-container p.small-text {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+    </style>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Askıda Katı Madde (AKM) Yükü Hesaplayıcı 💧</h1>
+                <p>Atık su debisi ve askıda katı madde konsantrasyonunu kullanarak günlük AKM yükünü (kg/gün) hesaplayın. Çevresel mühendislik uygulamaları için önemli bir araçtır.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper active-calc" id="calculator-ss-load">
+                    <h3><i class="fas fa-water icon-small"></i> AKM Yükü Hesapla</h3>
+                    <div class="calculator-form-container">
+                        <form id="ssLoadForm">
+                            <p class="small-text">Lütfen atık su debisi ve konsantrasyon bilgilerini girin:</p>
+                            <h4>Atık Su Parametreleri</h4>
+                            <div class="input-with-unit-group">
+                                <label for="flowRate">Atık Su Debisi (m³/gün):</label>
+                                <input id="flowRate" min="0.01" placeholder="Örn: 1000" required="" step="0.01" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="ssConcentration">Askıda Katı Madde Konsantrasyonu (mg/L):</label>
+                                <input id="ssConcentration" min="0" placeholder="Örn: 250" required="" step="0.01" type="number"/>
+                            </div>
+                            <button type="submit">Hesapla</button>
+                        </form>
+                        <div class="result-display" id="resultBox">
+                            <p><strong>Günlük AKM Yükü:</strong> <span class="result-value" id="ssLoadValue"></span> kg/gün</p>
+                        </div>
+                        <div class="calc-explanation">
+                            <p class="small-text">Bu hesaplayıcı, atık su arıtma tesislerinde ve deşarj izlemede kullanılan temel bir hesaplamadır.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>Askıda Katı Madde (AKM) Yükü Hesaplaması Nedir?</h3>
+            <p><strong>Askıda Katı Madde (AKM) yükü hesaplaması</strong>, bir atık su akımında belirli bir zaman diliminde (genellikle günlük) taşınan askıda katı madde miktarını belirleme işlemidir. Bu, çevre mühendisliğinde ve atık su arıtma tesislerinin tasarım, işletme ve izlenmesinde temel bir parametredir.</p>
+            <p>AKM, suda çözünmeyen, askıda veya kolloidal halde bulunan tüm katı maddeleri ifade eder. Evsel atık sularda genellikle organik ve inorganik maddelerden oluşur. AKM yükü, bir arıtma tesisine gelen kirlilik miktarını ve tesisin arıtma verimliliğini değerlendirmek için kullanılır.</p>
+            <h4>Neden AKM Yükü Hesaplaması Önemlidir?</h4>
+            <ul>
+                <li><strong>Arıtma Tesisi Tasarımı:</strong> Tesislerin boyutlandırılması ve gerekli ekipmanların (çökeltme tankları gibi) belirlenmesi için başlangıç verisidir.</li>
+                <li><strong>İşletme ve Performans Takibi:</strong> Tesisin günlük performansını izlemek, işletme sorunlarını tespit etmek ve arıtma verimliliğini değerlendirmek için kullanılır.</li>
+                <li><strong>Deşarj Standartlarına Uyum:</strong> Arıtılmış atık suyun alıcı ortama deşarj edilmeden önce yasal limitlere uygun olup olmadığını kontrol etmek için kritiktir.</li>
+                <li><strong>Maliyet Analizi:</strong> AKM giderimi için gerekli enerji ve kimyasal madde tüketimi gibi işletme maliyetlerinin tahmin edilmesine yardımcı olur.</li>
+                <li><strong>Çevresel Etki Değerlendirmesi:</strong> Atık suyun çevre üzerindeki potansiyel kirlilik yükünü belirler.</li>
+            </ul>
+            <h4>AKM Yükü Nasıl Hesaplanır?</h4>
+            <p>Günlük Askıda Katı Madde (AKM) yükü, atık su debisi ve AKM konsantrasyonu kullanılarak aşağıdaki formülle hesaplanır:</p>
+            <p class="formula-text">$$\text{AKM Yükü (kg/gün)} = \text{Debi (m}^3\text{/gün)} \times \text{Konsantrasyon (mg/L)} \times \frac{1}{1000}$$</p>
+            <p>Bu formülde, konsantrasyon mg/L (miligram/litre) cinsinden alınırken, sonucu kg/gün (kilogram/gün) cinsinden elde etmek için 1/1000 (veya 10^-3) katsayısı kullanılır. Çünkü 1 m³ = 1000 L ve 1 kg = 1.000.000 mg'dır.</p>
+            <p>Örneğin, günlük 1000 m³ debisi ve 250 mg/L AKM konsantrasyonu olan bir atık su için günlük AKM yükü:</p>
+            <ul>
+                <li>AKM Yükü = 1000 m³/gün $\times$ 250 mg/L $\times$ (1 / 1000) = <strong>250 kg/gün</strong></li>
+            </ul>
+            <p class="disclaimer-text">Bu hesaplayıcı genel bilgi amaçlıdır ve teorik tahminler sunar. Gerçek atık su karakterizasyonları, numune alma yöntemleri, laboratuvar analizlerinin doğruluğu ve ölçüm hataları gibi faktörler, fiili AKM yükünü etkileyebilir. Hassas ticari veya endüstriyel uygulamalar ve yasal uyum için daima yetkili laboratuvar analizleri ve çevre mühendisliği uzmanlarının değerlendirmeleri esas alınmalıdır.</p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header ve Footer yükleme fonksiyonları
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // Türkçe sayfa için header ve footer yollarını doğrudan belirtiyoruz
+            const headerPath = '/header.html'; // Türkçe header
+            const footerPath = '/footer.html'; // Türkçe footer
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            const ssLoadForm = document.getElementById('ssLoadForm');
+            const flowRateInput = document.getElementById('flowRate');
+            const ssConcentrationInput = document.getElementById('ssConcentration');
+            const resultBox = document.getElementById('resultBox');
+            const ssLoadValueSpan = document.getElementById('ssLoadValue');
+
+            function calculateSSLoad(event) {
+                event.preventDefault();
+
+                resultBox.style.display = 'none'; // Sonuç kutusunu gizle
+
+                const flowRate = parseFloat(flowRateInput.value);
+                const ssConcentration = parseFloat(ssConcentrationInput.value);
+
+                // Giriş doğrulama
+                if (isNaN(flowRate) || flowRate <= 0 || isNaN(ssConcentration) || ssConcentration < 0) {
+                    resultBox.innerHTML = `<p class="error">Lütfen atık su debisi ve konsantrasyonu için geçerli pozitif sayılar girin.</p>`;
+                    resultBox.style.display = 'block';
+                    return;
+                }
+
+                // AKM Yükü (kg/gün) = Debi (m³/gün) * Konsantrasyon (mg/L) / 1000
+                const ssLoadKgPerDay = (flowRate * ssConcentration) / 1000;
+
+                ssLoadValueSpan.textContent = ssLoadKgPerDay.toFixed(3); // 3 ondalık hane
+
+                resultBox.innerHTML = `
+                    <p><strong>Günlük AKM Yükü:</strong> <span class="result-value" id="ssLoadValue">${ssLoadKgPerDay.toFixed(3)}</span> kg/gün</p>
+                `;
+                resultBox.style.display = 'block';
+            }
+
+            ssLoadForm.addEventListener('submit', calculateSSLoad);
+        });
+    </script>
+</body>
+</html>

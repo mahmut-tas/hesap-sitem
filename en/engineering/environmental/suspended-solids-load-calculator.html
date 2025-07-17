@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Suspended Solids (SS) Load Calculator - Hesapkolik</title>
+
+    <meta content="Calculate the daily SS load (kg/day) by entering wastewater flow rate and suspended solids concentration. An important tool for wastewater treatment plant performance and discharge limits." name="description"/>
+    <meta content="suspended solids, ss load, wastewater treatment, environmental engineering, pollution load, kg/day calculation" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <style>
+        /* General Settings and Font (Same as Turkish version, copy-paste the whole style block) */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Light and fresh background */
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Dark theme to match header/footer */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Calculator Section */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff;
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+
+        /* General style for each calculator form */
+        .calc-wrapper {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 650px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #20B2AA; /* Environmental engineering theme color */
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #20B2AA; /* Environmental engineering theme color */
+        }
+
+        /* Form Elements */
+        .calc-wrapper label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .calc-wrapper input[type="number"],
+        .calc-wrapper select {
+            width: 100%;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .calc-wrapper input[type="number"]:focus,
+        .calc-wrapper select:focus {
+            border-color: #20B2AA; /* Environmental engineering theme color */
+            outline: none;
+        }
+        .input-with-unit-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .input-with-unit-group label {
+            flex-basis: auto;
+            width: 100%;
+            margin-bottom: 0;
+            text-align: left;
+        }
+        .input-with-unit-group input[type="number"],
+        .input-with-unit-group select {
+            width: 100%;
+            margin-bottom: 0;
+        }
+        .form-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        /* Form buttons */
+        .calculator-form-container button[type="submit"] {
+            background-color: #20B2AA; /* Environmental engineering theme color */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        .calculator-form-container button[type="submit"]:hover {
+            background-color: #198c86;
+            transform: translateY(-2px);
+        }
+
+        /* Result Display */
+        .result-display {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            min-height: 1.8em;
+            background-color: #E0FFFF; /* Light aqua background */
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #AFEEEE; /* Aqua border */
+            display: none; /* Hidden by default */
+        }
+        .result-display .result-value {
+            color: #008B8B; /* Dark aqua */
+        }
+        .error {
+            color: #d32f2f; /* Red error message */
+            font-size: 0.8em;
+        }
+
+        /* Info Sections */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #20B2AA; /* Environmental engineering theme color */
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #20B2AA; /* Environmental engineering theme color */
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .formula-text {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+            color: #444;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text {
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+        .calc-wrapper h4 {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+            text-align: left;
+        }
+        .calculator-form-container p.small-text {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+    </style>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Suspended Solids (SS) Load Calculator 💧</h1>
+                <p>Calculate the daily Suspended Solids (SS) load (kg/day) using wastewater flow rate and SS concentration. An essential tool for environmental engineering applications.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper active-calc" id="calculator-ss-load">
+                    <h3><i class="fas fa-water icon-small"></i> Calculate SS Load</h3>
+                    <div class="calculator-form-container">
+                        <form id="ssLoadForm">
+                            <p class="small-text">Please enter the wastewater flow rate and concentration information:</p>
+                            <h4>Wastewater Parameters</h4>
+                            <div class="input-with-unit-group">
+                                <label for="flowRate">Wastewater Flow Rate (m³/day):</label>
+                                <input id="flowRate" min="0.01" placeholder="Ex: 1000" required="" step="0.01" type="number"/>
+                            </div>
+                            <div class="input-with-unit-group">
+                                <label for="ssConcentration">Suspended Solids Concentration (mg/L):</label>
+                                <input id="ssConcentration" min="0" placeholder="Ex: 250" required="" step="0.01" type="number"/>
+                            </div>
+                            <button type="submit">Calculate</button>
+                        </form>
+                        <div class="result-display" id="resultBox">
+                            <p><strong>Daily SS Load:</strong> <span class="result-value" id="ssLoadValue"></span> kg/day</p>
+                        </div>
+                        <div class="calc-explanation">
+                            <p class="small-text">This calculator is a fundamental calculation used in wastewater treatment plants and discharge monitoring.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3>What is Suspended Solids (SS) Load Calculation?</h3>
+            <p><strong>Suspended Solids (SS) load calculation</strong> is the process of determining the amount of suspended solids carried in a wastewater stream over a specific time period (typically daily). This is a fundamental parameter in environmental engineering, and in the design, operation, and monitoring of wastewater treatment plants.</p>
+            <p>SS refers to all solid matter that is insoluble in water, remaining in suspension or colloidal form. In domestic wastewater, it typically consists of organic and inorganic substances. SS load is used to assess the amount of pollution entering a treatment plant and the plant's treatment efficiency.</p>
+            <h4>Why is SS Load Calculation Important?</h4>
+            <ul>
+                <li><strong>Wastewater Treatment Plant Design:</strong> It's initial data for sizing facilities and determining necessary equipment (like sedimentation tanks).</li>
+                <li><strong>Operation and Performance Monitoring:</strong> Used to monitor daily plant performance, identify operational issues, and evaluate treatment efficiency.</li>
+                <li><strong>Compliance with Discharge Standards:</strong> Critical for checking if treated wastewater complies with legal limits before discharge into receiving environments.</li>
+                <li><strong>Cost Analysis:</strong> Helps estimate operational costs such as energy and chemical consumption required for SS removal.</li>
+                <li><strong>Environmental Impact Assessment:</strong> Determines the potential pollution load of wastewater on the environment.</li>
+            </ul>
+            <h4>How is SS Load Calculated?</h4>
+            <p>The daily Suspended Solids (SS) load is calculated using the wastewater flow rate and SS concentration with the following formula:</p>
+            <p class="formula-text">$$\text{SS Load (kg/day)} = \text{Flow Rate (m}^3\text{/day)} \times \text{Concentration (mg/L)} \times \frac{1}{1000}$$</p>
+            <p>In this formula, the concentration is taken in mg/L (milligrams/liter), and a coefficient of 1/1000 (or 10^-3) is used to obtain the result in kg/day (kilograms/day). This is because 1 m³ = 1000 L and 1 kg = 1,000,000 mg.</p>
+            <p>For example, for wastewater with a daily flow rate of 1000 m³ and an SS concentration of 250 mg/L, the daily SS load is:</p>
+            <ul>
+                <li>SS Load = 1000 m³/day $\times$ 250 mg/L $\times$ (1 / 1000) = <strong>250 kg/day</strong></li>
+            </ul>
+            <p class="disclaimer-text">This calculator is for general informational purposes and provides theoretical estimates. Actual wastewater characterizations, sampling methods, accuracy of laboratory analyses, and measurement errors can affect the actual SS load. For precise commercial or industrial applications and legal compliance, always rely on accredited laboratory analyses and evaluations by environmental engineering specialists.</p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header and Footer loading functions
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // Directly specify header and footer paths for the English page
+            const headerPath = '/en/header.html'; // English header
+            const footerPath = '/en/footer.html'; // English footer
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            const ssLoadForm = document.getElementById('ssLoadForm');
+            const flowRateInput = document.getElementById('flowRate');
+            const ssConcentrationInput = document.getElementById('ssConcentration');
+            const resultBox = document.getElementById('resultBox');
+            const ssLoadValueSpan = document.getElementById('ssLoadValue');
+
+            function calculateSSLoad(event) {
+                event.preventDefault();
+
+                resultBox.style.display = 'none'; // Hide result box
+
+                const flowRate = parseFloat(flowRateInput.value);
+                const ssConcentration = parseFloat(ssConcentrationInput.value);
+
+                // Input validation
+                if (isNaN(flowRate) || flowRate <= 0 || isNaN(ssConcentration) || ssConcentration < 0) {
+                    resultBox.innerHTML = `<p class="error">Please enter valid positive numbers for wastewater flow rate and concentration.</p>`;
+                    resultBox.style.display = 'block';
+                    return;
+                }
+
+                // SS Load (kg/day) = Flow Rate (m³/day) * Concentration (mg/L) / 1000
+                // Note: 1 kg = 1,000,000 mg; 1 m³ = 1000 L.
+                // (mg/L) * (L/m³) * (kg/mg) = (mg/L) * (1000 L/m³) * (1 kg / 1,000,000 mg) = (1000 / 1,000,000) = 1/1000
+                const ssLoadKgPerDay = (flowRate * ssConcentration) / 1000;
+
+                ssLoadValueSpan.textContent = ssLoadKgPerDay.toFixed(3); // 3 decimal places
+
+                resultBox.innerHTML = `
+                    <p><strong>Daily SS Load:</strong> <span class="result-value" id="ssLoadValue">${ssLoadKgPerDay.toFixed(3)}</span> kg/day</p>
+                `;
+                resultBox.style.display = 'block';
+            }
+
+            ssLoadForm.addEventListener('submit', calculateSSLoad);
+        });
+    </script>
+</body>
+</html>
