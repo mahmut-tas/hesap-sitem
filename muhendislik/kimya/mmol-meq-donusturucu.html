@@ -13,10 +13,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
 
-    <link href="/css/header.css" rel="stylesheet"/>
-    <link href="/css/style.css" rel="stylesheet"/>
-    <link href="/css/footer.css" rel="stylesheet"/>
-
     <style>
         /* Genel Ayarlar ve Font */
         body {
@@ -496,7 +492,9 @@
             const molecularWeightInput = document.getElementById('molecularWeight');
             const valenceInput = document.getElementById('valence');
             const resultBox = document.getElementById('resultBox');
-            const convertedValueSpan = document.getElementById('convertedValue'); // Bu değişken hala var ama direkt kullanılmayacak
+            // Bu değişkeni burada tekrar alıyoruz, çünkü updateContent() her çağrıldığında DOM'u yeniden yazabilir.
+            // Bu elemanın referansının her zaman güncel olduğundan emin olmak için bu şekilde tutmak en güvenlisidir.
+            let convertedValueSpan = document.getElementById('convertedValue'); 
 
             const currentTexts = isEnglishPage ? texts.en : texts.tr;
 
@@ -521,7 +519,7 @@
                 document.getElementById('molecularWeight').placeholder = currentTexts.molecularWeightPlaceholder;
 
                 const h4Elements = document.querySelectorAll('.calculator-form-container h4');
-                if (h4Elements.length >= 3) { // This selects the "İyon Bilgileri" heading
+                if (h4Elements.length >= 3) {
                     h4Elements[2].textContent = currentTexts.ionInfoTitle;
                 }
                 
@@ -529,13 +527,12 @@
                 document.getElementById('valence').placeholder = currentTexts.valencePlaceholder;
 
                 document.querySelector('#conversionForm button[type="submit"]').textContent = currentTexts.calculateButton;
-                // resultBox'ın içindeki P elementini güncelliyoruz, span'i değil.
-                // Bu kısım artık direkt olarak resultBox.innerHTML tarafından yönetileceği için burada sabitlemeye gerek yok.
-                // updateContent çağrıldığında, resultBox varsayılan haline dönmeli veya gizlenmeli.
-                const resultDisplayP = resultBox.querySelector('p');
-                if (resultDisplayP) {
-                    resultDisplayP.innerHTML = `<strong>${currentTexts.convertedValueLabel}</strong> <span class="result-value" id="convertedValue"></span> ${currentTexts.resultUnit}`;
-                }
+                
+                // Sonuç kutusunun metnini başlangıçta ayarla
+                resultBox.innerHTML = `<p><strong>${currentTexts.convertedValueLabel}</strong> <span class="result-value" id="convertedValue"></span> ${currentTexts.resultUnit}</p>`;
+                // updateContent çağrıldığında convertedValueSpan'i tekrar al, çünkü innerHTML değişti
+                convertedValueSpan = document.getElementById('convertedValue');
+
 
                 document.querySelector('.calc-explanation p.small-text').textContent = currentTexts.formExplanation;
 
@@ -644,8 +641,9 @@
                     resultBox.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
                     resultBox.style.display = 'block';
                 } else {
-                    // Sonuç kutusunu doğru değerle ve birimle doldur
-                    resultBox.innerHTML = `<p><strong>${currentTexts.convertedValueLabel}</strong> <span class="result-value">${convertedMeq.toFixed(3)}</span> ${currentTexts.resultUnit}</p>`;
+                    convertedValueSpan.textContent = convertedMeq.toFixed(3); // Sadece değeri güncelleyin
+                    // resultBox'ın içindeki P elementinin metnini de doğru şekilde güncelleyin
+                    resultBox.querySelector('p').innerHTML = `<strong>${currentTexts.convertedValueLabel}</strong> <span class="result-value" id="convertedValue">${convertedMeq.toFixed(3)}</span> ${currentTexts.resultUnit}`;
                     resultBox.style.display = 'block';
                 }
             });
