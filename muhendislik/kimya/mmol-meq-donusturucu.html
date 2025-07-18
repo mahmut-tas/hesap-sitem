@@ -172,6 +172,7 @@
             color: #d32f2f; /* Kırmızı hata mesajı */
             font-size: 0.9em;
             margin-top: 10px;
+            text-align: center;
         }
 
         /* Info Sections */
@@ -323,7 +324,8 @@
                         <div class="result-display" id="resultBox">
                             <p><strong>Dönüştürülen Değer:</strong> <span class="result-value" id="convertedValue"></span> mEq</p>
                         </div>
-                        <div id="errorMessage" class="error-message" style="display:none;"></div> <div class="calc-explanation">
+                        <div id="errorMessage" class="error-message" style="display:none;"></div>
+                        <div class="calc-explanation">
                             <p class="small-text">Lütfen tüm değerleri doğru birimlerde girdiğinizden emin olun.</p>
                         </div>
                     </div>
@@ -339,7 +341,7 @@
             <p class="formula-text">$$\text{mEq} = \text{mmol} \times \text{Valans (Değerlik)}$$</p>
             <ul>
                 <li>**Monovalent (Tek Değerli) İyonlar:** Na$^+$, K$^+$, Cl$^-$ gibi iyonların valansı 1'dir. Bu durumda, mmol değeri mEq değerine eşittir (1 mmol = 1 mEq).</li>
-                <li>**Divalent (İki Değerli) İyonlar:** Ca$^{2+}$, Mg$^{2+}$, SO$_4^{2-}$ gibi iyonların valansı 2'dir. Bu durumda, mEq değeri mmol değerinin iki katıdır.</li>
+                <li>**Divalent (İki Değerli) İyonlar:** Ca$^{2+}$, Mg$^{2+}$, SO$_4^{2-}$ gibi iyonların valansı 2'dir. Bu durumda, mEq değeri mmol değerinin iki katıdır. (Örn: 1 mmol Ca = 2 mEq Ca)</li>
                 <li>**Trivalent (Üç Değerli) İyonlar:** Al$^{3+}$, PO$_4^{3-}$ gibi iyonların valansı 3'tür. Bu durumda, mEq değeri mmol değerinin üç katıdır.</li>
             </ul>
             <h4>Mg'dan mEq'ye Dönüşüm</h4>
@@ -369,7 +371,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Dil metinleri (daha önce olduğu gibi)
             const texts = {
                 tr: {
                     mainHeading: 'Mmol - mEq Dönüşüm Hesaplayıcı 🧪',
@@ -457,6 +458,7 @@
                 }
             };
 
+            // HTML elementlerini al
             const conversionForm = document.getElementById('conversionForm');
             const conversionTypeSelect = document.getElementById('conversionType');
             const mmolInputGroup = document.getElementById('mmolInputGroup');
@@ -466,9 +468,9 @@
             const molecularWeightInput = document.getElementById('molecularWeight');
             const valenceInput = document.getElementById('valence');
             const resultBox = document.getElementById('resultBox');
-            const errorMessageDiv = document.getElementById('errorMessage'); // Hata mesajı div'ini al
+            const errorMessageDiv = document.getElementById('errorMessage'); 
             
-            // `convertedValueSpan`'i başlangıçta ve her `resultBox.innerHTML` değişikliğinden sonra güncellemeliyiz.
+            // `convertedValueSpan`'i başlangıçta ata. Bu referans, `resultBox.innerHTML` değiştiğinde güncellenmeli.
             let convertedValueSpan = document.getElementById('convertedValue'); 
 
             // Sayfanın dilini belirle
@@ -477,30 +479,28 @@
 
             // Metin içeriğini güncelleyen ve `convertedValueSpan`'i yeniden atayan fonksiyon
             function updateContentAndReassignSpan() {
-                // Ana başlık ve açıklama
+                // Header ve hero bölümü metinleri (Daha önce HTML'e doğrudan ekledim, bu kısım artık sadece metin güncellemeleri için)
+                // Bu örnekte header/footer placeholders kaldırıldığı için, bu elementlere direkt erişim sağlanabilir.
                 document.querySelector('.hero-section h1').textContent = currentTexts.mainHeading;
                 document.querySelector('.hero-section p').textContent = currentTexts.mainDescription;
                 document.querySelector('#calculator-mmol-meq h3').innerHTML = `<i class="fas fa-flask icon-small"></i> ${currentTexts.calculatorTitle}`;
                 document.querySelector('#conversionForm p.small-text').textContent = currentTexts.formIntro;
 
-                // Dönüşüm tipi seçimi
+                // Form etiketleri ve placeholder'lar
                 document.getElementById('conversionType').previousElementSibling.textContent = currentTexts.conversionTypeLabel;
                 document.getElementById('conversionType').options[0].textContent = currentTexts.optionMmolToMeq;
                 document.getElementById('conversionType').options[1].textContent = currentTexts.optionMgToMeq;
 
-                // mmol girişi
                 document.querySelector('#mmolInputGroup h4').textContent = currentTexts.mmolInputTitle;
                 document.getElementById('mmolValue').previousElementSibling.textContent = currentTexts.mmolValueLabel;
                 document.getElementById('mmolValue').placeholder = currentTexts.mmolValuePlaceholder;
 
-                // mg girişi
                 document.querySelector('#mgInputGroup h4').textContent = currentTexts.mgInputTitle;
                 document.getElementById('mgValue').previousElementSibling.textContent = currentTexts.mgValueLabel;
                 document.getElementById('mgValue').placeholder = currentTexts.mgValuePlaceholder;
                 document.getElementById('molecularWeight').previousElementSibling.textContent = currentTexts.molecularWeightLabel;
                 document.getElementById('molecularWeight').placeholder = currentTexts.molecularWeightPlaceholder;
 
-                // İyon bilgileri
                 const h4Elements = document.querySelectorAll('.calculator-form-container h4');
                 if (h4Elements.length >= 3) {
                     h4Elements[2].textContent = currentTexts.ionInfoTitle;
@@ -513,7 +513,10 @@
                 
                 // Sonuç kutusunun varsayılan içeriğini ayarla ve span'i yeniden ata
                 resultBox.innerHTML = `<p><strong>${currentTexts.convertedValueLabel}</strong> <span class="result-value" id="convertedValue"></span> ${currentTexts.resultUnit}</p>`;
-                convertedValueSpan = document.getElementById('convertedValue'); // REFERANSI YENİLE!
+                
+                // ÖNEMLİ: innerHTML'i değiştirdikten sonra convertedValueSpan'i **yeniden atamalıyız**.
+                convertedValueSpan = document.getElementById('convertedValue');
+
 
                 document.querySelector('.calc-explanation p.small-text').textContent = currentTexts.formExplanation;
 
@@ -576,6 +579,7 @@
             // Başlangıçta varsayılan seçeneğe göre inputları ayarla
             conversionTypeSelect.dispatchEvent(new Event('change'));
 
+            // *** BURADA EK SORGULAMANIZDA BAHSETTİĞİNİZ KISIM YER ALIYOR ***
             // Form gönderildiğinde hesaplamayı yap
             conversionForm.addEventListener('submit', function(event) {
                 event.preventDefault(); // Formun varsayılan gönderimini engelle
