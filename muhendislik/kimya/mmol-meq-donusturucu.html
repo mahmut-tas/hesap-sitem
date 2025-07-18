@@ -9,6 +9,8 @@
     <meta content="mmol mEq dönüşüm, milimol milieşdeğer, elektrolit hesaplama, valans, değerlik, kimya hesaplayıcı, tıp hesaplayıcı" name="keywords"/>
 
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link rel="stylesheet" href="../../css/header.css">
+    <link rel="stylesheet" href="../../css/style.css">
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
@@ -358,7 +360,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Header ve Footer yükleme fonksiyonları (mevcut kodunuzdan)
+            // Header ve Footer yükleme fonksiyonları
             function loadPartial(elementId, url) {
                 fetch(url)
                     .then(response => {
@@ -371,6 +373,7 @@
                         const placeholder = document.getElementById(elementId);
                         if (placeholder) {
                             placeholder.innerHTML = html;
+                            // Yüklenen HTML'deki script etiketlerini yeniden çalıştır
                             const scripts = placeholder.querySelectorAll('script');
                             scripts.forEach(oldScript => {
                                 const newScript = document.createElement('script');
@@ -384,7 +387,7 @@
                         console.error(`Error loading ${url}:`, error);
                         const placeholder = document.getElementById(elementId);
                         if (placeholder) {
-                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                            placeholder.innerHTML = `<p style="color: red;">${elementId} içeriği yüklenemedi.</p>`;
                         }
                     });
             }
@@ -492,13 +495,15 @@
             const molecularWeightInput = document.getElementById('molecularWeight');
             const valenceInput = document.getElementById('valence');
             const resultBox = document.getElementById('resultBox');
-            // Bu değişkeni burada tekrar alıyoruz, çünkü updateContent() her çağrıldığında DOM'u yeniden yazabilir.
-            // Bu elemanın referansının her zaman güncel olduğundan emin olmak için bu şekilde tutmak en güvenlisidir.
+            
+            // convertedValueSpan'i DOM'a ilk erişimde tanımla
             let convertedValueSpan = document.getElementById('convertedValue'); 
 
+            // currentTexts'i global olarak tanımladığımız için burada tekrar çekmeye gerek yok
             const currentTexts = isEnglishPage ? texts.en : texts.tr;
 
-            function updateContent() {
+            // İçerik güncellemelerini ve convertedValueSpan'in yeniden atanmasını tek bir fonksiyon içinde tut
+            function applyTextContentAndReassignSpan() {
                 document.querySelector('.hero-section h1').textContent = currentTexts.mainHeading;
                 document.querySelector('.hero-section p').textContent = currentTexts.mainDescription;
                 document.querySelector('#calculator-mmol-meq h3').innerHTML = `<i class="fas fa-flask icon-small"></i> ${currentTexts.calculatorTitle}`;
@@ -528,15 +533,15 @@
 
                 document.querySelector('#conversionForm button[type="submit"]').textContent = currentTexts.calculateButton;
                 
-                // Sonuç kutusunun metnini başlangıçta ayarla
+                // resultBox'ın iç yapısını güncelliyoruz. Bu işlem, convertedValueSpan'in referansını kırar.
                 resultBox.innerHTML = `<p><strong>${currentTexts.convertedValueLabel}</strong> <span class="result-value" id="convertedValue"></span> ${currentTexts.resultUnit}</p>`;
-                // updateContent çağrıldığında convertedValueSpan'i tekrar al, çünkü innerHTML değişti
+                // ÖNEMLİ: innerHTML'i değiştirdikten sonra convertedValueSpan'i yeniden atamalıyız.
                 convertedValueSpan = document.getElementById('convertedValue');
 
 
                 document.querySelector('.calc-explanation p.small-text').textContent = currentTexts.formExplanation;
 
-                // Info Section updates
+                // Bilgi Bölümü güncellemeleri
                 document.querySelector('.info-section h3').textContent = currentTexts.infoSectionTitle;
                 document.querySelector('.info-section p:nth-of-type(1)').innerHTML = currentTexts.infoSectionP1;
 
@@ -572,7 +577,7 @@
             }
 
             // Sayfa yüklendiğinde içeriği bir kez güncelle
-            updateContent();
+            applyTextContentAndReassignSpan();
 
             // Dönüşüm tipi seçimi değiştiğinde input gruplarını ayarla
             conversionTypeSelect.addEventListener('change', function() {
@@ -638,12 +643,19 @@
                 }
 
                 if (!isValid) {
+                    // Hata durumunda, resultBox'ın içini temizle ve hata mesajını göster
                     resultBox.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
                     resultBox.style.display = 'block';
                 } else {
-                    convertedValueSpan.textContent = convertedMeq.toFixed(3); // Sadece değeri güncelleyin
-                    // resultBox'ın içindeki P elementinin metnini de doğru şekilde güncelleyin
-                    resultBox.querySelector('p').innerHTML = `<strong>${currentTexts.convertedValueLabel}</strong> <span class="result-value" id="convertedValue">${convertedMeq.toFixed(3)}</span> ${currentTexts.resultUnit}`;
+                    // Başarılı durumda, convertedValueSpan'i tekrar güncel referansı ile al
+                    // Bu kısım artık applyTextContentAndReassignSpan() içinde yapıldığı için
+                    // burada tekrar direkt olarak `convertedValueSpan = document.getElementById('convertedValue');`
+                    // yapmaya gerek kalmıyor, çünkü her applyTextContentAndReassignSpan() çağrısında güncelleniyor.
+                    // Ancak, eğer bu submit event'i içinde doğrudan resultBox'ın içini tamamen değiştirseydik,
+                    // o zaman burada da tekrar almamız gerekirdi. Mevcut yapı güvenli.
+
+                    // Sadece span'in metin içeriğini güncelleyerek sonucu göster
+                    convertedValueSpan.textContent = convertedMeq.toFixed(3);
                     resultBox.style.display = 'block';
                 }
             });
