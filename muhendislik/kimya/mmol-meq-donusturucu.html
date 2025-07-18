@@ -168,9 +168,10 @@
         .result-display .result-value {
             color: #0d47a1; /* Koyu mavi */
         }
-        .error {
+        .error-message { /* Yeni hata sınıfı */
             color: #d32f2f; /* Kırmızı hata mesajı */
-            font-size: 0.8em;
+            font-size: 0.9em;
+            margin-top: 10px;
         }
 
         /* Info Sections */
@@ -252,18 +253,19 @@
             margin-bottom: 20px;
         }
     </style>
-
-    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
-    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-3655KNY8CP');
-    </script>
 </head>
 <body>
-    <div id="header-placeholder"></div>
+    <header id="main-header">
+        <nav class="container">
+            <a href="#" class="logo">Hesapkolik</a>
+            <ul class="nav-links">
+                <li><a href="#">Ana Sayfa</a></li>
+                <li><a href="#">Hesaplayıcılar</a></li>
+                <li><a href="#">Hakkımızda</a></li>
+                <li><a href="#">İletişim</a></li>
+            </ul>
+        </nav>
+    </header>
 
     <main>
         <section class="hero-section">
@@ -294,7 +296,7 @@
                                 <h4>Miktar (mmol)</h4>
                                 <div class="input-with-unit-group">
                                     <label for="mmolValue">Miktar (mmol):</label>
-                                    <input id="mmolValue" min="0" placeholder="Örn: 10" required="" step="0.01" type="number"/>
+                                    <input id="mmolValue" min="0" placeholder="Örn: 10" required step="0.01" type="number" name="mmolValue"/>
                                 </div>
                             </div>
 
@@ -302,18 +304,18 @@
                                 <h4>Miktar (mg)</h4>
                                 <div class="input-with-unit-group">
                                     <label for="mgValue">Miktar (mg):</label>
-                                    <input id="mgValue" min="0" placeholder="Örn: 117" required="" step="0.01" type="number"/>
+                                    <input id="mgValue" min="0" placeholder="Örn: 117" required step="0.01" type="number" name="mgValue"/>
                                 </div>
                                 <div class="input-with-unit-group">
                                     <label for="molecularWeight">Moleküler Ağırlık (g/mol veya mg/mmol):</label>
-                                    <input id="molecularWeight" min="0.01" placeholder="Örn: 58.5" required="" step="0.01" type="number"/>
+                                    <input id="molecularWeight" min="0.01" placeholder="Örn: 58.5" required step="0.01" type="number" name="molecularWeight"/>
                                 </div>
                             </div>
 
                             <h4>İyon Bilgileri</h4>
                             <div class="input-with-unit-group">
                                 <label for="valence">İyon Valansı (Değerliği):</label>
-                                <input id="valence" min="1" placeholder="Örn: 1 (Na+, Cl-), 2 (Ca2+, Mg2+)" required="" step="1" type="number"/>
+                                <input id="valence" min="1" placeholder="Örn: 1 (Na+, Cl-), 2 (Ca2+, Mg2+)" required step="1" type="number" name="valence"/>
                             </div>
 
                             <button type="submit">Hesapla</button>
@@ -321,7 +323,7 @@
                         <div class="result-display" id="resultBox">
                             <p><strong>Dönüştürülen Değer:</strong> <span class="result-value" id="convertedValue"></span> mEq</p>
                         </div>
-                        <div class="calc-explanation">
+                        <div id="errorMessage" class="error-message" style="display:none;"></div> <div class="calc-explanation">
                             <p class="small-text">Lütfen tüm değerleri doğru birimlerde girdiğinizden emin olun.</p>
                         </div>
                     </div>
@@ -354,49 +356,20 @@
         </section>
     </main>
 
-    <div id="footer-placeholder"></div>
+    <footer id="main-footer">
+        <div class="container">
+            <p>&copy; 2025 Hesapkolik. Tüm Hakları Saklıdır.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Header ve Footer yükleme fonksiyonları
-            function loadPartial(elementId, url) {
-                fetch(url)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
-                        }
-                        return response.text();
-                    })
-                    .then(html => {
-                        const placeholder = document.getElementById(elementId);
-                        if (placeholder) {
-                            placeholder.innerHTML = html;
-                            // Yüklenen HTML'deki script etiketlerini yeniden çalıştır
-                            const scripts = placeholder.querySelectorAll('script');
-                            scripts.forEach(oldScript => {
-                                const newScript = document.createElement('script');
-                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
-                                newScript.textContent = oldScript.textContent;
-                                oldScript.parentNode.replaceChild(newScript, oldScript);
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.error(`Error loading ${url}:`, error);
-                        const placeholder = document.getElementById(elementId);
-                        if (placeholder) {
-                            placeholder.innerHTML = `<p style="color: red;">${elementId} içeriği yüklenemedi.</p>`;
-                        }
-                    });
-            }
-
-            const isEnglishPage = window.location.pathname.startsWith('/en/');
-            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
-            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
-
-            loadPartial('header-placeholder', headerPath);
-            loadPartial('footer-placeholder', footerPath);
-
+            // Dil metinleri (daha önce olduğu gibi)
             const texts = {
                 tr: {
                     mainHeading: 'Mmol - mEq Dönüşüm Hesaplayıcı 🧪',
@@ -428,7 +401,7 @@
                     infoSectionP2: 'Bu dönüşüm, iyonun **valansına (değerliğine)**, yani sahip olduğu net elektrik yüküne bağlıdır:',
                     infoSectionFormula1: '$$\\text{mEq} = \\text{mmol} \\times \\text{Valans (Değerlik)}$$',
                     infoSectionList1_1: '<strong>Monovalent (Tek Değerli) İyonlar:</strong> Na$^+$, K$^+$, Cl$^-$ gibi iyonların valansı 1\'dir. Bu durumda, mmol değeri mEq değerine eşittir (1 mmol = 1 mEq).',
-                    infoSectionList1_2: '<strong>Divalent (İki Değerli) İyonlar:</strong> Ca$^{2+}$, Mg$^{2+}$, SO$_4^{2-}$ gibi iyonların valansı 2\'dir. Bu durumda, mEq değeri mmol değerinin iki katıdır.',
+                    infoSectionList1_2: '<strong>Divalent (İki Değerli) İyonlar:</strong> Ca$^{2+}$, Mg$^{2+}$, SO$_4^{2-}$ gibi iyonların valansı 2\'dir. Bu durumda, mEq değeri mmol değerinin iki katıdır. (Örn: 1 mmol Ca = 2 mEq Ca)',
                     infoSectionList1_3: '<strong>Trivalent (Üç Değerli) İyonlar:</strong> Al$^{3+}$, PO$_4^{3-}$ gibi iyonların valansı 3\'tür. Bu durumda, mEq değeri mmol değerinin üç katıdır.',
                     infoSectionH4_2: 'Mg\'dan mEq\'ye Dönüşüm',
                     infoSectionP3: 'Bir maddenin miligram (mg) cinsinden miktarını doğrudan milieşdeğere dönüştürmek için önce miligramı milimole çevirmemiz gerekir. Bunun için maddenin **moleküler ağırlığına** ihtiyaç duyarız.',
@@ -493,57 +466,58 @@
             const molecularWeightInput = document.getElementById('molecularWeight');
             const valenceInput = document.getElementById('valence');
             const resultBox = document.getElementById('resultBox');
+            const errorMessageDiv = document.getElementById('errorMessage'); // Hata mesajı div'ini al
             
-            // convertedValueSpan'i her zaman güncel tutmak için bir değişken olarak tanımlıyoruz.
-            // İlk DOMContentLoaded'da atanacak.
-            let convertedValueSpan; 
+            // `convertedValueSpan`'i başlangıçta ve her `resultBox.innerHTML` değişikliğinden sonra güncellemeliyiz.
+            let convertedValueSpan = document.getElementById('convertedValue'); 
 
-            // currentTexts'i global olarak tanımladığımız için burada tekrar çekmeye gerek yok
+            // Sayfanın dilini belirle
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
             const currentTexts = isEnglishPage ? texts.en : texts.tr;
 
-            // Bu fonksiyon, sayfa içeriğini günceller ve convertedValueSpan'i yeniden atar.
-            function applyTextContentAndReassignSpan() {
-                // Header ve hero bölümü metinleri
+            // Metin içeriğini güncelleyen ve `convertedValueSpan`'i yeniden atayan fonksiyon
+            function updateContentAndReassignSpan() {
+                // Ana başlık ve açıklama
                 document.querySelector('.hero-section h1').textContent = currentTexts.mainHeading;
                 document.querySelector('.hero-section p').textContent = currentTexts.mainDescription;
                 document.querySelector('#calculator-mmol-meq h3').innerHTML = `<i class="fas fa-flask icon-small"></i> ${currentTexts.calculatorTitle}`;
                 document.querySelector('#conversionForm p.small-text').textContent = currentTexts.formIntro;
 
-                // Form etiketleri ve placeholder'lar
+                // Dönüşüm tipi seçimi
                 document.getElementById('conversionType').previousElementSibling.textContent = currentTexts.conversionTypeLabel;
                 document.getElementById('conversionType').options[0].textContent = currentTexts.optionMmolToMeq;
                 document.getElementById('conversionType').options[1].textContent = currentTexts.optionMgToMeq;
 
+                // mmol girişi
                 document.querySelector('#mmolInputGroup h4').textContent = currentTexts.mmolInputTitle;
                 document.getElementById('mmolValue').previousElementSibling.textContent = currentTexts.mmolValueLabel;
                 document.getElementById('mmolValue').placeholder = currentTexts.mmolValuePlaceholder;
 
+                // mg girişi
                 document.querySelector('#mgInputGroup h4').textContent = currentTexts.mgInputTitle;
                 document.getElementById('mgValue').previousElementSibling.textContent = currentTexts.mgValueLabel;
                 document.getElementById('mgValue').placeholder = currentTexts.mgValuePlaceholder;
                 document.getElementById('molecularWeight').previousElementSibling.textContent = currentTexts.molecularWeightLabel;
                 document.getElementById('molecularWeight').placeholder = currentTexts.molecularWeightPlaceholder;
 
+                // İyon bilgileri
                 const h4Elements = document.querySelectorAll('.calculator-form-container h4');
                 if (h4Elements.length >= 3) {
                     h4Elements[2].textContent = currentTexts.ionInfoTitle;
                 }
-                
                 document.getElementById('valence').previousElementSibling.textContent = currentTexts.valenceLabel;
                 document.getElementById('valence').placeholder = currentTexts.valencePlaceholder;
 
+                // Hesapla butonu
                 document.querySelector('#conversionForm button[type="submit"]').textContent = currentTexts.calculateButton;
                 
-                // resultBox'ın iç yapısını güncelliyoruz. Bu işlem, convertedValueSpan'in referansını kırar.
+                // Sonuç kutusunun varsayılan içeriğini ayarla ve span'i yeniden ata
                 resultBox.innerHTML = `<p><strong>${currentTexts.convertedValueLabel}</strong> <span class="result-value" id="convertedValue"></span> ${currentTexts.resultUnit}</p>`;
-                
-                // ÖNEMLİ: innerHTML'i değiştirdikten sonra convertedValueSpan'i **yeniden atamalıyız**.
-                convertedValueSpan = document.getElementById('convertedValue');
-
+                convertedValueSpan = document.getElementById('convertedValue'); // REFERANSI YENİLE!
 
                 document.querySelector('.calc-explanation p.small-text').textContent = currentTexts.formExplanation;
 
-                // Bilgi Bölümü güncellemeleri
+                // Bilgi bölümleri
                 document.querySelector('.info-section h3').textContent = currentTexts.infoSectionTitle;
                 document.querySelector('.info-section p:nth-of-type(1)').innerHTML = currentTexts.infoSectionP1;
 
@@ -567,7 +541,6 @@
                 document.querySelector('.info-section p:nth-of-type(4)').textContent = currentTexts.infoSectionP4;
                 document.querySelector('.info-section .formula-text:nth-of-type(3)').innerHTML = currentTexts.infoSectionFormula3;
 
-
                 if (infoH4Elements.length >= 3) {
                     infoH4Elements[2].textContent = currentTexts.infoSectionH4_3;
                 }
@@ -578,43 +551,37 @@
                 document.querySelector('.info-section .disclaimer-text').innerHTML = currentTexts.disclaimerTextInfo;
             }
 
-            // Sayfa yüklendiğinde içeriği bir kez güncelle ve convertedValueSpan'i ata
-            applyTextContentAndReassignSpan();
+            // Sayfa yüklendiğinde tüm içeriği ve gerekli element referanslarını ayarla
+            updateContentAndReassignSpan();
 
-            // Dönüşüm tipi seçimi değiştiğinde input gruplarını ayarla
+            // Dönüşüm tipi değiştiğinde input gruplarını göster/gizle
             conversionTypeSelect.addEventListener('change', function() {
                 if (this.value === 'mmolToMeq') {
                     mmolInputGroup.style.display = 'block';
                     mgInputGroup.style.display = 'none';
-                    // Değerleri temizle
-                    mgValueInput.value = '';
-                    molecularWeightInput.value = '';
-                    // Gereklilikleri ayarla
                     mmolValueInput.setAttribute('required', 'true');
                     mgValueInput.removeAttribute('required');
                     molecularWeightInput.removeAttribute('required');
                 } else { // mgToMeq
                     mmolInputGroup.style.display = 'none';
                     mgInputGroup.style.display = 'block';
-                    // Değerleri temizle
-                    mmolValueInput.value = '';
-                    // Gereklilikleri ayarla
                     mgValueInput.setAttribute('required', 'true');
                     molecularWeightInput.setAttribute('required', 'true');
                     mmolValueInput.removeAttribute('required');
                 }
                 resultBox.style.display = 'none'; // Tür değiştiğinde sonuçları gizle
+                errorMessageDiv.style.display = 'none'; // Hata mesajını gizle
             });
 
-            // Sayfa yüklendiğinde varsayılan dönüşüm tipine göre input gruplarını ayarla
+            // Başlangıçta varsayılan seçeneğe göre inputları ayarla
             conversionTypeSelect.dispatchEvent(new Event('change'));
-
 
             // Form gönderildiğinde hesaplamayı yap
             conversionForm.addEventListener('submit', function(event) {
                 event.preventDefault(); // Formun varsayılan gönderimini engelle
 
                 resultBox.style.display = 'none'; // Önceki sonuçları gizle
+                errorMessageDiv.style.display = 'none'; // Önceki hata mesajını gizle
 
                 const conversionType = conversionTypeSelect.value;
                 let convertedMeq;
@@ -624,13 +591,19 @@
                 // Valans kontrolü
                 if (isNaN(valence) || valence <= 0) {
                     isValid = false;
+                    errorMessageDiv.textContent = currentTexts.invalidInput;
+                    errorMessageDiv.style.display = 'block';
+                    return; // Hesaplamayı durdur
                 }
 
                 if (conversionType === 'mmolToMeq') {
                     const mmolValue = parseFloat(mmolValueInput.value);
                     if (isNaN(mmolValue) || mmolValue < 0) {
                         isValid = false;
-                    } else if (isValid) {
+                        errorMessageDiv.textContent = currentTexts.invalidInput;
+                        errorMessageDiv.style.display = 'block';
+                        return; // Hesaplamayı durdur
+                    } else {
                         convertedMeq = mmolValue * valence;
                     }
                 } else { // mgToMeq
@@ -638,27 +611,34 @@
                     const molecularWeight = parseFloat(molecularWeightInput.value);
                     if (isNaN(mgValue) || mgValue < 0 || isNaN(molecularWeight) || molecularWeight <= 0) {
                         isValid = false;
-                    } else if (isValid) {
+                        errorMessageDiv.textContent = currentTexts.invalidInput;
+                        errorMessageDiv.style.display = 'block';
+                        return; // Hesaplamayı durdur
+                    } else {
                         const mmol = mgValue / molecularWeight;
                         convertedMeq = mmol * valence;
                     }
                 }
 
-                if (!isValid) {
-                    // Hata durumunda, resultBox'ın içini temizle ve hata mesajını göster
-                    resultBox.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
-                    resultBox.style.display = 'block';
-                } else {
-                    // Başarılı durumda, resultBox'ın iç yapısını yeniden kurun ve sonra convertedValueSpan'i güncelleyin.
-                    // Bu, `resultBox.innerHTML`'in her zaman doğru yapıyı içermesini sağlar.
+                // Hata yoksa sonucu göster
+                if (isValid) {
+                    // resultBox'ın iç yapısını yeniden kur ve convertedValueSpan'i tekrar al
                     resultBox.innerHTML = `<p><strong>${currentTexts.convertedValueLabel}</strong> <span class="result-value" id="convertedValue"></span> ${currentTexts.resultUnit}</p>`;
                     convertedValueSpan = document.getElementById('convertedValue'); // Yeni oluşturulan span'i tekrar al
 
-                    convertedValueSpan.textContent = convertedMeq.toFixed(3); // Sadece değeri güncelleyin
+                    convertedValueSpan.textContent = convertedMeq.toFixed(3);
                     resultBox.style.display = 'block';
                 }
             });
         });
+    </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206" crossorigin="anonymous"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
     </script>
 </body>
 </html>
