@@ -51,55 +51,21 @@
         opacity: 0.9;
       }
 
-      /* Hesaplayıcı Seçim Bölümü Stilleri */
-      .calculator-selection-section {
+      /* Hesaplayıcı Bölümü Stilleri - Sadece bir tane olduğu için seçim butonlarına gerek yok */
+      .calculator-section {
         padding: 50px 0;
         text-align: center;
         background-color: #eaf0f0;
         border-bottom: 1px solid #dee7e7;
       }
 
-      .calculator-selection-section h2 {
+      .calculator-section h2 {
         margin-bottom: 30px;
         color: #2c3e50;
         font-size: 2.2em;
       }
 
-      .calc-buttons-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-        margin-bottom: 40px;
-      }
-
-      .calc-type-button {
-        background-color: #3498db; /* Mavi ton */
-        color: white;
-        padding: 15px 25px;
-        border: none;
-        border-radius: 8px;
-        font-size: 1.1em;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        flex: 1 1 calc(33% - 30px); /* 3 sütunlu düzen, boşluklar dahil */
-        max-width: 250px; /* Butonların maksimum genişliği */
-        text-align: center;
-      }
-
-      .calc-type-button:hover {
-        background-color: #2980b9;
-        transform: translateY(-3px);
-      }
-
-      .calc-type-button.active {
-        background-color: #e74c3c; /* Seçili buton için vurgulu renk */
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        transform: translateY(-3px);
-      }
-
-      /* Her bir hesaplayıcı formu için genel stil */
+      /* Hesaplayıcı formu için genel stil */
       .calc-wrapper {
         background-color: #ffffff;
         padding: 40px;
@@ -146,24 +112,26 @@
         border-color: red !important;
       }
 
-      .calc-result {
+      .result-display {
         margin-top: 25px;
-        font-size: 1.6em;
-        font-weight: 700;
+        font-size: 1.1em;
+        font-weight: 600;
         color: #2c3e50;
         text-align: center;
-        min-height: 1.8em; /* Sonucun sabit bir alanı kaplamasını sağlar */
+        min-height: 1.8em;
         background-color: #ecf0f1;
         padding: 15px 20px;
         border-radius: 8px;
         border: 1px solid #dcdfe4;
       }
 
-      .calc-result strong {
+      .result-display .result-value {
         color: #e74c3c;
+        font-weight: 700;
+        font-size: 1.3em;
       }
 
-      .calc-result .error {
+      .result-display .error {
         color: #e74c3c;
         font-size: 0.8em;
       }
@@ -226,10 +194,6 @@
 
       /* Responsive Ayarlamalar */
       @media (max-width: 768px) {
-        .calc-type-button {
-          flex: 1 1 calc(50% - 15px); /* 2 sütunlu düzen */
-        }
-
         .calc-wrapper {
           padding: 30px 20px;
           margin: 20px auto;
@@ -239,17 +203,12 @@
           font-size: 1.8em;
         }
 
-        .calc-result {
+        .result-display {
           font-size: 1.4em;
         }
       }
 
       @media (max-width: 480px) {
-        .calc-type-button {
-          flex: 1 1 100%; /* Tek sütunlu düzen */
-          max-width: 100%;
-        }
-
         header nav ul {
           flex-direction: column;
           align-items: center;
@@ -260,11 +219,7 @@
         }
       }
 
-      .hidden-calc {
-        display: none;
-      }
-
-      /* Form elemanları ve sonuç gösterimi için ek stil */
+      /* Hesapla butonu stili */
       .calculator-form-container button {
         background-color: #28a745; /* Yeşil ton */
         color: white;
@@ -282,59 +237,6 @@
       .calculator-form-container button:hover {
         background-color: #218838;
         transform: translateY(-2px);
-      }
-
-      .result-display {
-        margin-top: 25px;
-        font-size: 1.1em;
-        font-weight: 600;
-        color: #2c3e50;
-        text-align: center;
-        min-height: 1.8em;
-        background-color: #ecf0f1;
-        padding: 15px 20px;
-        border-radius: 8px;
-        border: 1px solid #dcdfe4;
-      }
-
-      .result-display .result-value {
-        color: #e74c3c;
-        font-weight: 700;
-        font-size: 1.3em;
-      }
-
-      .small-text {
-        font-size: 0.85em;
-        color: #777;
-        text-align: justify;
-        margin-top: 15px;
-        line-height: 1.5;
-      }
-
-      .formula-text {
-        font-family: 'Courier New', Courier, monospace;
-        background-color: #f0f0f0;
-        padding: 10px;
-        border-radius: 5px;
-        text-align: center;
-        font-size: 1.1em;
-        margin: 15px 0;
-        color: #444;
-      }
-
-      .formula-text.small-margin {
-        margin: 5px 0;
-        padding: 5px;
-        font-size: 1em;
-      }
-
-      .disclaimer-text {
-        font-size: 0.8em;
-        color: #999;
-        margin-top: 25px;
-        border-top: 1px dashed #eee;
-        padding-top: 15px;
-        text-align: justify;
       }
 
       .icon-small {
@@ -385,22 +287,11 @@
           </p>
         </div>
       </section>
-      <section class="calculator-selection-section">
+      <section class="calculator-section">
         <div class="container">
           <h2>
-            Yapmak İstediğiniz Hesaplama Türünü Seçin
+            Meq Değerini Farklı Birimlere Dönüştürün
           </h2>
-          <div class="calc-buttons-container">
-            <button class="calc-type-button active" data-calc-type="meqConverter">
-              Meq Dönüştürücü
-            </button>
-            <button class="calc-type-button" data-calc-type="gasDensity">
-              Gaz Yoğunluğunu Hesapla (d=PM/RT)
-            </button>
-            <button class="calc-type-button" data-calc-type="idealGasLaw">
-              İdeal Gaz Yasası Parametrelerini Hesapla (PV=nRT)
-            </button>
-          </div>
           <div class="calc-wrapper active-calc" id="calculator-meqConverter">
             <h3>
               <i class="fas fa-flask icon-small">
@@ -450,277 +341,33 @@
               </div>
               <div class="calc-explanation">
                 <p>
-                  Bu hesaplayıcı, milieşdeğer (mEq) birimini, bir maddenin mol kütlesi ve değerliği (yükü) kullanarak kütle/hacim birimlerine dönüştürür. Formül şu şekildedir:
+                  Milieşdeğer (mEq/L) değerini, maddenin mol kütlesi (GMW) ve değerliği (Z) kullanarak miligram/litre (mg/L) ve gram/litre (g/L) birimlerine dönüştürür.
                 </p>
-                <p class="formula-text">
-                  $ \text{mEq/L} \times \text{GMW (g/mol)} / \text{Değerlik (Z)} = \text{mg/L} $
-                  <br/>
-                  (GMW, gram cinsinden mol kütlesidir)
+                <p>
+                  Formül: **Kütle (mg/L) = (Meq/L × GMW (g/mol) × 1000) / Değerlik (Z)**
                 </p>
                 <ul>
                   <li>
                     <strong>
-                      mEq/L:
+                      Meq/L:
                     </strong>
-                    Milieşdeğer bölü litre. Bir çözeltinin kimyasal reaktivitesini veya iyonik gücünü ifade eder.
+                    Milieşdeğer bölü litre. Bir çözeltinin kimyasal reaktivitesini veya iyonik gücünü gösterir.
                   </li>
                   <li>
                     <strong>
                       GMW (Mol Kütlesi):
                     </strong>
-                    Gramer cinsinden mol kütlesi. Genellikle g/mol olarak ifade edilir.
+                    Maddenin gram cinsinden mol kütlesi. Genellikle g/mol olarak ifade edilir.
                   </li>
                   <li>
                     <strong>
                       Z (Değerlik):
                     </strong>
-                    İyonun yükü veya reaksiyonda değişen elektron sayısı. Örneğin, Na⁺ için 1, Ca²⁺ için 2, PO₄³⁻ için 3'tür.
+                    İyonun yükü veya reaksiyonda değişen elektron sayısı. Örneğin, sodyum (Na⁺) için 1, kalsiyum (Ca²⁺) için 2, fosfat (PO₄³⁻) için 3'tür.
                   </li>
                 </ul>
                 <p>
-                  Özellikle tıp ve biyokimya alanında elektrolit konsantrasyonlarını anlamak ve dozaj hesaplamaları yapmak için kullanılır.
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="calc-wrapper hidden-calc" id="calculator-gasDensity">
-            <h3>
-              <i class="fas fa-gas-pump icon-small">
-              </i>
-              Gaz Yoğunluğunu Hesapla (d=PM/RT)
-            </h3>
-            <div class="calculator-form-container">
-              <form id="gasDensityForm">
-                <div class="input-with-unit">
-                  <label for="pressure_density">
-                    Basınç (P):
-                  </label>
-                  <input id="pressure_density" min="0.000001" placeholder="Örn: 1" required="" step="any" type="number"/>
-                  <select id="pressureUnit_density">
-                    <option value="atm">
-                      atm
-                    </option>
-                    <option value="kPa">
-                      kPa
-                    </option>
-                    <option value="mmHg">
-                      mmHg
-                    </option>
-                    <option value="psi">
-                      psi
-                    </option>
-                  </select>
-                </div>
-                <hr class="form-divider"/>
-                <div class="input-with-unit">
-                  <label for="molarMass_density">
-                    Mol Kütlesi (M):
-                  </label>
-                  <input id="molarMass_density" min="0.000001" placeholder="Örn: 28.01 (N2 için)" required="" step="any" type="number"/>
-                  <select id="molarMassUnit_density">
-                    <option value="g/mol">
-                      g/mol
-                    </option>
-                    <option value="kg/mol">
-                      kg/mol
-                    </option>
-                  </select>
-                </div>
-                <hr class="form-divider"/>
-                <div class="input-with-unit">
-                  <label for="temperature_density">
-                    Sıcaklık (T):
-                  </label>
-                  <input id="temperature_density" min="0.000001" placeholder="Örn: 273.15 (Kelvin)" required="" step="any" type="number"/>
-                  <select id="temperatureUnit_density">
-                    <option value="K">
-                      Kelvin (K)
-                    </option>
-                    <option value="C">
-                      Santigrat (°C)
-                    </option>
-                    <option value="F">
-                      Fahrenhayt (°F)
-                    </option>
-                  </select>
-                </div>
-                <button type="submit">
-                  Yoğunluğu Hesapla
-                </button>
-              </form>
-              <div class="result-display" id="gasDensityResult">
-              </div>
-              <div class="calc-explanation">
-                <p>
-                  Bu hesaplayıcı, ideal gaz yasasının türetilmiş hali olan $ d = \frac{PM}{RT} $ formülünü kullanarak bir gazın yoğunluğunu hesaplar.
-                </p>
-                <ul>
-                  <li>
-                    <strong>
-                      d:
-                    </strong>
-                    Gaz yoğunluğu (g/L veya kg/m³)
-                  </li>
-                  <li>
-                    <strong>
-                      P:
-                    </strong>
-                    Gaz basıncı
-                  </li>
-                  <li>
-                    <strong>
-                      M:
-                    </strong>
-                    Gazın mol kütlesi
-                  </li>
-                  <li>
-                    <strong>
-                      R:
-                    </strong>
-                    İdeal gaz sabiti (seçilen birimlere göre değişir)
-                  </li>
-                  <li>
-                    <strong>
-                      T:
-                    </strong>
-                    Mutlak sıcaklık (Kelvin)
-                  </li>
-                </ul>
-                <p>
-                  Tüm birimleri doğru seçtiğinizden emin olun. Sıcaklık mutlaka Kelvin cinsinden girilmelidir (veya dönüştürülecektir).
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="calc-wrapper hidden-calc" id="calculator-idealGasLaw">
-            <h3>
-              <i class="fas fa-atom icon-small">
-              </i>
-              İdeal Gaz Yasası Parametrelerini Hesapla (PV=nRT)
-            </h3>
-            <div class="calculator-form-container">
-              <form id="idealGasLawForm">
-                <p>
-                  Bilinen üç değeri girip hesaplamak istediğiniz alanı boş bırakın.
-                </p>
-                <div class="input-with-unit">
-                  <label for="pressure_ideal">
-                    Basınç (P):
-                  </label>
-                  <input id="pressure_ideal" min="0" placeholder="Örn: 1" step="any" type="number"/>
-                  <select id="pressureUnit_ideal">
-                    <option value="atm">
-                      atm
-                    </option>
-                    <option value="kPa">
-                      kPa
-                    </option>
-                    <option value="mmHg">
-                      mmHg
-                    </option>
-                    <option value="psi">
-                      psi
-                    </option>
-                  </select>
-                </div>
-                <hr class="form-divider"/>
-                <div class="input-with-unit">
-                  <label for="volume_ideal">
-                    Hacim (V):
-                  </label>
-                  <input id="volume_ideal" min="0" placeholder="Örn: 22.4" step="any" type="number"/>
-                  <select id="volumeUnit_ideal">
-                    <option value="L">
-                      Litre (L)
-                    </option>
-                    <option value="m3">
-                      Metreküp (m³)
-                    </option>
-                    <option value="mL">
-                      Mililitre (mL)
-                    </option>
-                    <option value="cm3">
-                      Santimetreküp (cm³)
-                    </option>
-                  </select>
-                </div>
-                <hr class="form-divider"/>
-                <div class="input-with-unit">
-                  <label for="moles_ideal">
-                    Mol Sayısı (n):
-                  </label>
-                  <input id="moles_ideal" min="0" placeholder="Örn: 1" step="any" type="number"/>
-                  <select id="molesUnit_ideal">
-                    <option value="mol">
-                      mol
-                    </option>
-                    <option value="mmol">
-                      mmol
-                    </option>
-                  </select>
-                </div>
-                <hr class="form-divider"/>
-                <div class="input-with-unit">
-                  <label for="temperature_ideal">
-                    Sıcaklık (T):
-                  </label>
-                  <input id="temperature_ideal" min="0" placeholder="Örn: 273.15" step="any" type="number"/>
-                  <select id="temperatureUnit_ideal">
-                    <option value="K">
-                      Kelvin (K)
-                    </option>
-                    <option value="C">
-                      Santigrat (°C)
-                    </option>
-                    <option value="F">
-                      Fahrenhayt (°F)
-                    </option>
-                  </select>
-                </div>
-                <button type="submit">
-                  Hesapla
-                </button>
-              </form>
-              <div class="result-display" id="idealGasLawResult">
-              </div>
-              <div class="calc-explanation">
-                <p>
-                  Bu hesaplayıcı, gazların dört temel parametresi arasındaki ilişkiyi açıklayan **İdeal Gaz Yasası** ($ PV=nRT $) formülünü kullanarak, bilinen üç değeri kullanarak dördüncü bilinmeyeni bulur.
-                </p>
-                <ul>
-                  <li>
-                    <strong>
-                      P:
-                    </strong>
-                    Basınç
-                  </li>
-                  <li>
-                    <strong>
-                      V:
-                    </strong>
-                    Hacim
-                  </li>
-                  <li>
-                    <strong>
-                      n:
-                    </strong>
-                    Mol sayısı
-                  </li>
-                  <li>
-                    <strong>
-                      R:
-                    </strong>
-                    İdeal gaz sabiti (seçilen birimlere göre otomatik ayarlanır)
-                  </li>
-                  <li>
-                    <strong>
-                      T:
-                    </strong>
-                    Mutlak sıcaklık (Kelvin)
-                  </li>
-                </ul>
-                <p>
-                  Lütfen hesaplamak istediğiniz tek bir alanı boş bırakın ve diğer üç değeri girin. Sıcaklık mutlaka Kelvin cinsinden olmalıdır (veya dönüştürülecektir).
+                  Bu dönüşüm, özellikle tıp ve biyokimya alanında elektrolit konsantrasyonlarını anlamak ve dozaj hesaplamaları yapmak için oldukça önemlidir.
                 </p>
               </div>
             </div>
@@ -729,65 +376,50 @@
       </section>
       <section class="info-section container">
         <h3>
-          Meq Nedir ve Neden Önemlidir?
+          Meq Nedir ve Neden Hayati Önem Taşır?
         </h3>
         <p>
-          **Milieşdeğer (mEq)**, bir çözeltideki bir maddenin kimyasal aktivitesini veya reaktif konsantrasyonunu ifade eden bir birimdir. Özellikle elektrolitlerin biyolojik sistemlerdeki (kan, idrar vb.) konsantrasyonlarını belirtmek için tıpta ve biyokimyada yaygın olarak kullanılır. Meq, maddenin mol kütlesini ve değerliliğini (iyonun yükünü) dikkate alarak, farklı maddelerin eşit kimyasal reaktiviteye sahip miktarlarını karşılaştırmaya olanak tanır.
+          **Milieşdeğer (mEq)**, bir maddenin çözelti içindeki kimyasal aktivitesini veya reaktif konsantrasyonunu ifade eden özel bir birimdir. Özellikle tıp ve biyokimya alanında, vücut sıvılarındaki **elektrolitlerin** (sodyum, potasyum, klorür gibi iyonlar) konsantrasyonlarını belirtmek için yaygın olarak kullanılır.
         </p>
         <p>
-          Örneğin, 1 mEq Na⁺ (sodyum iyonu) ve 1 mEq Ca²⁺ (kalsiyum iyonu) farklı kütlelere sahip olsalar da, kimyasal olarak eşit sayıda "eşdeğer" reaktif yüke sahiptirler. Bu, özellikle vücuttaki iyon dengesini anlamak ve düzeltmek için kritik öneme sahiptir.
+          Meq birimi, maddenin **mol kütlesini** (atom ağırlığı veya moleküler ağırlığı) ve **değerliğini** (iyonun yükünü) hesaba katar. Bu sayede, farklı kimyasal yapıya sahip iyonların "kimyasal olarak eşdeğer" miktarlarını karşılaştırmayı mümkün kılar. Örneğin, 1 mEq sodyum (Na⁺) ile 1 mEq kalsiyum (Ca²⁺) kütlece farklı olsa da, kimyasal reaksiyonlarda aynı oranda "eşdeğer" yüke sahiptirler.
         </p>
         <h4>
-          Meq Dönüşüm Formülü
+          Meq Neden Önemli?
         </h4>
         <p>
-          Meq'i kütle birimlerine dönüştürmek için aşağıdaki formül kullanılır:
-        </p>
-        <p class="formula-text">
-          $ \text{Kütle (mg)} = \text{Meq} \times \text{GMW (g/mol)} / \text{Değerlik (Z)} $
-        </p>
-        <p class="formula-text">
-          $ \text{Meq} = \text{Kütle (mg)} / (\text{GMW (g/mol)} / \text{Değerlik (Z)}) $
+          Vücudumuzdaki tüm biyolojik süreçler, hassas bir elektrolit dengesine bağlıdır. Kalp atışından sinir sinyallerine, kas fonksiyonlarından sıvı dengesine kadar her şeyde elektrolitler kilit rol oynar. Bu nedenle:
         </p>
         <ul>
           <li>
-            $ \mathbf{Meq} $: Milieşdeğer cinsinden madde miktarı.
+            **Dozaj Hesaplamaları:** Hastalara verilecek ilaçların veya intravenöz sıvıların (serumlar) içindeki elektrolit miktarlarının doğru bir şekilde ayarlanması için Meq hesaplamaları hayati öneme sahiptir. Yanlış dozlar ciddi sağlık sorunlarına yol açabilir.
           </li>
           <li>
-            $ \mathbf{Kütle (mg)} $: Maddenin miligram cinsinden kütlesi.
+            **Teşhis ve Tedavi:** Kan testlerinde ölçülen elektrolit seviyeleri (mEq/L cinsinden), böbrek hastalıkları, kalp yetmezliği, dehidrasyon gibi birçok durumu teşhis etmek ve uygun tedaviyi belirlemek için kullanılır.
           </li>
           <li>
-            $ \mathbf{GMW (g/mol)} $: Maddenin gram cinsinden mol kütlesi (GMW = Gram Moleküler Ağırlık).
-          </li>
-          <li>
-            $ \mathbf{Z} $: Maddenin değerliği veya iyonun yükü. (Örn: Na⁺ için Z=1, Ca²⁺ için Z=2).
+            **Araştırma ve Geliştirme:** Yeni ilaçlar geliştirilirken veya biyokimyasal reaksiyonlar incelenirken, maddelerin konsantrasyonlarını Meq cinsinden ifade etmek, bilimsel karşılaştırmalar ve standartlaşma için kolaylık sağlar.
           </li>
         </ul>
         <h4>
-          Uygulama Alanları
+          Meq Nasıl Çalışır? Basit Bir Anlatım
         </h4>
+        <p>
+          Meq'i anlamanın en basit yolu, bir iyonun taşıdığı "kimyasal kapasiteyi" ölçtüğünü düşünmektir. Örneğin:
+        </p>
         <ul>
           <li>
-            <strong>
-              Tıp ve Eczacılık:
-            </strong>
-            İntravenöz sıvılar, ilaç dozajları ve elektrolit replasmanlarının hesaplanması.
+            **Sodyum (Na⁺):** Yükü +1'dir (Değerlik = 1). Bu, her bir sodyum iyonunun 1 birim kimyasal "yük" taşıdığı anlamına gelir.
           </li>
           <li>
-            <strong>
-              Biyokimya ve Klinik Kimya:
-            </strong>
-            Kan testlerindeki elektrolit seviyelerinin yorumlanması (örn. sodyum, potasyum, klorür).
-          </li>
-          <li>
-            <strong>
-              Su Arıtma ve Çevre Mühendisliği:
-            </strong>
-            Suyun sertliği veya iyonik denge hesaplamaları.
+            **Kalsiyum (Ca²⁺):** Yükü +2'dir (Değerlik = 2). Bu, her bir kalsiyum iyonunun 2 birim kimyasal "yük" taşıdığı anlamına gelir.
           </li>
         </ul>
+        <p>
+          Bu nedenle, aynı kimyasal "gücü" elde etmek için daha az kalsiyum iyonuna ihtiyaç duyarsınız çünkü her biri daha fazla yük taşır. Meq birimi bu farklılıkları normalize ederek, farklı iyonların "etkin" miktarlarını karşılaştırmamızı sağlar.
+        </p>
         <p class="disclaimer-text">
-          Bu hesaplayıcı, standart kimyasal dönüşüm formüllerine dayanmaktadır. Hesaplamalarınızda doğru mol kütlesi ve değerlik bilgilerini kullandığınızdan emin olun. Özellikle tıbbi uygulamalarda, profesyonel tavsiye veya doğrulama her zaman önerilir.
+          Bu hesaplayıcı, genel bilgi amaçlıdır ve standart kimyasal dönüşüm formüllerine dayanır. Özellikle tıbbi uygulamalarda, her zaman bir sağlık profesyonelinin tavsiyesi ve doğrulaması esastır. Hesaplamalarınızda kullandığınız mol kütlesi ve değerlik bilgilerinin doğruluğundan emin olun.
         </p>
       </section>
     </main>
@@ -811,14 +443,12 @@
             const headerPlaceholder = document.getElementById('header-placeholder');
             if (headerPlaceholder) {
               headerPlaceholder.innerHTML = data;
-
-              // Yüklenen header HTML'i içindeki scripti bul ve çalıştır
               const scriptElement = headerPlaceholder.querySelector('script');
               if (scriptElement) {
                 const newScript = document.createElement('script');
-                newScript.textContent = scriptElement.textContent; // innerText yerine textContent daha güvenli
+                newScript.textContent = scriptElement.textContent;
                 document.body.appendChild(newScript);
-                scriptElement.remove(); // Orijinal script etiketini kaldır (DOM'dan)
+                scriptElement.remove();
               }
             }
           })
@@ -836,7 +466,6 @@
             const footerPlaceholder = document.getElementById('footer-placeholder');
             if (footerPlaceholder) {
               footerPlaceholder.innerHTML = data;
-              // Placeholder div'ini semantik bir <footer> etiketiyle değiştir
               const tempDiv = document.createElement('div');
               tempDiv.innerHTML = data;
               const footerElement = tempDiv.querySelector('footer');
@@ -850,380 +479,45 @@
     </script>
     <script>
       document.addEventListener('DOMContentLoaded', function() {
-        // Dil kontrolü: URL'de '/en/' varsa İngilizce, yoksa Türkçe varsayalım
+        // Dil kontrolü
         const isEnglishPage = window.location.pathname.startsWith('/en/');
 
         // Metinleri dile göre tanımlayan bir obje
         const texts = {
           tr: {
-            // Genel
-            calculateButton: 'Hesapla',
             convertButton: 'Dönüştür',
             invalidInput: 'Lütfen tüm alanlara geçerli değerler girin.',
             errorZeroValue: 'Değer sıfır veya negatif olamaz.',
-            errorEmptyField: 'Lütfen hesaplamak istediğiniz alanı boş bırakın ve diğer üç değeri girin.',
-            errorMultipleEmptyFields: 'Lütfen sadece bir alanı boş bırakın.',
-            resultPrefix: 'Sonuç:',
-            // Gaz Yoğunluğu Hesaplama
-            gasDensityTitle: 'Gaz Yoğunluğunu Hesapla (d=PM/RT)',
-            pressureLabel: 'Basınç (P):',
-            molarMassLabel: 'Mol Kütlesi (M):',
-            temperatureLabel: 'Sıcaklık (T):',
-            gasDensityResultLabel: 'Gaz Yoğunluğu:',
-            // İdeal Gaz Yasası Parametrelerini Hesapla
-            idealGasLawTitle: 'İdeal Gaz Yasası Parametrelerini Hesapla (PV=nRT)',
-            volumeLabel: 'Hacim (V):',
-            molesLabel: 'Mol Sayısı (n):',
-            calculatedPressure: 'Hesaplanan Basınç:',
-            calculatedVolume: 'Hesaplanan Hacim:',
-            calculatedMoles: 'Hesaplanan Mol Sayısı:',
-            calculatedTemperature: 'Hesaplanan Sıcaklık:',
-            // Meq Dönüştürücü
-            meqConverterTitle: 'Meq Dönüştürücü',
-            meqValueLabel: 'Meq/L Değeri:',
-            molarMassMeqLabel: 'Mol Kütlesi (GMW):',
-            valenceLabel: 'Değerlik (Z):',
             resultMgPerL: 'Miligram/Litre (mg/L):',
             resultGPerL: 'Gram/Litre (g/L):',
-            // Birimler
-            unit_g_L: 'g/L',
-            unit_kg_m3: 'kg/m³',
-            unit_atm: 'atm',
-            unit_kPa: 'kPa',
-            unit_mmHg: 'mmHg',
-            unit_psi: 'psi',
-            unit_L: 'Litre (L)',
-            unit_m3: 'Metreküp (m³)',
-            unit_mL: 'Mililitre (mL)',
-            unit_cm3: 'Santimetreküp (cm³)',
-            unit_mol: 'mol',
-            unit_mmol: 'mmol',
-            unit_K: 'Kelvin (K)',
-            unit_C: 'Santigrat (°C)',
-            unit_F: 'Fahrenhayt (°F)',
-            unit_g_mol: 'g/mol',
-            unit_kg_mol: 'kg/mol',
             unit_meq_L: 'mEq/L',
             unit_mg_L: 'mg/L',
+            unit_g_L: 'g/L',
+            unit_g_mol: 'g/mol',
             unit_mg_mol: 'mg/mol'
           },
           en: {
-            // General
-            calculateButton: 'Calculate',
             convertButton: 'Convert',
             invalidInput: 'Please enter valid values for all fields.',
             errorZeroValue: 'Value cannot be zero or negative.',
-            errorEmptyField: 'Please leave only the field you want to calculate blank and enter the other three values.',
-            errorMultipleEmptyFields: 'Please leave only one field blank.',
-            resultPrefix: 'Result:',
-            // Gas Density Calculation
-            gasDensityTitle: 'Calculate Gas Density (d=PM/RT)',
-            pressureLabel: 'Pressure (P):',
-            molarMassLabel: 'Molar Mass (M):',
-            temperatureLabel: 'Temperature (T):',
-            gasDensityResultLabel: 'Gas Density:',
-            // Calculate Ideal Gas Law Parameters
-            idealGasLawTitle: 'Calculate Ideal Gas Law Parameters (PV=nRT)',
-            volumeLabel: 'Volume (V):',
-            molesLabel: 'Moles (n):',
-            calculatedPressure: 'Calculated Pressure:',
-            calculatedVolume: 'Calculated Volume:',
-            calculatedMoles: 'Calculated Moles:',
-            calculatedTemperature: 'Calculated Temperature:',
-            // Meq Converter
-            meqConverterTitle: 'Meq Converter',
-            meqValueLabel: 'Meq/L Value:',
-            molarMassMeqLabel: 'Molar Mass (GMW):',
-            valenceLabel: 'Valence (Z):',
             resultMgPerL: 'Milligrams/Liter (mg/L):',
             resultGPerL: 'Grams/Liter (g/L):',
-            // Units
-            unit_g_L: 'g/L',
-            unit_kg_m3: 'kg/m³',
-            unit_atm: 'atm',
-            unit_kPa: 'kPa',
-            unit_mmHg: 'mmHg',
-            unit_psi: 'psi',
-            unit_L: 'Liter (L)',
-            unit_m3: 'Cubic Meter (m³)',
-            unit_mL: 'Milliliter (mL)',
-            unit_cm3: 'Cubic Centimeter (cm³)',
-            unit_mol: 'mol',
-            unit_mmol: 'mmol',
-            unit_K: 'Kelvin (K)',
-            unit_C: 'Celsius (°C)',
-            unit_F: 'Fahrenheit (°F)',
-            unit_g_mol: 'g/mol',
-            unit_kg_mol: 'kg/mol',
             unit_meq_L: 'mEq/L',
             unit_mg_L: 'mg/L',
+            unit_g_L: 'g/L',
+            unit_g_mol: 'g/mol',
             unit_mg_mol: 'mg/mol'
           }
         };
 
-        // Aktif dil metinlerini seç
         const currentTexts = isEnglishPage ? texts.en : texts.tr;
-
-        // Hesaplayıcı butonları ve içerikleri
-        const calcButtons = document.querySelectorAll('.calc-type-button');
-        const calcWrappers = document.querySelectorAll('.calc-wrapper');
-
-        // Function to show/hide calculators
-        function showCalculator(calcType) {
-          calcWrappers.forEach(wrapper => {
-            if (wrapper.id === `calculator-${calcType}`) {
-              wrapper.classList.remove('hidden-calc');
-            } else {
-              wrapper.classList.add('hidden-calc');
-            }
-          });
-
-          calcButtons.forEach(button => {
-            if (button.dataset.calcType === calcType) {
-              button.classList.add('active');
-            } else {
-              button.classList.remove('active');
-            }
-          });
-        }
-
-        // Add click event to buttons
-        calcButtons.forEach(button => {
-          button.addEventListener('click', function() {
-            const calcType = this.dataset.calcType;
-            showCalculator(calcType);
-            // MathJax'i güncelle (eğer formül görünür hale gelirse)
-            if (typeof MathJax !== 'undefined') {
-              MathJax.typeset();
-            }
-          });
-        });
-
-        // Sayfa yüklendiğinde varsayılan olarak Meq dönüştürücüyü göster
-        showCalculator('meqConverter');
-
-        // MathJax yüklemesini de tetikle
-        if (typeof MathJax !== 'undefined') {
-          MathJax.typesetPromise().then(() => {
-            console.log("MathJax typeset complete for initial load.");
-          }).catch((err) => console.error("MathJax typeset error on initial load:", err));
-        }
-
-        // --- Birim Dönüşüm Sabitleri ---
-        // Kelvin'e dönüştürme
-        const TEMP_TO_K = {
-          'K': temp => temp,
-          'C': temp => temp + 273.15,
-          'F': temp => (temp - 32) * 5 / 9 + 273.15
-        };
-        // kg/mol'e dönüştürme
-        const MOLAR_MASS_TO_KG_MOL = {
-          'g/mol': molMass => molMass / 1000,
-          'kg/mol': molMass => molMass
-        };
-        // Basınç dönüştürme (kPa'ya)
-        const PRESSURE_TO_KPA = {
-          'atm': 101.325,
-          'kPa': 1,
-          'mmHg': 0.133322,
-          'psi': 6.89476
-        };
-        // Hacim dönüştürme (m³'e)
-        const VOLUME_TO_M3 = {
-          'L': 0.001,
-          'm3': 1,
-          'mL': 0.000001,
-          'cm3': 0.000001
-        };
-        // Mol dönüştürme (mol'e)
-        const MOLES_TO_MOL = {
-          'mol': 1,
-          'mmol': 0.001
-        };
-
-        // İdeal Gaz Sabiti (R) (J/(mol·K) olarak alınır ve birim dönüşümleri ona göre yapılır)
-        const R_SI = 8.314462618; // J/(mol·K) veya m³·Pa/(mol·K)
-
-        // --- Gaz Yoğunluğu Hesapla (d=PM/RT) ---
-        const gasDensityForm = document.getElementById('gasDensityForm');
-        const gasDensityResultDiv = document.getElementById('gasDensityResult');
-
-        gasDensityForm.addEventListener('submit', function(event) {
-          event.preventDefault();
-
-          const pressure = parseFloat(document.getElementById('pressure_density').value);
-          const molarMass = parseFloat(document.getElementById('molarMass_density').value);
-          const temperature = parseFloat(document.getElementById('temperature_density').value);
-
-          const pressureUnit = document.getElementById('pressureUnit_density').value;
-          const molarMassUnit = document.getElementById('molarMassUnit_density').value;
-          const temperatureUnit = document.getElementById('temperatureUnit_density').value;
-
-          if (isNaN(pressure) || isNaN(molarMass) || isNaN(temperature) || pressure <= 0 || molarMass <= 0 || temperature <= 0) {
-            gasDensityResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
-            gasDensityResultDiv.style.display = 'block';
-            return;
-          }
-
-          // Birimleri SI'a dönüştür: Pa, kg/mol, K
-          const pressure_Pa = pressure * PRESSURE_TO_KPA[pressureUnit] * 1000; // kPa'dan Pa'ya
-          const molarMass_kg_mol = MOLAR_MASS_TO_KG_MOL[molarMassUnit](molarMass);
-          const temperature_K = TEMP_TO_K[temperatureUnit](temperature);
-
-          // Yoğunluk hesaplama: d = (P * M) / (R_SI * T)
-          const density_kg_m3 = (pressure_Pa * molarMass_kg_mol) / (R_SI * temperature_K);
-
-          // g/L birimine dönüştür (1 kg/m³ = 1 g/L)
-          const density_g_L = density_kg_m3;
-
-          gasDensityResultDiv.innerHTML = `
-                <p>${currentTexts.gasDensityResultLabel} <span class="result-value">${density_g_L.toFixed(4)}</span> ${currentTexts.unit_g_L}</p>
-                <p>${currentTexts.gasDensityResultLabel} <span class="result-value">${density_kg_m3.toFixed(4)}</span> ${currentTexts.unit_kg_m3}</p>
-            `;
-          gasDensityResultDiv.style.display = 'block';
-        });
-
-        // --- İdeal Gaz Yasası Parametrelerini Hesapla (PV=nRT) ---
-        const idealGasLawForm = document.getElementById('idealGasLawForm');
-        const idealGasLawResultDiv = document.getElementById('idealGasLawResult');
-
-        idealGasLawForm.addEventListener('submit', function(event) {
-          event.preventDefault();
-
-          let pressure = parseFloat(document.getElementById('pressure_ideal').value);
-          let volume = parseFloat(document.getElementById('volume_ideal').value);
-          let moles = parseFloat(document.getElementById('moles_ideal').value);
-          let temperature = parseFloat(document.getElementById('temperature_ideal').value);
-
-          const pressureUnit = document.getElementById('pressureUnit_ideal').value;
-          const volumeUnit = document.getElementById('volumeUnit_ideal').value;
-          const molesUnit = document.getElementById('molesUnit_ideal').value;
-          const temperatureUnit = document.getElementById('temperatureUnit_ideal').value;
-
-          // Boş bırakılan alanları kontrol et
-          let emptyCount = 0;
-          let missingField = '';
-
-          if (isNaN(pressure)) {
-            emptyCount++;
-            missingField = 'P';
-          } else if (pressure <= 0) {
-            idealGasLawResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroValue}</p>`;
-            idealGasLawResultDiv.style.display = 'block';
-            return;
-          }
-          if (isNaN(volume)) {
-            emptyCount++;
-            missingField = 'V';
-          } else if (volume <= 0) {
-            idealGasLawResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroValue}</p>`;
-            idealGasLawResultDiv.style.display = 'block';
-            return;
-          }
-          if (isNaN(moles)) {
-            emptyCount++;
-            missingField = 'n';
-          } else if (moles <= 0) {
-            idealGasLawResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroValue}</p>`;
-            idealGasLawResultDiv.style.display = 'block';
-            return;
-          }
-          if (isNaN(temperature)) {
-            emptyCount++;
-            missingField = 'T';
-          } else if (temperature <= 0) {
-            idealGasLawResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroValue}</p>`;
-            idealGasLawResultDiv.style.display = 'block';
-            return;
-          }
-
-          if (emptyCount === 0) {
-            idealGasLawResultDiv.innerHTML = `<p class="error">${currentTexts.errorEmptyField}</p>`;
-            idealGasLawResultDiv.style.display = 'block';
-            return;
-          }
-          if (emptyCount > 1) {
-            idealGasLawResultDiv.innerHTML = `<p class="error">${currentTexts.errorMultipleEmptyFields}</p>`;
-            idealGasLawResultDiv.style.display = 'block';
-            return;
-          }
-
-          // Birimleri SI'a dönüştür: Pa, m³, mol, K
-          pressure = isNaN(pressure) ? null : pressure * PRESSURE_TO_KPA[pressureUnit] * 1000; // kPa'dan Pa'ya
-          volume = isNaN(volume) ? null : volume * VOLUME_TO_M3[volumeUnit];
-          moles = isNaN(moles) ? null : moles * MOLES_TO_MOL[molesUnit];
-          temperature = isNaN(temperature) ? null : TEMP_TO_K[temperatureUnit](temperature);
-
-          let resultValue, resultUnit;
-
-          switch (missingField) {
-            case 'P':
-              // P = nRT / V
-              if (volume === 0) {
-                idealGasLawResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroValue}</p>`;
-                idealGasLawResultDiv.style.display = 'block';
-                return;
-              }
-              resultValue = (moles * R_SI * temperature) / volume;
-              // Sonucu orijinal basınç birimine dönüştür
-              resultValue /= (PRESSURE_TO_KPA[pressureUnit] * 1000); // Pa'dan istenen birime
-              resultUnit = currentTexts[`unit_${pressureUnit}`];
-              idealGasLawResultDiv.innerHTML = `<p>${currentTexts.calculatedPressure} <span class="result-value">${resultValue.toFixed(4)}</span> ${resultUnit}</p>`;
-              break;
-            case 'V':
-              // V = nRT / P
-              if (pressure === 0) {
-                idealGasLawResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroValue}</p>`;
-                idealGasLawResultDiv.style.display = 'block';
-                return;
-              }
-              resultValue = (moles * R_SI * temperature) / pressure;
-              // Sonucu orijinal hacim birimine dönüştür
-              resultValue /= VOLUME_TO_M3[volumeUnit]; // m³'den istenen birime
-              resultUnit = currentTexts[`unit_${volumeUnit}`];
-              idealGasLawResultDiv.innerHTML = `<p>${currentTexts.calculatedVolume} <span class="result-value">${resultValue.toFixed(4)}</span> ${resultUnit}</p>`;
-              break;
-            case 'n':
-              // n = PV / RT
-              if (temperature === 0) {
-                idealGasLawResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroValue}</p>`;
-                idealGasLawResultDiv.style.display = 'block';
-                return;
-              }
-              resultValue = (pressure * volume) / (R_SI * temperature);
-              // Sonucu orijinal mol birimine dönüştür
-              resultValue /= MOLES_TO_MOL[molesUnit];
-              resultUnit = currentTexts[`unit_${molesUnit}`];
-              idealGasLawResultDiv.innerHTML = `<p>${currentTexts.calculatedMoles} <span class="result-value">${resultValue.toFixed(4)}</span> ${resultUnit}</p>`;
-              break;
-            case 'T':
-              // T = PV / nR
-              if (moles === 0 || pressure === 0) { // Pressure check for specific R constant selection logic that might use it
-                idealGasLawResultDiv.innerHTML = `<p class="error">${currentTexts.errorZeroValue}</p>`;
-                idealGasLawResultDiv.style.display = 'block';
-                return;
-              }
-              resultValue = (pressure * volume) / (moles * R_SI);
-              // Sonucu orijinal sıcaklık birimine dönüştür
-              let finalTempUnit = temperatureUnit;
-              if (finalTempUnit === 'C') {
-                resultValue = resultValue - 273.15;
-              } else if (finalTempUnit === 'F') {
-                resultValue = (resultValue - 273.15) * 9 / 5 + 32;
-              }
-              resultUnit = currentTexts[`unit_${finalTempUnit}`];
-              idealGasLawResultDiv.innerHTML = `<p>${currentTexts.calculatedTemperature} <span class="result-value">${resultValue.toFixed(4)}</span> ${resultUnit}</p>`;
-              break;
-          }
-          idealGasLawResultDiv.style.display = 'block';
-        });
 
         // --- Meq Dönüştürücü Hesaplama ---
         const meqConverterForm = document.getElementById('meqConverterForm');
         const meqResultDiv = document.getElementById('meqResult');
 
         meqConverterForm.addEventListener('submit', function(event) {
-          event.preventDefault();
+          event.preventDefault(); // Formun varsayılan submit davranışını engelle
 
           const meqValue = parseFloat(document.getElementById('meqValue').value);
           const molarMassMeq = parseFloat(document.getElementById('molarMass_meq').value);
@@ -1231,38 +525,41 @@
 
           const molarMassUnitMeq = document.getElementById('molarMassUnit_meq').value;
 
+          // Giriş değerlerinin geçerliliğini kontrol et
           if (isNaN(meqValue) || isNaN(molarMassMeq) || isNaN(valenceMeq) || meqValue < 0 || molarMassMeq <= 0 || valenceMeq <= 0) {
             meqResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
             meqResultDiv.style.display = 'block';
             return;
           }
 
-          // Mol kütlesini g/mol'e dönüştür
+          // Mol kütlesini g/mol'e dönüştürerek tutarlılığı sağla
           let molarMass_g_mol;
           if (molarMassUnitMeq === 'mg/mol') {
             molarMass_g_mol = molarMassMeq / 1000;
-          } else { // g/mol
+          } else { // 'g/mol'
             molarMass_g_mol = molarMassMeq;
           }
 
           // mg/L cinsinden sonucu hesapla
-          // Formül: mEq/L * (GMW (g/mol) / Değerlik) = mg/L
-          // Aslında mg/L = mEq/L * (GMW / Değerlik) / 1000  (çünkü GMW g/mol cinsinden, Meq/L'den mg/L'ye geçişte 1000 ile çarpmak gerekir, Meq tanımı gereği)
-          // 1 Meq = 1 millimol / değerlik => mg/L = (mEq/L * GMW / Z) / 1000
-          // Hayır, direkt mg/L = mEq/L * (GMW / Z) 'dir çünkü Meq zaten mol kütlesini dikkate almıştır, millieşdeğer tanımı budur.
-          // 1 mEq = (GMW in mg) / Z
-          // Yani (mEq/L) = (mg/L) / (GMW in mg / Z)
-          // Dolayısıyla (mg/L) = (mEq/L) * (GMW in mg / Z)
-          // GMW genellikle g/mol olarak verildiği için, mg/L = (mEq/L) * (GMW_g/mol / Z) * 1000
+          // Formül: Kütle (mg/L) = (Meq/L * GMW (g/mol) * 1000) / Değerlik (Z)
+          // Burada GMW (g/mol) olduğu için mg/L sonucunu almak için 1000 ile çarparız.
           const result_mg_L = (meqValue * molarMass_g_mol * 1000) / valenceMeq;
-          const result_g_L = result_mg_L / 1000;
+          const result_g_L = result_mg_L / 1000; // mg/L'den g/L'ye dönüşüm
 
+          // Sonuçları göster
           meqResultDiv.innerHTML = `
                 <p>${currentTexts.resultMgPerL} <span class="result-value">${result_mg_L.toFixed(4)}</span> ${currentTexts.unit_mg_L}</p>
                 <p>${currentTexts.resultGPerL} <span class="result-value">${result_g_L.toFixed(4)}</span> ${currentTexts.unit_g_L}</p>
             `;
           meqResultDiv.style.display = 'block';
         });
+
+        // MathJax'i yalnızca açıklama bölümündeki formüller için yükle
+        if (typeof MathJax !== 'undefined') {
+          MathJax.typesetPromise().then(() => {
+            console.log("MathJax typeset complete for initial load.");
+          }).catch((err) => console.error("MathJax typeset error on initial load:", err));
+        }
       });
     </script>
   </body>
