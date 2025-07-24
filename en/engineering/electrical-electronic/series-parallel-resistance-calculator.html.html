@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>
+      Series and Parallel Resistance Calculator - Hesapkolik
+    </title>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    <link href="/css/header.css" rel="stylesheet"/>
+    <meta content="Easily calculate the equivalent resistance of series and parallel resistors in electrical circuits. Ideal for electronics and physics studies." name="description"/>
+    <meta content="series resistance, parallel resistance, resistance calculation, equivalent resistance, electronics, electrical circuit, ohm, hesapkolik resistance" name="keywords"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <link href="../../css/style.css" rel="stylesheet"/>
+    <script async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    <style>
+      /* General Style Settings */
+      body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f7f6;
+        color: #333;
+      }
+
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .hero-section {
+        background-color: #34495e;
+        color: white;
+        padding: 80px 0;
+        text-align: center;
+      }
+
+      .hero-section h1 {
+        font-size: 3em;
+        margin-bottom: 20px;
+      }
+
+      .hero-section p {
+        font-size: 1.2em;
+        opacity: 0.9;
+      }
+
+      .calculator-section {
+        padding: 50px 0;
+        text-align: center;
+        background-color: #eaf0f0;
+        border-bottom: 1px solid #dee7e7;
+      }
+
+      .calculator-section h2 {
+        margin-bottom: 30px;
+        color: #2c3e50;
+        font-size: 2.2em;
+      }
+
+      .calc-wrapper {
+        background-color: #ffffff;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        max-width: 650px;
+        margin: 30px auto;
+        text-align: left;
+      }
+
+      .calc-wrapper h3 {
+        font-size: 2em;
+        color: #e74c3c;
+        margin-bottom: 25px;
+        text-align: center;
+      }
+
+      .calc-wrapper label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555;
+      }
+
+      .calc-wrapper input[type="number"],
+      .calc-wrapper select {
+        width: 100%;
+        padding: 12px 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1em;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease;
+      }
+
+      .calc-wrapper input[type="number"]:focus,
+      .calc-wrapper select:focus {
+        border-color: #3498db;
+        outline: none;
+      }
+
+      .calc-wrapper input.error {
+        border-color: red !important;
+      }
+
+      .result-display {
+        margin-top: 25px;
+        font-size: 1.1em;
+        font-weight: 600;
+        color: #2c3e50;
+        text-align: center;
+        min-height: 1.8em;
+        background-color: #ecf0f1;
+        padding: 15px 20px;
+        border-radius: 8px;
+        border: 1px solid #dcdfe4;
+      }
+
+      .result-display .result-value {
+        color: #e74c3c;
+        font-weight: 700;
+        font-size: 1.3em;
+      }
+
+      .result-display .error {
+        color: #e74c3c;
+        font-size: 0.8em;
+      }
+
+      .calc-explanation {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        color: #666;
+        line-height: 1.6;
+        text-align: justify;
+      }
+
+      .calc-explanation strong {
+        color: #333;
+      }
+
+      .calc-explanation p:last-child {
+        margin-bottom: 0;
+      }
+
+      .info-section {
+        padding: 40px 0;
+        background-color: #ffffff;
+        margin-top: 40px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+      }
+
+      .info-section h3 {
+        color: #e74c3c;
+        font-size: 1.8em;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .info-section p {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 15px;
+        padding: 0 20px;
+        text-align: justify;
+      }
+
+      .info-section ul {
+        list-style-type: disc;
+        margin: 0 20px 20px 40px;
+        color: #666;
+      }
+
+      .info-section ul li {
+        margin-bottom: 10px;
+        line-height: 1.5;
+      }
+
+      .info-section strong {
+        color: #333;
+      }
+
+      /* Responsive Adjustments */
+      @media (max-width: 768px) {
+        .calc-wrapper {
+          padding: 30px 20px;
+          margin: 20px auto;
+        }
+
+        .calc-wrapper h3 {
+          font-size: 1.8em;
+        }
+
+        .result-display {
+          font-size: 1.4em;
+        }
+      }
+
+      @media (max-width: 480px) {
+        header nav ul {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        header nav ul li {
+          margin: 10px 0;
+        }
+      }
+
+      /* Calculate button style */
+      .calculator-form-container button {
+        background-color: #28a745; /* Green tone */
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.1em;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 10px;
+      }
+
+      .calculator-form-container button:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
+      }
+
+      .icon-small {
+        margin-right: 10px;
+        color: #3498db; /* Icon color */
+      }
+
+      .input-with-unit {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .input-with-unit label {
+        flex-basis: 100%;
+        margin-bottom: 5px;
+      }
+
+      .input-with-unit input[type="number"] {
+        flex-grow: 1;
+        margin-bottom: 0;
+      }
+
+      .input-with-unit select {
+        flex-shrink: 0;
+        width: auto;
+        margin-bottom: 0;
+      }
+      
+      /* Specific styles for resistor inputs */
+      .resistor-input-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+      }
+      .resistor-input-group label {
+        flex-basis: auto;
+        margin-bottom: 0;
+        min-width: 70px;
+      }
+      .resistor-input-group input {
+        flex-grow: 1;
+        margin-bottom: 0 !important;
+      }
+      .resistor-input-group button {
+        background-color: #dc3545; /* Red tone */
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        flex-shrink: 0;
+        width: auto;
+        margin-top: 0 !important;
+      }
+      .resistor-input-group button:hover {
+        background-color: #c82333;
+      }
+      .add-resistor-button {
+        background-color: #007bff; /* Blue tone */
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 15px;
+        display: block;
+        width: auto;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .add-resistor-button:hover {
+        background-color: #0056b3;
+      }
+      .resistor-type-selection {
+        text-align: center;
+        margin-bottom: 25px;
+      }
+      .resistor-type-selection input[type="radio"] {
+        margin: 0 10px;
+      }
+      .resistor-type-selection label {
+        display: inline-block;
+        margin-right: 20px;
+        font-weight: 600;
+        color: #555;
+      }
+    </style>
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+    </script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+    </script>
+  </head>
+  <body>
+    <div id="header-placeholder">
+    </div>
+    <main>
+      <section class="hero-section">
+        <div class="container">
+          <h1>
+            Series and Parallel Resistance Calculator
+          </h1>
+          <p>
+            Easily calculate the equivalent resistance of series and parallel resistors in electrical circuits.
+          </p>
+        </div>
+      </section>
+      <section class="calculator-section">
+        <div class="container">
+          <h2>
+            Calculate Equivalent Resistance
+          </h2>
+          <div class="calc-wrapper active-calc" id="calculator-direnc">
+            <h3>
+              <i class="fas fa-ohm icon-small">
+              </i>
+              Calculate Equivalent Resistance
+            </h3>
+            <div class="calculator-form-container">
+              <form id="direncHesaplamaForm">
+                <div class="resistor-type-selection">
+                  <label>
+                    <input checked="" name="connectionType" type="radio" value="series"/>
+                    Series Connection
+                  </label>
+                  <label>
+                    <input name="connectionType" type="radio" value="parallel"/>
+                    Parallel Connection
+                  </label>
+                </div>
+                <div id="resistorInputs">
+                  <div class="input-with-unit resistor-input-group">
+                    <label for="resistor1">
+                      Resistor 1 (R₁):
+                    </label>
+                    <input id="resistor1" min="0.000001" placeholder="e.g., 100" required="" step="any" type="number"/>
+                    <select id="unit1">
+                      <option value="ohm">
+                        Ω
+                      </option>
+                      <option value="kohm">
+                        kΩ
+                      </option>
+                      <option value="mohm">
+                        MΩ
+                      </option>
+                    </select>
+                    <button class="remove-resistor-button" type="button">
+                      Remove
+                    </button>
+                  </div>
+                  <div class="input-with-unit resistor-input-group">
+                    <label for="resistor2">
+                      Resistor 2 (R₂):
+                    </label>
+                    <input id="resistor2" min="0.000001" placeholder="e.g., 200" required="" step="any" type="number"/>
+                    <select id="unit2">
+                      <option value="ohm">
+                        Ω
+                      </option>
+                      <option value="kohm">
+                        kΩ
+                      </option>
+                      <option value="mohm">
+                        MΩ
+                      </option>
+                    </select>
+                    <button class="remove-resistor-button" type="button">
+                      Remove
+                    </button>
+                  </div>
+                </div>
+                <button class="add-resistor-button" id="addResistor" type="button">
+                  <i class="fas fa-plus">
+                  </i>
+                  Add Resistor
+                </button>
+                <button type="submit">
+                  Calculate Equivalent Resistance
+                </button>
+              </form>
+              <div class="result-display" id="direncResult">
+              </div>
+              <div class="calc-explanation">
+                <p>
+                  Resistors in electrical circuits are components that oppose the flow of current. Resistors can be connected in series or parallel, and this connection type affects the **equivalent resistance** of the circuit. Equivalent resistance is the value of a single resistor that could replace all connected resistors while having the same effect.
+                </p>
+                <h4>
+                  Series Resistance Calculation
+                </h4>
+                <p>
+                  When resistors are connected in series, the total (equivalent) resistance of the circuit is found by simply adding the value of each resistor.
+                </p>
+                <p>
+                  Formula: **R_eq = R₁ + R₂ + R₃ + ... + Rₙ**
+                </p>
+                <p>
+                  Here, R_eq represents the total equivalent resistance, and R₁, R₂, ..., Rₙ represent the values of the individual resistors in the circuit.
+                </p>
+                <h4>
+                  Parallel Resistance Calculation
+                </h4>
+                <p>
+                  When resistors are connected in parallel, the reciprocal of the equivalent resistance (1/R_eq) is found by summing the reciprocals of each resistor (1/R₁). This applies to situations where current can flow through multiple paths.
+                </p>
+                <p>
+                  Formula: **1 / R_eq = 1 / R₁ + 1 / R₂ + 1 / R₃ + ... + 1 / Rₙ**
+                </p>
+                <p>
+                  Special case: For only two parallel resistors, a simpler formula can be used:
+                  <br/>
+                  **R_eq = (R₁ × R₂) / (R₁ + R₂)**
+                </p>
+                <p>
+                  Remember: In parallel connected resistors, the equivalent resistance will always be smaller than the value of the smallest resistor in the circuit.
+                </p>
+                <ul>
+                  <li>
+                    <strong>
+                      Resistance (R):
+                    </strong>
+                    Measures the opposition to the flow of electric current. Its unit is Ohm (Ω).
+                  </li>
+                  <li>
+                    <strong>
+                      Series Connection:
+                    </strong>
+                    Resistors are connected consecutively, along a single path.
+                  </li>
+                  <li>
+                    <strong>
+                      Parallel Connection:
+                    </strong>
+                    Resistors are connected across two common points, allowing current to flow through multiple paths.
+                  </li>
+                  <li>
+                    <strong>
+                      Equivalent Resistance (R_eq):
+                    </strong>
+                    The value of a single resistor that would have the same effect as all resistors in a circuit.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="info-section container">
+        <h3>
+          Resistors and Electrical Circuits
+        </h3>
+        <p>
+          In electricity and electronics, resistors are one of the fundamental building blocks of circuits. A resistor in a circuit is a component that opposes the flow of electric current, and according to Ohm's Law, it determines the relationship between current and voltage. Accurately calculating resistances is critically important both when designing new circuits and when analyzing existing ones.
+        </p>
+        <p>
+          Resistors are used for various purposes in electronic devices, such as limiting current, dividing voltage, filtering signals, and generating heat. We encounter resistors everywhere, from computers to mobile phones, from home appliances to industrial machinery.
+        </p>
+
+        <h4>
+          Series Connection: One Path, Total Resistance
+        </h4>
+        <p>
+          When resistors are connected in series, the current flows through all resistors along the same path. In this type of connection, the contribution of each resistor increases the equivalent resistance. It's like having consecutive narrowings in a pipeline; each narrowing creates an additional obstacle to the flow, increasing the total resistance. Therefore, to find the equivalent resistance of series-connected resistors, it is sufficient to simply sum all the resistance values.
+        </p>
+
+        <h4>
+          Parallel Connection: Multiple Paths, Decreasing Resistance
+        </h4>
+        <p>
+          When resistors are connected in parallel, the current can split and flow through different paths. This situation reduces the total resistance of the circuit because alternative paths for the current are created. You can think of it like multiple lanes on a highway; each additional lane allows traffic to flow more easily, reducing overall congestion (resistance). In parallel connections, the equivalent resistance will always be less than the value of the smallest individual resistor. This is because current tends to always choose the path of least resistance.
+        </p>
+
+        <h4>
+          Areas of Application
+        </h4>
+        <ul>
+          <li>
+            **Electronic Design:** Resistance calculations are indispensable for the basic design of any electronic circuit (e.g., LED drivers, audio amplifiers, sensor circuits).
+          </li>
+          <li>
+            **Power Distribution:** Used to calculate voltage drops and current limitations in electrical grids.
+          </li>
+          <li>
+            **Troubleshooting:** It is important to measure the total resistance and compare it with expected values to find a fault in a circuit.
+          </li>
+          <li>
+            **Education:** Forms the foundation of physics and electrical-electronics engineering courses.
+          </li>
+        </ul>
+        <p class="disclaimer-text">
+          This calculator is based on standard series and parallel resistance formulas. In real-world applications, factors such as wire resistance, temperature changes, and tolerance can affect the results. For precise applications, these factors should also be taken into consideration.
+        </p>
+      </section>
+    </main>
+    <div id="footer-placeholder">
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+        const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+        const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+        // Load Header
+        fetch(headerPath)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+          })
+          .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+              headerPlaceholder.innerHTML = data;
+              const scriptElement = headerPlaceholder.querySelector('script');
+              if (scriptElement) {
+                const newScript = document.createElement('script');
+                newScript.textContent = scriptElement.textContent;
+                document.body.appendChild(newScript);
+                scriptElement.remove();
+              }
+            }
+          })
+          .catch(error => console.error('Error loading header:', error));
+
+        // Load Footer
+        fetch(footerPath)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+          })
+          .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+              footerPlaceholder.innerHTML = data;
+              const tempDiv = document.createElement('div');
+              tempDiv.innerHTML = data;
+              const footerElement = tempDiv.querySelector('footer');
+              if (footerElement) {
+                footerPlaceholder.replaceWith(footerElement);
+              }
+            }
+          })
+          .catch(error => console.error('Error loading footer:', error));
+      });
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Check if the current page path indicates English (e.g., /en/...)
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        // Define texts based on language
+        const texts = {
+          tr: {
+            calculateButton: 'Eşdeğer Direnci Hesapla',
+            addResistor: 'Direnç Ekle',
+            removeResistor: 'Sil',
+            invalidInput: 'Lütfen tüm dirençler için geçerli ve pozitif değerler girin.',
+            errorZeroOrNegative: 'Direnç değeri sıfır veya negatif olamaz.',
+            errorMinResistors: 'Hesaplama için en az iki direnç girmelisiniz.',
+            resistorLabel: 'Direnç',
+            ohm: 'Ω',
+            kohm: 'kΩ',
+            mohm: 'MΩ',
+            seriesConnection: 'Seri Bağlantı',
+            parallelConnection: 'Paralel Bağlantı',
+            equivalentResistance: 'Eşdeğer Direnç:',
+          },
+          en: {
+            calculateButton: 'Calculate Equivalent Resistance',
+            addResistor: 'Add Resistor',
+            removeResistor: 'Remove',
+            invalidInput: 'Please enter valid and positive values for all resistors.',
+            errorZeroOrNegative: 'Resistor value cannot be zero or negative.',
+            errorMinResistors: 'You must enter at least two resistors for calculation.',
+            resistorLabel: 'Resistor',
+            ohm: 'Ω',
+            kohm: 'kΩ',
+            mohm: 'MΩ',
+            seriesConnection: 'Series Connection',
+            parallelConnection: 'Parallel Connection',
+            equivalentResistance: 'Equivalent Resistance:',
+          }
+        };
+
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        const direncHesaplamaForm = document.getElementById('direncHesaplamaForm');
+        const direncResultDiv = document.getElementById('direncResult');
+        const resistorInputsContainer = document.getElementById('resistorInputs');
+        const addResistorButton = document.getElementById('addResistor');
+        let resistorCount = 2; // Start with 2 resistors by default
+
+        // Unit conversion constant (converts everything to Ohms)
+        const UNIT_TO_OHM = {
+          'ohm': 1,
+          'kohm': 1000,
+          'mohm': 1000000
+        };
+
+        // Function to update UI elements based on language and resistor count
+        function updateUI() {
+          // Update resistor labels and visibility of remove buttons
+          resistorInputsContainer.querySelectorAll('.resistor-input-group').forEach((group, index) => {
+            group.querySelector('label').textContent = `${currentTexts.resistorLabel} ${index + 1} (R${index + 1}):`;
+            group.querySelector('input').id = `resistor${index + 1}`;
+            group.querySelector('select').id = `unit${index + 1}`;
+            // Update unit options text
+            const selectOptions = group.querySelectorAll('select option');
+            selectOptions[0].textContent = currentTexts.ohm;
+            selectOptions[1].textContent = currentTexts.kohm;
+            selectOptions[2].textContent = currentTexts.mohm;
+
+            if (index < 2) { // The first two resistors cannot be removed
+              group.querySelector('.remove-resistor-button').style.display = 'none';
+            } else {
+              group.querySelector('.remove-resistor-button').style.display = 'inline-block';
+            }
+          });
+          // Update Add Resistor button text
+          addResistorButton.querySelector('.fa-plus').nextSibling.textContent = ` ${currentTexts.addResistor}`;
+          // Update radio button labels
+          document.querySelector('input[name="connectionType"][value="series"]').nextSibling.textContent = currentTexts.seriesConnection;
+          document.querySelector('input[name="connectionType"][value="parallel"]').nextSibling.textContent = currentTexts.parallelConnection;
+          // Update main calculate button text
+          document.querySelector('#direncHesaplamaForm button[type="submit"]').textContent = currentTexts.calculateButton;
+        }
+
+        // Add Resistor Button Event Listener
+        addResistorButton.addEventListener('click', function() {
+          resistorCount++;
+          const newResistorGroup = document.createElement('div');
+          newResistorGroup.classList.add('input-with-unit', 'resistor-input-group');
+          newResistorGroup.innerHTML = `
+            <label for="resistor${resistorCount}">${currentTexts.resistorLabel} ${resistorCount} (R${resistorCount}):</label>
+            <input type="number" id="resistor${resistorCount}" min="0.000001" step="any" required placeholder="${currentTexts.ohm}">
+            <select id="unit${resistorCount}">
+              <option value="ohm">${currentTexts.ohm}</option>
+              <option value="kohm">${currentTexts.kohm}</option>
+              <option value="mohm">${currentTexts.mohm}</option>
+            </select>
+            <button type="button" class="remove-resistor-button">${currentTexts.removeResistor}</button>
+          `;
+          resistorInputsContainer.appendChild(newResistorGroup);
+          updateUI(); // Update UI for the newly added resistor
+        });
+
+        // Remove Resistor Button Event Listener (using event delegation)
+        resistorInputsContainer.addEventListener('click', function(event) {
+          if (event.target.classList.contains('remove-resistor-button')) {
+            if (resistorCount > 2) { // Must keep at least 2 resistors
+              event.target.closest('.resistor-input-group').remove();
+              resistorCount--;
+              updateUI(); // Update UI for remaining resistors
+            } else {
+              direncResultDiv.innerHTML = `<p class="error">${currentTexts.errorMinResistors}</p>`;
+              direncResultDiv.style.display = 'block';
+            }
+          }
+        });
+
+        // Update UI when connection type changes (e.g., from series to parallel)
+        document.querySelectorAll('input[name="connectionType"]').forEach(radio => {
+          radio.addEventListener('change', updateUI);
+        });
+
+        // Form Submission Event Listener
+        direncHesaplamaForm.addEventListener('submit', function(event) {
+          event.preventDefault();
+
+          const connectionType = document.querySelector('input[name="connectionType"]:checked').value;
+          const resistorInputs = resistorInputsContainer.querySelectorAll('.resistor-input-group');
+          let resistors = [];
+          let isValid = true;
+
+          resistorInputs.forEach((group) => {
+            const valueInput = group.querySelector('input[type="number"]');
+            const unitSelect = group.querySelector('select');
+
+            const resistance = parseFloat(valueInput.value);
+            const unit = unitSelect.value;
+
+            if (isNaN(resistance) || resistance <= 0) {
+              isValid = false;
+              valueInput.classList.add('error');
+            } else {
+              valueInput.classList.remove('error');
+              resistors.push(resistance * UNIT_TO_OHM[unit]); // Convert all values to Ohms
+            }
+          });
+
+          if (!isValid) {
+            direncResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            direncResultDiv.style.display = 'block';
+            return;
+          }
+
+          if (resistors.length < 2) {
+            direncResultDiv.innerHTML = `<p class="error">${currentTexts.errorMinResistors}</p>`;
+            direncResultDiv.style.display = 'block';
+            return;
+          }
+
+          let equivalentResistance;
+
+          if (connectionType === 'series') {
+            equivalentResistance = resistors.reduce((sum, current) => sum + current, 0);
+          } else { // parallel
+            let sumOfReciprocals = 0;
+            for (let i = 0; i < resistors.length; i++) {
+              if (resistors[i] === 0) { // Resistance cannot be zero in parallel connection
+                direncResultDiv.innerHTML = `<p class="error">Resistance value cannot be zero in parallel connection.</p>`;
+                direncResultDiv.style.display = 'block';
+                return;
+              }
+              sumOfReciprocals += (1 / resistors[i]);
+            }
+            equivalentResistance = 1 / sumOfReciprocals;
+          }
+
+          direncResultDiv.innerHTML = `
+            <p>${currentTexts.equivalentResistance} <span class="result-value">${equivalentResistance.toFixed(4)}</span> ${currentTexts.ohm}</p>
+          `;
+          direncResultDiv.style.display = 'block';
+        });
+
+        // Set initial UI based on language on page load
+        updateUI();
+
+        // Load MathJax for formulas in explanations (if present)
+        if (typeof MathJax !== 'undefined') {
+          MathJax.typesetPromise().then(() => {
+            console.log("MathJax typeset complete for initial load.");
+          }).catch((err) => console.error("MathJax typeset error on initial load:", err));
+        }
+      });
+    </script>
+  </body>
+</html>
