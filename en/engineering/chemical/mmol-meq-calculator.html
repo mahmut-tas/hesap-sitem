@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>
+      Meq Converter - Hesapkolik
+    </title>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    <link href="/css/header.css" rel="stylesheet"/>
+    <meta content="Convert Milliequivalents (Meq) to different density and molar mass units. A practical tool for your chemistry and medical calculations." name="description"/>
+    <meta content="Meq, milliequivalent, conversion, chemistry, medicine, calculation, molar mass, density, unit converter, hesapkolik meq" name="keywords"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <link href="../../css/style.css" rel="stylesheet"/>
+    <script async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    <style>
+      /* General Style Settings */
+      body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f7f6;
+        color: #333;
+      }
+
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .hero-section {
+        background-color: #34495e;
+        color: white;
+        padding: 80px 0;
+        text-align: center;
+      }
+
+      .hero-section h1 {
+        font-size: 3em;
+        margin-bottom: 20px;
+      }
+
+      .hero-section p {
+        font-size: 1.2em;
+        opacity: 0.9;
+      }
+
+      .calculator-section {
+        padding: 50px 0;
+        text-align: center;
+        background-color: #eaf0f0;
+        border-bottom: 1px solid #dee7e7;
+      }
+
+      .calculator-section h2 {
+        margin-bottom: 30px;
+        color: #2c3e50;
+        font-size: 2.2em;
+      }
+
+      .calc-wrapper {
+        background-color: #ffffff;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        max-width: 650px;
+        margin: 30px auto;
+        text-align: left;
+      }
+
+      .calc-wrapper h3 {
+        font-size: 2em;
+        color: #e74c3c;
+        margin-bottom: 25px;
+        text-align: center;
+      }
+
+      .calc-wrapper label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555;
+      }
+
+      .calc-wrapper input[type="number"],
+      .calc-wrapper select {
+        width: 100%;
+        padding: 12px 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1em;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease;
+      }
+
+      .calc-wrapper input[type="number"]:focus,
+      .calc-wrapper select:focus {
+        border-color: #3498db;
+        outline: none;
+      }
+
+      .calc-wrapper input.error {
+        border-color: red !important;
+      }
+
+      .result-display {
+        margin-top: 25px;
+        font-size: 1.1em;
+        font-weight: 600;
+        color: #2c3e50;
+        text-align: center;
+        min-height: 1.8em;
+        background-color: #ecf0f1;
+        padding: 15px 20px;
+        border-radius: 8px;
+        border: 1px solid #dcdfe4;
+      }
+
+      .result-display .result-value {
+        color: #e74c3c;
+        font-weight: 700;
+        font-size: 1.3em;
+      }
+
+      .result-display .error {
+        color: #e74c3c;
+        font-size: 0.8em;
+      }
+
+      .calc-explanation {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        color: #666;
+        line-height: 1.6;
+        text-align: justify;
+      }
+
+      .calc-explanation strong {
+        color: #333;
+      }
+
+      .calc-explanation p:last-child {
+        margin-bottom: 0;
+      }
+
+      .info-section {
+        padding: 40px 0;
+        background-color: #ffffff;
+        margin-top: 40px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+      }
+
+      .info-section h3 {
+        color: #e74c3c;
+        font-size: 1.8em;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .info-section p {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 15px;
+        padding: 0 20px;
+        text-align: justify;
+      }
+
+      .info-section ul {
+        list-style-type: disc;
+        margin: 0 20px 20px 40px;
+        color: #666;
+      }
+
+      .info-section ul li {
+        margin-bottom: 10px;
+        line-height: 1.5;
+      }
+
+      .info-section strong {
+        color: #333;
+      }
+
+      /* Responsive Adjustments */
+      @media (max-width: 768px) {
+        .calc-wrapper {
+          padding: 30px 20px;
+          margin: 20px auto;
+        }
+
+        .calc-wrapper h3 {
+          font-size: 1.8em;
+        }
+
+        .result-display {
+          font-size: 1.4em;
+        }
+      }
+
+      @media (max-width: 480px) {
+        header nav ul {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        header nav ul li {
+          margin: 10px 0;
+        }
+      }
+
+      /* Calculate button style */
+      .calculator-form-container button {
+        background-color: #28a745; /* Green tone */
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.1em;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 10px;
+      }
+
+      .calculator-form-container button:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
+      }
+
+      .icon-small {
+        margin-right: 10px;
+        color: #3498db; /* Icon color */
+      }
+
+      .input-with-unit {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .input-with-unit label {
+        flex-basis: 100%;
+        margin-bottom: 5px;
+      }
+
+      .input-with-unit input[type="number"] {
+        flex-grow: 1;
+        margin-bottom: 0;
+      }
+
+      .input-with-unit select {
+        flex-shrink: 0;
+        width: auto;
+        margin-bottom: 0;
+      }
+    </style>
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+    </script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+    </script>
+  </head>
+  <body>
+    <div id="header-placeholder">
+    </div>
+    <main>
+      <section class="hero-section">
+        <div class="container">
+          <h1>
+            Meq Converter
+          </h1>
+          <p>
+            Convert Milliequivalents (Meq) to other units for electrolyte concentrations and chemical calculations.
+          </p>
+        </div>
+      </section>
+      <section class="calculator-section">
+        <div class="container">
+          <h2>
+            Convert Meq Values to Different Units
+          </h2>
+          <div class="calc-wrapper active-calc" id="calculator-meqConverter">
+            <h3>
+              <i class="fas fa-flask icon-small">
+              </i>
+              Meq Converter
+            </h3>
+            <div class="calculator-form-container">
+              <form id="meqConverterForm">
+                <div class="input-with-unit">
+                  <label for="meqValue">
+                    Meq/L Value:
+                  </label>
+                  <input id="meqValue" min="0" placeholder="e.g., 140" required="" step="any" type="number"/>
+                  <select id="meqValueUnit">
+                    <option value="meq/L">
+                      mEq/L
+                    </option>
+                  </select>
+                </div>
+                <hr class="form-divider"/>
+                <div class="input-with-unit">
+                  <label for="molarMass_meq">
+                    Molar Mass (GMW):
+                  </label>
+                  <input id="molarMass_meq" min="0.000001" placeholder="e.g., 23 (for Na)" required="" step="any" type="number"/>
+                  <select id="molarMassUnit_meq">
+                    <option value="g/mol">
+                      g/mol
+                    </option>
+                    <option value="mg/mol">
+                      mg/mol
+                    </option>
+                  </select>
+                </div>
+                <hr class="form-divider"/>
+                <div class="input-with-unit">
+                  <label for="valence_meq">
+                    Valence (Z):
+                  </label>
+                  <input id="valence_meq" min="1" placeholder="e.g., 1 (for Na+, Cl-), 2 (for Ca2+, SO4 2-)" required="" step="1" type="number"/>
+                </div>
+                <button type="submit">
+                  Convert
+                </button>
+              </form>
+              <div class="result-display" id="meqResult">
+              </div>
+              <div class="calc-explanation">
+                <p>
+                  Converts Milliequivalents per liter (mEq/L) to milligrams per liter (mg/L) and grams per liter (g/L) using the substance's molar mass (GMW) and valence (Z).
+                </p>
+                <p>
+                  Formula: **Mass (mg/L) = (Meq/L × GMW (g/mol) × 1000) / Valence (Z)**
+                </p>
+                <ul>
+                  <li>
+                    <strong>
+                      Meq/L:
+                    </strong>
+                    Milliequivalents per liter. Expresses the chemical reactivity or ionic strength of a solution.
+                  </li>
+                  <li>
+                    <strong>
+                      GMW (Molar Mass):
+                    </strong>
+                    Gram molecular weight of the substance. Typically expressed in g/mol.
+                  </li>
+                  <li>
+                    <strong>
+                      Z (Valence):
+                    </strong>
+                    The charge of the ion or the number of electrons exchanged in a reaction. For example, Z=1 for sodium (Na⁺), Z=2 for calcium (Ca²⁺), and Z=3 for phosphate (PO₄³⁻).
+                  </li>
+                </ul>
+                <p>
+                  This conversion is particularly crucial in medicine and biochemistry for understanding electrolyte concentrations and making dosage calculations.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="info-section container">
+        <h3>
+          What is Meq and Why is it of Vital Importance?
+        </h3>
+        <p>
+          **Milliequivalent (mEq)** is a specific unit that expresses the chemical activity or reactive concentration of a substance in a solution. It is widely used in medicine and biochemistry to denote the concentrations of **electrolytes** (ions like sodium, potassium, and chloride) in body fluids.
+        </p>
+        <p>
+          The Meq unit takes into account the **molar mass** (atomic or molecular weight) and **valence** (the charge of the ion) of the substance. This enables the comparison of "chemically equivalent" amounts of ions with different chemical structures. For example, although 1 mEq of sodium (Na⁺) and 1 mEq of calcium (Ca²⁺) have different masses, they possess the same proportion of "equivalent" reactive charge chemically.
+        </p>
+        <h4>
+          Why is Meq Important?
+        </h4>
+        <p>
+          All biological processes in our bodies rely on a delicate electrolyte balance. From heartbeats to nerve signals, muscle function to fluid balance, electrolytes play a key role in everything. Therefore:
+        </p>
+        <ul>
+          <li>
+            **Dosage Calculations:** Meq calculations are vital for accurately adjusting the amounts of electrolytes in medications or intravenous fluids (serums) administered to patients. Incorrect doses can lead to serious health problems.
+          </li>
+          <li>
+            **Diagnosis and Treatment:** Electrolyte levels (in mEq/L) measured in blood tests are used to diagnose many conditions such as kidney diseases, heart failure, and dehydration, and to determine appropriate treatment.
+          </li>
+          <li>
+            **Research and Development:** When developing new drugs or studying biochemical reactions, expressing substance concentrations in Meq facilitates scientific comparisons and standardization.
+          </li>
+        </ul>
+        <h4>
+          How Does Meq Work? A Simple Explanation
+        </h4>
+        <p>
+          The simplest way to understand Meq is to think of it as measuring the "chemical capacity" carried by an ion. For example:
+        </p>
+        <ul>
+          <li>
+            **Sodium (Na⁺):** Its charge is +1 (Valence = 1). This means each sodium ion carries 1 unit of chemical "charge."
+          </li>
+          <li>
+            **Calcium (Ca²⁺):** Its charge is +2 (Valence = 2). This means each calcium ion carries 2 units of chemical "charge."
+          </li>
+        </ul>
+        <p>
+          Therefore, you need fewer calcium ions to achieve the same chemical "power" because each carries more charge. The Meq unit normalizes these differences, allowing us to compare the "effective" amounts of different ions.
+        </p>
+        <p class="disclaimer-text">
+          This calculator is for general informational purposes only and is based on standard chemical conversion formulas. Especially in medical applications, professional advice or verification is always recommended. Ensure the accuracy of the molar mass and valence information you use in your calculations.
+        </p>
+      </section>
+    </main>
+    <div id="footer-placeholder">
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+        const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+        const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+        // Load Header
+        fetch(headerPath)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+          })
+          .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+              headerPlaceholder.innerHTML = data;
+              const scriptElement = headerPlaceholder.querySelector('script');
+              if (scriptElement) {
+                const newScript = document.createElement('script');
+                newScript.textContent = scriptElement.textContent;
+                document.body.appendChild(newScript);
+                scriptElement.remove();
+              }
+            }
+          })
+          .catch(error => console.error('Error loading header:', error));
+
+        // Load Footer
+        fetch(footerPath)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+          })
+          .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+              footerPlaceholder.innerHTML = data;
+              const tempDiv = document.createElement('div');
+              tempDiv.innerHTML = data;
+              const footerElement = tempDiv.querySelector('footer');
+              if (footerElement) {
+                footerPlaceholder.replaceWith(footerElement);
+              }
+            }
+          })
+          .catch(error => console.error('Error loading footer:', error));
+      });
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        const texts = {
+          tr: {
+            convertButton: 'Dönüştür',
+            invalidInput: 'Lütfen tüm alanlara geçerli değerler girin.',
+            errorZeroValue: 'Değer sıfır veya negatif olamaz.',
+            resultMgPerL: 'Miligram/Litre (mg/L):',
+            resultGPerL: 'Gram/Litre (g/L):',
+            unit_meq_L: 'mEq/L',
+            unit_mg_L: 'mg/L',
+            unit_g_L: 'g/L',
+            unit_g_mol: 'g/mol',
+            unit_mg_mol: 'mg/mol'
+          },
+          en: {
+            convertButton: 'Convert',
+            invalidInput: 'Please enter valid values for all fields.',
+            errorZeroValue: 'Value cannot be zero or negative.',
+            resultMgPerL: 'Milligrams/Liter (mg/L):',
+            resultGPerL: 'Grams/Liter (g/L):',
+            unit_meq_L: 'mEq/L',
+            unit_mg_L: 'mg/L',
+            unit_g_L: 'g/L',
+            unit_g_mol: 'g/mol',
+            unit_mg_mol: 'mg/mol'
+          }
+        };
+
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        const meqConverterForm = document.getElementById('meqConverterForm');
+        const meqResultDiv = document.getElementById('meqResult');
+
+        meqConverterForm.addEventListener('submit', function(event) {
+          event.preventDefault();
+
+          const meqValue = parseFloat(document.getElementById('meqValue').value);
+          const molarMassMeq = parseFloat(document.getElementById('molarMass_meq').value);
+          const valenceMeq = parseFloat(document.getElementById('valence_meq').value);
+
+          const molarMassUnitMeq = document.getElementById('molarMassUnit_meq').value;
+
+          if (isNaN(meqValue) || isNaN(molarMassMeq) || isNaN(valenceMeq) || meqValue < 0 || molarMassMeq <= 0 || valenceMeq <= 0) {
+            meqResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            meqResultDiv.style.display = 'block';
+            return;
+          }
+
+          let molarMass_g_mol;
+          if (molarMassUnitMeq === 'mg/mol') {
+            molarMass_g_mol = molarMassMeq / 1000;
+          } else {
+            molarMass_g_mol = molarMassMeq;
+          }
+
+          const result_mg_L = (meqValue * molarMass_g_mol * 1000) / valenceMeq;
+          const result_g_L = result_mg_L / 1000;
+
+          meqResultDiv.innerHTML = `
+                <p>${currentTexts.resultMgPerL} <span class="result-value">${result_mg_L.toFixed(4)}</span> ${currentTexts.unit_mg_L}</p>
+                <p>${currentTexts.resultGPerL} <span class="result-value">${result_g_L.toFixed(4)}</span> ${currentTexts.unit_g_L}</p>
+            `;
+          meqResultDiv.style.display = 'block';
+        });
+
+        if (typeof MathJax !== 'undefined') {
+          MathJax.typesetPromise().then(() => {
+            console.log("MathJax typeset complete for initial load.");
+          }).catch((err) => console.error("MathJax typeset error on initial load:", err));
+        }
+      });
+    </script>
+  </body>
+</html>
