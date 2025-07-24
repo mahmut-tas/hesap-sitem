@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klima Seçim Rehberi - İdeal Klima Nasıl Seçilir? | Hesapkolik Blog</title>
+    <meta name="description" content="Eviniz ve iş yeriniz için en doğru klimayı seçin! BTU hesaplama, klima tipleri, enerji verimliliği, montaj ipuçları ve sıkça sorulan sorularla kapsamlı rehber.">
+    <meta name="keywords" content="klima, klima seçimi, BTU hesaplama, inverter klima, split klima, salon tipi klima, kaset tipi klima, enerji verimliliği, EER, COP, SEER, SCOP, klima montajı, klima bakımı, hesapkolik klima">
+    
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+    
+    <style>
+        /* Hesapkolik ana stilini korumak için bazı temel CSS varsayılanlarını ayarladım */
+        body {
+            font-family: 'Poppins', sans-serif; /* Hesapkolik ana fontu */
+            background-color: #f8f7f4; /* Hesapkolik ana arka plan rengi */
+            color: #333; /* Hesapkolik ana metin rengi */
+        }
+
+        /* Başlıklar ve alt başlıklar için Hesapkolik'in ana sayfadaki stillerine benzer düzenlemeler */
+        .section-title {
+            font-size: 2.2em; /* style.css'deki h2 boyutu */
+            color: #2c3e50; /* style.css'deki h2 rengi */
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 20px; /* Bölümler arasında biraz boşluk */
+        }
+        .section-subtitle {
+            font-size: 1.1em; /* style.css'deki p'ye yakın bir boyut */
+            text-align: center;
+            color: #666; /* style.css'deki p rengi */
+            max-width: 800px; /* Metin için daha geniş alan */
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 30px;
+        }
+
+        /* Kartlar için Hesapkolik ana sayfa stili */
+        .card {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Hafif gölge */
+            border: 1px solid #ddd; /* İnce kenarlık */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Yumuşak geçiş efektleri */
+        }
+        .card:hover {
+            transform: translateY(-2px); /* Hafif yukarı kalkma */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12); /* Biraz daha belirgin gölge */
+        }
+
+        /* Hero bölümü için Hesapkolik ana sayfa stili */
+        .hero {
+            background-color: #3498db; /* Hesapkolik ana hero rengi */
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+        }
+        .hero h1 { /* Başlık font-size'ını blog başlığına uygun ayarladım */
+            font-size: 2.8em;
+            margin-bottom: 20px;
+        }
+        .hero p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .hero .cta-button {
+            display: inline-block;
+            background-color: #2ecc71; /* Ana sayfadaki yeşil buton rengi */
+            color: white;
+            padding: 15px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .hero .cta-button:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        /* Chart Container Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: auto;
+            min-height: 250px; /* Minimum yükseklik */
+        }
+
+        /* Klima hesaplayıcısı için özel input ve buton stilleri */
+        .calculator-form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .calculator-form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .calculator-form-group input[type="number"],
+        .calculator-form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            color: #374151;
+            background-color: #fff;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .calculator-form-group input[type="number"]:focus,
+        .calculator-form-group select:focus {
+            border-color: #3b82f6; /* Tailwind blue-500 */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+            outline: none;
+        }
+
+        .calculator-button {
+            display: block;
+            width: 100%;
+            padding: 0.75rem 1.5rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #fff;
+            background-color: #2ecc71; /* Hesapkolik yeşili */
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+        }
+
+        .calculator-button:hover {
+            background-color: #27ae60;
+            transform: translateY(-1px);
+        }
+
+        .result-box {
+            background-color: #e0f2f7; /* Açık mavi tonu */
+            border: 1px solid #b3e5fc; /* Koyu açık mavi kenarlık */
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #01579b; /* Koyu mavi metin */
+        }
+
+        .result-box .result-value {
+            font-size: 1.8rem;
+            color: #e74c3c; /* Hesapkolik kırmızı */
+            font-weight: 700;
+        }
+        
+        /* Tab menü ve içeriği için stiller */
+        .tab-btn { transition: color 0.2s, border-color 0.2s; }
+        .active-tab { color: #3498db; border-bottom-color: #3498db; } /* Hesapkolik mavisi */
+
+        /* Sıkça Sorulan Sorular için Akordiyon Stil */
+        .faq-item {
+            background-color: #f0f8ff; /* Açık mavi arka plan */
+            border: 1px solid #bfdfff; /* Açık mavi kenarlık */
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        .faq-question {
+            background-color: #e3f2fd; /* Daha koyu mavi arka plan */
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #2196f3; /* Mavi metin */
+        }
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            background-color: #ffffff;
+            color: #555;
+        }
+        .faq-answer.open {
+            max-height: 500px; /* İçeriğe göre ayarlanmalı, yeterince büyük olmalı */
+            padding: 15px 20px;
+        }
+        .faq-question .icon {
+            transition: transform 0.3s ease;
+        }
+        .faq-question .icon.rotate {
+            transform: rotate(180deg);
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2em;
+            }
+            .hero p {
+                font-size: 1em;
+            }
+            .section-title {
+                font-size: 1.8em;
+            }
+            .section-subtitle {
+                font-size: 1em;
+            }
+            .grid-cols-2 {
+                grid-template-columns: 1fr;
+            }
+            .md\:grid-cols-2 {
+                grid-template-columns: 1fr;
+            }
+            .lg\:grid-cols-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.8em;
+            }
+            .hero p {
+                font-size: 0.9em;
+            }
+            .section-title {
+                font-size: 1.6em;
+            }
+            .calculator-form-group input,
+            .calculator-form-group select,
+            .calculator-button {
+                font-size: 0.9rem;
+                padding: 0.6rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section id="hero" class="py-20 bg-blue-600 hero">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight">
+                    <span class="text-green-300">İdeal Klima</span> Seçim Rehberi
+                </h1>
+                <p class="mt-6 text-xl text-white max-w-3xl mx-auto">
+                    Eviniz veya iş yeriniz için en uygun klimayı seçerek konforu ve enerji verimliliğini bir arada yakalayın.
+                </p>
+                <a href="#giris" class="mt-8 inline-block bg-green-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-green-600 transition-transform transform hover:scale-105 cta-button">Rehberi Keşfet</a>
+            </div>
+        </section>
+
+        <section id="giris" class="py-16 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">Neden Doğru Klima Seçimi Kritik?</h2>
+                <p class="section-subtitle">
+                    Klima, sadece serinleten bir cihazdan çok daha fazlasıdır. Doğru seçim, konforunuzu, sağlığınızı ve elektrik faturanızı doğrudan etkiler.
+                </p>
+                <div class="grid md:grid-cols-2 gap-8 items-start">
+                    <div class="card">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Konfor ve Sağlık Üzerindeki Etkileri</h3>
+                        <p class="text-slate-600 mb-4">
+                            Yanlış kapasitede veya tipte bir klima, mekanınızda homojen bir sıcaklık dağılımı sağlayamaz. Bu durum, odanın bir kısmının çok soğuk, diğer kısmının ise hala sıcak kalmasına neden olabilir. Aşırı nem, küf oluşumuna yol açabilirken, yetersiz nem alma ise solunum rahatsızlıklarına ve cilt kuruluğuna neden olabilir. Ayrıca, kirli filtreler alerjen ve toz partiküllerini havaya yayarak solunum yolu hastalıklarını tetikleyebilir. Doğru klima seçimi, bu riskleri minimize ederek sağlıklı ve konforlu bir yaşam alanı sunar.
+                        </p>
+                        <ul class="list-disc list-inside text-slate-600">
+                            <li>Homojen sıcaklık dağılımı sağlar.</li>
+                            <li>İdeal nem seviyesini korur.</li>
+                            <li>Hava kalitesini iyileştirir (filtreleme).</li>
+                            <li>Alerjenleri ve tozları azaltır.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Enerji Tüketimi ve Bütçeniz</h3>
+                        <p class="text-slate-600 mb-4">
+                            Klima, evdeki en büyük enerji tüketicilerinden biri olabilir. Yanlış kapasitede seçilmiş bir klima, gereğinden fazla çalışarak veya sık sık açılıp kapanarak (on-off klimalar için) enerji israfına yol açar. Bu da elektrik faturanızda ciddi artışlara neden olabilir. Yüksek enerji verimliliği sınıfına sahip (A+++ gibi) ve Inverter teknolojili bir klima seçmek, başlangıç maliyetini artırsa da uzun vadede çok daha büyük tasarruflar sağlar. Hesaplı ve bilinçli bir seçim, hem cebinizi korur hem de çevresel ayak izinizi küçültür.
+                        </p>
+                        <ul class="list-disc list-inside text-slate-600">
+                            <li>Elektrik faturasını doğrudan etkiler.</li>
+                            <li>Yüksek verimlilik uzun vadede tasarruf sağlar.</li>
+                            <li>Yanlış seçim enerji israfına yol açar.</li>
+                            <li>Çevresel sürdürülebilirliğe katkıda bulunur.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="btu-hesaplama" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">Mekanınıza Uygun BTU Kapasitesi Hesaplayıcı</h2>
+                <p class="section-subtitle">Klimanızın verimli çalışabilmesi için doğru BTU kapasitesini belirlemek çok önemlidir. Odanızın özelliklerini girerek size özel BTU değerini hesaplayın.</p>
+                <div class="card max-w-xl mx-auto p-6">
+                    <form id="btuCalculatorForm">
+                        <div class="calculator-form-group">
+                            <label for="area">Oda Alanı (m²):</label>
+                            <input type="number" id="area" min="1" step="0.1" required placeholder="Örn: 25">
+                        </div>
+                        <div class="calculator-form-group">
+                            <label for="personCount">Odada Bulunan Ortalama Kişi Sayısı:</label>
+                            <input type="number" id="personCount" min="0" step="1" value="1" required placeholder="Örn: 2">
+                        </div>
+                        <div class="calculator-form-group">
+                            <label for="exposure">Güneşlenme Durumu:</label>
+                            <select id="exposure" required>
+                                <option value="0">Seçin</option>
+                                <option value="1">Az (Kuzey Cephe, Gölgede)</option>
+                                <option value="1.15">Orta (Doğu/Batı Cephe)</option>
+                                <option value="1.25">Çok (Güney Cephe, Tam Güneş)</option>
+                            </select>
+                        </div>
+                         <div class="calculator-form-group">
+                            <label for="floor">Bulunduğu Kat:</label>
+                            <select id="floor" required>
+                                <option value="0">Seçin</option>
+                                <option value="1">Ara Kat</option>
+                                <option value="1.1">Çatı Katı (Isı Yalıtımı Yetersiz)</option>
+                                <option value="1.05">Zemin Kat (Isı Yalıtımı Yetersiz)</option>
+                            </select>
+                        </div>
+                        <div class="calculator-form-group">
+                            <label for="insulation">Yalıtım Durumu:</label>
+                            <select id="insulation" required>
+                                <option value="0">Seçin</option>
+                                <option value="1">İyi Yalıtımlı</option>
+                                <option value="1.1">Orta Yalıtımlı</option>
+                                <option value="1.2">Kötü Yalıtımlı / Yalıtımsız</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="calculator-button">BTU Hesapla</button>
+                    </form>
+                    <div id="btuResult" class="result-box" style="display:none;">
+                        <p class="mb-2">Önerilen BTU Kapasitesi:</p>
+                        <p class="result-value" id="calculatedBtu"></p>
+                    </div>
+                     <div class="chart-container mt-8"><canvas id="btuChart"></canvas></div>
+                </div>
+                <p class="text-sm text-gray-600 mt-4 text-center">
+                    *Bu hesaplama yaklaşık değerler sunar. Profesyonel bir keşif, en doğru sonucu verecektir.
+                </p>
+            </div>
+        </section>
+
+        <section id="klima-tipleri" class="py-16 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">Klima Çeşitleri: İhtiyacınıza Göre Seçim</h2>
+                <p class="section-subtitle">
+                    Piyasada farklı mekanlar ve ihtiyaçlar için tasarlanmış çeşitli klima tipleri bulunmaktadır. Her birinin kendine özgü avantajları ve dezavantajları vardır.
+                </p>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch mb-12">
+                    <div class="card">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Duvar Tipi (Split) Klimalar</h3>
+                        <p class="text-slate-600 mb-2">En yaygın ve bilinen klima tipidir. Bir iç ünite ve bir dış üniteden oluşur. İç ünite duvara monte edilir, dış ünite ise dışarıda konumlandırılır. Kurulumu nispeten kolaydır ve hem soğutma hem de ısıtma yapabilir.</p>
+                        <p class="text-slate-600 mb-2"><b>Avantajları:</b> Evler ve küçük ofisler için ideal, estetik, sessiz çalışma, kolay kurulum.</p>
+                        <p class="text-slate-600"><b>Dezavantajları:</b> Tek bir odayı etkili soğutur/ısıtır, birden fazla oda için ayrı üniteler gerekebilir, dış ünite için yer gerekir.</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Multi Split Klimalar</h3>
+                        <p class="text-slate-600 mb-2">Tek bir dış üniteye birden fazla (genellikle 2 ila 5) iç ünitenin bağlanabildiği sistemlerdir. Her iç ünite ayrı ayrı kontrol edilebilir, bu da farklı odalarda farklı sıcaklık ayarları yapmaya olanak tanır.</p>
+                        <p class="text-slate-600 mb-2"><b>Avantajları:</b> Birden fazla odayı tek dış ünite ile iklimlendirme, yerden tasarruf, her oda için bağımsız kontrol, daha estetik.</p>
+                        <p class="text-slate-600"><b>Dezavantajları:</b> İlk kurulum maliyeti daha yüksek, dış ünite arızasında tüm sistemin etkilenebilmesi.</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Salon Tipi Klimalar</h3>
+                        <p class="text-slate-600 mb-2">Genellikle büyük alanları (salonlar, mağazalar, restoranlar vb.) iklimlendirmek için tasarlanmış, yere monte edilen, yüksek kapasiteli ünitelerdir. Güçlü hava akışı ile geniş hacimli yerlerde etkili soğutma/ısıtma sağlar.</p>
+                        <p class="text-slate-600 mb-2"><b>Avantajları:</b> Yüksek kapasite, geniş alanlar için uygun, güçlü hava üfleme.</p>
+                        <p class="text-slate-600"><b>Dezavantajları:</b> Büyük ve dikkat çekici tasarım, ev kullanımı için genellikle fazla kapasiteli ve pahalı, duvarda yer kaplar.</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Kaset Tipi Klimalar</h3>
+                        <p class="text-slate-600 mb-2">Asma tavanı olan mekanlarda tavana monte edilen klimalardır. Dört yöne hava üfleme özelliği sayesinde havayı homojen şekilde dağıtır ve tavanla bütünleştiği için estetik bir görünüm sunar.</p>
+                        <p class="text-slate-600 mb-2"><b>Avantajları:</b> Estetik (görünmez montaj), homojen hava dağıtımı, geniş alanlar için uygun, yerden tasarruf.</p>
+                        <p class="text-slate-600"><b>Dezavantajları:</b> Montajı daha karmaşık ve maliyetli (asma tavan gerektirir), bakım zorluğu.</p>
+                    </div>
+                     <div class="card">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Kanallı Tip Klimalar</h3>
+                        <p class="text-slate-600 mb-2">Gizli tavan içi montaja sahip, havanın kanallar aracılığıyla farklı mekanlara dağıtıldığı sistemlerdir. Estetik kaygısı olan ve birden fazla odayı aynı anda iklimlendirmek isteyen projeler için idealdir.</p>
+                        <p class="text-slate-600 mb-2"><b>Avantajları:</b> Tamamen gizli montaj (sadece menfezler görünür), tek bir merkezi ünite ile birden fazla oda iklimlendirme, yüksek estetik.</p>
+                        <p class="text-slate-600"><b>Dezavantajları:</b> En yüksek ilk kurulum maliyeti, karmaşık montaj (kanal tesisatı), bakım zorluğu.</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Mobil (Portatif) Klimalar</h3>
+                        <p class="text-slate-600 mb-2">Tekerlekli, taşınabilir ve tek parça halindeki klimalardır. Dış ünite ihtiyacı yoktur, ancak sıcak havayı dışarı atmak için bir boru pencereye veya duvara yönlendirilmelidir.</p>
+                        <p class="text-slate-600 mb-2"><b>Avantajları:</b> Taşınabilirlik, kolay kurulum (uzman gerektirmez), uygun maliyetli, dış ünite ihtiyacı yok.</p>
+                        <p class="text-slate-600"><b>Dezavantajları:</b> Genellikle daha gürültülü, daha düşük verimlilik, borunun pencereden dışarı atılması gerekir, küçük alanlar için daha uygun.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="enerji-verimliligi" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">Enerji Verimliliği ve Klimanın Ek Özellikleri</h2>
+                <p class="section-subtitle">
+                    Klima seçerken sadece tipi ve kapasitesi değil, enerji verimliliği sınıfı ve sunduğu ek özellikler de önemlidir.
+                </p>
+                <div class="grid md:grid-cols-2 gap-8 items-start mb-12">
+                    <div class="card">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Inverter Teknolojisi Nedir?</h3>
+                        <p class="text-slate-600 mb-2">
+                            Geleneksel (on/off) klimalar, istenen sıcaklığa ulaşıldığında kompresörü tamamen kapatır ve sıcaklık yükseldiğinde tekrar açar. Bu sık açma-kapama döngüsü, daha fazla enerji tüketimine ve sıcaklık dalgalanmalarına neden olur.
+                        </p>
+                        <p class="text-slate-600 mb-2">
+                            **Inverter klimalar** ise kompresör hızını ve soğutma/ısıtma kapasitesini ortamın ihtiyacına göre otomatik olarak ayarlar. Bu sayede kompresör sürekli çalışır ancak düşük hızlarda ve sabit bir sıcaklıkta, enerji verimliliğini artırır.
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 text-slate-600 ml-4">
+                            <li>%30-50'ye varan enerji tasarrufu.</li>
+                            <li>Daha sessiz çalışma.</li>
+                            <li>Daha stabil ve konforlu sıcaklık.</li>
+                            <li>Daha uzun ömürlü kompresör.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Enerji Verimlilik Oranları (EER, COP, SEER, SCOP)</h3>
+                        <p class="text-slate-600 mb-2">
+                            Klimaların enerji verimliliği, belirli oranlarla ifade edilir:
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 text-slate-600 ml-4">
+                            <li><b>EER (Energy Efficiency Ratio):</b> Klimanın soğutma modundaki verimliliğini ölçer. Soğutma kapasitesinin (BTU/h) çekilen güce (Watt) oranıdır. Yüksek EER daha iyidir.</li>
+                            <li><b>COP (Coefficient of Performance):</b> Klimanın ısıtma modundaki verimliliğini ölçer. Isıtma kapasitesinin (BTU/h) çekilen güce (Watt) oranıdır. Yüksek COP daha iyidir.</li>
+                            <li><b>SEER (Seasonal Energy Efficiency Ratio):</b> Mevsimsel Enerji Verimlilik Oranı. EER'nin daha gelişmiş bir versiyonudur ve klimanın bir sezon boyunca (farklı sıcaklıklarda) gösterdiği ortalama enerji verimliliğini yansıtır. Daha gerçekçi bir verimlilik ölçütüdür. Yüksek SEER, daha verimli bir klima demektir.</li>
+                            <li><b>SCOP (Seasonal Coefficient of Performance):</b> Mevsimsel Performans Katsayısı. COP'nin mevsimsel karşılığıdır ve ısıtma modundaki ortalama verimliliği gösterir. Yüksek SCOP daha iyidir.</li>
+                        </ul>
+                        <p class="text-slate-600 mt-4">
+                            Alacağınız klimanın enerji etiketini inceleyerek bu değerlere ve enerji sınıfına (A+++, A++ vb.) dikkat etmelisiniz.
+                        </p>
+                    </div>
+                    <div class="card md:col-span-2">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Klima Ek Özellikleri ve Avantajları</h3>
+                        <p class="text-slate-600 mb-2">
+                            Modern klimalar, temel soğutma/ısıtma işlevlerinin ötesinde birçok ek özellik sunar:
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 text-slate-600 ml-4">
+                            <li><b>Nem Alma Özelliği:</b> Özellikle nemli iklimlerde iç mekan konforunu artırır.</li>
+                            <li><b>Hava Temizleme Filtreleri:</b> Toz, polen, bakteri ve virüsleri temizleyerek hava kalitesini iyileştirir (HEPA, aktif karbon, iyonizer filtreler).</li>
+                            <li><b>Uyku Modu:</b> Gece boyunca daha sessiz çalışır ve sıcaklığı kademeli olarak ayarlayarak enerji tasarrufu sağlar.</li>
+                            <li><b>Zamanlayıcı (Timer):</b> Klimanın belirli saatlerde otomatik olarak açılıp kapanmasını sağlar.</li>
+                            <li><b>Uzaktan Kontrol (Wi-Fi):</b> Akıllı telefonunuzdan veya diğer cihazlardan klimayı kontrol etme imkanı sunar.</li>
+                            <li><b>Kendi Kendini Temizleme:</b> İç ünite içinde nem ve küf oluşumunu engelleyerek daha sağlıklı hava sağlar ve bakımı kolaylaştırır.</li>
+                            <li><b>Sessiz Çalışma:</b> Özellikle yatak odaları ve çalışma alanları için önemli olan düşük desibel seviyesi.</li>
+                            <li><b>Buz Çözme (Defrost) Özelliği:</b> Dış ünitedeki buzlanmayı otomatik olarak giderir ve ısıtma performansını korur.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="montaj-bakim" class="py-16 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">Klima Montajı ve Bakımının Önemi</h2>
+                <p class="section-subtitle">
+                    Klimanızın performansını ve ömrünü doğrudan etkileyen montaj ve düzenli bakım süreçleri.
+                </p>
+                <div class="grid md:grid-cols-2 gap-8 items-start mb-12">
+                    <div class="card">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Doğru Montajın Önemi</h3>
+                        <p class="text-slate-600 mb-2">
+                            Klima montajı, cihazın performansını, enerji verimliliğini ve ömrünü doğrudan etkileyen kritik bir adımdır. Yanlış montaj:
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 text-slate-600 ml-4">
+                            <li>Enerji israfına yol açar.</li>
+                            <li>Cihazın ömrünü kısaltır.</li>
+                            <li>Yetersiz soğutma/ısıtma performansı sunar.</li>
+                            <li>Gürültülü çalışmasına neden olabilir.</li>
+                            <li>Su sızıntısı gibi sorunlara yol açar.</li>
+                        </ul>
+                        <p class="text-slate-600 mt-2">
+                            Bu nedenle, klima montajının mutlaka **yetkili ve deneyimli servisler** tarafından yapılması gerekmektedir. Montaj yeri seçimi (güneş ışığından uzak, hava akışına uygun), dış ünite konumu, borulama ve elektrik bağlantıları gibi detaylar büyük önem taşır.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Düzenli Bakımın Faydaları</h3>
+                        <p class="text-slate-600 mb-2">
+                            Klimanızın uzun ömürlü ve verimli çalışması için düzenli bakım şarttır. Yıllık bakım:
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 text-slate-600 ml-4">
+                            <li>Enerji tasarrufu sağlar (verimlilik kaybını önler).</li>
+                            <li>Hava kalitesini iyileştirir (bakteri ve toz birikimini engeller).</li>
+                            <li>Arızaları önler ve tamir maliyetlerini düşürür.</li>
+                            <li>Klimanın ömrünü uzatır.</li>
+                            <li>Sessiz çalışma devamlılığını sağlar.</li>
+                        </ul>
+                        <p class="text-slate-600 mt-2">
+                            Bakım kapsamında filtre temizliği, gaz kontrolü, elektrik bağlantılarının denetimi, drenaj hattı temizliği gibi işlemler yapılır. Bakımları genellikle yaz ve kış sezonu öncesi yaptırmak en idealidir.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sss" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">Sıkça Sorulan Sorular</h2>
+                <p class="section-subtitle">
+                    Klima seçimi ve kullanımı hakkında merak edilenler.
+                </p>
+                <div class="max-w-3xl mx-auto">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>1. İnverter klima nedir ve neden tercih etmeliyim?</span>
+                            <i class="fas fa-chevron-down icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p class="py-4">İnverter klima, kompresör hızını ortamın ihtiyacına göre ayarlayan teknolojidir. Bu sayede enerji tasarrufu sağlar, daha sessiz çalışır, daha stabil sıcaklık sunar ve kompresör ömrünü uzatır. Geleneksel klimalara göre daha verimli ve konforludur.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>2. Klimanın enerji sınıfı ne anlama geliyor?</span>
+                            <i class="fas fa-chevron-down icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p class="py-4">Enerji sınıfı (A+++, A++, A+ vb.), klimanın ne kadar enerji verimli olduğunu gösterir. A+++ en yüksek verimlilik sınıfıdır. Daha yüksek enerji sınıfı, daha az elektrik tüketimi ve uzun vadede daha düşük faturalar anlamına gelir.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>3. Klimamı kaç BTU seçmeliyim?</span>
+                            <i class="fas fa-chevron-down icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p class="py-4">Klima kapasitesi (BTU), odanın büyüklüğü, tavan yüksekliği, güneşlenme durumu, yalıtım, pencere alanı ve odadaki kişi sayısı gibi faktörlere göre belirlenir. Bu rehberdeki BTU hesaplayıcıyı kullanarak yaklaşık bir değer elde edebilir veya bir uzmandan keşif isteyebilirsiniz.</p>
+                        </div>
+                    </div>
+                     <div class="faq-item">
+                        <div class="faq-question">
+                            <span>4. Klimamı kendim monte edebilir miyim?</span>
+                            <i class="fas fa-chevron-down icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p class="py-4">Split tipi klimaların montajı uzmanlık gerektiren bir iştir ve genellikle kendiniz yapmanız önerilmez. Yanlış montaj, cihazın zarar görmesine, verimsiz çalışmasına, gaz kaçaklarına ve garanti dışı kalmasına neden olabilir. Mobil klimaların kurulumu ise daha basittir ve genellikle kendiniz yapabilirsiniz.</p>
+                        </div>
+                    </div>
+                     <div class="faq-item">
+                        <div class="faq-question">
+                            <span>5. Klimanın düzenli bakımı neden önemlidir?</span>
+                            <i class="fas fa-chevron-down icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p class="py-4">Düzenli bakım, klimanızın enerji verimliliğini korur, hava kalitesini artırır (küf, bakteri ve toz oluşumunu engeller), arızaları önler ve cihazın ömrünü uzatır. Genellikle yılda bir veya iki kez (yaz ve kış sezonu öncesi) yetkili servis tarafından yapılması önerilir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        </main>
+    
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header ve Footer yükleme
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            fetch(headerPath)
+                .then(response => response.text())
+                .then(data => {
+                    const headerPlaceholder = document.getElementById('header-placeholder');
+                    if (headerPlaceholder) {
+                        headerPlaceholder.innerHTML = data;
+                        const scriptElement = headerPlaceholder.querySelector('script');
+                        if (scriptElement) {
+                            const newScript = document.createElement('script');
+                            newScript.textContent = scriptElement.textContent;
+                            document.body.appendChild(newScript);
+                            scriptElement.remove();
+                        }
+                    }
+                })
+                .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+            fetch(footerPath)
+                .then(response => response.text())
+                .then(data => {
+                    const footerPlaceholder = document.getElementById('footer-placeholder');
+                    if (footerPlaceholder) {
+                        footerPlaceholder.innerHTML = data;
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = data;
+                        const footerElement = tempDiv.querySelector('footer');
+                        if (footerElement) {
+                            footerPlaceholder.replaceWith(footerElement);
+                        }
+                    }
+                })
+                .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+
+            // BTU Hesaplayıcı Logiği
+            const btuCalculatorForm = document.getElementById('btuCalculatorForm');
+            const btuResultDiv = document.getElementById('btuResult');
+            const calculatedBtuSpan = document.getElementById('calculatedBtu');
+            const btuChartCanvas = document.getElementById('btuChart');
+            let btuChart = null;
+
+            btuCalculatorForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const area = parseFloat(document.getElementById('area').value);
+                const personCount = parseFloat(document.getElementById('personCount').value);
+                const exposureFactor = parseFloat(document.getElementById('exposure').value);
+                const floorFactor = parseFloat(document.getElementById('floor').value);
+                const insulationFactor = parseFloat(document.getElementById('insulation').value);
+
+                // Giriş doğrulama
+                if (isNaN(area) || area <= 0 || isNaN(personCount) || personCount < 0 || 
+                    exposureFactor === 0 || floorFactor === 0 || insulationFactor === 0) {
+                    btuResultDiv.style.display = 'block';
+                    calculatedBtuSpan.textContent = 'Lütfen tüm alanları doğru doldurun!';
+                    btuResultDiv.style.backgroundColor = '#fce4e4'; // Hata rengi
+                    btuResultDiv.style.borderColor = '#e57373';
+                    calculatedBtuSpan.style.color = '#e74c3c';
+                    return;
+                }
+
+                // Temel BTU hesaplaması (alan x 450-500 BTU/m² gibi bir katsayı)
+                // Daha gerçekçi bir model için: Alan * Sabit Katsayı + (Kişi Sayısı * Kişi Katsayısı)
+                // Genelde metrekare başına 450-500 BTU alınır, bu örneğimizde 475'i sabit aldık.
+                let baseBtu = area * 475; 
+                
+                // Kişi sayısı etkisi (her kişi için yaklaşık 600 BTU eklenir)
+                let personBtu = personCount * 600;
+
+                // Faktörleri uygula
+                let finalBtu = (baseBtu + personBtu) * exposureFactor * floorFactor * insulationFactor;
+
+                // BTU değerlerini standart klima kapasitelerine yuvarlama
+                const standardBtu = [7000, 9000, 12000, 18000, 24000, 30000, 36000, 48000, 60000];
+                let closestBtu = standardBtu[0];
+                for (let i = 0; i < standardBtu.length; i++) {
+                    if (finalBtu <= standardBtu[i]) {
+                        closestBtu = standardBtu[i];
+                        break;
+                    }
+                    if (i === standardBtu.length - 1) {
+                        closestBtu = standardBtu[i]; // En büyük kapasiteden bile büyükse en büyüğü ver
+                    }
+                }
+
+                calculatedBtuSpan.textContent = `${closestBtu} BTU/h`;
+                btuResultDiv.style.display = 'block';
+                btuResultDiv.style.backgroundColor = '#e0f2f7'; // Başarı rengi
+                btuResultDiv.style.borderColor = '#b3e5fc';
+                calculatedBtuSpan.style.color = '#e74c3c';
+
+                // Grafik güncelleme
+                updateBtuChart(area, closestBtu);
+            });
+
+            function updateBtuChart(area, calculatedBtu) {
+                if (btuChart) {
+                    btuChart.destroy();
+                }
+
+                const ctx = btuChartCanvas.getContext('2d');
+                btuChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Oda Alanı (m²)', 'Önerilen BTU'],
+                        datasets: [
+                            {
+                                label: 'Değerler',
+                                data: [area, calculatedBtu / 1000], // BTU'yu 1000'e bölerek daha anlamlı bir skala elde et
+                                backgroundColor: [
+                                    'rgba(54, 162, 235, 0.7)', // Mavi tonu
+                                    'rgba(75, 192, 192, 0.7)'  // Yeşilimsi mavi tonu
+                                ],
+                                borderColor: [
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(75, 192, 192, 1)'
+                                ],
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (context.parsed.y !== null) {
+                                            if (context.dataIndex === 0) { // Oda Alanı
+                                                label += `: ${context.parsed.y} m²`;
+                                            } else { // BTU
+                                                label += `: ${context.parsed.y * 1000} BTU/h`;
+                                            }
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Değer',
+                                    font: { family: 'Poppins' }
+                                },
+                                ticks: {
+                                    callback: function(value, index, values) {
+                                        if (index === 0) return `${value} m²`; // İlk bar için m² göster
+                                        return `${value}k BTU`; // Diğer bar için kBTU göster
+                                    },
+                                    font: { family: 'Poppins' }
+                                }
+                            },
+                            x: {
+                                ticks: { font: { family: 'Poppins' } }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // SSS Akordiyon İşlevselliği
+            document.querySelectorAll('.faq-question').forEach(button => {
+                button.addEventListener('click', () => {
+                    const faqItem = button.closest('.faq-item');
+                    const answer = faqItem.querySelector('.faq-answer');
+                    const icon = button.querySelector('.icon');
+
+                    // Açık olan diğerlerini kapat
+                    document.querySelectorAll('.faq-answer.open').forEach(openAnswer => {
+                        if (openAnswer !== answer) {
+                            openAnswer.classList.remove('open');
+                            openAnswer.closest('.faq-item').querySelector('.icon').classList.remove('rotate');
+                        }
+                    });
+
+                    // Tıklananı aç/kapat
+                    answer.classList.toggle('open');
+                    icon.classList.toggle('rotate');
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>
