@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>
+      Klima Enerji Tüketimi Hesaplayıcı - Hesapkolik
+    </title>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    <link href="/css/header.css" rel="stylesheet"/>
+    <meta content="Klimanızın günlük, aylık ve yıllık enerji tüketimini hesaplayın. BTU, kW, COP ve çalışma süresi gibi faktörleri kullanarak ne kadar elektrik harcadığınızı öğrenin." name="description"/>
+    <meta content="klima enerji tüketimi, klima elektrik tüketimi, klima harcaması, BTU hesaplama, klima COP, klima EER, klima kW, elektrik faturası, enerji verimliliği, hesapkolik klima" name="keywords"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <link href="../../css/style.css" rel="stylesheet"/>
+    <script async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    <style>
+      /* Genel Stil Ayarları */
+      body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f7f6;
+        color: #333;
+      }
+
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .hero-section {
+        background-color: #34495e;
+        color: white;
+        padding: 80px 0;
+        text-align: center;
+      }
+
+      .hero-section h1 {
+        font-size: 3em;
+        margin-bottom: 20px;
+      }
+
+      .hero-section p {
+        font-size: 1.2em;
+        opacity: 0.9;
+      }
+
+      .calculator-section {
+        padding: 50px 0;
+        text-align: center;
+        background-color: #eaf0f0;
+        border-bottom: 1px solid #dee7e7;
+      }
+
+      .calculator-section h2 {
+        margin-bottom: 30px;
+        color: #2c3e50;
+        font-size: 2.2em;
+      }
+
+      .calc-wrapper {
+        background-color: #ffffff;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        max-width: 650px;
+        margin: 30px auto;
+        text-align: left;
+      }
+
+      .calc-wrapper h3 {
+        font-size: 2em;
+        color: #e74c3c;
+        margin-bottom: 25px;
+        text-align: center;
+      }
+
+      .calc-wrapper label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555;
+      }
+
+      .calc-wrapper input[type="number"],
+      .calc-wrapper select {
+        width: 100%;
+        padding: 12px 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1em;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease;
+      }
+
+      .calc-wrapper input[type="number"]:focus,
+      .calc-wrapper select:focus {
+        border-color: #3498db;
+        outline: none;
+      }
+
+      .calc-wrapper input.error {
+        border-color: red !important;
+      }
+
+      .result-display {
+        margin-top: 25px;
+        font-size: 1.1em;
+        font-weight: 600;
+        color: #2c3e50;
+        text-align: center;
+        min-height: 1.8em;
+        background-color: #ecf0f1;
+        padding: 15px 20px;
+        border-radius: 8px;
+        border: 1px solid #dcdfe4;
+      }
+
+      .result-display .result-value {
+        color: #e74c3c;
+        font-weight: 700;
+        font-size: 1.3em;
+      }
+
+      .result-display .error {
+        color: #e74c3c;
+        font-size: 0.8em;
+      }
+
+      .calc-explanation {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        color: #666;
+        line-height: 1.6;
+        text-align: justify;
+      }
+
+      .calc-explanation strong {
+        color: #333;
+      }
+
+      .calc-explanation p:last-child {
+        margin-bottom: 0;
+      }
+
+      .info-section {
+        padding: 40px 0;
+        background-color: #ffffff;
+        margin-top: 40px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+      }
+
+      .info-section h3 {
+        color: #e74c3c;
+        font-size: 1.8em;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .info-section p {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 15px;
+        padding: 0 20px;
+        text-align: justify;
+      }
+
+      .info-section ul {
+        list-style-type: disc;
+        margin: 0 20px 20px 40px;
+        color: #666;
+      }
+
+      .info-section ul li {
+        margin-bottom: 10px;
+        line-height: 1.5;
+      }
+
+      .info-section strong {
+        color: #333;
+      }
+
+      /* Responsive Ayarlamalar */
+      @media (max-width: 768px) {
+        .calc-wrapper {
+          padding: 30px 20px;
+          margin: 20px auto;
+        }
+
+        .calc-wrapper h3 {
+          font-size: 1.8em;
+        }
+
+        .result-display {
+          font-size: 1.4em;
+        }
+      }
+
+      @media (max-width: 480px) {
+        header nav ul {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        header nav ul li {
+          margin: 10px 0;
+        }
+      }
+
+      /* Hesapla butonu stili */
+      .calculator-form-container button {
+        background-color: #28a745; /* Yeşil ton */
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.1em;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 10px;
+      }
+
+      .calculator-form-container button:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
+      }
+
+      .icon-small {
+        margin-right: 10px;
+        color: #3498db; /* İkon rengi */
+      }
+
+      .input-with-unit {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .input-with-unit label {
+        flex-basis: 100%;
+        margin-bottom: 5px;
+      }
+
+      .input-with-unit input[type="number"] {
+        flex-grow: 1;
+        margin-bottom: 0;
+      }
+
+      .input-with-unit select {
+        flex-shrink: 0;
+        width: auto;
+        margin-bottom: 0;
+      }
+
+      /* Yeni eklenen stil: Açılır kapanır bölüm için */
+      .toggle-content {
+        display: none; /* Varsayılan olarak gizli */
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #f9f9f9;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        text-align: left;
+      }
+
+      .toggle-button {
+        background-color: #3498db;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+        display: inline-block;
+        font-size: 0.95em;
+      }
+
+      .toggle-button:hover {
+        background-color: #2980b9;
+      }
+    </style>
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+    </script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+    </script>
+  </head>
+  <body>
+    <div id="header-placeholder">
+    </div>
+    <main>
+      <section class="hero-section">
+        <div class="container">
+          <h1>
+            Klima Enerji Tüketimi Hesaplayıcı
+          </h1>
+          <p>
+            Klimanızın günlük, aylık ve yıllık elektrik tüketimini kolayca hesaplayın ve enerji faturanızı tahmin edin.
+          </p>
+        </div>
+      </section>
+      <section class="calculator-section">
+        <div class="container">
+          <h2>
+            Klimanız Ne Kadar Elektrik Harcıyor?
+          </h2>
+          <div class="calc-wrapper active-calc" id="calculator-klima-tuketim">
+            <h3>
+              <i class="fas fa-snowflake icon-small">
+              </i>
+              Klima Enerji Maliyeti Hesapla
+            </h3>
+            <div class="calculator-form-container">
+              <form id="klimaTuketimForm">
+                <div class="input-with-unit">
+                  <label for="btuCapacity">
+                    Klima BTU Kapasitesi:
+                  </label>
+                  <input id="btuCapacity" min="0" placeholder="Örn: 9000, 12000, 18000" required="" step="any" type="number"/>
+                  <select id="btuUnit">
+                    <option value="BTU">
+                      BTU/h
+                    </option>
+                  </select>
+                </div>
+                <hr class="form-divider"/>
+                <div class="input-with-unit">
+                  <label for="eerCopValue">
+                    Klima Verimlilik Değeri (EER/COP):
+                  </label>
+                  <input id="eerCopValue" min="1" placeholder="Örn: 3.2 (Verimli Klimalar Genelde 3 üzeri)" required="" step="any" type="number"/>
+                  <select id="eerCopType">
+                    <option value="EER">
+                      EER
+                    </option>
+                    <option value="COP">
+                      COP
+                    </option>
+                  </select>
+                </div>
+                <hr class="form-divider"/>
+                <div class="input-with-unit">
+                  <label for="dailyHours">
+                    Günlük Ortalama Çalışma Saati:
+                  </label>
+                  <input id="dailyHours" max="24" min="0" placeholder="Örn: 8" required="" step="any" type="number"/>
+                  <select id="dailyHoursUnit">
+                    <option value="hours">
+                      saat/gün
+                    </option>
+                  </select>
+                </div>
+                <hr class="form-divider"/>
+                <div class="input-with-unit">
+                  <label for="electricityPrice">
+                    Elektrik Birim Fiyatı (KDV Dahil):
+                  </label>
+                  <input id="electricityPrice" min="0" placeholder="Örn: 2.6 (TL/kWh)" required="" step="any" type="number"/>
+                  <select id="electricityPriceUnit">
+                    <option value="TL/kWh">
+                      TL/kWh
+                    </option>
+                  </select>
+                </div>
+                <button type="submit">
+                  Tüketimi Hesapla
+                </button>
+              </form>
+              <div class="result-display" id="klimaTuketimResult">
+              </div>
+              <div class="calc-explanation">
+                <p>
+                  Klimanızın **BTU kapasitesini**, **verimlilik değerini (EER veya COP)**, **günlük çalışma süresini** ve **elektrik birim fiyatını** girerek enerji tüketim maliyetlerini hesaplayın.
+                </p>
+                <p>
+                  **Hesaplama Formülü:**
+                  <br/>
+                  Günlük Tüketim (kWh) = (BTU Kapasitesi / (EER * 3412)) × Günlük Çalışma Saati
+                  <br/>
+                  *Veya ısıtma için:*
+                  <br/>
+                  Günlük Tüketim (kWh) = (BTU Kapasitesi / (COP * 3412)) × Günlük Çalışma Saati
+                  <br/>
+                  *(1 kW = 3412 BTU/h dönüşümü kullanılır)*
+                </p>
+                <p>
+                  Ardından bu tüketim günlük, aylık (30 gün) ve yıllık (90 gün yaz/kış sezonu varsayımıyla) maliyetlere dönüştürülür.
+                </p>
+                <ul>
+                  <li>
+                    <strong>
+                      BTU/h (British Thermal Unit per hour):
+                    </strong>
+                    Klimanın saatte taşıyabildiği ısı enerjisi miktarını ifade eder. Klimanın soğutma/ısıtma gücüdür.
+                  </li>
+                  <li>
+                    <strong>
+                      EER (Energy Efficiency Ratio):
+                    </strong>
+                    Soğutma modundaki verimliliği gösterir. Ne kadar yüksekse o kadar verimlidir.
+                  </li>
+                  <li>
+                    <strong>
+                      COP (Coefficient of Performance):
+                    </strong>
+                    Isıtma modundaki verimliliği gösterir. Ne kadar yüksekse o kadar verimlidir.
+                  </li>
+                  <li>
+                    <strong>
+                      kWh:
+                    </strong>
+                    Kilowatt-saat, elektrik tüketim birimidir.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="info-section container">
+        <h3>
+          Klima Enerji Tüketimi Neden Önemli?
+        </h3>
+        <p>
+          Klimalar, evlerimizde ve iş yerlerimizde konfor sağlamak için yaygın olarak kullanılan cihazlardır. Ancak, özellikle sıcak yaz aylarında veya soğuk kış günlerinde, **elektrik faturamızın önemli bir kısmını oluşturabilirler.** Klimanın enerji tüketimini anlamak ve yönetmek, hem bütçeniz için hem de çevresel sürdürülebilirlik için kritik öneme sahiptir.
+        </p>
+        <p>
+          Yüksek enerji tüketen bir klima, uzun vadede size ciddi maliyetler çıkarabilir. Bunun yanı sıra, yüksek enerji tüketimi, karbon ayak izinizi artırarak iklim değişikliğine de katkıda bulunur. Bu nedenle, klimanızın ne kadar elektrik harcadığını bilmek, bilinçli kararlar vermenizi ve enerji tasarrufu yapmanızı sağlar.
+        </p>
+
+        <h4>
+          Enerji Tüketimini Etkileyen Faktörler
+        </h4>
+        <p>
+          Klima enerji tüketimini etkileyen temel faktörler şunlardır:
+        </p>
+        <ul>
+          <li>
+            **Klima Kapasitesi (BTU):** Klimanın soğutma veya ısıtma gücünü gösterir. Mekana uygun kapasitede olmayan bir klima, ya gereğinden fazla çalışarak enerji harcar ya da yeterince verimli olamaz.
+          </li>
+          <li>
+            **Verimlilik Oranı (EER/COP):** Bu değerler, klimanın tükettiği elektrik enerjisine karşılık ne kadar soğutma (EER) veya ısıtma (COP) yaptığını gösterir. Yüksek EER/COP değerine sahip klimalar daha az enerjiyle daha fazla iş yapar.
+          </li>
+          <li>
+            **Çalışma Süresi:** Klimanın günlük, aylık veya yıllık toplam çalışma süresi, tüketimi doğrudan etkiler.
+          </li>
+          <li>
+            **Elektrik Birim Fiyatı:** Elektriğin kWh başına maliyeti, faturanıza yansıyan toplam tutarı belirler.
+          </li>
+          <li>
+            **Ortam Koşulları:** Dış hava sıcaklığı, mekanın yalıtımı, pencere sayısı ve yönü gibi faktörler de klimanın çalışma yükünü ve dolayısıyla tüketimini etkiler.
+          </li>
+          <li>
+            **Bakım Durumu:** Düzenli bakımı yapılmayan klimalar (filtre temizliği, gaz kontrolü vb.) verimliliklerini kaybeder ve daha fazla enerji tüketir.
+          </li>
+        </ul>
+
+        <h4>
+          Enerji Tasarrufu İçin İpuçları
+        </h4>
+        <p>
+          Klima kullanırken enerji tasarrufu sağlamak için uygulayabileceğiniz bazı yöntemler:
+        </p>
+        <ul>
+          <li>
+            **Doğru Kapasite Seçimi:** Klimayı alırken, odanızın büyüklüğüne ve yalıtımına uygun BTU kapasitesinde bir model seçin.
+          </li>
+          <li>
+            **Yüksek Verimlilik Sınıfı:** A+++ gibi yüksek enerji verimliliği sınıfına sahip klimaları tercih edin. Başlangıç maliyeti yüksek olsa da, uzun vadede elektrik faturasında önemli tasarruf sağlarlar.
+          </li>
+          <li>
+            **Optimal Sıcaklık Ayarı:** Yazın 24-26°C, kışın ise 20-22°C gibi ideal sıcaklık aralıklarında kullanmaya özen gösterin. Her 1 derecelik fark, tüketimi %7-10 oranında artırabilir.
+          </li>
+          <li>
+            **Periyodik Bakım:** Klimanızın filtrelerini düzenli olarak temizleyin ve yetkili servise periyodik bakım yaptırın. Kirli filtreler hava akışını engeller ve verimliliği düşürür.
+          </li>
+          <li>
+            **Yalıtım ve Gölgeleme:** Evinizin iyi yalıtılmış olduğundan emin olun. Perdeleri, panjurları veya tenteleri kullanarak doğrudan güneş ışınlarının içeri girmesini engelleyin.
+          </li>
+          <li>
+            **Gece Modu / Uyku Modu:** Klimanın gece veya siz uyurken daha az enerji harcamasını sağlayan modları kullanın.
+          </li>
+        </ul>
+        <p class="disclaimer-text">
+          Bu hesaplayıcı, kullanıcı tarafından girilen değerlere ve genel formüllere dayanarak tahmini enerji tüketimini sunar. Gerçek tüketim, klimanın modeli, kullanım koşulları, elektrik şebekesi dalgalanmaları ve diğer çevresel faktörlere bağlı olarak değişiklik gösterebilir. En doğru bilgi için klimanızın kullanım kılavuzunu incelemeniz ve elektrik faturanızı takip etmeniz önerilir.
+        </p>
+      </section>
+    </main>
+    <div id="footer-placeholder">
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+        const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+        const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+        // Header Yükleme
+        fetch(headerPath)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+          })
+          .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+              headerPlaceholder.innerHTML = data;
+              const scriptElement = headerPlaceholder.querySelector('script');
+              if (scriptElement) {
+                const newScript = document.createElement('script');
+                newScript.textContent = scriptElement.textContent;
+                document.body.appendChild(newScript);
+                scriptElement.remove();
+              }
+            }
+          })
+          .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+        // Footer Yükleme
+        fetch(footerPath)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+          })
+          .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+              footerPlaceholder.innerHTML = data;
+              const tempDiv = document.createElement('div');
+              tempDiv.innerHTML = data;
+              const footerElement = tempDiv.querySelector('footer');
+              if (footerElement) {
+                footerPlaceholder.replaceWith(footerElement);
+              }
+            }
+          })
+          .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+      });
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        const texts = {
+          tr: {
+            calculateButton: 'Hesapla',
+            invalidInput: 'Lütfen tüm alanlara geçerli değerler girin.',
+            errorZeroOrNegative: 'Değer sıfır veya negatif olamaz.',
+            dailyConsumption: 'Günlük Tüketim:',
+            monthlyConsumption: 'Aylık Tüketim:',
+            yearlyConsumption: 'Yıllık Tüketim:',
+            dailyCost: 'Günlük Maliyet:',
+            monthlyCost: 'Aylık Maliyet:',
+            yearlyCost: 'Yıllık Maliyet:',
+            unit_kwh: 'kWh',
+            unit_tl: 'TL',
+            unit_btu_h: 'BTU/h',
+            unit_eer_cop: 'EER/COP',
+            unit_hours_day: 'saat/gün',
+            unit_tl_kwh: 'TL/kWh',
+            noteYearly: ' (Yaklaşık 90 günlük sezon için)'
+          },
+          en: {
+            calculateButton: 'Calculate',
+            invalidInput: 'Please enter valid values for all fields.',
+            errorZeroOrNegative: 'Value cannot be zero or negative.',
+            dailyConsumption: 'Daily Consumption:',
+            monthlyConsumption: 'Monthly Consumption:',
+            yearlyConsumption: 'Yearly Consumption:',
+            dailyCost: 'Daily Cost:',
+            monthlyCost: 'Monthly Cost:',
+            yearlyCost: 'Yearly Cost:',
+            unit_kwh: 'kWh',
+            unit_tl: 'TL',
+            unit_btu_h: 'BTU/h',
+            unit_eer_cop: 'EER/COP',
+            unit_hours_day: 'hours/day',
+            unit_tl_kwh: 'TL/kWh',
+            noteYearly: ' (For approximately 90-day season)'
+          }
+        };
+
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        const klimaTuketimForm = document.getElementById('klimaTuketimForm');
+        const klimaTuketimResultDiv = document.getElementById('klimaTuketimResult');
+
+        klimaTuketimForm.addEventListener('submit', function(event) {
+          event.preventDefault();
+
+          const btuCapacity = parseFloat(document.getElementById('btuCapacity').value);
+          const eerCopValue = parseFloat(document.getElementById('eerCopValue').value);
+          const dailyHours = parseFloat(document.getElementById('dailyHours').value);
+          const electricityPrice = parseFloat(document.getElementById('electricityPrice').value);
+          const eerCopType = document.getElementById('eerCopType').value;
+
+          // Giriş değerlerinin doğrulanması
+          if (isNaN(btuCapacity) || isNaN(eerCopValue) || isNaN(dailyHours) || isNaN(electricityPrice) ||
+            btuCapacity <= 0 || eerCopValue <= 0 || dailyHours <= 0 || electricityPrice < 0) {
+            klimaTuketimResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            klimaTuketimResultDiv.style.display = 'block';
+            return;
+          }
+          if (dailyHours > 24) {
+            klimaTuketimResultDiv.innerHTML = `<p class="error">Günlük çalışma süresi 24 saati geçemez.</p>`;
+            klimaTuketimResultDiv.style.display = 'block';
+            return;
+          }
+
+          // BTU/h değerini kW'a çevirme (1 kW = 3412 BTU/h yaklaşık olarak)
+          // Verimlilik EER ise soğutma, COP ise ısıtma verimliliğidir.
+          // Elektrik Tüketimi (kW) = Kapasite (BTU/h) / (Verimlilik Değeri * 3412)
+          let powerConsumptionKw;
+          if (eerCopType === 'EER') {
+            powerConsumptionKw = btuCapacity / (eerCopValue * 3412);
+          } else { // COP
+            powerConsumptionKw = btuCapacity / (eerCopValue * 3412);
+          }
+
+          // Günlük tüketim ve maliyet
+          const dailyConsumptionKwh = powerConsumptionKw * dailyHours;
+          const dailyCost = dailyConsumptionKwh * electricityPrice;
+
+          // Aylık tüketim ve maliyet (30 gün üzerinden)
+          const monthlyConsumptionKwh = dailyConsumptionKwh * 30;
+          const monthlyCost = dailyCost * 30;
+
+          // Yıllık tüketim ve maliyet (Varsayımsal olarak 90 gün yaz, 90 gün kış sezonu, yani toplam 180 gün çalışsa bile, kullanıcıya daha anlamlı bir değer sunmak için bir sezon baz alınabilir, burada 90 gün yazdım)
+          // Genellikle 90-120 gün yaz sezonu, 60-90 gün kış sezonu yoğun kullanılır.
+          // Burada 90 gün varsayımı ile gidiyorum. Eğer kullanıcı daha uzun bir yıllık kullanım bekliyorsa açıklama kısmında belirtebilirsiniz.
+          const yearlyConsumptionKwh = dailyConsumptionKwh * 90; // Örn: 3 aylık yoğun kullanım
+          const yearlyCost = dailyCost * 90;
+
+          klimaTuketimResultDiv.innerHTML = `
+                <p>${currentTexts.dailyConsumption} <span class="result-value">${dailyConsumptionKwh.toFixed(2)}</span> ${currentTexts.unit_kwh}</p>
+                <p>${currentTexts.dailyCost} <span class="result-value">${dailyCost.toFixed(2)}</span> ${currentTexts.unit_tl}</p>
+                <hr class="form-divider" />
+                <p>${currentTexts.monthlyConsumption} <span class="result-value">${monthlyConsumptionKwh.toFixed(2)}</span> ${currentTexts.unit_kwh}</p>
+                <p>${currentTexts.monthlyCost} <span class="result-value">${monthlyCost.toFixed(2)}</span> ${currentTexts.unit_tl}</p>
+                <hr class="form-divider" />
+                <p>${currentTexts.yearlyConsumption} <span class="result-value">${yearlyConsumptionKwh.toFixed(2)}</span> ${currentTexts.unit_kwh}${currentTexts.noteYearly}</p>
+                <p>${currentTexts.yearlyCost} <span class="result-value">${yearlyCost.toFixed(2)}</span> ${currentTexts.unit_tl}${currentTexts.noteYearly}</p>
+            `;
+          klimaTuketimResultDiv.style.display = 'block';
+        });
+
+        // MathJax'i yalnızca açıklama bölümündeki formüller için yükle
+        if (typeof MathJax !== 'undefined') {
+          MathJax.typesetPromise().then(() => {
+            console.log("MathJax typeset complete for initial load.");
+          }).catch((err) => console.error("MathJax typeset error on initial load:", err));
+        }
+      });
+    </script>
+  </body>
+</html>
