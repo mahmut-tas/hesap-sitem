@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>
+      Seri ve Paralel Direnç Hesaplayıcı - Hesapkolik
+    </title>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    <link href="/css/header.css" rel="stylesheet"/>
+    <meta content="Elektrik devrelerindeki seri ve paralel bağlı dirençlerin eşdeğer direncini kolayca hesaplayın. Elektronik ve fizik dersleri için ideal." name="description"/>
+    <meta content="seri direnç, paralel direnç, direnç hesaplama, eşdeğer direnç, elektronik, elektrik, devre, ohm, hesapkolik direnç" name="keywords"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <link href="../../css/style.css" rel="stylesheet"/>
+    <script async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    <style>
+      /* Genel Stil Ayarları */
+      body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f7f6;
+        color: #333;
+      }
+
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .hero-section {
+        background-color: #34495e;
+        color: white;
+        padding: 80px 0;
+        text-align: center;
+      }
+
+      .hero-section h1 {
+        font-size: 3em;
+        margin-bottom: 20px;
+      }
+
+      .hero-section p {
+        font-size: 1.2em;
+        opacity: 0.9;
+      }
+
+      .calculator-section {
+        padding: 50px 0;
+        text-align: center;
+        background-color: #eaf0f0;
+        border-bottom: 1px solid #dee7e7;
+      }
+
+      .calculator-section h2 {
+        margin-bottom: 30px;
+        color: #2c3e50;
+        font-size: 2.2em;
+      }
+
+      .calc-wrapper {
+        background-color: #ffffff;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        max-width: 650px;
+        margin: 30px auto;
+        text-align: left;
+      }
+
+      .calc-wrapper h3 {
+        font-size: 2em;
+        color: #e74c3c;
+        margin-bottom: 25px;
+        text-align: center;
+      }
+
+      .calc-wrapper label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555;
+      }
+
+      .calc-wrapper input[type="number"],
+      .calc-wrapper select {
+        width: 100%;
+        padding: 12px 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1em;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease;
+      }
+
+      .calc-wrapper input[type="number"]:focus,
+      .calc-wrapper select:focus {
+        border-color: #3498db;
+        outline: none;
+      }
+
+      .calc-wrapper input.error {
+        border-color: red !important;
+      }
+
+      .result-display {
+        margin-top: 25px;
+        font-size: 1.1em;
+        font-weight: 600;
+        color: #2c3e50;
+        text-align: center;
+        min-height: 1.8em;
+        background-color: #ecf0f1;
+        padding: 15px 20px;
+        border-radius: 8px;
+        border: 1px solid #dcdfe4;
+      }
+
+      .result-display .result-value {
+        color: #e74c3c;
+        font-weight: 700;
+        font-size: 1.3em;
+      }
+
+      .result-display .error {
+        color: #e74c3c;
+        font-size: 0.8em;
+      }
+
+      .calc-explanation {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        color: #666;
+        line-height: 1.6;
+        text-align: justify;
+      }
+
+      .calc-explanation strong {
+        color: #333;
+      }
+
+      .calc-explanation p:last-child {
+        margin-bottom: 0;
+      }
+
+      .info-section {
+        padding: 40px 0;
+        background-color: #ffffff;
+        margin-top: 40px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+      }
+
+      .info-section h3 {
+        color: #e74c3c;
+        font-size: 1.8em;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .info-section p {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 15px;
+        padding: 0 20px;
+        text-align: justify;
+      }
+
+      .info-section ul {
+        list-style-type: disc;
+        margin: 0 20px 20px 40px;
+        color: #666;
+      }
+
+      .info-section ul li {
+        margin-bottom: 10px;
+        line-height: 1.5;
+      }
+
+      .info-section strong {
+        color: #333;
+      }
+
+      /* Responsive Ayarlamalar */
+      @media (max-width: 768px) {
+        .calc-wrapper {
+          padding: 30px 20px;
+          margin: 20px auto;
+        }
+
+        .calc-wrapper h3 {
+          font-size: 1.8em;
+        }
+
+        .result-display {
+          font-size: 1.4em;
+        }
+      }
+
+      @media (max-width: 480px) {
+        header nav ul {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        header nav ul li {
+          margin: 10px 0;
+        }
+      }
+
+      /* Hesapla butonu stili */
+      .calculator-form-container button {
+        background-color: #28a745; /* Yeşil ton */
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.1em;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 10px;
+      }
+
+      .calculator-form-container button:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
+      }
+
+      .icon-small {
+        margin-right: 10px;
+        color: #3498db; /* İkon rengi */
+      }
+
+      .input-with-unit {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .input-with-unit label {
+        flex-basis: 100%;
+        margin-bottom: 5px;
+      }
+
+      .input-with-unit input[type="number"] {
+        flex-grow: 1;
+        margin-bottom: 0;
+      }
+
+      .input-with-unit select {
+        flex-shrink: 0;
+        width: auto;
+        margin-bottom: 0;
+      }
+      
+      /* Direnç girişleri için özel stil */
+      .resistor-input-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+      }
+      .resistor-input-group label {
+        flex-basis: auto; /* Label kendi genişliğinde olsun */
+        margin-bottom: 0;
+        min-width: 70px; /* Sabit genişlik verebiliriz */
+      }
+      .resistor-input-group input {
+        flex-grow: 1;
+        margin-bottom: 0 !important; /* Üstteki genel input stilini ez */
+      }
+      .resistor-input-group button {
+        background-color: #dc3545; /* Kırmızı ton */
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        flex-shrink: 0;
+        width: auto; /* Kendi içeriği kadar olsun */
+        margin-top: 0 !important; /* Üstteki genel buton stilini ez */
+      }
+      .resistor-input-group button:hover {
+        background-color: #c82333;
+      }
+      .add-resistor-button {
+        background-color: #007bff; /* Mavi ton */
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 15px;
+        display: block; /* Tam genişlik olmasın */
+        width: auto;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .add-resistor-button:hover {
+        background-color: #0056b3;
+      }
+      .resistor-type-selection {
+        text-align: center;
+        margin-bottom: 25px;
+      }
+      .resistor-type-selection input[type="radio"] {
+        margin: 0 10px;
+      }
+      .resistor-type-selection label {
+        display: inline-block;
+        margin-right: 20px;
+        font-weight: 600;
+        color: #555;
+      }
+    </style>
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+    </script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+    </script>
+  </head>
+  <body>
+    <div id="header-placeholder">
+    </div>
+    <main>
+      <section class="hero-section">
+        <div class="container">
+          <h1>
+            Seri ve Paralel Direnç Hesaplayıcı
+          </h1>
+          <p>
+            Elektrik devrelerindeki seri ve paralel bağlı dirençlerin eşdeğer direncini kolayca hesaplayın.
+          </p>
+        </div>
+      </section>
+      <section class="calculator-section">
+        <div class="container">
+          <h2>
+            Eşdeğer Direnci Hesapla
+          </h2>
+          <div class="calc-wrapper active-calc" id="calculator-direnc">
+            <h3>
+              <i class="fas fa-ohm icon-small">
+              </i>
+              Direnç Eşdeğerini Hesapla
+            </h3>
+            <div class="calculator-form-container">
+              <form id="direncHesaplamaForm">
+                <div class="resistor-type-selection">
+                  <label>
+                    <input checked="" name="connectionType" type="radio" value="series"/>
+                    Seri Bağlantı
+                  </label>
+                  <label>
+                    <input name="connectionType" type="radio" value="parallel"/>
+                    Paralel Bağlantı
+                  </label>
+                </div>
+                <div id="resistorInputs">
+                  <div class="input-with-unit resistor-input-group">
+                    <label for="resistor1">
+                      Direnç 1 (R₁):
+                    </label>
+                    <input id="resistor1" min="0.000001" placeholder="Örn: 100" required="" step="any" type="number"/>
+                    <select id="unit1">
+                      <option value="ohm">
+                        Ω
+                      </option>
+                      <option value="kohm">
+                        kΩ
+                      </option>
+                      <option value="mohm">
+                        MΩ
+                      </option>
+                    </select>
+                    <button class="remove-resistor-button" type="button">
+                      Sil
+                    </button>
+                  </div>
+                  <div class="input-with-unit resistor-input-group">
+                    <label for="resistor2">
+                      Direnç 2 (R₂):
+                    </label>
+                    <input id="resistor2" min="0.000001" placeholder="Örn: 200" required="" step="any" type="number"/>
+                    <select id="unit2">
+                      <option value="ohm">
+                        Ω
+                      </option>
+                      <option value="kohm">
+                        kΩ
+                      </option>
+                      <option value="mohm">
+                        MΩ
+                      </option>
+                    </select>
+                    <button class="remove-resistor-button" type="button">
+                      Sil
+                    </button>
+                  </div>
+                </div>
+                <button class="add-resistor-button" id="addResistor" type="button">
+                  <i class="fas fa-plus">
+                  </i>
+                  Direnç Ekle
+                </button>
+                <button type="submit">
+                  Eşdeğer Direnci Hesapla
+                </button>
+              </form>
+              <div class="result-display" id="direncResult">
+              </div>
+              <div class="calc-explanation">
+                <p>
+                  Elektrik devrelerindeki dirençler, akımın akışına karşı koyan bileşenlerdir. Dirençler birbiriyle seri veya paralel bağlanabilir ve bu bağlantı şekli devrenin **eşdeğer direncini** etkiler. Eşdeğer direnç, tüm bağlı dirençlerin yerine geçebilecek tek bir direncin değeridir.
+                </p>
+                <h4>
+                  Seri Direnç Hesaplama
+                </h4>
+                <p>
+                  Dirençler seri bağlandığında, devrenin toplam (eşdeğer) direnci, her bir direncin değerinin basitçe toplanmasıyla bulunur.
+                </p>
+                <p>
+                  Formül: **R_eş = R₁ + R₂ + R₃ + ... + Rₙ**
+                </p>
+                <p>
+                  Burada R_eş toplam eşdeğer direnci, R₁, R₂, ..., Rₙ ise devredeki ayrı ayrı dirençlerin değerlerini temsil eder.
+                </p>
+                <h4>
+                  Paralel Direnç Hesaplama
+                </h4>
+                <p>
+                  Dirençler paralel bağlandığında, eşdeğer direncinin tersi (1/R_eş), her bir direncin terslerinin (1/R₁) toplanmasıyla bulunur. Bu, akımın birden fazla yoldan akabildiği durumlar için geçerlidir.
+                </p>
+                <p>
+                  Formül: **1 / R_eş = 1 / R₁ + 1 / R₂ + 1 / R₃ + ... + 1 / Rₙ**
+                </p>
+                <p>
+                  Özel durum: Sadece iki paralel direnç için daha basit bir formül kullanılabilir:
+                  <br/>
+                  **R_eş = (R₁ × R₂) / (R₁ + R₂)**
+                </p>
+                <p>
+                  Unutmayın: Paralel bağlı dirençlerde eşdeğer direnç, her zaman devredeki en küçük direncin değerinden daha küçük olacaktır.
+                </p>
+                <ul>
+                  <li>
+                    <strong>
+                      Direnç (R):
+                    </strong>
+                    Elektrik akımının akışına karşı koyma özelliğini ölçer. Birimi Ohm (Ω)'dur.
+                  </li>
+                  <li>
+                    <strong>
+                      Seri Bağlantı:
+                    </strong>
+                    Dirençlerin ardışık olarak, tek bir yol üzerinde bağlanmasıdır.
+                  </li>
+                  <li>
+                    <strong>
+                      Paralel Bağlantı:
+                    </strong>
+                    Dirençlerin iki ortak nokta arasına, akımın birden fazla yol üzerinden akmasına izin verecek şekilde bağlanmasıdır.
+                  </li>
+                  <li>
+                    <strong>
+                      Eşdeğer Direnç (R_eş):
+                    </strong>
+                    Bir devredeki tüm dirençlerin aynı etkiyi yaratacak şekilde tek bir dirençle ifade edilmiş halidir.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="info-section container">
+        <h3>
+          Dirençler ve Elektrik Devreleri
+        </h3>
+        <p>
+          Elektrik ve elektronikte dirençler, devrelerin temel yapı taşlarından biridir. Bir devredeki direnç, elektrik akımının geçişine karşı koyan bir bileşendir ve Ohm Kanunu'na göre akım ile voltaj arasındaki ilişkiyi belirler. Dirençlerin doğru bir şekilde hesaplanması, hem yeni devreler tasarlarken hem de mevcut devreleri analiz ederken kritik öneme sahiptir.
+        </p>
+        <p>
+          Dirençler, elektronik cihazlarda akımı sınırlamak, voltajı bölmek, sinyalleri filtrelemek ve ısı üretmek gibi çeşitli amaçlar için kullanılır. Bilgisayarlardan cep telefonlarına, ev aletlerinden endüstriyel makinelere kadar her yerde dirençlerle karşılaşırız.
+        </p>
+
+        <h4>
+          Seri Bağlantı: Bir Yol, Toplam Direnç
+        </h4>
+        <p>
+          Dirençler seri bağlandığında, akım tüm dirençler üzerinden aynı yoldan akar. Bu tür bir bağlantıda, her bir direncin katkısı eşdeğer direnci artırır. Tıpkı bir boru hattında peş peşe daralmalar olması gibi, her bir daralma akışa ek bir engel teşkil eder ve toplam direnci artırır. Bu nedenle, seri bağlı dirençlerin eşdeğer direncini bulmak için tüm direnç değerlerini toplamak yeterlidir.
+        </p>
+
+        <h4>
+          Paralel Bağlantı: Birden Fazla Yol, Azalan Direnç
+        </h4>
+        <p>
+          Dirençler paralel bağlandığında, akım farklı yollar üzerinden bölünebilir. Bu durum, devrenin toplam direncini azaltır çünkü akım için alternatif yollar oluşur. Bir otoban üzerindeki birden fazla şerit gibi düşünebilirsiniz; her ek şerit, trafiğin daha rahat akmasını sağlayarak toplam sıkışıklığı (direnci) azaltır. Paralel bağlantılarda eşdeğer direnç, her zaman en küçük bireysel direncin değerinden daha az olacaktır. Bu, akımın her zaman en az dirençli yolu tercih etme eğiliminde olmasından kaynaklanır.
+        </p>
+
+        <h4>
+          Uygulama Alanları
+        </h4>
+        <ul>
+          <li>
+            **Elektronik Tasarımı:** Herhangi bir elektronik devrenin (LED sürücüleri, ses yükselticiler, sensör devreleri vb.) temel tasarımı için direnç hesaplamaları vazgeçilmezdir.
+          </li>
+          <li>
+            **Güç Dağıtımı:** Elektrik şebekelerinde voltaj düşüşlerini ve akım sınırlamalarını hesaplamak için kullanılır.
+          </li>
+          <li>
+            **Arıza Tespiti:** Bir devredeki arızayı bulmak için toplam direnci ölçmek ve beklenen değerlerle karşılaştırmak önemlidir.
+          </li>
+          <li>
+            **Eğitim:** Fizik ve elektrik-elektronik mühendisliği derslerinin temelini oluşturur.
+          </li>
+        </ul>
+        <p class="disclaimer-text">
+          Bu hesaplayıcı, standart seri ve paralel direnç formüllerine dayanmaktadır. Gerçek dünya uygulamalarında kablo direnci, sıcaklık değişimleri ve tolerans gibi faktörler sonuçları etkileyebilir. Hassas uygulamalar için bu faktörler de dikkate alınmalıdır.
+        </p>
+      </section>
+    </main>
+    <div id="footer-placeholder">
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+        const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+        const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+        // Header Yükleme
+        fetch(headerPath)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+          })
+          .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+              headerPlaceholder.innerHTML = data;
+              const scriptElement = headerPlaceholder.querySelector('script');
+              if (scriptElement) {
+                const newScript = document.createElement('script');
+                newScript.textContent = scriptElement.textContent;
+                document.body.appendChild(newScript);
+                scriptElement.remove();
+              }
+            }
+          })
+          .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+        // Footer Yükleme
+        fetch(footerPath)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+          })
+          .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+              footerPlaceholder.innerHTML = data;
+              const tempDiv = document.createElement('div');
+              tempDiv.innerHTML = data;
+              const footerElement = tempDiv.querySelector('footer');
+              if (footerElement) {
+                footerPlaceholder.replaceWith(footerElement);
+              }
+            }
+          })
+          .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+      });
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        const texts = {
+          tr: {
+            calculateButton: 'Eşdeğer Direnci Hesapla',
+            addResistor: 'Direnç Ekle',
+            removeResistor: 'Sil',
+            invalidInput: 'Lütfen tüm dirençler için geçerli ve pozitif değerler girin.',
+            errorZeroOrNegative: 'Direnç değeri sıfır veya negatif olamaz.',
+            errorMinResistors: 'Hesaplama için en az iki direnç girmelisiniz.',
+            resistorLabel: 'Direnç',
+            ohm: 'Ω',
+            kohm: 'kΩ',
+            mohm: 'MΩ',
+            seriesConnection: 'Seri Bağlantı',
+            parallelConnection: 'Paralel Bağlantı',
+            equivalentResistance: 'Eşdeğer Direnç:',
+          },
+          en: {
+            calculateButton: 'Calculate Equivalent Resistance',
+            addResistor: 'Add Resistor',
+            removeResistor: 'Remove',
+            invalidInput: 'Please enter valid and positive values for all resistors.',
+            errorZeroOrNegative: 'Resistor value cannot be zero or negative.',
+            errorMinResistors: 'You must enter at least two resistors for calculation.',
+            resistorLabel: 'Resistor',
+            ohm: 'Ω',
+            kohm: 'kΩ',
+            mohm: 'MΩ',
+            seriesConnection: 'Series Connection',
+            parallelConnection: 'Parallel Connection',
+            equivalentResistance: 'Equivalent Resistance:',
+          }
+        };
+
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        const direncHesaplamaForm = document.getElementById('direncHesaplamaForm');
+        const direncResultDiv = document.getElementById('direncResult');
+        const resistorInputsContainer = document.getElementById('resistorInputs');
+        const addResistorButton = document.getElementById('addResistor');
+        let resistorCount = 2; // Başlangıçta 2 direnç var
+
+        // Direnç birim dönüşüm sabiti (her şeyi Ohm'a dönüştürür)
+        const UNIT_TO_OHM = {
+          'ohm': 1,
+          'kohm': 1000,
+          'mohm': 1000000
+        };
+
+        // UI Güncelleme Fonksiyonu
+        function updateUI() {
+          const connectionType = document.querySelector('input[name="connectionType"]:checked').value;
+          const explanation = document.querySelector('.calc-explanation');
+          
+          // Açıklama metinlerini bağlantı tipine göre güncelleyebiliriz
+          // Şimdilik, genel açıklamayı tutalım ve detayları formül kısmında verelim.
+          // Eğer çok farklı açıklamalar gerekirse bu kısım genişletilebilir.
+          
+          // Direnç isimlerini ve silme butonlarını güncelle
+          resistorInputsContainer.querySelectorAll('.resistor-input-group').forEach((group, index) => {
+            group.querySelector('label').textContent = `${currentTexts.resistorLabel} ${index + 1} (R${index + 1}):`;
+            group.querySelector('input').id = `resistor${index + 1}`;
+            group.querySelector('select').id = `unit${index + 1}`;
+            if (index < 2) { // İlk iki direnç silinemez
+                group.querySelector('.remove-resistor-button').style.display = 'none';
+            } else {
+                group.querySelector('.remove-resistor-button').style.display = 'inline-block';
+            }
+          });
+        }
+
+        // Direnç Ekle Butonu
+        addResistorButton.addEventListener('click', function() {
+          resistorCount++;
+          const newResistorGroup = document.createElement('div');
+          newResistorGroup.classList.add('input-with-unit', 'resistor-input-group');
+          newResistorGroup.innerHTML = `
+            <label for="resistor${resistorCount}">${currentTexts.resistorLabel} ${resistorCount} (R${resistorCount}):</label>
+            <input type="number" id="resistor${resistorCount}" min="0.000001" step="any" required placeholder="${currentTexts.ohm}">
+            <select id="unit${resistorCount}">
+              <option value="ohm">${currentTexts.ohm}</option>
+              <option value="kohm">${currentTexts.kohm}</option>
+              <option value="mohm">${currentTexts.mohm}</option>
+            </select>
+            <button type="button" class="remove-resistor-button">${currentTexts.removeResistor}</button>
+          `;
+          resistorInputsContainer.appendChild(newResistorGroup);
+          updateUI(); // Yeni eklenen direncin etiketini ve butonunu güncelle
+        });
+
+        // Direnç Sil Butonu (delegasyon kullanarak)
+        resistorInputsContainer.addEventListener('click', function(event) {
+          if (event.target.classList.contains('remove-resistor-button')) {
+            if (resistorCount > 2) { // En az 2 direnç kalmalı
+              event.target.closest('.resistor-input-group').remove();
+              resistorCount--;
+              updateUI(); // Kalan dirençlerin etiketlerini güncelle
+            } else {
+                direncResultDiv.innerHTML = `<p class="error">${currentTexts.errorMinResistors}</p>`;
+                direncResultDiv.style.display = 'block';
+            }
+          }
+        });
+
+        // Bağlantı tipi değiştiğinde UI'ı güncelle
+        document.querySelectorAll('input[name="connectionType"]').forEach(radio => {
+            radio.addEventListener('change', updateUI);
+        });
+
+        // Form Gönderimi
+        direncHesaplamaForm.addEventListener('submit', function(event) {
+          event.preventDefault();
+
+          const connectionType = document.querySelector('input[name="connectionType"]:checked').value;
+          const resistorInputs = resistorInputsContainer.querySelectorAll('.resistor-input-group');
+          let resistors = [];
+          let isValid = true;
+
+          resistorInputs.forEach((group, index) => {
+            const valueInput = group.querySelector('input[type="number"]');
+            const unitSelect = group.querySelector('select');
+
+            const resistance = parseFloat(valueInput.value);
+            const unit = unitSelect.value;
+
+            if (isNaN(resistance) || resistance <= 0) {
+              isValid = false;
+              valueInput.classList.add('error');
+            } else {
+              valueInput.classList.remove('error');
+              resistors.push(resistance * UNIT_TO_OHM[unit]); // Tüm değerleri Ohm'a dönüştürerek ekle
+            }
+          });
+
+          if (!isValid) {
+            direncResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            direncResultDiv.style.display = 'block';
+            return;
+          }
+
+          if (resistors.length < 2) {
+              direncResultDiv.innerHTML = `<p class="error">${currentTexts.errorMinResistors}</p>`;
+              direncResultDiv.style.display = 'block';
+              return;
+          }
+
+          let equivalentResistance;
+
+          if (connectionType === 'series') {
+            equivalentResistance = resistors.reduce((sum, current) => sum + current, 0);
+          } else { // parallel
+            let sumOfReciprocals = 0;
+            for (let i = 0; i < resistors.length; i++) {
+              if (resistors[i] === 0) { // Paralel bağlı direnç sıfır olamaz
+                  direncResultDiv.innerHTML = `<p class="error">Paralel bağlantıda direnç değeri sıfır olamaz.</p>`;
+                  direncResultDiv.style.display = 'block';
+                  return;
+              }
+              sumOfReciprocals += (1 / resistors[i]);
+            }
+            equivalentResistance = 1 / sumOfReciprocals;
+          }
+
+          direncResultDiv.innerHTML = `
+            <p>${currentTexts.equivalentResistance} <span class="result-value">${equivalentResistance.toFixed(4)}</span> ${currentTexts.ohm}</p>
+          `;
+          direncResultDiv.style.display = 'block';
+        });
+
+        // Sayfa yüklendiğinde başlangıç UI'ını ve Türkçe/İngilizce metinlerini ayarla
+        updateUI();
+
+        // MathJax'i yalnızca açıklama bölümündeki formüller için yükle (eğer varsa)
+        if (typeof MathJax !== 'undefined') {
+          MathJax.typesetPromise().then(() => {
+            console.log("MathJax typeset complete for initial load.");
+          }).catch((err) => console.error("MathJax typeset error on initial load:", err));
+        }
+      });
+    </script>
+  </body>
+</html>
