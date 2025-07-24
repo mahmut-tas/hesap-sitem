@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>
+      Air Conditioner Energy Consumption Calculator - Hesapkolik
+    </title>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    <link href="/css/header.css" rel="stylesheet"/>
+    <meta content="Calculate your air conditioner's daily, monthly, and yearly energy consumption. Find out how much electricity you're using based on BTU, kW, COP, and operating hours." name="description"/>
+    <meta content="air conditioner energy consumption, AC electricity usage, AC power cost, BTU calculation, AC COP, AC EER, AC kW, electricity bill, energy efficiency, hesapkolik AC" name="keywords"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <link href="../../css/style.css" rel="stylesheet"/>
+    <script async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    <style>
+      /* General Style Settings */
+      body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f7f6;
+        color: #333;
+      }
+
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .hero-section {
+        background-color: #34495e;
+        color: white;
+        padding: 80px 0;
+        text-align: center;
+      }
+
+      .hero-section h1 {
+        font-size: 3em;
+        margin-bottom: 20px;
+      }
+
+      .hero-section p {
+        font-size: 1.2em;
+        opacity: 0.9;
+      }
+
+      .calculator-section {
+        padding: 50px 0;
+        text-align: center;
+        background-color: #eaf0f0;
+        border-bottom: 1px solid #dee7e7;
+      }
+
+      .calculator-section h2 {
+        margin-bottom: 30px;
+        color: #2c3e50;
+        font-size: 2.2em;
+      }
+
+      .calc-wrapper {
+        background-color: #ffffff;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        max-width: 650px;
+        margin: 30px auto;
+        text-align: left;
+      }
+
+      .calc-wrapper h3 {
+        font-size: 2em;
+        color: #e74c3c;
+        margin-bottom: 25px;
+        text-align: center;
+      }
+
+      .calc-wrapper label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555;
+      }
+
+      .calc-wrapper input[type="number"],
+      .calc-wrapper select {
+        width: 100%;
+        padding: 12px 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1em;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease;
+      }
+
+      .calc-wrapper input[type="number"]:focus,
+      .calc-wrapper select:focus {
+        border-color: #3498db;
+        outline: none;
+      }
+
+      .calc-wrapper input.error {
+        border-color: red !important;
+      }
+
+      .result-display {
+        margin-top: 25px;
+        font-size: 1.1em;
+        font-weight: 600;
+        color: #2c3e50;
+        text-align: center;
+        min-height: 1.8em;
+        background-color: #ecf0f1;
+        padding: 15px 20px;
+        border-radius: 8px;
+        border: 1px solid #dcdfe4;
+      }
+
+      .result-display .result-value {
+        color: #e74c3c;
+        font-weight: 700;
+        font-size: 1.3em;
+      }
+
+      .result-display .error {
+        color: #e74c3c;
+        font-size: 0.8em;
+      }
+
+      .calc-explanation {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        color: #666;
+        line-height: 1.6;
+        text-align: justify;
+      }
+
+      .calc-explanation strong {
+        color: #333;
+      }
+
+      .calc-explanation p:last-child {
+        margin-bottom: 0;
+      }
+
+      .info-section {
+        padding: 40px 0;
+        background-color: #ffffff;
+        margin-top: 40px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+      }
+
+      .info-section h3 {
+        color: #e74c3c;
+        font-size: 1.8em;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .info-section p {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 15px;
+        padding: 0 20px;
+        text-align: justify;
+      }
+
+      .info-section ul {
+        list-style-type: disc;
+        margin: 0 20px 20px 40px;
+        color: #666;
+      }
+
+      .info-section ul li {
+        margin-bottom: 10px;
+        line-height: 1.5;
+      }
+
+      .info-section strong {
+        color: #333;
+      }
+
+      /* Responsive Adjustments */
+      @media (max-width: 768px) {
+        .calc-wrapper {
+          padding: 30px 20px;
+          margin: 20px auto;
+        }
+
+        .calc-wrapper h3 {
+          font-size: 1.8em;
+        }
+
+        .result-display {
+          font-size: 1.4em;
+        }
+      }
+
+      @media (max-width: 480px) {
+        header nav ul {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        header nav ul li {
+          margin: 10px 0;
+        }
+      }
+
+      /* Calculate button style */
+      .calculator-form-container button {
+        background-color: #28a745; /* Green tone */
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.1em;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 10px;
+      }
+
+      .calculator-form-container button:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
+      }
+
+      .icon-small {
+        margin-right: 10px;
+        color: #3498db; /* Icon color */
+      }
+
+      .input-with-unit {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .input-with-unit label {
+        flex-basis: 100%;
+        margin-bottom: 5px;
+      }
+
+      .input-with-unit input[type="number"] {
+        flex-grow: 1;
+        margin-bottom: 0;
+      }
+
+      .input-with-unit select {
+        flex-shrink: 0;
+        width: auto;
+        margin-bottom: 0;
+      }
+
+      /* New style: For expandable section */
+      .toggle-content {
+        display: none; /* Hidden by default */
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #f9f9f9;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        text-align: left;
+      }
+
+      .toggle-button {
+        background-color: #3498db;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+        display: inline-block;
+        font-size: 0.95em;
+      }
+
+      .toggle-button:hover {
+        background-color: #2980b9;
+      }
+    </style>
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206">
+    </script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP">
+    </script>
+  </head>
+  <body>
+    <div id="header-placeholder">
+    </div>
+    <main>
+      <section class="hero-section">
+        <div class="container">
+          <h1>
+            Air Conditioner Energy Consumption Calculator
+          </h1>
+          <p>
+            Easily calculate your air conditioner's daily, monthly, and yearly electricity consumption and estimate your energy bill.
+          </p>
+        </div>
+      </section>
+      <section class="calculator-section">
+        <div class="container">
+          <h2>
+            How Much Electricity Does Your AC Use?
+          </h2>
+          <div class="calc-wrapper active-calc" id="calculator-klima-tuketim">
+            <h3>
+              <i class="fas fa-snowflake icon-small">
+              </i>
+              Calculate AC Energy Cost
+            </h3>
+            <div class="calculator-form-container">
+              <form id="klimaTuketimForm">
+                <div class="input-with-unit">
+                  <label for="btuCapacity">
+                    AC BTU Capacity:
+                  </label>
+                  <input id="btuCapacity" min="0" placeholder="e.g., 9000, 12000, 18000" required="" step="any" type="number"/>
+                  <select id="btuUnit">
+                    <option value="BTU">
+                      BTU/h
+                    </option>
+                  </select>
+                </div>
+                <hr class="form-divider"/>
+                <div class="input-with-unit">
+                  <label for="eerCopValue">
+                    AC Efficiency Rating (EER/COP):
+                  </label>
+                  <input id="eerCopValue" min="1" placeholder="e.g., 3.2 (Efficient ACs are usually above 3)" required="" step="any" type="number"/>
+                  <select id="eerCopType">
+                    <option value="EER">
+                      EER
+                    </option>
+                    <option value="COP">
+                      COP
+                    </option>
+                  </select>
+                </div>
+                <hr class="form-divider"/>
+                <div class="input-with-unit">
+                  <label for="dailyHours">
+                    Average Daily Operating Hours:
+                  </label>
+                  <input id="dailyHours" max="24" min="0" placeholder="e.g., 8" required="" step="any" type="number"/>
+                  <select id="dailyHoursUnit">
+                    <option value="hours">
+                      hours/day
+                    </option>
+                  </select>
+                </div>
+                <hr class="form-divider"/>
+                <div class="input-with-unit">
+                  <label for="electricityPrice">
+                    Electricity Unit Price (Incl. VAT):
+                  </label>
+                  <input id="electricityPrice" min="0" placeholder="e.g., 0.25 (USD/kWh)" required="" step="any" type="number"/>
+                  <select id="electricityPriceUnit">
+                    <option value="USD/kWh">
+                      USD/kWh
+                    </option>
+                  </select>
+                </div>
+                <button type="submit">
+                  Calculate Consumption
+                </button>
+              </form>
+              <div class="result-display" id="klimaTuketimResult">
+              </div>
+              <div class="calc-explanation">
+                <p>
+                  Calculate your AC's energy consumption costs by entering its **BTU capacity**, **efficiency rating (EER or COP)**, **daily operating hours**, and **electricity unit price**.
+                </p>
+                <p>
+                  **Calculation Formula:**
+                  <br/>
+                  Daily Consumption (kWh) = (BTU Capacity / (EER * 3412)) × Daily Operating Hours
+                  <br/>
+                  *Or for heating:*
+                  <br/>
+                  Daily Consumption (kWh) = (BTU Capacity / (COP * 3412)) × Daily Operating Hours
+                  <br/>
+                  *(1 kW = approximately 3412 BTU/h conversion is used)*
+                </p>
+                <p>
+                  This consumption is then converted to daily, monthly (30 days), and yearly (assuming a 90-day cooling/heating season) costs.
+                </p>
+                <ul>
+                  <li>
+                    <strong>
+                      BTU/h (British Thermal Unit per hour):
+                    </strong>
+                    Expresses the amount of heat energy the AC can transfer per hour. It's the cooling/heating power of the AC.
+                  </li>
+                  <li>
+                    <strong>
+                      EER (Energy Efficiency Ratio):
+                    </strong>
+                    Indicates efficiency in cooling mode. Higher EER means more efficient.
+                  </li>
+                  <li>
+                    <strong>
+                      COP (Coefficient of Performance):
+                    </strong>
+                    Indicates efficiency in heating mode. Higher COP means more efficient.
+                  </li>
+                  <li>
+                    <strong>
+                      kWh:
+                    </strong>
+                    Kilowatt-hour, the unit of electricity consumption.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="info-section container">
+        <h3>
+          Why is Air Conditioner Energy Consumption Important?
+        </h3>
+        <p>
+          Air conditioners are widely used devices that provide comfort in our homes and workplaces. However, especially during hot summer months or cold winter days, they can account for a **significant portion of our electricity bill.** Understanding and managing your AC's energy consumption is crucial for both your budget and environmental sustainability.
+        </p>
+        <p>
+          An energy-intensive air conditioner can incur substantial costs in the long run. Furthermore, high energy consumption increases your carbon footprint, contributing to climate change. Therefore, knowing how much electricity your AC uses enables you to make informed decisions and save energy.
+        </p>
+
+        <h4>
+          Factors Affecting Energy Consumption
+        </h4>
+        <p>
+          The primary factors influencing AC energy consumption are:
+        </p>
+        <ul>
+          <li>
+            **AC Capacity (BTU):** Indicates the cooling or heating power of the air conditioner. An AC with inappropriate capacity for the space will either run excessively, wasting energy, or won't be sufficiently efficient.
+          </li>
+          <li>
+            **Efficiency Rating (EER/COP):** These values show how much cooling (EER) or heating (COP) the AC provides relative to the electrical energy it consumes. ACs with higher EER/COP values do more work with less energy.
+          </li>
+          <li>
+            **Operating Hours:** The total daily, monthly, or yearly operating hours directly affect consumption.
+          </li>
+          <li>
+            **Electricity Unit Price:** The cost per kWh of electricity determines the total amount reflected on your bill.
+          </li>
+          <li>
+            **Environmental Conditions:** External air temperature, room insulation, number and orientation of windows, and other factors also influence the AC's workload and, consequently, its consumption.
+          </li>
+          <li>
+            **Maintenance Status:** ACs that are not regularly maintained (e.g., filter cleaning, gas checks) lose their efficiency and consume more energy.
+          </li>
+        </ul>
+
+        <h4>
+          Tips for Energy Saving
+        </h4>
+        <p>
+          Here are some ways to save energy while using your air conditioner:
+        </p>
+        <ul>
+          <li>
+            **Choose the Right Capacity:** When purchasing an AC, select a model with a BTU capacity appropriate for your room size and insulation.
+          </li>
+          <li>
+            **High Efficiency Class:** Prefer ACs with a high energy efficiency class, such as A+++. While the initial cost might be higher, they lead to significant electricity bill savings in the long run.
+          </li>
+          <li>
+            **Optimal Temperature Setting:** Aim to use your AC within ideal temperature ranges, such as 24-26°C (75-79°F) in summer and 20-22°C (68-72°F) in winter. Every 1-degree difference can increase consumption by 7-10%.
+          </li>
+          <li>
+            **Regular Maintenance:** Regularly clean your AC filters and have authorized service perform periodic maintenance. Dirty filters obstruct airflow and reduce efficiency.
+          </li>
+          <li>
+            **Insulation and Shading:** Ensure your home is well-insulated. Use curtains, blinds, or awnings to block direct sunlight.
+          </li>
+          <li>
+            **Night Mode / Sleep Mode:** Utilize modes that allow the AC to consume less energy at night or while you sleep.
+          </li>
+        </ul>
+        <p class="disclaimer-text">
+          This calculator provides estimated energy consumption based on user inputs and general formulas. Actual consumption may vary depending on the AC model, operating conditions, power grid fluctuations, and other environmental factors. For the most accurate information, it is recommended to consult your AC's user manual and monitor your electricity bill.
+        </p>
+      </section>
+    </main>
+    <div id="footer-placeholder">
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+        const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+        const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+        // Load Header
+        fetch(headerPath)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+            }
+            return response.text();
+          })
+          .then(data => {
+            const headerPlaceholder = document.getElementById('header-placeholder');
+            if (headerPlaceholder) {
+              headerPlaceholder.innerHTML = data;
+              const scriptElement = headerPlaceholder.querySelector('script');
+              if (scriptElement) {
+                const newScript = document.createElement('script');
+                newScript.textContent = scriptElement.textContent;
+                document.body.appendChild(newScript);
+                scriptElement.remove();
+              }
+            }
+          })
+          .catch(error => console.error('Error loading header:', error));
+
+        // Load Footer
+        fetch(footerPath)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+            }
+            return response.text();
+          })
+          .then(data => {
+            const footerPlaceholder = document.getElementById('footer-placeholder');
+            if (footerPlaceholder) {
+              footerPlaceholder.innerHTML = data;
+              const tempDiv = document.createElement('div');
+              tempDiv.innerHTML = data;
+              const footerElement = tempDiv.querySelector('footer');
+              if (footerElement) {
+                footerPlaceholder.replaceWith(footerElement);
+              }
+            }
+          })
+          .catch(error => console.error('Error loading footer:', error));
+      });
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+        const texts = {
+          tr: {
+            calculateButton: 'Hesapla',
+            invalidInput: 'Lütfen tüm alanlara geçerli değerler girin.',
+            errorZeroOrNegative: 'Değer sıfır veya negatif olamaz.',
+            dailyConsumption: 'Günlük Tüketim:',
+            monthlyConsumption: 'Aylık Tüketim:',
+            yearlyConsumption: 'Yıllık Tüketim:',
+            dailyCost: 'Günlük Maliyet:',
+            monthlyCost: 'Aylık Maliyet:',
+            yearlyCost: 'Yıllık Maliyet:',
+            unit_kwh: 'kWh',
+            unit_tl: 'TL',
+            unit_btu_h: 'BTU/h',
+            unit_eer_cop: 'EER/COP',
+            unit_hours_day: 'saat/gün',
+            unit_tl_kwh: 'TL/kWh',
+            noteYearly: ' (Yaklaşık 90 günlük sezon için)'
+          },
+          en: {
+            calculateButton: 'Calculate',
+            invalidInput: 'Please enter valid values for all fields.',
+            errorZeroOrNegative: 'Value cannot be zero or negative.',
+            dailyConsumption: 'Daily Consumption:',
+            monthlyConsumption: 'Monthly Consumption:',
+            yearlyConsumption: 'Yearly Consumption:',
+            dailyCost: 'Daily Cost:',
+            monthlyCost: 'Monthly Cost:',
+            yearlyCost: 'Yearly Cost:',
+            unit_kwh: 'kWh',
+            unit_usd: 'USD', /* Changed from TL to USD for English version */
+            unit_btu_h: 'BTU/h',
+            unit_eer_cop: 'EER/COP',
+            unit_hours_day: 'hours/day',
+            unit_usd_kwh: 'USD/kWh', /* Changed from TL/kWh to USD/kWh for English version */
+            noteYearly: ' (For approx. 90-day season)'
+          }
+        };
+
+        const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+        const klimaTuketimForm = document.getElementById('klimaTuketimForm');
+        const klimaTuketimResultDiv = document.getElementById('klimaTuketimResult');
+
+        klimaTuketimForm.addEventListener('submit', function(event) {
+          event.preventDefault();
+
+          const btuCapacity = parseFloat(document.getElementById('btuCapacity').value);
+          const eerCopValue = parseFloat(document.getElementById('eerCopValue').value);
+          const dailyHours = parseFloat(document.getElementById('dailyHours').value);
+          const electricityPrice = parseFloat(document.getElementById('electricityPrice').value);
+          const eerCopType = document.getElementById('eerCopType').value;
+
+          // Validate inputs
+          if (isNaN(btuCapacity) || isNaN(eerCopValue) || isNaN(dailyHours) || isNaN(electricityPrice) ||
+            btuCapacity <= 0 || eerCopValue <= 0 || dailyHours <= 0 || electricityPrice < 0) {
+            klimaTuketimResultDiv.innerHTML = `<p class="error">${currentTexts.invalidInput}</p>`;
+            klimaTuketimResultDiv.style.display = 'block';
+            return;
+          }
+          if (dailyHours > 24) {
+            klimaTuketimResultDiv.innerHTML = `<p class="error">Daily operating hours cannot exceed 24.</p>`;
+            klimaTuketimResultDiv.style.display = 'block';
+            return;
+          }
+
+          // Calculate power consumption in kW
+          // 1 kW ≈ 3412 BTU/h
+          let powerConsumptionKw;
+          if (eerCopType === 'EER') {
+            powerConsumptionKw = btuCapacity / (eerCopValue * 3412);
+          } else { // COP
+            powerConsumptionKw = btuCapacity / (eerCopValue * 3412);
+          }
+
+          // Daily consumption and cost
+          const dailyConsumptionKwh = powerConsumptionKw * dailyHours;
+          const dailyCost = dailyConsumptionKwh * electricityPrice;
+
+          // Monthly consumption and cost (based on 30 days)
+          const monthlyConsumptionKwh = dailyConsumptionKwh * 30;
+          const monthlyCost = dailyCost * 30;
+
+          // Yearly consumption and cost (assuming a 90-day seasonal usage)
+          const yearlyConsumptionKwh = dailyConsumptionKwh * 90;
+          const yearlyCost = dailyCost * 90;
+
+          klimaTuketimResultDiv.innerHTML = `
+                <p>${currentTexts.dailyConsumption} <span class="result-value">${dailyConsumptionKwh.toFixed(2)}</span> ${currentTexts.unit_kwh}</p>
+                <p>${currentTexts.dailyCost} <span class="result-value">${dailyCost.toFixed(2)}</span> ${currentTexts.unit_usd}</p>
+                <hr class="form-divider" />
+                <p>${currentTexts.monthlyConsumption} <span class="result-value">${monthlyConsumptionKwh.toFixed(2)}</span> ${currentTexts.unit_kwh}</p>
+                <p>${currentTexts.monthlyCost} <span class="result-value">${monthlyCost.toFixed(2)}</span> ${currentTexts.unit_usd}</p>
+                <hr class="form-divider" />
+                <p>${currentTexts.yearlyConsumption} <span class="result-value">${yearlyConsumptionKwh.toFixed(2)}</span> ${currentTexts.unit_kwh}${currentTexts.noteYearly}</p>
+                <p>${currentTexts.yearlyCost} <span class="result-value">${yearlyCost.toFixed(2)}</span> ${currentTexts.unit_usd}${currentTexts.noteYearly}</p>
+            `;
+          klimaTuketimResultDiv.style.display = 'block';
+        });
+
+        if (typeof MathJax !== 'undefined') {
+          MathJax.typesetPromise().then(() => {
+            console.log("MathJax typeset complete for initial load.");
+          }).catch((err) => console.error("MathJax typeset error on initial load:", err));
+        }
+      });
+    </script>
+  </body>
+</html>
