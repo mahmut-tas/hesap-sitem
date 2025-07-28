@@ -70,9 +70,9 @@
             max-width: 750px; 
             margin: 30px auto;
             text-align: left;
-            display: flex; /* İçerikleri yan yana hizala */
-            flex-direction: column; /* Mobil için dikey, masaüstü için ayarlanacak */
-            gap: 40px; /* Bölümler arası boşluk */
+            display: flex; 
+            flex-direction: column; 
+            gap: 40px; 
         }
         .calc-wrapper h3 {
             font-size: 2em;
@@ -180,6 +180,47 @@
             text-align: center;
         }
 
+        /* Tab Butonları için Stil */
+        .tool-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tool-tabs button {
+            background-color: #5cb85c; /* Farklı bir renk */
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1em;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            min-width: 150px;
+        }
+
+        .tool-tabs button:hover {
+            background-color: #4cae4c;
+            transform: translateY(-2px);
+        }
+
+        .tool-tabs button.active {
+            background-color: #337ab7; /* Aktif buton rengi */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* İçeriklerin gizlenmesi */
+        .tool-content {
+            display: none;
+        }
+
+        .tool-content.active {
+            display: block;
+        }
+
+
         /* Açıklama bölümleri */
         .info-section {
             background-color: #ffffff;
@@ -239,13 +280,14 @@
         /* Responsive Ayarlamalar */
         @media (min-width: 769px) {
             .calc-wrapper {
-                flex-direction: row; /* Masaüstünde yan yana */
-                justify-content: space-around;
-                align-items: flex-start; /* Üstten başlasınlar */
+                /* Yan yana hizalama kaldırıldı, çünkü artık tek bir araç gösteriliyor */
+                flex-direction: column; 
+                justify-content: center;
+                align-items: center;
             }
             .timer-section, .countdown-section {
-                flex: 1; /* Eşit genişlikte yayılsınlar */
-                max-width: 48%; /* biraz boşluk bırak */
+                width: 100%; /* Tam genişlik kaplasın */
+                max-width: 600px; /* Maksimum genişlik ile ortala */
             }
         }
 
@@ -283,7 +325,7 @@
                 font-size: 2.5em;
                 padding: 10px 15px;
             }
-            .button-group button {
+            .button-group button, .tool-tabs button {
                 padding: 10px 20px;
                 font-size: 1em;
                 min-width: 100px;
@@ -321,11 +363,16 @@
 
         <section class="calculator-section">
             <div class="container">
+                <div class="tool-tabs">
+                    <button id="show-stopwatch" class="active"><i class="fas fa-stopwatch"></i> Kronometre</button>
+                    <button id="show-countdown"><i class="fas fa-hourglass-end"></i> Geri Sayım Sayacı</button>
+                </div>
+
                 <div class="calc-wrapper">
                     
-                    <div class="timer-section">
+                    <div class="timer-section tool-content active" id="stopwatch-content">
                         <h3 id="stopwatch-title"><i class="fas fa-stopwatch icon-small"></i> Kronometre</h3>
-                        <div class="display" id="stopwatch-display">00:00:00</div>
+                        <div class="display" id="stopwatch-display">00:00:00.00</div>
                         <div class="button-group">
                             <button id="stopwatch-start" class="start"><i class="fas fa-play"></i> Başlat</button>
                             <button id="stopwatch-pause" class="pause" style="display: none;"><i class="fas fa-pause"></i> Duraklat</button>
@@ -333,7 +380,7 @@
                         </div>
                     </div>
 
-                    <div class="countdown-section">
+                    <div class="countdown-section tool-content" id="countdown-content">
                         <h3 id="countdown-title"><i class="fas fa-hourglass-end icon-small"></i> Geri Sayım Sayacı</h3>
                         <div class="countdown-input-group">
                             <label for="countdown-hours"><i class="fas fa-clock"></i> Saat:</label>
@@ -396,6 +443,8 @@
                     mainDescription: 'Süreleri hassas bir şekilde tutun ve geri sayımlarla zamanınızı yönetin.',
                     stopwatchTitle: 'Kronometre',
                     countdownTitle: 'Geri Sayım Sayacı',
+                    stopwatchTab: 'Kronometre',
+                    countdownTab: 'Geri Sayım Sayacı',
                     start: 'Başlat',
                     pause: 'Duraklat',
                     reset: 'Sıfırla',
@@ -417,6 +466,8 @@
                     mainDescription: 'Keep track of time precisely and manage your time with countdowns.',
                     stopwatchTitle: 'Stopwatch',
                     countdownTitle: 'Countdown Timer',
+                    stopwatchTab: 'Stopwatch',
+                    countdownTab: 'Countdown Timer',
                     start: 'Start',
                     pause: 'Pause',
                     reset: 'Reset',
@@ -480,6 +531,9 @@
             document.getElementById('stopwatch-title').innerHTML = `<i class="fas fa-stopwatch icon-small"></i> ${currentTexts.stopwatchTitle}`;
             document.getElementById('countdown-title').innerHTML = `<i class="fas fa-hourglass-end icon-small"></i> ${currentTexts.countdownTitle}`;
             
+            document.getElementById('show-stopwatch').innerHTML = `<i class="fas fa-stopwatch"></i> ${currentTexts.stopwatchTab}`;
+            document.getElementById('show-countdown').innerHTML = `<i class="fas fa-hourglass-end"></i> ${currentTexts.countdownTab}`;
+
             document.getElementById('stopwatch-start').innerHTML = `<i class="fas fa-play"></i> ${currentTexts.start}`;
             document.getElementById('stopwatch-pause').innerHTML = `<i class="fas fa-pause"></i> ${currentTexts.pause}`;
             document.getElementById('stopwatch-reset').innerHTML = `<i class="fas fa-redo"></i> ${currentTexts.reset}`;
@@ -494,7 +548,7 @@
 
             document.getElementById('info-section-title').textContent = currentTexts.infoSectionTitle;
             document.getElementById('info-section-p1').innerHTML = currentTexts.infoSectionP1;
-            document.querySelector('.info-section h4').textContent = currentTexts.whyImportantTitle; // Changed selector for H4
+            document.querySelector('.info-section h4').textContent = currentTexts.whyImportantTitle; 
             document.getElementById('info-list-1').innerHTML = currentTexts.infoList1;
             document.getElementById('info-list-2').innerHTML = currentTexts.infoList2;
             document.getElementById('info-list-3').innerHTML = currentTexts.infoList3;
@@ -519,15 +573,17 @@
                 const hours = Math.floor(totalSeconds / 3600);
                 const minutes = Math.floor((totalSeconds % 3600) / 60);
                 const seconds = totalSeconds % 60;
+                const centiseconds = Math.floor((ms % 1000) / 10); // Salise (yüzde bir saniye)
+
                 return [hours, minutes, seconds]
                     .map(unit => unit < 10 ? '0' + unit : unit)
-                    .join(':');
+                    .join(':') + '.' + (centiseconds < 10 ? '0' : '') + centiseconds; // Saliseyi iki haneli ekle
             }
 
             function startStopwatch() {
                 if (!isStopwatchRunning) {
                     startTime = Date.now() - elapsedTime;
-                    stopwatchInterval = setInterval(updateStopwatch, 1000);
+                    stopwatchInterval = setInterval(updateStopwatch, 10); // Her 10 milisaniyede bir güncelle
                     isStopwatchRunning = true;
                     stopwatchStartBtn.style.display = 'none';
                     stopwatchPauseBtn.style.display = 'inline-block';
@@ -547,7 +603,7 @@
                 clearInterval(stopwatchInterval);
                 elapsedTime = 0;
                 isStopwatchRunning = false;
-                stopwatchDisplay.textContent = '00:00:00';
+                stopwatchDisplay.textContent = '00:00:00.00';
                 stopwatchStartBtn.style.display = 'inline-block';
                 stopwatchPauseBtn.style.display = 'none';
             }
@@ -650,25 +706,31 @@
 
             // Input değişikliklerini izle, eğer manuel olarak süre girilirse display'i güncelle
             countdownHoursInput.addEventListener('input', () => {
-                const hours = parseInt(countdownHoursInput.value) || 0;
-                const minutes = parseInt(countdownMinutesInput.value) || 0;
-                const seconds = parseInt(countdownSecondsInput.value) || 0;
-                totalSecondsRemaining = hours * 3600 + minutes * 60 + seconds;
-                updateCountdownDisplay();
+                if (!isCountdownRunning) { // Sadece geri sayım durmuşken veya sıfırlanmışken güncellensin
+                    const hours = parseInt(countdownHoursInput.value) || 0;
+                    const minutes = parseInt(countdownMinutesInput.value) || 0;
+                    const seconds = parseInt(countdownSecondsInput.value) || 0;
+                    totalSecondsRemaining = hours * 3600 + minutes * 60 + seconds;
+                    updateCountdownDisplay();
+                }
             });
             countdownMinutesInput.addEventListener('input', () => {
-                const hours = parseInt(countdownHoursInput.value) || 0;
-                const minutes = parseInt(countdownMinutesInput.value) || 0;
-                const seconds = parseInt(countdownSecondsInput.value) || 0;
-                totalSecondsRemaining = hours * 3600 + minutes * 60 + seconds;
-                updateCountdownDisplay();
+                if (!isCountdownRunning) {
+                    const hours = parseInt(countdownHoursInput.value) || 0;
+                    const minutes = parseInt(countdownMinutesInput.value) || 0;
+                    const seconds = parseInt(countdownSecondsInput.value) || 0;
+                    totalSecondsRemaining = hours * 3600 + minutes * 60 + seconds;
+                    updateCountdownDisplay();
+                }
             });
             countdownSecondsInput.addEventListener('input', () => {
-                const hours = parseInt(countdownHoursInput.value) || 0;
-                const minutes = parseInt(countdownMinutesInput.value) || 0;
-                const seconds = parseInt(countdownSecondsInput.value) || 0;
-                totalSecondsRemaining = hours * 3600 + minutes * 60 + seconds;
-                updateCountdownDisplay();
+                if (!isCountdownRunning) {
+                    const hours = parseInt(countdownHoursInput.value) || 0;
+                    const minutes = parseInt(countdownMinutesInput.value) || 0;
+                    const seconds = parseInt(countdownSecondsInput.value) || 0;
+                    totalSecondsRemaining = hours * 3600 + minutes * 60 + seconds;
+                    updateCountdownDisplay();
+                }
             });
 
 
@@ -678,6 +740,43 @@
 
             // Sayfa yüklendiğinde varsayılan geri sayım süresini göster
             updateCountdownDisplay();
+
+
+            // --- Tab Geçiş Fonksiyonları ---
+            const showStopwatchBtn = document.getElementById('show-stopwatch');
+            const showCountdownBtn = document.getElementById('show-countdown');
+            const stopwatchContent = document.getElementById('stopwatch-content');
+            const countdownContent = document.getElementById('countdown-content');
+
+            function showTool(toolId) {
+                // Tüm içerikleri gizle
+                document.querySelectorAll('.tool-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                // Tüm tab butonlarından 'active' sınıfını kaldır
+                document.querySelectorAll('.tool-tabs button').forEach(button => {
+                    button.classList.remove('active');
+                });
+
+                // İlgili içeriği göster
+                document.getElementById(toolId).classList.add('active');
+
+                // İlgili butona 'active' sınıfını ekle
+                if (toolId === 'stopwatch-content') {
+                    showStopwatchBtn.classList.add('active');
+                    resetCountdown(); // Kronometreye geçince geri sayımı sıfırla
+                    // Kronometre zaten sıfırlanmışsa tekrar sıfırlamaya gerek yok
+                } else {
+                    showCountdownBtn.classList.add('active');
+                    resetStopwatch(); // Geri sayıma geçince kronometreyi sıfırla
+                }
+            }
+
+            showStopwatchBtn.addEventListener('click', () => showTool('stopwatch-content'));
+            showCountdownBtn.addEventListener('click', () => showTool('countdown-content'));
+
+            // Sayfa yüklendiğinde varsayılan olarak kronometreyi göster
+            showTool('stopwatch-content');
         });
     </script>
 </body>
