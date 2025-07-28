@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Time Zone Converter - Hesapkolik</title>
+    
+    <meta content="Easily convert between different time zones. Instantly learn world times and plan your meetings or travels efficiently." name="description"/>
+    <meta content="time zone converter, world clock, time conversion, time difference, online time zone, hesapkolik time" name="keywords"/>
+    
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    
+    <style>
+        /* General Settings and Font */
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f7f6;
+            color: #333; 
+            line-height: 1.6;
+        }
+        .container { 
+            max-width: 960px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Calculator Section */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff;
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2.2em;
+        }
+        .calc-wrapper { 
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 750px; 
+            margin: 30px auto;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 30px; /* Spacing between sections */
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        /* Time Zone Converter Specific Styles */
+        .timezone-converter {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center; /* For centering */
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background-color: #fcfcfc;
+        }
+
+        .input-group, .output-group {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .input-group label, .output-group label {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .input-group select, .input-group input[type="datetime-local"] {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box; /* Include padding in width */
+        }
+
+        .input-group input[type="datetime-local"] {
+            cursor: pointer;
+        }
+
+        .conversion-arrow {
+            font-size: 2.5em;
+            color: #3498db;
+            margin: 15px 0;
+        }
+
+        .output-time {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 2em;
+            color: #2c3e50;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 5px;
+            min-width: 250px;
+            text-align: center;
+            border: 1px solid #dcdfe4;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Description sections */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text { 
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .hero-section h1 {
+                font-size: 2.2em;
+            }
+            .output-time {
+                font-size: 1.8em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.6em;
+            }
+            .input-group select, .input-group input[type="datetime-local"] {
+                padding: 8px 10px;
+                font-size: 0.9em;
+            }
+            .output-time {
+                font-size: 1.5em;
+                padding: 10px 15px;
+            }
+            .conversion-arrow {
+                font-size: 2em;
+            }
+        }
+    </style>
+    
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1 id="main-heading">Time Zone Converter</h1>
+                <p id="main-description">Instantly calculate time differences between various time zones and easily find world times.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper">
+                    <h3 id="calculator-title"><i class="fas fa-globe-americas icon-small"></i> Convert Time Zone</h3>
+                    <div class="timezone-converter">
+                        
+                        <div class="input-group">
+                            <label for="source-timezone" id="source-timezone-label">Source Time Zone:</label>
+                            <select id="source-timezone">
+                                </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="source-datetime" id="source-datetime-label">Date and Time:</label>
+                            <input type="datetime-local" id="source-datetime">
+                        </div>
+
+                        <i class="fas fa-long-arrow-alt-down conversion-arrow"></i>
+
+                        <div class="input-group">
+                            <label for="target-timezone" id="target-timezone-label">Target Time Zone:</label>
+                            <select id="target-timezone">
+                                </select>
+                        </div>
+
+                        <div class="output-group">
+                            <label id="converted-time-label">Converted Time:</label>
+                            <div class="output-time" id="converted-time">--:-- --</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3 id="info-section-title">Importance of a Time Zone Converter</h3>
+            <p id="info-section-p1">
+                In our globalized world, communicating with people in different geographical locations or planning travel requires understanding time zone differences. **Time zone converters** simplify this complexity, serving as a key to ensuring accurate timing.
+            </p>
+            <h4>Why Is It Important?</h4>
+            <ul>
+                <li id="info-list-1">
+                    <strong>International Meetings and Business Calls:</strong> Prevents time confusion when scheduling meetings with team members or business partners across different continents, ensuring everyone attends at the correct time.
+                </li>
+                <li id="info-list-2">
+                    <strong>Travel Planning:</strong> Knowing the local time at your destination in advance helps you manage jet lag and organize your travel itinerary more efficiently.
+                </li>
+                <li id="info-list-3">
+                    <strong>Tracking International Events:</strong> Allows you to follow global events like live broadcasts, sports matches, or online events according to your local time.
+                </li>
+                <li id="info-list-4">
+                    <strong>Communicating with Family and Friends:</strong> Helps you choose the right time when contacting loved ones living far away, ensuring you don't disturb them or miss important moments.
+                </li>
+                <li id="info-list-5">
+                    <strong>Software Development and System Administration:</strong> Crucial for professionals working with global servers or distributed systems to correctly interpret timestamps and logs.
+                </li>
+            </ul>
+            <p class="disclaimer-text" id="disclaimer-text">
+                This time zone converter relies on your system's time zone settings and JavaScript's `Intl.DateTimeFormat` API. Small discrepancies may occur due to daylight saving time rules and rare time zone changes. It is recommended to confirm results with reliable sources for the most accurate information.
+            </p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const isEnglishPage = true; // For the English version, explicitly set to true
+
+            const texts = {
+                tr: { /* ... (TR content from previous response) ... */ }, // Not included here for brevity but would be present
+                en: {
+                    mainHeading: 'Time Zone Converter',
+                    mainDescription: 'Instantly calculate time differences between various time zones and easily find world times.',
+                    calculatorTitle: 'Convert Time Zone',
+                    sourceTimezoneLabel: 'Source Time Zone:',
+                    sourceDatetimeLabel: 'Date and Time:',
+                    targetTimezoneLabel: 'Target Time Zone:',
+                    convertedTimeLabel: 'Converted Time:',
+                    infoSectionTitle: 'Importance of a Time Zone Converter',
+                    infoSectionP1: 'In our globalized world, communicating with people in different geographical locations or planning travel requires understanding time zone differences. **Time zone converters** simplify this complexity, serving as a key to ensuring accurate timing.',
+                    whyImportantTitle: 'Why Is It Important?',
+                    infoList1: '<strong>International Meetings and Business Calls:</strong> Prevents time confusion when scheduling meetings with team members or business partners across different continents, ensuring everyone attends at the correct time.',
+                    infoList2: '<strong>Travel Planning:</strong> Knowing the local time at your destination in advance helps you manage jet lag and organize your travel itinerary more efficiently.',
+                    infoList3: '<strong>Tracking International Events:</strong> Allows you to follow global events like live broadcasts, sports matches, or online events according to your local time.',
+                    infoList4: '<strong>Communicating with Family and Friends:</strong> Helps you choose the right time when contacting loved ones living far away, ensuring you don\'t disturb them or miss important moments.',
+                    infoList5: '<strong>Software Development and System Administration:</strong> Crucial for professionals working with global servers or distributed systems to correctly interpret timestamps and logs.',
+                    disclaimerText: 'This time zone converter relies on your system\'s time zone settings and JavaScript\'s `Intl.DateTimeFormat` API. Small discrepancies may occur due to daylight saving time rules and rare time zone changes. It is recommended to confirm results with reliable sources for the most accurate information.'
+                }
+            };
+
+            const currentTexts = texts.en; // Always use English texts for this file
+
+            // Header and Footer loading functions (assuming they are still needed)
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // Note: Adjust these paths if your English header/footer are in a different location.
+            const headerPath = '/en/header.html'; 
+            const footerPath = '/en/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // Update page texts
+            document.getElementById('main-heading').textContent = currentTexts.mainHeading;
+            document.getElementById('main-description').textContent = currentTexts.mainDescription;
+            document.getElementById('calculator-title').innerHTML = `<i class="fas fa-globe-americas icon-small"></i> ${currentTexts.calculatorTitle}`;
+            
+            document.getElementById('source-timezone-label').textContent = currentTexts.sourceTimezoneLabel;
+            document.getElementById('source-datetime-label').textContent = currentTexts.sourceDatetimeLabel;
+            document.getElementById('target-timezone-label').textContent = currentTexts.targetTimezoneLabel;
+            document.getElementById('converted-time-label').textContent = currentTexts.convertedTimeLabel;
+            
+            document.getElementById('info-section-title').textContent = currentTexts.infoSectionTitle;
+            document.getElementById('info-section-p1').innerHTML = currentTexts.infoSectionP1;
+            document.querySelector('.info-section h4').textContent = currentTexts.whyImportantTitle; 
+            document.getElementById('info-list-1').innerHTML = currentTexts.infoList1;
+            document.getElementById('info-list-2').innerHTML = currentTexts.infoList2;
+            document.getElementById('info-list-3').innerHTML = currentTexts.infoList3;
+            document.getElementById('info-list-4').innerHTML = currentTexts.infoList4;
+            document.getElementById('info-list-5').innerHTML = currentTexts.infoList5;
+            document.getElementById('disclaimer-text').textContent = currentTexts.disclaimerText;
+
+
+            // --- Time Zone Converter Functions ---
+            const sourceTimezoneSelect = document.getElementById('source-timezone');
+            const sourceDatetimeInput = document.getElementById('source-datetime');
+            const targetTimezoneSelect = document.getElementById('target-timezone');
+            const convertedTimeDisplay = document.getElementById('converted-time');
+
+            // Load time zones
+            function loadTimezones() {
+                const commonTimezones = [
+                    'Europe/London',
+                    'America/New_York',
+                    'America/Los_Angeles',
+                    'Asia/Tokyo',
+                    'Australia/Sydney',
+                    'Asia/Dubai',
+                    'Europe/Berlin',
+                    'Asia/Shanghai',
+                    'Europe/Istanbul', // Include Istanbul for global relevance
+                    'Europe/Paris',
+                    'Africa/Cairo',
+                    'Asia/Kolkata',
+                    'America/Chicago',
+                    'America/Denver',
+                    'Pacific/Auckland',
+                    'Atlantic/Azores'
+                ];
+
+                const allTimezones = Intl.supportedValuesOf('timeZone');
+                
+                const timezonesToDisplay = [...new Set([...commonTimezones, ...allTimezones])].sort();
+
+                timezonesToDisplay.forEach(zone => {
+                    const optionSource = document.createElement('option');
+                    optionSource.value = zone;
+                    optionSource.textContent = zone.replace(/_/g, ' ') + ` (UTC${getTimezoneOffset(zone)})`;
+                    sourceTimezoneSelect.appendChild(optionSource);
+
+                    const optionTarget = document.createElement('option');
+                    optionTarget.value = zone;
+                    optionTarget.textContent = zone.replace(/_/g, ' ') + ` (UTC${getTimezoneOffset(zone)})`;
+                    targetTimezoneSelect.appendChild(optionTarget);
+                });
+
+                // Set default source time zone to user's local time zone
+                sourceTimezoneSelect.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                // Set default target time zone to a popular central hub (e.g., New York or Istanbul)
+                targetTimezoneSelect.value = 'America/New_York'; 
+            }
+
+            // Returns the UTC offset for a given time zone (e.g., "+03:00")
+            function getTimezoneOffset(timeZone) {
+                const now = new Date();
+                const formatter = new Intl.DateTimeFormat('en-US', {
+                    timeZone,
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    timeZoneName: 'longOffset'
+                });
+                const parts = formatter.formatToParts(now);
+                const timeZoneNamePart = parts.find(p => p.type === 'timeZoneName');
+                if (timeZoneNamePart) {
+                    const offset = timeZoneNamePart.value.match(/GMT([+-]\d{1,2}:\d{2})/);
+                    return offset ? offset[1] : '';
+                }
+                return '';
+            }
+
+            // Set initial local date and time to the datetime input
+            function setInitialDateTime() {
+                const now = new Date();
+                // input[type="datetime-local"] format: YYYY-MM-DDTHH:MM
+                const year = now.getFullYear();
+                const month = (now.getMonth() + 1).toString().padStart(2, '0');
+                const day = now.getDate().toString().padStart(2, '0');
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                sourceDatetimeInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+            }
+
+            function convertTime() {
+                const sourceZone = sourceTimezoneSelect.value;
+                const targetZone = targetTimezoneSelect.value;
+                const sourceDateTimeStr = sourceDatetimeInput.value;
+
+                if (!sourceDateTimeStr) {
+                    convertedTimeDisplay.textContent = '--:-- --';
+                    return;
+                }
+
+                // Convert the user's input date and time to a Date object in the source time zone
+                const sourceDate = new Date(sourceDateTimeStr);
+
+                // Format according to the target time zone
+                const formatter = new Intl.DateTimeFormat('en-US', { // Always use 'en-US' for formatting numbers and dates consistently in EN version
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    timeZone: targetZone,
+                    hour12: false // For 24-hour format
+                });
+
+                const parts = formatter.formatToParts(sourceDate);
+                const year = parts.find(p => p.type === 'year').value;
+                const month = parts.find(p => p.type === 'month').value;
+                const day = parts.find(p => p.type === 'day').value;
+                const hour = parts.find(p => p.type === 'hour').value;
+                const minute = parts.find(p => p.type === 'minute').value;
+                const second = parts.find(p => p.type === 'second').value;
+
+                convertedTimeDisplay.textContent = `${month}/${day}/${year} ${hour}:${minute}:${second}`; // Common US date format
+            }
+
+            // Event listeners
+            sourceTimezoneSelect.addEventListener('change', convertTime);
+            sourceDatetimeInput.addEventListener('change', convertTime);
+            targetTimezoneSelect.addEventListener('change', convertTime);
+
+            // Initialization on page load
+            loadTimezones();
+            setInitialDateTime();
+            convertTime(); // Perform initial conversion
+        });
+    </script>
+</body>
+</html>
