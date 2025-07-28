@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Kronometre ve Geri Sayım Sayacı - Hesapkolik</title>
+    
+    <meta content="Çevrimiçi kronometre ile süreleri tutun veya geri sayım sayacı ile belirli bir zamana kadar sayın. Pratik ve kullanımı kolay zaman araçları." name="description"/>
+    <meta content="kronometre, geri sayım sayacı, zamanlayıcı, online kronometre, online geri sayım, zaman tutma, hesapkolik zaman" name="keywords"/>
+    
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    
+    <style>
+        /* Genel Ayarlar ve Font */
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f7f6; /* Sade ve ferah bir arka plan */
+            color: #333; 
+            line-height: 1.6;
+        }
+        .container { 
+            max-width: 960px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Koyu tema başlık/altlık ile uyumlu */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Calculator Section (Kronometre ve Geri Sayım İçin Genişletildi) */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff; /* Beyaz kart arka planı */
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50; /* Koyu metin rengi */
+            font-size: 2.2em;
+        }
+        .calc-wrapper { 
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 750px; 
+            margin: 30px auto;
+            text-align: left;
+            display: flex; /* İçerikleri yan yana hizala */
+            flex-direction: column; /* Mobil için dikey, masaüstü için ayarlanacak */
+            gap: 40px; /* Bölümler arası boşluk */
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        /* Yeni Eklenen Stil: Zaman Ekranları ve Butonlar */
+        .timer-section, .countdown-section {
+            text-align: center;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background-color: #fcfcfc;
+        }
+
+        .display {
+            font-family: 'Roboto Mono', monospace; /* Monospace font daha okunur */
+            font-size: 4em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 5px;
+            display: inline-block; /* Genişliği içeriğe göre ayarla */
+            min-width: 280px; /* Minimum genişlik ver */
+            text-align: center;
+            border: 1px solid #dcdfe4;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap; /* Küçük ekranlarda alt alta gelmesi için */
+        }
+
+        .button-group button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1em;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            min-width: 120px;
+        }
+
+        .button-group button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .button-group button:active {
+            transform: translateY(0);
+        }
+
+        .button-group button.reset {
+            background-color: #e74c3c;
+        }
+
+        .button-group button.reset:hover {
+            background-color: #c0392b;
+        }
+
+        .button-group button.pause {
+            background-color: #f39c12;
+        }
+
+        .button-group button.pause:hover {
+            background-color: #e67e22;
+        }
+
+        /* Geri Sayım Giriş Alanları */
+        .countdown-input-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .countdown-input-group label {
+            font-size: 1.1em;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .countdown-input-group input {
+            width: 70px;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            text-align: center;
+        }
+
+        /* Açıklama bölümleri */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text { 
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (min-width: 769px) {
+            .calc-wrapper {
+                flex-direction: row; /* Masaüstünde yan yana */
+                justify-content: space-around;
+                align-items: flex-start; /* Üstten başlasınlar */
+            }
+            .timer-section, .countdown-section {
+                flex: 1; /* Eşit genişlikte yayılsınlar */
+                max-width: 48%; /* biraz boşluk bırak */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .hero-section h1 {
+                font-size: 2.2em;
+            }
+            .display {
+                font-size: 3em;
+                min-width: unset;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.6em;
+            }
+            .display {
+                font-size: 2.5em;
+                padding: 10px 15px;
+            }
+            .button-group button {
+                padding: 10px 20px;
+                font-size: 1em;
+                min-width: 100px;
+            }
+            .countdown-input-group label {
+                font-size: 1em;
+            }
+            .countdown-input-group input {
+                width: 60px;
+                padding: 6px 8px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+    
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1 id="main-heading">Kronometre ve Geri Sayım Sayacı</h1>
+                <p id="main-description">Süreleri hassas bir şekilde tutun ve geri sayımlarla zamanınızı yönetin.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="calc-wrapper">
+                    
+                    <div class="timer-section">
+                        <h3 id="stopwatch-title"><i class="fas fa-stopwatch icon-small"></i> Kronometre</h3>
+                        <div class="display" id="stopwatch-display">00:00:00</div>
+                        <div class="button-group">
+                            <button id="stopwatch-start" class="start"><i class="fas fa-play"></i> Başlat</button>
+                            <button id="stopwatch-pause" class="pause" style="display: none;"><i class="fas fa-pause"></i> Duraklat</button>
+                            <button id="stopwatch-reset" class="reset"><i class="fas fa-redo"></i> Sıfırla</button>
+                        </div>
+                    </div>
+
+                    <div class="countdown-section">
+                        <h3 id="countdown-title"><i class="fas fa-hourglass-end icon-small"></i> Geri Sayım Sayacı</h3>
+                        <div class="countdown-input-group">
+                            <label for="countdown-hours"><i class="fas fa-clock"></i> Saat:</label>
+                            <input type="number" id="countdown-hours" min="0" max="99" value="0">
+                            <label for="countdown-minutes"><i class="fas fa-clock"></i> Dakika:</label>
+                            <input type="number" id="countdown-minutes" min="0" max="59" value="0">
+                            <label for="countdown-seconds"><i class="fas fa-clock"></i> Saniye:</label>
+                            <input type="number" id="countdown-seconds" min="0" max="59" value="0">
+                        </div>
+                        <div class="display" id="countdown-display">00:00:00</div>
+                        <div class="button-group">
+                            <button id="countdown-start" class="start"><i class="fas fa-play"></i> Başlat</button>
+                            <button id="countdown-pause" class="pause" style="display: none;"><i class="fas fa-pause"></i> Duraklat</button>
+                            <button id="countdown-reset" class="reset"><i class="fas fa-redo"></i> Sıfırla</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3 id="info-section-title">Kronometre ve Geri Sayım Sayaçlarının Önemi</h3>
+            <p id="info-section-p1">
+                Zaman yönetimi, hem kişisel hem de profesyonel yaşamda verimliliği artırmanın anahtarıdır. **Kronometreler ve geri sayım sayaçları**, görevleri planlamanıza, süreli etkinlikleri takip etmenize ve belirli hedeflere ulaşmanıza yardımcı olan vazgeçilmez araçlardır.
+            </p>
+            <h4>Neden Önemlidir?</h4>
+            <ul>
+                <li id="info-list-1">
+                    <strong>Görev Takibi:</strong> Kronometre, spor antrenmanlarından yemek pişirmeye, ders çalışmadan proje sürelerini kaydetmeye kadar çeşitli görevlerde harcadığınız zamanı hassas bir şekilde ölçmenizi sağlar.
+                </li>
+                <li id="info-list-2">
+                    <strong>Odaklanma ve Verimlilik:</strong> Geri sayım sayaçları, belirlenen sürede bir göreve odaklanmanızı teşvik eder, Pomodoro tekniği gibi zaman yönetimi stratejilerini uygulamanıza yardımcı olur.
+                </li>
+                <li id="info-list-3">
+                    <strong>Sunum ve Etkinlik Yönetimi:</strong> Toplantılarda, sunumlarda veya etkinliklerde zamanı kontrol altında tutmak için geri sayım sayacı kullanabilirsiniz.
+                </li>
+                <li id="info-list-4">
+                    <strong>Antrenman ve Egzersiz:</strong> Sporcular, antrenman aralıklarını ve dinlenme sürelerini kronometre veya geri sayım sayacı ile kolayca yönetebilirler.
+                </li>
+                <li id="info-list-5">
+                    <strong>Eğitim ve Sınav Hazırlığı:</strong> Öğrenciler, sınav sürelerini simüle etmek veya belirli bir konuya ne kadar zaman ayırdıklarını görmek için bu araçları kullanabilirler.
+                </li>
+            </ul>
+            <p class="disclaimer-text" id="disclaimer-text">
+                Bu kronometre ve geri sayım sayacı araçları, tarayıcı tabanlıdır ve tarayıcı sekmesi kapatıldığında veya bilgisayar uyku moduna geçtiğinde sıfırlanabilir. En hassas zamanlamalar için profesyonel ekipmanlar tercih edilebilir.
+            </p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+            const texts = {
+                tr: {
+                    mainHeading: 'Kronometre ve Geri Sayım Sayacı',
+                    mainDescription: 'Süreleri hassas bir şekilde tutun ve geri sayımlarla zamanınızı yönetin.',
+                    stopwatchTitle: 'Kronometre',
+                    countdownTitle: 'Geri Sayım Sayacı',
+                    start: 'Başlat',
+                    pause: 'Duraklat',
+                    reset: 'Sıfırla',
+                    hours: 'Saat:',
+                    minutes: 'Dakika:',
+                    seconds: 'Saniye:',
+                    infoSectionTitle: 'Kronometre ve Geri Sayım Sayaçlarının Önemi',
+                    infoSectionP1: 'Zaman yönetimi, hem kişisel hem de profesyonel yaşamda verimliliği artırmanın anahtarıdır. **Kronometreler ve geri sayım sayaçları**, görevleri planlamanıza, süreli etkinlikleri takip etmenize ve belirli hedeflere ulaşmanıza yardımcı olan vazgeçilmez araçlardır.',
+                    whyImportantTitle: 'Neden Önemlidir?',
+                    infoList1: '<strong>Görev Takibi:</strong> Kronometre, spor antrenmanlarından yemek pişirmeye, ders çalışmadan proje sürelerini kaydetmeye kadar çeşitli görevlerde harcadığınız zamanı hassas bir şekilde ölçmenizi sağlar.',
+                    infoList2: '<strong>Odaklanma ve Verimlilik:</strong> Geri sayım sayaçları, belirlenen sürede bir göreve odaklanmanızı teşvik eder, Pomodoro tekniği gibi zaman yönetimi stratejilerini uygulamanıza yardımcı olur.',
+                    infoList3: '<strong>Sunum ve Etkinlik Yönetimi:</strong> Toplantılarda, sunumlarda veya etkinliklerde zamanı kontrol altında tutmak için geri sayım sayacı kullanabilirsiniz.',
+                    infoList4: '<strong>Antrenman ve Egzersiz:</strong> Sporcular, antrenman aralıklarını ve dinlenme sürelerini kronometre veya geri sayım sayacı ile kolayca yönetebilirler.',
+                    infoList5: '<strong>Eğitim ve Sınav Hazırlığı:</strong> Öğrenciler, sınav sürelerini simüle etmek veya belirli bir konuya ne kadar zaman ayırdıklarını görmek için bu araçları kullanabilirler.',
+                    disclaimerText: 'Bu kronometre ve geri sayım sayacı araçları, tarayıcı tabanlıdır ve tarayıcı sekmesi kapatıldığında veya bilgisayar uyku moduna geçtiğinde sıfırlanabilir. En hassas zamanlamalar için profesyonel ekipmanlar tercih edilebilir.'
+                },
+                en: {
+                    mainHeading: 'Stopwatch and Countdown Timer',
+                    mainDescription: 'Keep track of time precisely and manage your time with countdowns.',
+                    stopwatchTitle: 'Stopwatch',
+                    countdownTitle: 'Countdown Timer',
+                    start: 'Start',
+                    pause: 'Pause',
+                    reset: 'Reset',
+                    hours: 'Hours:',
+                    minutes: 'Minutes:',
+                    seconds: 'Seconds:',
+                    infoSectionTitle: 'Importance of Stopwatches and Countdown Timers',
+                    infoSectionP1: 'Time management is key to increasing productivity in both personal and professional life. **Stopwatches and countdown timers** are indispensable tools that help you plan tasks, track timed events, and achieve specific goals.',
+                    whyImportantTitle: 'Why Is It Important?',
+                    infoList1: '<strong>Task Tracking:</strong> The stopwatch allows you to precisely measure the time you spend on various tasks, from sports training to cooking, studying to recording project durations.',
+                    infoList2: '<strong>Focus and Productivity:</strong> Countdown timers encourage you to focus on a task for a set period, helping you implement time management strategies like the Pomodoro technique.',
+                    infoList3: '<strong>Presentation and Event Management:</strong> You can use a countdown timer to keep track of time during meetings, presentations, or events.',
+                    infoList4: '<strong>Training and Exercise:</strong> Athletes can easily manage their training intervals and rest periods with a stopwatch or countdown timer.',
+                    infoList5: '<strong>Education and Exam Preparation:</strong> Students can use these tools to simulate exam durations or see how much time they\'ve dedicated to a particular subject.',
+                    disclaimerText: 'These stopwatch and countdown timer tools are browser-based and may reset if the browser tab is closed or the computer goes into sleep mode. For the most precise timings, professional equipment may be preferred.'
+                }
+            };
+
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // Header ve Footer yükleme fonksiyonları
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // Metinleri güncelle
+            document.getElementById('main-heading').textContent = currentTexts.mainHeading;
+            document.getElementById('main-description').textContent = currentTexts.mainDescription;
+            document.getElementById('stopwatch-title').innerHTML = `<i class="fas fa-stopwatch icon-small"></i> ${currentTexts.stopwatchTitle}`;
+            document.getElementById('countdown-title').innerHTML = `<i class="fas fa-hourglass-end icon-small"></i> ${currentTexts.countdownTitle}`;
+            
+            document.getElementById('stopwatch-start').innerHTML = `<i class="fas fa-play"></i> ${currentTexts.start}`;
+            document.getElementById('stopwatch-pause').innerHTML = `<i class="fas fa-pause"></i> ${currentTexts.pause}`;
+            document.getElementById('stopwatch-reset').innerHTML = `<i class="fas fa-redo"></i> ${currentTexts.reset}`;
+            
+            document.querySelector('label[for="countdown-hours"]').innerHTML = `<i class="fas fa-clock"></i> ${currentTexts.hours}`;
+            document.querySelector('label[for="countdown-minutes"]').innerHTML = `<i class="fas fa-clock"></i> ${currentTexts.minutes}`;
+            document.querySelector('label[for="countdown-seconds"]').innerHTML = `<i class="fas fa-clock"></i> ${currentTexts.seconds}`;
+            
+            document.getElementById('countdown-start').innerHTML = `<i class="fas fa-play"></i> ${currentTexts.start}`;
+            document.getElementById('countdown-pause').innerHTML = `<i class="fas fa-pause"></i> ${currentTexts.pause}`;
+            document.getElementById('countdown-reset').innerHTML = `<i class="fas fa-redo"></i> ${currentTexts.reset}`;
+
+            document.getElementById('info-section-title').textContent = currentTexts.infoSectionTitle;
+            document.getElementById('info-section-p1').innerHTML = currentTexts.infoSectionP1;
+            document.querySelector('.info-section h4').textContent = currentTexts.whyImportantTitle; // Changed selector for H4
+            document.getElementById('info-list-1').innerHTML = currentTexts.infoList1;
+            document.getElementById('info-list-2').innerHTML = currentTexts.infoList2;
+            document.getElementById('info-list-3').innerHTML = currentTexts.infoList3;
+            document.getElementById('info-list-4').innerHTML = currentTexts.infoList4;
+            document.getElementById('info-list-5').innerHTML = currentTexts.infoList5;
+            document.getElementById('disclaimer-text').textContent = currentTexts.disclaimerText;
+
+
+            // --- Kronometre Fonksiyonları ---
+            const stopwatchDisplay = document.getElementById('stopwatch-display');
+            const stopwatchStartBtn = document.getElementById('stopwatch-start');
+            const stopwatchPauseBtn = document.getElementById('stopwatch-pause');
+            const stopwatchResetBtn = document.getElementById('stopwatch-reset');
+
+            let startTime;
+            let elapsedTime = 0;
+            let stopwatchInterval;
+            let isStopwatchRunning = false;
+
+            function formatTime(ms) {
+                const totalSeconds = Math.floor(ms / 1000);
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+                return [hours, minutes, seconds]
+                    .map(unit => unit < 10 ? '0' + unit : unit)
+                    .join(':');
+            }
+
+            function startStopwatch() {
+                if (!isStopwatchRunning) {
+                    startTime = Date.now() - elapsedTime;
+                    stopwatchInterval = setInterval(updateStopwatch, 1000);
+                    isStopwatchRunning = true;
+                    stopwatchStartBtn.style.display = 'none';
+                    stopwatchPauseBtn.style.display = 'inline-block';
+                }
+            }
+
+            function pauseStopwatch() {
+                if (isStopwatchRunning) {
+                    clearInterval(stopwatchInterval);
+                    isStopwatchRunning = false;
+                    stopwatchStartBtn.style.display = 'inline-block';
+                    stopwatchPauseBtn.style.display = 'none';
+                }
+            }
+
+            function resetStopwatch() {
+                clearInterval(stopwatchInterval);
+                elapsedTime = 0;
+                isStopwatchRunning = false;
+                stopwatchDisplay.textContent = '00:00:00';
+                stopwatchStartBtn.style.display = 'inline-block';
+                stopwatchPauseBtn.style.display = 'none';
+            }
+
+            function updateStopwatch() {
+                elapsedTime = Date.now() - startTime;
+                stopwatchDisplay.textContent = formatTime(elapsedTime);
+            }
+
+            stopwatchStartBtn.addEventListener('click', startStopwatch);
+            stopwatchPauseBtn.addEventListener('click', pauseStopwatch);
+            stopwatchResetBtn.addEventListener('click', resetStopwatch);
+
+            // --- Geri Sayım Sayacı Fonksiyonları ---
+            const countdownDisplay = document.getElementById('countdown-display');
+            const countdownHoursInput = document.getElementById('countdown-hours');
+            const countdownMinutesInput = document.getElementById('countdown-minutes');
+            const countdownSecondsInput = document.getElementById('countdown-seconds');
+            const countdownStartBtn = document.getElementById('countdown-start');
+            const countdownPauseBtn = document.getElementById('countdown-pause');
+            const countdownResetBtn = document.getElementById('countdown-reset');
+
+            let countdownInterval;
+            let totalSecondsRemaining;
+            let isCountdownRunning = false;
+
+            function updateCountdownDisplay() {
+                const hours = Math.floor(totalSecondsRemaining / 3600);
+                const minutes = Math.floor((totalSecondsRemaining % 3600) / 60);
+                const seconds = totalSecondsRemaining % 60;
+                countdownDisplay.textContent = [hours, minutes, seconds]
+                    .map(unit => unit < 10 ? '0' + unit : unit)
+                    .join(':');
+            }
+
+            function startCountdown() {
+                if (!isCountdownRunning) {
+                    // Sadece ilk başlangıçta veya sıfırlama sonrası inputlardan al
+                    if (totalSecondsRemaining === undefined || totalSecondsRemaining <= 0) {
+                        const hours = parseInt(countdownHoursInput.value) || 0;
+                        const minutes = parseInt(countdownMinutesInput.value) || 0;
+                        const seconds = parseInt(countdownSecondsInput.value) || 0;
+                        totalSecondsRemaining = hours * 3600 + minutes * 60 + seconds;
+                    }
+
+                    if (totalSecondsRemaining <= 0) {
+                        alert('Lütfen geçerli bir geri sayım süresi girin.');
+                        return;
+                    }
+
+                    isCountdownRunning = true;
+                    countdownStartBtn.style.display = 'none';
+                    countdownPauseBtn.style.display = 'inline-block';
+                    countdownHoursInput.disabled = true;
+                    countdownMinutesInput.disabled = true;
+                    countdownSecondsInput.disabled = true;
+
+                    countdownInterval = setInterval(() => {
+                        totalSecondsRemaining--;
+                        updateCountdownDisplay();
+
+                        if (totalSecondsRemaining <= 0) {
+                            clearInterval(countdownInterval);
+                            isCountdownRunning = false;
+                            countdownStartBtn.style.display = 'inline-block';
+                            countdownPauseBtn.style.display = 'none';
+                            countdownHoursInput.disabled = false;
+                            countdownMinutesInput.disabled = false;
+                            countdownSecondsInput.disabled = false;
+                            countdownDisplay.textContent = '00:00:00'; // Bitince sıfır göster
+                            alert('Geri sayım tamamlandı!'); // Sesli uyarı eklenebilir
+                        }
+                    }, 1000);
+                }
+            }
+
+            function pauseCountdown() {
+                if (isCountdownRunning) {
+                    clearInterval(countdownInterval);
+                    isCountdownRunning = false;
+                    countdownStartBtn.style.display = 'inline-block';
+                    countdownPauseBtn.style.display = 'none';
+                }
+            }
+
+            function resetCountdown() {
+                clearInterval(countdownInterval);
+                isCountdownRunning = false;
+                totalSecondsRemaining = 0; // Süreyi sıfırla
+                countdownHoursInput.value = 0;
+                countdownMinutesInput.value = 0;
+                countdownSecondsInput.value = 0;
+                countdownDisplay.textContent = '00:00:00';
+                countdownStartBtn.style.display = 'inline-block';
+                countdownPauseBtn.style.display = 'none';
+                countdownHoursInput.disabled = false;
+                countdownMinutesInput.disabled = false;
+                countdownSecondsInput.disabled = false;
+            }
+
+            // Input değişikliklerini izle, eğer manuel olarak süre girilirse display'i güncelle
+            countdownHoursInput.addEventListener('input', () => {
+                const hours = parseInt(countdownHoursInput.value) || 0;
+                const minutes = parseInt(countdownMinutesInput.value) || 0;
+                const seconds = parseInt(countdownSecondsInput.value) || 0;
+                totalSecondsRemaining = hours * 3600 + minutes * 60 + seconds;
+                updateCountdownDisplay();
+            });
+            countdownMinutesInput.addEventListener('input', () => {
+                const hours = parseInt(countdownHoursInput.value) || 0;
+                const minutes = parseInt(countdownMinutesInput.value) || 0;
+                const seconds = parseInt(countdownSecondsInput.value) || 0;
+                totalSecondsRemaining = hours * 3600 + minutes * 60 + seconds;
+                updateCountdownDisplay();
+            });
+            countdownSecondsInput.addEventListener('input', () => {
+                const hours = parseInt(countdownHoursInput.value) || 0;
+                const minutes = parseInt(countdownMinutesInput.value) || 0;
+                const seconds = parseInt(countdownSecondsInput.value) || 0;
+                totalSecondsRemaining = hours * 3600 + minutes * 60 + seconds;
+                updateCountdownDisplay();
+            });
+
+
+            countdownStartBtn.addEventListener('click', startCountdown);
+            countdownPauseBtn.addEventListener('click', pauseCountdown);
+            countdownResetBtn.addEventListener('click', resetCountdown);
+
+            // Sayfa yüklendiğinde varsayılan geri sayım süresini göster
+            updateCountdownDisplay();
+        });
+    </script>
+</body>
+</html>
