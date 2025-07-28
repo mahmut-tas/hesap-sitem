@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Stopwatch and Countdown Timer - Hesapkolik</title>
+    
+    <meta content="Track time precisely with an online stopwatch or count down to a specific event with a timer. Practical and easy-to-use time tools." name="description"/>
+    <meta content="stopwatch, countdown timer, online stopwatch, online countdown, time tracking, hesapkolik time" name="keywords"/>
+    
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    
+    <style>
+        /* General Settings and Font */
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f7f6; /* Simple and fresh background */
+            color: #333; 
+            line-height: 1.6;
+        }
+        .container { 
+            max-width: 960px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background-color: #34495e; /* Consistent with dark header/footer */
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hero-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Calculator Section (Expanded for Stopwatch and Countdown) */
+        .calculator-section {
+            padding: 50px 0;
+            text-align: center;
+            background-color: #ffffff; /* White card background */
+            border-bottom: 1px solid #dee7e7;
+        }
+        .calculator-section h2 {
+            margin-bottom: 30px;
+            color: #2c3e50; /* Dark text color */
+            font-size: 2.2em;
+        }
+        .calc-wrapper { 
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            max-width: 750px; 
+            margin: 30px auto;
+            text-align: left;
+            display: flex; 
+            flex-direction: column; 
+            gap: 40px; 
+        }
+        .calc-wrapper h3 {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .icon-small {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        /* Newly Added Styles: Time Displays and Buttons */
+        .timer-section, .countdown-section {
+            text-align: center;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background-color: #fcfcfc;
+        }
+
+        .display {
+            font-family: 'Roboto Mono', monospace; /* Monospace font for better readability */
+            font-size: 4em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            background-color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 5px;
+            display: inline-block; /* Adjust width to content */
+            min-width: 280px; /* Set minimum width */
+            text-align: center;
+            border: 1px solid #dcdfe4;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap; /* Wrap buttons on small screens */
+        }
+
+        .button-group button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1em;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            min-width: 120px;
+        }
+
+        .button-group button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .button-group button:active {
+            transform: translateY(0);
+        }
+
+        .button-group button.reset {
+            background-color: #e74c3c;
+        }
+
+        .button-group button.reset:hover {
+            background-color: #c0392b;
+        }
+
+        .button-group button.pause {
+            background-color: #f39c12;
+        }
+
+        .button-group button.pause:hover {
+            background-color: #e67e22;
+        }
+
+        /* Countdown Input Fields */
+        .countdown-input-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .countdown-input-group label {
+            font-size: 1.1em;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .countdown-input-group input {
+            width: 70px;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            text-align: center;
+        }
+
+        /* Styles for Tab Buttons */
+        .tool-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tool-tabs button {
+            background-color: #5cb85c; /* A different color */
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1em;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            min-width: 150px;
+        }
+
+        .tool-tabs button:hover {
+            background-color: #4cae4c;
+            transform: translateY(-2px);
+        }
+
+        .tool-tabs button.active {
+            background-color: #337ab7; /* Active button color */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Hiding content */
+        .tool-content {
+            display: none;
+        }
+
+        .tool-content.active {
+            display: block;
+        }
+
+
+        /* Description sections */
+        .info-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        .info-section h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-section h4 {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            padding: 0 20px;
+            text-align: justify;
+        }
+        .info-section ul {
+            list-style-type: disc;
+            margin: 0 20px 20px 40px;
+            color: #666;
+        }
+        .info-section ul li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .info-section strong {
+            color: #333;
+        }
+        .disclaimer-text {
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 25px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+            text-align: justify;
+        }
+        .small-text { 
+            font-size: 0.85em;
+            color: #777;
+            text-align: justify;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        /* Responsive Adjustments */
+        @media (min-width: 769px) {
+            .calc-wrapper {
+                /* Flex direction changed to column as only one tool is displayed at a time */
+                flex-direction: column; 
+                justify-content: center;
+                align-items: center;
+            }
+            .timer-section, .countdown-section {
+                width: 100%; /* Take full width */
+                max-width: 600px; /* Center with max-width */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .calc-wrapper {
+                padding: 30px 20px;
+                margin: 20px auto;
+            }
+            .hero-section h1 {
+                font-size: 2.2em;
+            }
+            .display {
+                font-size: 3em;
+                min-width: unset;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-section h1 {
+                font-size: 1.8em;
+            }
+            .calculator-section, .info-section {
+                padding: 30px 0;
+            }
+            .calc-wrapper {
+                padding: 15px;
+            }
+            .calc-wrapper h3 {
+                font-size: 1.6em;
+            }
+            .display {
+                font-size: 2.5em;
+                padding: 10px 15px;
+            }
+            .button-group button, .tool-tabs button {
+                padding: 10px 20px;
+                font-size: 1em;
+                min-width: 100px;
+            }
+            .countdown-input-group label {
+                font-size: 1em;
+            }
+            .countdown-input-group input {
+                width: 60px;
+                padding: 6px 8px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+    
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3655KNY8CP');
+    </script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1 id="main-heading">Stopwatch and Countdown Timer</h1>
+                <p id="main-description">Track time precisely and manage your time with countdowns.</p>
+            </div>
+        </section>
+
+        <section class="calculator-section">
+            <div class="container">
+                <div class="tool-tabs">
+                    <button id="show-stopwatch" class="active"><i class="fas fa-stopwatch"></i> Stopwatch</button>
+                    <button id="show-countdown"><i class="fas fa-hourglass-end"></i> Countdown Timer</button>
+                </div>
+
+                <div class="calc-wrapper">
+                    
+                    <div class="timer-section tool-content active" id="stopwatch-content">
+                        <h3 id="stopwatch-title"><i class="fas fa-stopwatch icon-small"></i> Stopwatch</h3>
+                        <div class="display" id="stopwatch-display">00:00:00.00</div>
+                        <div class="button-group">
+                            <button id="stopwatch-start" class="start"><i class="fas fa-play"></i> Start</button>
+                            <button id="stopwatch-pause" class="pause" style="display: none;"><i class="fas fa-pause"></i> Pause</button>
+                            <button id="stopwatch-reset" class="reset"><i class="fas fa-redo"></i> Reset</button>
+                        </div>
+                    </div>
+
+                    <div class="countdown-section tool-content" id="countdown-content">
+                        <h3 id="countdown-title"><i class="fas fa-hourglass-end icon-small"></i> Countdown Timer</h3>
+                        <div class="countdown-input-group">
+                            <label for="countdown-hours"><i class="fas fa-clock"></i> Hours:</label>
+                            <input type="number" id="countdown-hours" min="0" max="99" value="0">
+                            <label for="countdown-minutes"><i class="fas fa-clock"></i> Minutes:</label>
+                            <input type="number" id="countdown-minutes" min="0" max="59" value="0">
+                            <label for="countdown-seconds"><i class="fas fa-clock"></i> Seconds:</label>
+                            <input type="number" id="countdown-seconds" min="0" max="59" value="0">
+                        </div>
+                        <div class="display" id="countdown-display">00:00:00</div>
+                        <div class="button-group">
+                            <button id="countdown-start" class="start"><i class="fas fa-play"></i> Start</button>
+                            <button id="countdown-pause" class="pause" style="display: none;"><i class="fas fa-pause"></i> Pause</button>
+                            <button id="countdown-reset" class="reset"><i class="fas fa-redo"></i> Reset</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h3 id="info-section-title">Importance of Stopwatches and Countdown Timers</h3>
+            <p id="info-section-p1">
+                Time management is key to increasing productivity in both personal and professional life. **Stopwatches and countdown timers** are indispensable tools that help you plan tasks, track timed events, and achieve specific goals.
+            </p>
+            <h4>Why Is It Important?</h4>
+            <ul>
+                <li id="info-list-1">
+                    <strong>Task Tracking:</strong> The stopwatch allows you to precisely measure the time you spend on various tasks, from sports training to cooking, studying to recording project durations.
+                </li>
+                <li id="info-list-2">
+                    <strong>Focus and Productivity:</strong> Countdown timers encourage you to focus on a task for a set period, helping you implement time management strategies like the Pomodoro technique.
+                </li>
+                <li id="info-list-3">
+                    <strong>Presentation and Event Management:</strong> You can use a countdown timer to keep track of time during meetings, presentations, or events.
+                </li>
+                <li id="info-list-4">
+                    <strong>Training and Exercise:</strong> Athletes can easily manage their training intervals and rest periods with a stopwatch or countdown timer.
+                </li>
+                <li id="info-list-5">
+                    <strong>Education and Exam Preparation:</strong> Students can use these tools to simulate exam durations or see how much time they've dedicated to a particular subject.
+                </li>
+            </ul>
+            <p class="disclaimer-text" id="disclaimer-text">
+                These stopwatch and countdown timer tools are browser-based and may reset if the browser tab is closed or the computer goes into sleep mode. For the most precise timings, professional equipment may be preferred.
+            </p>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+
+            // Define texts for both languages
+            const texts = {
+                tr: { /* ... (TR content from previous response) ... */ }, // Not included here for brevity but would be present
+                en: {
+                    mainHeading: 'Stopwatch and Countdown Timer',
+                    mainDescription: 'Track time precisely and manage your time with countdowns.',
+                    stopwatchTitle: 'Stopwatch',
+                    countdownTitle: 'Countdown Timer',
+                    stopwatchTab: 'Stopwatch',
+                    countdownTab: 'Countdown Timer',
+                    start: 'Start',
+                    pause: 'Pause',
+                    reset: 'Reset',
+                    hours: 'Hours:',
+                    minutes: 'Minutes:',
+                    seconds: 'Seconds:',
+                    infoSectionTitle: 'Importance of Stopwatches and Countdown Timers',
+                    infoSectionP1: 'Time management is key to increasing productivity in both personal and professional life. **Stopwatches and countdown timers** are indispensable tools that help you plan tasks, track timed events, and achieve specific goals.',
+                    whyImportantTitle: 'Why Is It Important?',
+                    infoList1: '<strong>Task Tracking:</strong> The stopwatch allows you to precisely measure the time you spend on various tasks, from sports training to cooking, studying to recording project durations.',
+                    infoList2: '<strong>Focus and Productivity:</strong> Countdown timers encourage you to focus on a task for a set period, helping you implement time management strategies like the Pomodoro technique.',
+                    infoList3: '<strong>Presentation and Event Management:</strong> You can use a countdown timer to keep track of time during meetings, presentations, or events.',
+                    infoList4: '<strong>Training and Exercise:</strong> Athletes can easily manage their training intervals and rest periods with a stopwatch or countdown timer.',
+                    infoList5: '<strong>Education and Exam Preparation:</strong> Students can use these tools to simulate exam durations or see how much time they\'ve dedicated to a particular subject.',
+                    disclaimerText: 'These stopwatch and countdown timer tools are browser-based and may reset if the browser tab is closed or the computer goes into sleep mode. For the most precise timings, professional equipment may be preferred.'
+                }
+            };
+
+            // Determine current language based on URL
+            const currentTexts = isEnglishPage ? texts.en : texts.tr;
+
+            // Function to load partial HTML (header/footer)
+            function loadPartial(elementId, url) {
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = html;
+                            const scripts = placeholder.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Error loading ${url}:`, error);
+                        const placeholder = document.getElementById(elementId);
+                        if (placeholder) {
+                            placeholder.innerHTML = `<p style="color: red;">Failed to load ${elementId} content.</p>`;
+                        }
+                    });
+            }
+
+            // Set paths for header/footer based on language
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            loadPartial('header-placeholder', headerPath);
+            loadPartial('footer-placeholder', footerPath);
+
+            // Update page texts based on selected language
+            document.getElementById('main-heading').textContent = currentTexts.mainHeading;
+            document.getElementById('main-description').textContent = currentTexts.mainDescription;
+            document.getElementById('stopwatch-title').innerHTML = `<i class="fas fa-stopwatch icon-small"></i> ${currentTexts.stopwatchTitle}`;
+            document.getElementById('countdown-title').innerHTML = `<i class="fas fa-hourglass-end icon-small"></i> ${currentTexts.countdownTitle}`;
+            
+            document.getElementById('show-stopwatch').innerHTML = `<i class="fas fa-stopwatch"></i> ${currentTexts.stopwatchTab}`;
+            document.getElementById('show-countdown').innerHTML = `<i class="fas fa-hourglass-end"></i> ${currentTexts.countdownTab}`;
+
+            document.getElementById('stopwatch-start').innerHTML = `<i class="fas fa-play"></i> ${currentTexts.start}`;
+            document.getElementById('stopwatch-pause').innerHTML = `<i class="fas fa-pause"></i> ${currentTexts.pause}`;
+            document.getElementById('stopwatch-reset').innerHTML = `<i class="fas fa-redo"></i> ${currentTexts.reset}`;
+            
+            document.querySelector('label[for="countdown-hours"]').innerHTML = `<i class="fas fa-clock"></i> ${currentTexts.hours}`;
+            document.querySelector('label[for="countdown-minutes"]').innerHTML = `<i class="fas fa-clock"></i> ${currentTexts.minutes}`;
+            document.querySelector('label[for="countdown-seconds"]').innerHTML = `<i class="fas fa-clock"></i> ${currentTexts.seconds}`;
+            
+            document.getElementById('countdown-start').innerHTML = `<i class="fas fa-play"></i> ${currentTexts.start}`;
+            document.getElementById('countdown-pause').innerHTML = `<i class="fas fa-pause"></i> ${currentTexts.pause}`;
+            document.getElementById('countdown-reset').innerHTML = `<i class="fas fa-redo"></i> ${currentTexts.reset}`;
+
+            document.getElementById('info-section-title').textContent = currentTexts.infoSectionTitle;
+            document.getElementById('info-section-p1').innerHTML = currentTexts.infoSectionP1;
+            document.querySelector('.info-section h4').textContent = currentTexts.whyImportantTitle; 
+            document.getElementById('info-list-1').innerHTML = currentTexts.infoList1;
+            document.getElementById('info-list-2').innerHTML = currentTexts.infoList2;
+            document.getElementById('info-list-3').innerHTML = currentTexts.infoList3;
+            document.getElementById('info-list-4').innerHTML = currentTexts.infoList4;
+            document.getElementById('info-list-5').innerHTML = currentTexts.infoList5;
+            document.getElementById('disclaimer-text').textContent = currentTexts.disclaimerText;
+
+
+            // --- Stopwatch Functions ---
+            const stopwatchDisplay = document.getElementById('stopwatch-display');
+            const stopwatchStartBtn = document.getElementById('stopwatch-start');
+            const stopwatchPauseBtn = document.getElementById('stopwatch-pause');
+            const stopwatchResetBtn = document.getElementById('stopwatch-reset');
+
+            let startTime;
+            let elapsedTime = 0;
+            let stopwatchInterval;
+            let isStopwatchRunning = false;
+
+            function formatTime(ms) {
+                const totalSeconds = Math.floor(ms / 1000);
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+                const centiseconds = Math.floor((ms % 1000) / 10); // Centiseconds (hundredths of a second)
+
+                return [hours, minutes, seconds]
+                    .map(unit => unit < 10 ? '0' + unit : unit)
+                    .join(':') + '.' + (centiseconds < 10 ? '0' : '') + centiseconds; // Add centiseconds with two digits
+            }
+
+            function startStopwatch() {
+                if (!isStopwatchRunning) {
+                    startTime = Date.now() - elapsedTime;
+                    stopwatchInterval = setInterval(updateStopwatch, 10); // Update every 10 milliseconds
+                    isStopwatchRunning = true;
+                    stopwatchStartBtn.style.display = 'none';
+                    stopwatchPauseBtn.style.display = 'inline-block';
+                }
+            }
+
+            function pauseStopwatch() {
+                if (isStopwatchRunning) {
+                    clearInterval(stopwatchInterval);
+                    isStopwatchRunning = false;
+                    stopwatchStartBtn.style.display = 'inline-block';
+                    stopwatchPauseBtn.style.display = 'none';
+                }
+            }
+
+            function resetStopwatch() {
+                clearInterval(stopwatchInterval);
+                elapsedTime = 0;
+                isStopwatchRunning = false;
+                stopwatchDisplay.textContent = '00:00:00.00';
+                stopwatchStartBtn.style.display = 'inline-block';
+                stopwatchPauseBtn.style.display = 'none';
+            }
+
+            function updateStopwatch() {
+                elapsedTime = Date.now() - startTime;
+                stopwatchDisplay.textContent = formatTime(elapsedTime);
+            }
+
+            stopwatchStartBtn.addEventListener('click', startStopwatch);
+            stopwatchPauseBtn.addEventListener('click', pauseStopwatch);
+            stopwatchResetBtn.addEventListener('click', resetStopwatch);
+
+            // --- Countdown Timer Functions ---
+            const countdownDisplay = document.getElementById('countdown-display');
+            const countdownHoursInput = document.getElementById('countdown-hours');
+            const countdownMinutesInput = document.getElementById('countdown-minutes');
+            const countdownSecondsInput = document.getElementById('countdown-seconds');
+            const countdownStartBtn = document.getElementById('countdown-start');
+            const countdownPauseBtn = document.getElementById('countdown-pause');
+            const countdownResetBtn = document.getElementById('countdown-reset');
+
+            let countdownInterval;
+            let totalSecondsRemaining;
+            let isCountdownRunning = false;
+
+            function updateCountdownDisplay() {
+                const hours = Math.floor(totalSecondsRemaining / 3600);
+                const minutes = Math.floor((totalSecondsRemaining % 3600) / 60);
+                const seconds = totalSecondsRemaining % 60;
+                countdownDisplay.textContent = [hours, minutes, seconds]
+                    .map(unit => unit < 10 ? '0' + unit : unit)
+                    .join(':');
+            }
+
+            function startCountdown() {
+                if (!isCountdownRunning) {
+                    // Get time from inputs only on initial start or after reset
+                    if (totalSecondsRemaining === undefined || totalSecondsRemaining <= 0) {
+                        const hours = parseInt(countdownHoursInput.value) || 0;
+                        const minutes = parseInt(countdownMinutesInput.value) || 0;
+                        const seconds = parseInt(countdownSecondsInput.value) || 0;
+                        totalSecondsRemaining = hours * 3600 + minutes * 60 + seconds;
+                    }
+
+                    if (totalSecondsRemaining <= 0) {
+                        alert('Please enter a valid countdown duration.');
+                        return;
+                    }
+
+                    isCountdownRunning = true;
+                    countdownStartBtn.style.display = 'none';
+                    countdownPauseBtn.style.display = 'inline-block';
+                    countdownHoursInput.disabled = true;
+                    countdownMinutesInput.disabled = true;
+                    countdownSecondsInput.disabled = true;
+
+                    countdownInterval = setInterval(() => {
+                        totalSecondsRemaining--;
+                        updateCountdownDisplay();
+
+                        if (totalSecondsRemaining <= 0) {
+                            clearInterval(countdownInterval);
+                            isCountdownRunning = false;
+                            countdownStartBtn.style.display = 'inline-block';
+                            countdownPauseBtn.style.display = 'none';
+                            countdownHoursInput.disabled = false;
+                            countdownMinutesInput.disabled = false;
+                            countdownSecondsInput.disabled = false;
+                            countdownDisplay.textContent = '00:00:00'; // Show zero when finished
+                            alert('Countdown finished!'); // An audio alert could be added
+                        }
+                    }, 1000);
+                }
+            }
+
+            function pauseCountdown() {
+                if (isCountdownRunning) {
+                    clearInterval(countdownInterval);
+                    isCountdownRunning = false;
+                    countdownStartBtn.style.display = 'inline-block';
+                    countdownPauseBtn.style.display = 'none';
+                }
+            }
+
+            function resetCountdown() {
+                    clearInterval(countdownInterval);
+                    isCountdownRunning = false;
+                    totalSecondsRemaining = 0; // Reset the time
+                    countdownHoursInput.value = 0;
+                    countdownMinutesInput.value = 0;
+                    countdownSecondsInput.value = 0;
+                    countdownDisplay.textContent = '00:00:00';
+                    countdownStartBtn.style.display = 'inline-block';
+                    countdownPauseBtn.style.display = 'none';
+                    countdownHoursInput.disabled = false;
+                    countdownMinutesInput.disabled = false;
+                    countdownSecondsInput.disabled = false;
+            }
+
+            // Monitor input changes to update display if time is manually entered
+            countdownHoursInput.addEventListener('input', () => {
+                if (!isCountdownRunning) {
+                    const hours = parseInt(countdownHoursInput.value) || 0;
+                    const minutes = parseInt(countdownMinutesInput.value) || 0;
+                    const seconds = parseInt(countdownSecondsInput.value) || 0;
+                    totalSecondsRemaining = hours * 3600 + minutes * 60 + seconds;
+                    updateCountdownDisplay();
+                }
+            });
+            countdownMinutesInput.addEventListener('input', () => {
+                if (!isCountdownRunning) {
+                    const hours = parseInt(countdownHoursInput.value) || 0;
+                    const minutes = parseInt(countdownMinutesInput.value) || 0;
+                    const seconds = parseInt(countdownSecondsInput.value) || 0;
+                    totalSecondsRemaining = hours * 3600 + minutes * 60 + seconds;
+                    updateCountdownDisplay();
+                }
+            });
+            countdownSecondsInput.addEventListener('input', () => {
+                if (!isCountdownRunning) {
+                    const hours = parseInt(countdownHoursInput.value) || 0;
+                    const minutes = parseInt(countdownMinutesInput.value) || 0;
+                    const seconds = parseInt(countdownSecondsInput.value) || 0;
+                    totalSecondsRemaining = hours * 3600 + minutes * 60 + seconds;
+                    updateCountdownDisplay();
+                }
+            });
+
+
+            countdownStartBtn.addEventListener('click', startCountdown);
+            countdownPauseBtn.addEventListener('click', pauseCountdown);
+            countdownResetBtn.addEventListener('click', resetCountdown);
+
+            // Display default countdown time on page load
+            updateCountdownDisplay();
+
+
+            // --- Tab Switching Functions ---
+            const showStopwatchBtn = document.getElementById('show-stopwatch');
+            const showCountdownBtn = document.getElementById('show-countdown');
+            const stopwatchContent = document.getElementById('stopwatch-content');
+            const countdownContent = document.getElementById('countdown-content');
+
+            function showTool(toolId) {
+                // Hide all tool content
+                document.querySelectorAll('.tool-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                // Remove 'active' class from all tab buttons
+                document.querySelectorAll('.tool-tabs button').forEach(button => {
+                    button.classList.remove('active');
+                });
+
+                // Show the selected tool content
+                document.getElementById(toolId).classList.add('active');
+
+                // Add 'active' class to the corresponding button
+                if (toolId === 'stopwatch-content') {
+                    showStopwatchBtn.classList.add('active');
+                    resetCountdown(); // Reset countdown when switching to stopwatch
+                } else {
+                    showCountdownBtn.classList.add('active');
+                    resetStopwatch(); // Reset stopwatch when switching to countdown
+                }
+            }
+
+            showStopwatchBtn.addEventListener('click', () => showTool('stopwatch-content'));
+            showCountdownBtn.addEventListener('click', () => showTool('countdown-content'));
+
+            // Show stopwatch by default on page load
+            showTool('stopwatch-content');
+        });
+    </script>
+</body>
+</html>
