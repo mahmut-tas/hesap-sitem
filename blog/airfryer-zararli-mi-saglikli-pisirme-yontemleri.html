@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Fryer: Sağlıklı mı, Zararlı mı? Kapsamlı Rehber | Hesapkolik Blog</title>
+    <meta name="description" content="Air fryer'ın sağlığa faydaları ve potansiyel riskleri, diğer pişirme yöntemleriyle karşılaştırması ve gıdaya özel sağlıklı pişirme yöntemleri hakkında kapsamlı rehber.">
+    <meta name="keywords" content="air fryer, sağlıklı pişirme, yemek pişirme yöntemleri, kalori karşılaştırması, akrilamid, AGE, besin değeri, Hesapkolik">
+
+    <!-- Hesapkolik Genel CSS Dosyaları -->
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <!-- Hesapkolik Fontları -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+
+    <!-- Bu yazı için özel Tailwind CSS (genel sitenizde yoksa burada kalabilir) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Bu yazı için özel Chart.js kütüphanesi -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google AdSense ve Analytics scriptleri (ana sayfadan kopyalandı) -->
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3655KNY8CP');
+    </script>
+    
+    <!-- Chosen Palette: Warm Neutral Kitchen (Adapted to Hesapkolik style/colors) -->
+    <!-- Application Structure Plan: The SPA is designed as a top-down educational journey. It starts with a hero section providing a direct answer to the user's main question. It then moves to the most compelling data point: a direct, interactive calorie comparison with deep frying. Next, it broadens the context with a multi-variable comparison of all cooking methods using a radar chart to visualize trade-offs. Following this, it provides actionable, categorized advice for specific food groups via interactive cards. The journey concludes with a summary of universal best practices and key risks. This structure guides the user from a simple question to a nuanced, practical understanding, prioritizing engagement and clarity over the report's original linear format. -->
+    <!-- Visualization & Content Choices: 
+        1. Calorie Data -> Goal: Compare -> Viz: Interactive Bar Chart -> Interaction: User clicks food buttons to update the chart -> Justification: More engaging than a static table, focuses on one key comparison at a time -> Library: Chart.js (Canvas).
+        2. Health Index Data -> Goal: Compare multiple methods across multiple metrics -> Viz: Interactive Radar Chart -> Interaction: User selects a health metric from a dropdown to see all methods compared on that axis -> Justification: A radar chart is ideal for visualizing multi-variable data and revealing complex trade-offs between options -> Library: Chart.js (Canvas).
+        3. Food-Specific Advice -> Goal: Organize & Inform -> Viz: Click-to-reveal info cards -> Interaction: User clicks on a food category card to see detailed advice -> Justification: Prevents information overload and allows users to self-select the content most relevant to them in a clean, organized manner -> Library/Method: HTML/CSS/JS.
+        4. Key Risks/Takeaways -> Goal: Inform -> Viz: Styled text blocks with icons -> Interaction: None -> Justification: Simple, clear presentation for summary information -> Library/Method: HTML/CSS with Unicode characters.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f7f4; /* Hesapkolik ana arka plan rengi */
+            color: #333; /* Hesapkolik ana metin rengi */
+        }
+        /* Başlıklar ve alt başlıklar için Hesapkolik'in ana sayfadaki stillerine benzer düzenlemeler */
+        .section-title {
+            font-size: 2.2em; /* style.css'deki h2 boyutu */
+            color: #2c3e50; /* style.css'deki h2 rengi */
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 20px; /* Bölümler arasında biraz boşluk */
+        }
+        .section-subtitle {
+            font-size: 1.1em; /* style.css'deki p'ye yakın bir boyut */
+            text-align: center;
+            color: #666; /* style.css'deki p rengi */
+            max-width: 800px; /* Metin için daha geniş alan */
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 30px;
+        }
+
+        /* Kartlar için Hesapkolik ana sayfa stili */
+        .card {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Hafif gölge */
+            border: 1px solid #ddd; /* İnce kenarlık */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Yumuşak geçiş efektleri */
+        }
+        .card:hover {
+            transform: translateY(-2px); /* Hafif yukarı kalkma */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12); /* Biraz daha belirgin gölge */
+        }
+
+        /* Hero bölümü için Hesapkolik ana sayfa stili */
+        .hero {
+            background-color: #3498db; /* Hesapkolik ana hero rengi */
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+        }
+        .hero h1 {
+            font-size: 2.8em;
+            margin-bottom: 20px;
+        }
+        .hero p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .hero .cta-button {
+            display: inline-block;
+            background-color: #2ecc71; /* Ana sayfadaki yeşil buton rengi */
+            color: white;
+            padding: 15px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .hero .cta-button:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        .active-btn {
+            background-color: #2ecc71 !important; /* Hesapkolik yeşili */
+            color: #FFFFFF !important;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px; /* Adjusted for a bit wider charts */
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; /* Base height for charts */
+            max-height: 450px; /* Max height to prevent excessive size */
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .food-card-wrapper {
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+            perspective: 1000px; /* For 3D flip effect */
+        }
+        .food-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .food-card-wrapper.is-flipped .food-card-inner {
+            transform: rotateY(180deg);
+        }
+        .food-card-front, .food-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #ddd;
+        }
+        .food-card-back {
+            transform: rotateY(180deg);
+            padding: 1rem;
+            text-align: left;
+            justify-content: flex-start;
+            align-items: flex-start;
+        }
+
+        /* Responsive Ayarlamalar */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2em;
+            }
+            .hero p {
+                font-size: 1em;
+            }
+            .section-title {
+                font-size: 1.8em;
+            }
+            .section-subtitle {
+                font-size: 1em;
+            }
+        }
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.8em;
+            }
+            .hero p {
+                font-size: 0.9em;
+            }
+            .section-title {
+                font-size: 1.6em;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Hesapkolik Header'ı Buraya Gelecek -->
+    <div id="header-placeholder"></div>
+
+    <main>
+        <!-- BLOG YAZISI İÇERİĞİ BAŞLANGICI -->
+
+        <section id="hero" class="hero py-20 bg-blue-600">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight">
+                    <span class="text-green-300">Air Fryer</span>: Sağlıklı Mı, Zararlı Mı?
+                </h1>
+                <p class="mt-6 text-xl text-white max-w-3xl mx-auto">
+                    Mutfakların yeni gözdesi air fryer'ı derinlemesine inceliyoruz. Diğer pişirme yöntemleriyle kıyaslamalar ve size özel sağlıklı ipuçları bu rehberde.
+                </p>
+                <a href="#karsilastirma" class="cta-button mt-8 inline-block bg-green-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-green-600 transition-transform transform hover:scale-105">Detaylı Rehberi Keşfet</a>
+            </div>
+        </section>
+
+        <section id="giris" class="py-16 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">Air Fryer Fenomeni: Sağlık ve Mutfak Bilimi Açısından Bir Değerlendirme</h2>
+                <p class="section-subtitle">Air fryer'ın çalışma prensibinden başlayarak, sunduğu temel sağlık avantajlarını ve potansiyel riskleri ele alıyoruz.</p>
+                <div class="grid md:grid-cols-2 gap-8 items-start">
+                    <div class="card">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Air Fryer'ın Çalışma Prensibi</h3>
+                        <p class="text-slate-600 mb-4">
+                            Air fryer, yiyecekleri yağda kızartma hissi veren, ancak aslında kompakt ve güçlü bir konveksiyonel fırın gibi çalışan bir mutfak aletidir. Bu cihaz, yiyecekleri ısıtılmış bir hazne içinde çok yüksek hızda dolaşan sıcak hava ile pişirir. Bu hızlı hava sirkülasyonu, yiyeceğin tüm yüzeyine eşit bir şekilde etki ederek dış kısmının kızarmış ve çıtır bir doku kazanmasını sağlarken, iç kısmının sulu kalmasına yardımcı olur. Bu yöntem, geleneksel derin yağda kızartma yönteminin sağladığı dokusal deneyimi, çok daha az yağ kullanarak veya hiç yağ kullanmadan sunar.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-4">Temel Sağlık Avantajları ve Kimyasal Boyutu</h3>
+                        <p class="text-slate-600 mb-4">
+                            Air fryer'ın en büyük sağlık avantajı, geleneksel derin yağda kızartmaya kıyasla yağ ve kalori alımını önemli ölçüde azaltmasıdır. Gıdalardaki yağ içeriği %75'e varan oranlarda azalabilir. Ancak, yüksek sıcaklıkta pişirme yöntemlerinin bilinen risklerinden olan **Akrilamid** (özellikle karbonhidratça zengin gıdalarda) ve **İleri Glikasyon Son Ürünleri (AGE'ler)** oluşumu da göz önünde bulundurulmalıdır. Air fryer, bu oluşumu derin kızartmaya göre azaltsa da, riski tamamen ortadan kaldırmaz. Sağlıklı pişirme, cihazın kendisinden ziyade sıcaklık, süre ve hazırlık aşaması gibi temel mutfak bilimi ilkelerinde yatar.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="karsilastirma" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">En Büyük Fark: Kalori Avantajı</h2>
+                <p class="section-subtitle">Air fryer, aynı yiyecekleri derin yağda kızartmaya kıyasla %75'e varan daha az yağ ile pişirerek kalori alımını ciddi oranda düşürür. Aşağıdaki yiyeceklerden birini seçerek bu farkı net bir şekilde görün.</p>
+            </div>
+            <div class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8 px-4" id="foodSelector">
+            </div>
+            <div class="chart-container">
+                <canvas id="calorieChart"></canvas>
+            </div>
+        </section>
+
+        <section id="yontemler" class="py-16 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">Büyük Resim: Pişirme Yöntemleri Karşılaştırması</h2>
+                <p class="section-subtitle">Her pişirme yönteminin kendine özgü avantajları ve dezavantajları vardır. Aşağıdaki menüden bir sağlık metriği seçerek yöntemlerin bu kritere göre nasıl sıralandığını keşfedin.</p>
+            </div>
+            <div class="max-w-sm mx-auto mb-8">
+                <select id="metricSelector" class="w-full p-3 border border-gray-300 rounded-lg bg-white shadow-sm focus:ring-2 focus:ring-blue-600 focus:border-blue-600">
+                </select>
+            </div>
+            <div class="chart-container">
+                <canvas id="methodsRadarChart"></canvas>
+            </div>
+        </section>
+
+        <section id="rehber" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="section-title">Hangi Gıda İçin Hangi Yöntem?</h2>
+                <p class="section-subtitle">Besin değerini en üst düzeyde korumak için her gıda grubuna özel en sağlıklı pişirme yöntemlerini öğrenin. Daha fazla bilgi için kartlara tıklayın.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-4" id="foodGroupContainer">
+            </div>
+        </section>
+
+        <section id="sonuc" class="py-16 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="section-title">Sonuç: Dengeli ve Bilinçli Mutfak</h2>
+                <p class="section-subtitle">Air fryer, mutfakta pratik ve sağlıklı bir yardımcıdır. Ancak en iyi sonuçlar, onu buharda pişirme, haşlama ve fırınlama gibi diğer sağlıklı yöntemlerle birlikte dengeli bir şekilde kullanmaktan geçer.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto px-4">
+                <div class="card p-6 text-left">
+                    <h4 class="font-bold text-lg text-slate-800 mb-2">Sağlıklı Pişirmenin Altın Kuralları</h4>
+                    <ul class="space-y-2 text-slate-600">
+                        <li class="flex items-start"><span class="mr-2 text-green-500">✓</span> Yüksek sıcaklık ve uzun pişirme sürelerinden kaçının.</li>
+                        <li class="flex items-start"><span class="mr-2 text-green-500">✓</span> Az yağ kullanın ve yağları yakmamaya özen gösterin.</li>
+                        <li class="flex items-start"><span class="mr-2 text-green-500">✓</span> Etleri asidik (limon, sirke) karışımlarla marine edin.</li>
+                        <li class="flex items-start"><span class="mr-2 text-green-500">✓</span> Sebzeleri büyük parçalar halinde, pişirmeye yakın doğrayın.</li>
+                    </ul>
+                </div>
+                <div class="card p-6 text-left">
+                    <h4 class="font-bold text-lg text-slate-800 mb-2">Potansiyel Riskler ve Yönetimi</h4>
+                     <p class="text-slate-600 mb-2">Yüksek sıcaklıkta (120°C+) pişirme, <strong class="text-red-600">Akrilamid</strong> ve <strong class="text-red-600">AGE'ler</strong> gibi zararlı bileşikler oluşturabilir. Air fryer bu riski kızartmaya göre azaltsa da sıfırlamaz.</p>
+                    <p class="text-slate-600"><strong class="text-blue-600">Çözüm:</strong> Nişastalı gıdaları (patates vb.) pişirmeden önce suda bekletin ve aşırı kahverengileşmeden, altın sarısı renkte pişirmeyi hedefleyin.</p>
+                </div>
+            </div>
+            <p class="mt-8 max-w-3xl mx-auto text-lg text-slate-700 px-4">
+                Air fryer, mutfakta pratik ve sağlıklı bir yardımcıdır. Ancak en iyi sonuçlar, onu <strong class="text-blue-600">buharda pişirme, haşlama ve fırınlama</strong> gibi diğer sağlıklı yöntemlerle birlikte dengeli bir şekilde kullanmaktan geçer.
+            </p>
+        </section>
+
+        <!-- BLOG YAZISI İÇERİĞİ SONU -->
+    </main>
+
+    <!-- Hesapkolik Footer'ı Buraya Gelecek -->
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const calorieData = {
+                'Patates Kızartması': { airfryer: 176, deepfry: 471 },
+                'Tavuk Nugget': { airfryer: 200, deepfry: 320 },
+                'Tavuk Göğsü': { airfryer: 163, deepfry: 247 },
+                'Falafel': { airfryer: 216, deepfry: 317 },
+                'Soğan Halkası': { airfryer: 172, deepfry: 275 },
+                'Tavuk Kanadı': { airfryer: 270, deepfry: 531 },
+                'Mozzarella Çubukları': { airfryer: 48, deepfry: 315 },
+                'Yağsız Balık': { airfryer: 90, deepfry: 368 },
+            };
+
+            const methodsData = {
+                labels: ['Buharda Pişirme', 'Haşlama', 'Air Fryer', 'Fırınlama', 'Izgara', 'Derin Kızartma'],
+                metrics: {
+                    'Kalori/Yağ Oranı (Düşük = İyi)': [1, 2, 1, 3, 3, 5],
+                    'Akrilamid/AGE Riski (Düşük = İyi)': [1, 1, 2, 2, 4, 5],
+                    'Vitamin Kaybı (Düşük = İyi)': [1, 5, 3, 3, 3, 5],
+                    'Lezzet Yoğunluğu (Yüksek = Yoğun)': [1, 2, 4, 4, 5, 5],
+                }
+            };
+
+            const foodGroupData = [
+                {
+                    group: '🥦 Sebzeler',
+                    color: 'bg-green-100',
+                    textColor: 'text-green-800',
+                    methods: 'Buharda pişirme, kendi suyunda pişirme, az suyla haşlama.',
+                    tips: 'Vitamin kaybını önlemek için büyük parçalar halinde doğrayın. Çok az zeytinyağı kullanın veya hiç kullanmayın.'
+                },
+                {
+                    group: '🍗 Et & Tavuk',
+                    color: 'bg-red-100',
+                    textColor: 'text-red-800',
+                    methods: 'Haşlama, buharda pişirme, fırında düşük sıcaklıkta pişirme.',
+                    tips: 'Zararlı bileşik oluşumunu azaltmak için marine edin. Izgara yaparken doğrudan alevden kaçının ve yanık kısımları yemeyin.'
+                },
+                {
+                    group: '🐟 Balık',
+                    color: 'bg-blue-100',
+                    textColor: 'text-blue-800',
+                    methods: 'Haşlama (poaching), buharda pişirme, ızgara, fırınlama.',
+                    tips: 'Değerli Omega-3 yağlarını korumak için yüksek sıcaklıktan kaçının. Az yağ kullanın.'
+                },
+                {
+                    group: '🥔 Nişastalı Ürünler',
+                    color: 'bg-yellow-100',
+                    textColor: 'text-yellow-800',
+                    methods: 'Air fryer, fırınlama, haşlama.',
+                    tips: 'Akrilamid riskini azaltmak için patatesleri pişirmeden önce suda bekletin. Aşırı kızartmaktan kaçının, altın sarısı rengi hedefleyin.'
+                }
+            ];
+
+            let calorieChart, methodsRadarChart;
+
+            const setupCalorieChart = () => {
+                const foodSelector = document.getElementById('foodSelector');
+                Object.keys(calorieData).forEach((food, index) => {
+                    const button = document.createElement('button');
+                    button.textContent = food;
+                    button.className = `px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-full hover:bg-green-100 transition duration-200`; // Adjusted hover color
+                    if (index === 0) button.classList.add('active-btn');
+                    button.addEventListener('click', () => {
+                        document.querySelectorAll('#foodSelector button').forEach(btn => btn.classList.remove('active-btn'));
+                        button.classList.add('active-btn');
+                        updateCalorieChart(food);
+                    });
+                    foodSelector.appendChild(button);
+                });
+
+                const ctx = document.getElementById('calorieChart').getContext('2d');
+                calorieChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Air Fryer', 'Derin Yağda Kızartma'],
+                        datasets: [{
+                            label: 'Porsiyon Başına Kalori',
+                            data: [],
+                            backgroundColor: ['#2ecc71', '#e74c3c'], // Hesapkolik green, red
+                            borderColor: ['#27ae60', '#c0392b'],
+                            borderWidth: 1,
+                            borderRadius: 5,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        plugins: {
+                            legend: { display: false },
+                            title: { display: true, text: 'Kalori Karşılaştırması', font: { size: 16, family: 'Poppins' } },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: ${context.raw} kcal`;
+                                    }
+                                },
+                                bodyFont: { family: 'Poppins' },
+                                titleFont: { family: 'Poppins' }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                grid: { display: true, color: '#E5E7EB' },
+                                ticks: { font: { family: 'Poppins' } }
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: { font: { family: 'Poppins' } }
+                            }
+                        }
+                    }
+                });
+                updateCalorieChart(Object.keys(calorieData)[0]);
+            };
+
+            const updateCalorieChart = (food) => {
+                const data = calorieData[food];
+                calorieChart.data.datasets[0].data = [data.airfryer, data.deepfry];
+                calorieChart.options.plugins.title.text = `${food} - Kalori Karşılaştırması`;
+                calorieChart.update();
+            };
+
+            const setupRadarChart = () => {
+                const metricSelector = document.getElementById('metricSelector');
+                Object.keys(methodsData.metrics).forEach(metric => {
+                    const option = document.createElement('option');
+                    option.value = metric;
+                    option.textContent = metric;
+                    metricSelector.appendChild(option);
+                });
+
+                metricSelector.addEventListener('change', (event) => {
+                    updateRadarChart(event.target.value);
+                });
+
+                const ctx = document.getElementById('methodsRadarChart').getContext('2d');
+                methodsRadarChart = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: methodsData.labels,
+                        datasets: [{
+                            label: '',
+                            data: [],
+                            fill: true,
+                            backgroundColor: 'rgba(52, 152, 219, 0.2)', // Hesapkolik blue with transparency
+                            borderColor: '#3498db', // Hesapkolik blue
+                            pointBackgroundColor: '#3498db',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: '#3498db'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            title: { display: true, text: 'Pişirme Yöntemleri Analizi', font: { size: 16, family: 'Poppins' } },
+                            tooltip: {
+                                bodyFont: { family: 'Poppins' },
+                                titleFont: { family: 'Poppins' }
+                            }
+                        },
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                max: 5,
+                                min: 0,
+                                ticks: { stepSize: 1, display: false, font: { family: 'Poppins' } },
+                                pointLabels: { font: { size: 11, family: 'Poppins' } },
+                                grid: { color: '#E5E7EB' },
+                                angleLines: { color: '#E5E7EB' }
+                            }
+                        }
+                    }
+                });
+                updateRadarChart(Object.keys(methodsData.metrics)[0]);
+            };
+
+            const updateRadarChart = (metric) => {
+                methodsRadarChart.data.datasets[0].data = methodsData.metrics[metric];
+                methodsRadarChart.data.datasets[0].label = metric;
+                methodsRadarChart.options.plugins.title.text = `Metrik: ${metric}`;
+                methodsRadarChart.update();
+            };
+
+            const setupFoodGroupCards = () => {
+                const container = document.getElementById('foodGroupContainer');
+                foodGroupData.forEach(item => {
+                    const cardWrapper = document.createElement('div');
+                    cardWrapper.className = `food-card-wrapper h-48 sm:h-56 lg:h-64`; // Fixed height for consistency
+                    
+                    cardWrapper.innerHTML = `
+                        <div class="food-card-inner">
+                            <div class="food-card-front card p-6 text-center ${item.color}">
+                                <h4 class="text-2xl font-bold ${item.textColor}">${item.group}</h4>
+                                <p class="mt-2 text-sm ${item.textColor} opacity-80">Detaylar için tıklayın</p>
+                            </div>
+                            <div class="food-card-back card p-6 text-left ${item.color}">
+                                <h5 class="font-bold ${item.textColor} mb-2">Önerilen Yöntemler:</h5>
+                                <p class="text-sm ${item.textColor} mb-3">${item.methods}</p>
+                                <h5 class="font-bold ${item.textColor} mb-2">İpuçları:</h5>
+                                <p class="text-sm ${item.textColor}">${item.tips}</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    cardWrapper.addEventListener('click', () => {
+                        cardWrapper.classList.toggle('is-flipped');
+                    });
+                    container.appendChild(cardWrapper);
+                });
+            };
+
+            setupCalorieChart();
+            setupRadarChart();
+            setupFoodGroupCards();
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Hesapkolik Header ve Footer yükleme
+            const isEnglishPage = window.location.pathname.startsWith('/en/');
+            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+            // Header Yükleme
+            fetch(headerPath)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Header network response was not ok: ' + response.statusText + ' from ' + headerPath);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    const headerPlaceholder = document.getElementById('header-placeholder');
+                    if (headerPlaceholder) {
+                        headerPlaceholder.innerHTML = data;
+                        const scriptElement = headerPlaceholder.querySelector('script');
+                        if (scriptElement) {
+                            const newScript = document.createElement('script');
+                            newScript.textContent = scriptElement.textContent;
+                            document.body.appendChild(newScript);
+                            scriptElement.remove();
+                        }
+                    }
+                })
+                .catch(error => console.error('Header yüklenirken hata oluştu:', error));
+
+            // Footer Yükleme
+            fetch(footerPath)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Footer network response was not ok: ' + response.statusText + ' from ' + footerPath);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    const footerPlaceholder = document.getElementById('footer-placeholder');
+                    if (footerPlaceholder) {
+                        footerPlaceholder.innerHTML = data;
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = data;
+                        const footerElement = tempDiv.querySelector('footer');
+                        if (footerElement) {
+                            footerPlaceholder.replaceWith(footerElement);
+                        }
+                    }
+                })
+                .catch(error => console.error('Footer yüklenirken hata oluştu:', error));
+        });
+    </script>
+</body>
+</html>
