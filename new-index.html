@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>
+      Hesapkolik - Tüm Hesaplama İhtiyaçlarınız İçin
+    </title>
+    <meta content="BMI, yüzde, faiz oranı, günlük hayat hesaplamaları ve daha birçok konuda hızlı, kolay ve ücretsiz online hesaplama araçları. Hayatınızı kolaylaştıran çözümler burada!" name="description"/>
+    <meta content="hesaplama, hesap makinesi, online hesapla, bmi hesapla, yüzde hesapla, faiz hesapla, günlük hesap, pratik hesap, blog, makale" name="keywords"/>
+    
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2eExNlV/KFNB6sY/3gHYcZLKXFwBqj1+f1oK3w1K/pPq6f2X5f5F5F5F5F5==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4485100647313206"></script>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-3655KNY8CP"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3655KNY8CP');
+    </script>
+    
+    <style>
+      /* Genel Düzen ve Tipografi */
+      body {
+        font-family: 'Poppins', sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      h1, h2, h3 {
+        font-weight: 700;
+        color: #2c3e50;
+      }
+      h2 {
+        font-size: 2.2em;
+        text-align: center;
+        margin-bottom: 40px;
+        padding-top: 20px;
+      }
+
+      /* Arama Konteyneri ve İlişkili Stiller */
+      .search-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 15px 20px;
+        background-color: #f4f7f6;
+        border-bottom: 1px solid #ddd;
+        position: relative;
+        z-index: 10;
+        margin-bottom: 30px;
+      }
+      .search-input {
+        width: 100%;
+        max-width: 400px;
+        padding: 10px 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1em;
+        outline: none;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        background-color: #fff;
+        color: #333;
+      }
+      .search-input::placeholder {
+        color: #888;
+      }
+      .search-input:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+      }
+      .search-button {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 15px;
+        margin-left: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        font-size: 1em;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .search-button:hover {
+        background-color: #2980b9;
+        transform: translateY(-1px);
+      }
+      .search-button i {
+        margin-right: 0;
+      }
+      /* Search Results Dropdown */
+      .search-results-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 400px;
+        background-color: white;
+        border: 1px solid #ddd;
+        border-top: none;
+        border-radius: 0 0 5px 5px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        max-height: 300px;
+        overflow-y: auto;
+        z-index: 1000;
+        display: none;
+      }
+      .search-results-dropdown a {
+        display: block;
+        padding: 10px 15px;
+        text-decoration: none;
+        color: #333;
+        border-bottom: 1px solid #eee;
+        transition: background-color 0.2s ease;
+      }
+      .search-results-dropdown a:hover {
+        background-color: #f0f0f0;
+      }
+      .search-results-dropdown a:last-child {
+        border-bottom: none;
+      }
+      .search-results-dropdown .no-results {
+        padding: 10px 15px;
+        color: #888;
+        text-align: center;
+      }
+      /* Hero Bölümü Stilleri */
+      .hero {
+        background-color: #3498db;
+        color: white;
+        text-align: center;
+        padding: 80px 20px;
+        border-radius: 8px; /* Added border-radius */
+        margin-bottom: 30px; /* Added margin-bottom */
+      }
+      .hero h2 {
+        font-size: 2.8em;
+        margin-bottom: 20px;
+        color: white; /* Changed to white for contrast */
+      }
+      .hero p {
+        font-size: 1.2em;
+        margin-bottom: 30px;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .hero .cta-button {
+        display: inline-block;
+        background-color: #2ecc71;
+        color: white;
+        padding: 15px 30px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+      }
+      .hero .cta-button:hover {
+        background-color: #27ae60;
+        transform: translateY(-2px);
+      }
+
+      /* Kategori Bölümleri */
+      .category-section {
+        margin-bottom: 60px;
+        padding: 30px 0;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      }
+      .category-section h2 {
+        font-size: 2.2em;
+        text-align: center;
+        margin-bottom: 40px;
+        color: #2c3e50;
+      }
+      .category-section h3 {
+        font-size: 1.8em;
+        color: #3498db;
+        margin-top: 30px;
+        margin-bottom: 20px;
+        padding-left: 20px;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+      }
+      .calculator-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+        padding: 0 20px;
+      }
+      .calculator-card {
+        background-color: #f8f8f8;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        padding: 20px;
+        text-align: center;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .calculator-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      }
+      .calculator-card a {
+        text-decoration: none;
+        color: #2c3e50;
+        font-weight: 600;
+        display: block;
+        font-size: 1.1em;
+      }
+      .calculator-card a:hover {
+        color: #3498db;
+      }
+      .category-description {
+        text-align: center;
+        font-size: 1.1em;
+        color: #555;
+        margin-bottom: 30px;
+        padding: 0 20px;
+      }
+
+      /* Blog Yazısı Izgara ve Kart Stilleri */
+      .blog-post-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+        justify-content: center;
+        align-items: stretch;
+        padding-top: 50px;
+        padding-bottom: 50px;
+      }
+      .blog-post-card {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        min-height: 250px;
+      }
+      .blog-post-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      }
+      .blog-post-card .icon {
+        font-size: 3em;
+        color: #3498db;
+        margin-bottom: 15px;
+      }
+      .blog-post-card h3 {
+        font-size: 1.5em;
+        color: #2c3e50;
+        margin-bottom: 10px;
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .blog-post-card p {
+        font-size: 0.9em;
+        color: #666;
+        margin-bottom: 20px;
+        flex-grow: 1;
+      }
+      .blog-post-card .card-button {
+        display: inline-block;
+        background-color: #3498db;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        width: 80%;
+        max-width: 200px;
+      }
+      .blog-post-card .card-button:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+      }
+      /* Responsive Ayarlamalar */
+      @media (max-width: 768px) {
+        .hero h2 {
+          font-size: 2em;
+        }
+        .hero p {
+          font-size: 1em;
+        }
+        .category-grid, .blog-post-grid {
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Adjusted min width */
+          gap: 20px; /* Adjusted gap */
+        }
+        .category-card, .blog-post-card {
+          min-height: auto;
+        }
+        .category-section h3 {
+          font-size: 1.5em;
+          padding-left: 10px;
+        }
+      }
+      @media (max-width: 480px) {
+        .hero h2 {
+          font-size: 1.8em;
+        }
+        .hero p {
+          font-size: 0.9em;
+        }
+        .calculator-card a {
+          font-size: 1em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header-placeholder">
+    </div>
+    <main>
+      <section class="hero">
+        <div class="container">
+          <h2>
+            Hayatınızı Kolaylaştıran Online Hesaplama Araçları
+          </h2>
+          <p>
+            Finanstan sağlığa, günlük ihtiyaçlardan özel hesaplamalara kadar her şey parmaklarınızın ucunda. Hızlı, doğru ve kullanıcı dostu hesap makinelerimizi keşfedin!
+          </p>
+          <a class="cta-button" href="#kategoriler">
+            Hemen Başla
+          </a>
+        </div>
+      </section>
+      <div class="search-container">
+        <input aria-label="Sitede hesaplama arayın" class="search-input" id="searchInput" placeholder="Hesaplama ara..." type="text"/>
+        <button aria-label="Aramayı başlat" class="search-button" id="searchButton">
+          <i aria-hidden="true" class="fas fa-search">
+          </i>
+          Bul!
+        </button>
+        <div aria-labelledby="searchInput" class="search-results-dropdown" id="searchResults" role="listbox">
+          <div class="no-results" style="display: none;">
+            Sonuç bulunamadı.
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <section class="category-section" id="kategoriler">
+          <h2>Tüm Hesaplama Kategorileri</h2>
+          
+          <h3 id="muhendislik-hesaplamalari">Mühendislik Hesaplamaları</h3>
+          <p class="category-description">Çeşitli mühendislik alanlarına yönelik kapsamlı hesaplama araçları.</p>
+          <div class="calculator-grid">
+            <div class="calculator-card"><a href="/muhendislik/kimya/kimya-muhendisligi.html">Kimya Mühendisliği</a></div>
+            <div class="calculator-card"><a href="/muhendislik/kimya/yogunluk-hesaplama.html">Yoğunluk Hesaplama</a></div>
+            <div class="calculator-card"><a href="/muhendislik/kimya/enerji-denkligi.html">Enerji Denkliği</a></div>
+            <div class="calculator-card"><a href="/muhendislik/kimya/gaz-yogunlugu.html">Gaz Yoğunluğu</a></div>
+            <div class="calculator-card"><a href="/muhendislik/kimya/isi-transferi.html">Isı Transferi</a></div>
+            <div class="calculator-card"><a href="/muhendislik/kimya/kutle-denkligi.html">Kütle Denkliği</a></div>
+            <div class="calculator-card"><a href="/muhendislik/kimya/mmol-meq-donusturucu.html">Mmol/Meq Dönüştürücü</a></div>
+            <div class="calculator-card"><a href="/muhendislik/kimya/molarite-hesaplama.html">Molarite Hesaplama</a></div>
+            <div class="calculator-card"><a href="/muhendislik/kimya/yuzde-kutle-hesaplama.html">Yüzde Kütle Hesaplama</a></div>
+            <div class="calculator-card"><a href="/muhendislik/kimya/ph-hesaplama.html">pH Hesaplama</a></div>
+            <div class="calculator-card"><a href="/muhendislik/kimya/reaktor-hacmi.html">Reaktör Hacmi</a></div>
+
+            <div class="calculator-card"><a href="/muhendislik/insaat/insaat-muh.html">İnşaat Mühendisliği</a></div>
+            <div class="calculator-card"><a href="/muhendislik/insaat/tugla-blok-duvar.html">Tuğla/Blok Duvar</a></div>
+            <div class="calculator-card"><a href="/muhendislik/insaat/beton-hacmi-malzeme.html">Beton Hacmi ve Malzeme</a></div>
+            <div class="calculator-card"><a href="/muhendislik/insaat/boya-miktari-hesaplayici.html">Boya Miktarı Hesaplayıcı</a></div>
+            <div class="calculator-card"><a href="/muhendislik/insaat/fayans-seramik.html">Fayans/Seramik Hesaplama</a></div>
+
+            <div class="calculator-card"><a href="/muhendislik/elektrik-elektronik/elektrik-elektronik.html">Elektrik & Elektronik Mühendisliği</a></div>
+            <div class="calculator-card"><a href="/muhendislik/elektrik-elektronik/seri-paralel-direnc-hesaplama.html">Seri-Paralel Direnç Hesaplama</a></div>
+
+            <div class="calculator-card"><a href="/muhendislik/cevre/cevre-muh.html">Çevre Mühendisliği</a></div>
+            <div class="calculator-card"><a href="/muhendislik/cevre/gunes-paneli-verimlilik-hesaplayici.html">Güneş Paneli Verimlilik</a></div>
+            <div class="calculator-card"><a href="/muhendislik/cevre/askida-kati-madde-yuku-hesaplayici.html">Askıda Katı Madde Yükü</a></div>
+
+            <div class="calculator-card"><a href="/muhendislik/makine/makine-muhendisligi.html">Makine Mühendisliği</a></div>
+            <div class="calculator-card"><a href="/muhendislik/makine/egilme-gerilmesi.html">Eğilme Gerilmesi</a></div>
+            <div class="calculator-card"><a href="/muhendislik/makine/burkulma-yuku.html">Burkulma Yükü</a></div>
+            <div class="calculator-card"><a href="/muhendislik/makine/sogutma-yuku.html">Soğutma Yükü</a></div>
+            <div class="calculator-card"><a href="/muhendislik/makine/sertlik-donusumu.html">Sertlik Dönüşümü</a></div>
+            <div class="calculator-card"><a href="/muhendislik/makine/isi-esanjörü-lmtd.html">Isı Eşanjörü LMTD</a></div>
+            <div class="calculator-card"><a href="/muhendislik/makine/normal-gerilme.html">Normal Gerilme</a></div>
+            <div class="calculator-card"><a href="/muhendislik/makine/pompa-gucu.html">Pompa Gücü</a></div>
+            <div class="calculator-card"><a href="/muhendislik/makine/reynolds-sayisi.html">Reynolds Sayısı</a></div>
+            <div class="calculator-card"><a href="/muhendislik/makine/emniyet-faktoru.html">Emniyet Faktörü</a></div>
+            <div class="calculator-card"><a href="/muhendislik/makine/kesme-gerilme.html">Kesme Gerilme</a></div>
+            <div class="calculator-card"><a href="/muhendislik/makine/burulma.gerilmesi.html">Burulma Gerilmesi</a></div>
+
+            <div class="calculator-card"><a href="/muhendislik/tekstil/tekstil-muhendisligi.html">Tekstil Mühendisliği</a></div>
+            <div class="calculator-card"><a href="/muhendislik/tekstil/boya-recetesi.html">Boya Reçetesi</a></div>
+            <div class="calculator-card"><a href="/muhendislik/tekstil/kumas-cekme-orani.html">Kumaş Çekme Oranı</a></div>
+            <div class="calculator-card"><a href="/muhendislik/tekstil/kumas-sikiligi.html">Kumaş Sıkılığı</a></div>
+            <div class="calculator-card"><a href="/muhendislik/tekstil/kumas-fire.html">Kumaş Fire</a></div>
+            <div class="calculator-card"><a href="/muhendislik/tekstil/kumas-gramaji.html">Kumaş Gramajı</a></div>
+            <div class="calculator-card"><a href="/muhendislik/tekstil/elyaf-karisim.html">Elyaf Karışım</a></div>
+            <div class="calculator-card"><a href="/muhendislik/tekstil/baski-pati.html">Baskı Patı</a></div>
+            <div class="calculator-card"><a href="/muhendislik/tekstil/cozgu-atki-miktari.html">Çözgü/Atkı Miktarı</a></div>
+            <div class="calculator-card"><a href="/muhendislik/tekstil/dokuma-verimlilik.html">Dokuma Verimlilik</a></div>
+            <div class="calculator-card"><a href="/muhendislik/tekstil/iplik-numarasi.html">İplik Numarası</a></div>
+            <div class="calculator-card"><a href="/muhendislik/tekstil/iplik-uzunlugu.html">İplik Uzunluğu</a></div>
+          </div>
+
+          <h3 id="deney-tasarim-araclari">Deney Tasarım Araçları</h3>
+          <p class="category-description">Bilimsel ve mühendislik deneylerinizi optimize etmek için güçlü araçlar.</p>
+          <div class="calculator-grid">
+            <div class="calculator-card"><a href="/deney-tasarim-araclari/faktoriyel-deneysel-tasarim.html">Faktöriyel Deneysel Tasarım</a></div>
+            <div class="calculator-card"><a href="/deney-tasarim-araclari/taguchi-tasarim-olusturucu.html">Taguchi Tasarım Oluşturucu</a></div>
+            <div class="calculator-card"><a href="/deney-tasarim-araclari/yanit-yuzey-metodolojisi-olusturma.html">Yanıt Yüzey Metodolojisi</a></div>
+          </div>
+
+          <h3 id="saglik-hesaplamalari">Sağlık Hesaplamaları</h3>
+          <p class="category-description">Sağlıklı yaşam hedeflerinize ulaşmanıza yardımcı olacak araçlar.</p>
+          <div class="calculator-grid">
+            <div class="calculator-card"><a href="/saglik/adet-dongusu-takibi.html">Adet Döngüsü Takibi</a></div>
+            <div class="calculator-card"><a href="/saglik/adim-kalori-hesaplayici.html">Adım Kalori Hesaplayıcı</a></div>
+            <div class="calculator-card"><a href="/saglik/bmi-hesaplayici.html">BMI Hesaplayıcı</a></div>
+            <div class="calculator-card"><a href="/saglik/diyabet-hesaplayici.html">Diyabet Hesaplayıcı</a></div>
+            <div class="calculator-card"><a href="/saglik/gunluk-kalori-ihtiyaci-hesaplayici.html">Günlük Kalori İhtiyacı</a></div>
+            <div class="calculator-card"><a href="/saglik/gunluk-karbonhidrat-ihtiyaci.html">Günlük Karbonhidrat İhtiyacı</a></div>
+            <div class="calculator-card"><a href="/saglik/gunluk-protein-ihtiyaci.html">Günlük Protein İhtiyacı</a></div>
+            <div class="calculator-card"><a href="/saglik/gunluk-su-ihtiyaci.html">Günlük Su İhtiyacı</a></div>
+            <div class="calculator-card"><a href="/saglik/hedef-nabiz-bolgesi.html">Hedef Nabız Bölgesi</a></div>
+            <div class="calculator-card"><a href="/saglik/ideal-kilo-hesaplayici.html">İdeal Kilo Hesaplayıcı</a></div>
+            <div class="calculator-card"><a href="/saglik/persentil-hesaplama.html">Persentil Hesaplama</a></div>
+            <div class="calculator-card"><a href="/saglik/vucut-yag-hesaplama.html">Vücut Yağ Hesaplama</a></div>
+          </div>
+
+          <h3 id="egitim-hesaplamalari">Eğitim Hesaplamaları</h3>
+          <p class="category-description">Akademik başarılarınızı takip etmek için pratik hesaplayıcılar.</p>
+          <div class="calculator-grid">
+            <div class="calculator-card"><a href="/egitim/gmat-hesaplama.html">GMAT Hesaplama</a></div>
+            <div class="calculator-card"><a href="/egitim/gpa-hesaplama.html">GPA Hesaplama</a></div>
+            <div class="calculator-card"><a href="/egitim/gre-hesaplama.html">GRE Hesaplama</a></div>
+            <div class="calculator-card"><a href="/egitim/ielts-hesaplama.html">IELTS Hesaplama</a></div>
+            <div class="calculator-card"><a href="/egitim/toefl-hesaplama.html">TOEFL Hesaplama</a></div>
+          </div>
+
+          <h3 id="finans-ekonomi-hesaplamalari">Finans ve Ekonomi Hesaplamaları</h3>
+          <p class="category-description">Bütçenizi yönetin, yatırımlarınızı takip edin ve finansal kararlarınızı destekleyin.</p>
+          <div class="calculator-grid">
+            <div class="calculator-card"><a href="/finans-ekonomi/adsense-hesaplayici.html">AdSense Gelir Hesaplayıcı</a></div>
+            <div class="calculator-card"><a href="/finans-ekonomi/bes-birikim-hesaplama.html">BES Birikim Hesaplama</a></div>
+            <div class="calculator-card"><a href="/finans-ekonomi/birikim-hasaplama-araci.html">Birikim Hesaplama Aracı</a></div>
+            <div class="calculator-card"><a href="/finans-ekonomi/doviz-altin-cevirici.html">Döviz/Altın Çevirici</a></div>
+            <div class="calculator-card"><a href="/finans-ekonomi/e-ticaret-kar-hesaplama.html">E-ticaret Kar Hesaplama</a></div>
+            <div class="calculator-card"><a href="/finans-ekonomi/faiz-hesaplayici.html">Faiz Hesaplayıcı</a></div>
+            <div class="calculator-card"><a href="/finans-ekonomi/yuzde-hesaplayici.html">Yüzde Hesaplayıcı</a></div>
+          </div>
+
+          <h3 id="gunluk-hayat-hesaplamalari">Günlük Hayat Hesaplamaları</h3>
+          <p class="category-description">Günlük yaşamınızı kolaylaştıracak pratik hesaplama araçları.</p>
+          <div class="calculator-grid">
+            <div class="calculator-card"><a href="/gunluk hayat hesaplamalari/elektrikli-arac-sarj-maliyeti.html">Elektrikli Araç Şarj Maliyeti</a></div>
+            <div class="calculator-card"><a href="/gunluk hayat hesaplamalari/karbon-hesaplama.html">Karbon Ayak İzi Hesaplama</a></div>
+            <div class="calculator-card"><a href="/gunluk hayat hesaplamalari/klima-enerji-tuketimi.html">Klima Enerji Tüketimi</a></div>
+            <div class="calculator-card"><a href="/gunluk hayat hesaplamalari/mutfak-donusturucu.html">Mutfak Dönüştürücü</a></div>
+            <div class="calculator-card"><a href="/gunluk hayat hesaplamalari/yakit-tuketimi-hesaplayici.html">Yakıt Tüketimi Hesaplayıcı</a></div>
+            <div class="calculator-card"><a href="/gunluk hayat hesaplamalari/yas-hesaplayici.html">Yaş Hesaplayıcı</a></div>
+          </div>
+          
+          <h3 id="faydali-araclar">Faydalı Araçlar ve Hesaplayıcılar</h3>
+          <p class="category-description">Çeşitli günlük işlerinizi hızlandıracak pratik araçlar.</p>
+          <div class="calculator-grid">
+            <div class="calculator-card"><a href="/faydali-araclar/birim-cevirici.html">Birim Çevirici</a></div>
+            <div class="calculator-card"><a href="/faydali-araclar/kelime-karakter-sayici.html">Kelime ve Karakter Sayıcı</a></div>
+            <div class="calculator-card"><a href="/faydali-araclar/kronometre-geri-sayim-sayaci.html">Kronometre Geri Sayım Sayacı</a></div>
+            <div class="calculator-card"><a href="/faydali-araclar/qr-kod-uretici.html">QR Kod Üretici</a></div>
+            <div class="calculator-card"><a href="/faydali-araclar/random-number-generator.html">Rastgele Sayı Üretici</a></div>
+            <div class="calculator-card"><a href="/faydali-araclar/renk-donusum-araci.html">Renk Dönüşüm Aracı</a></div>
+            <div class="calculator-card"><a href="/faydali-araclar/zaman-dilimi-hesapla.html">Zaman Dilimi Hesapla</a></div>
+          </div>
+
+          <h3 id="eglenceli-hesaplamalar">Eğlenceli Hesaplama Araçları</h3>
+          <p class="category-description">Merak uyandıran sorulara kişiselleştirilmiş ve keyifli yanıtlar sunar.</p>
+          <div class="calculator-grid">
+            <div class="calculator-card"><a href="/eglence-hesaplama/ask-uyum-hesaplayici.html">Aşk Uyum Hesaplayıcı</a></div>
+            <div class="calculator-card"><a href="/eglence-hesaplama/burc-uyumu-hesaplayici.html">Burç Uyumu Hesaplayıcı</a></div>
+            <div class="calculator-card"><a href="/eglence-hesaplama/iq-hesaplama-araci.html">IQ Hesaplama Aracı</a></div>
+          </div>
+
+          <h3 id="istatistiksel-hesaplamalar">İstatistiksel Hesaplamalar</h3>
+          <p class="category-description">Veri analizi ve istatistiksel çalışmalar için gerekli hesaplama araçları.</p>
+          <div class="calculator-grid">
+            <div class="calculator-card"><a href="/aritmetik-geometrik-istatistik.html">Aritmetik/Geometrik Ortalama</a></div>
+          </div>
+
+          <h3 id="rota-hesaplayici">Rota Hesaplayıcı</h3>
+          <p class="category-description">İki konum arasındaki en kısa rotayı ve sürüş süresini bulun.</p>
+          <div class="calculator-grid">
+            <div class="calculator-card"><a href="/rota-hesaplayici.html">Rota ve Süre Hesaplayıcı</a></div>
+          </div>
+
+        </section>
+        
+        <h2 id="blog-posts-section">En Son Blog Yazılarımız</h2>
+        <div class="blog-post-grid">
+        </div>
+        <div style="text-align: center; margin-top: 30px; margin-bottom: 50px;">
+          <a class="cta-button" href="/blog/blog-index.html" style="background-color: #8e44ad;">Tüm Blog Yazılarını Gör</a>
+        </div>
+      </div>
+    </main>
+    <div id="footer-placeholder">
+    </div>
+    <script>
+    // Header ve Footer yükleme fonksiyonu
+    function loadPartial(elementId, url, isSemantik = false) {
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    console.error(`HTTP error! Status: ${response.status} for ${url}. Response: ${response.statusText}`);
+                    throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+                }
+                return response.text();
+            })
+            .then(html => {
+                const placeholder = document.getElementById(elementId);
+                if (placeholder) {
+                    if (isSemantik) {
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+                        const semanticElement = tempDiv.firstElementChild;
+                        if (semanticElement) {
+                            placeholder.replaceWith(semanticElement);
+                            const scripts = semanticElement.querySelectorAll('script');
+                            scripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.textContent = oldScript.textContent;
+                                document.body.appendChild(newScript);
+                                oldScript.remove();
+                            });
+                        }
+                    } else {
+                        placeholder.innerHTML = html;
+                        const scripts = placeholder.querySelectorAll('script');
+                        scripts.forEach(oldScript => {
+                            const newScript = document.createElement('script');
+                            Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                            newScript.textContent = oldScript.textContent;
+                            oldScript.parentNode.replaceChild(newScript, oldScript);
+                        });
+                    }
+                    console.log(`Successfully loaded ${url} into #${elementId}`);
+                } else {
+                    console.warn(`Placeholder element with ID '${elementId}' not found for URL: ${url}`);
+                }
+            })
+            .catch(error => {
+                console.error(`Error loading ${url}:`, error);
+                const placeholder = document.getElementById(elementId);
+                if (placeholder) {
+                    placeholder.innerHTML = `<p style="color: red; text-align: center;">Hata: ${elementId} içeriği yüklenemedi.</p>`;
+                }
+            });
+    }
+
+    // Blog Yazıları Verisi - Sadece gösterilmesi istenen 4 yazıdan son 3'ü listelenecek
+    const blogPosts = [
+        { title: 'Günlük Su İhtiyacı Hesaplama Rehberi', description: 'Kişiselleştirilmiş günlük su ihtiyacınızı hesaplayın. Suyun faydaları, eksikliği ve doğru tüketim yöntemleri hakkında detaylı bilgi edinin. Sağlıklı yaşam yolculuğunuzda size rehberlik edecek interaktif bir araç.', icon: '<i class="fa-solid fa-dna"></i>', url: '/blog/gunluk-su-ihtiyaci-rehberi.html' },
+        { title: 'Günlük Protein İhtiyacı Rehberi', description: 'Kişiselleştirilmiş günlük protein ihtiyacınızı hesaplayın. Protein nedir, faydaları, riskleri ve en iyi kaynakları hakkında detaylı bilgi edinin.', icon: '<i class="fa-solid fa-dna"></i>', url: '/blog/protein-ihtiyaci-rehberi.html' },
+        { title: 'HbA1c Değerini Anlamak', description: 'Diyabet yönetiminin temel taşı olan HbA1cyi, tanıdaki önemini ve kan şekeri kontrolünüz üzerindeki etkilerini interaktif bir şekilde keşfedin.', icon: '<i class="fa-solid fa-droplet"></i>', url: '/blog/hba1c.html' },
+        { title: 'Ozempic ve Metformin Karşılaştırması: Tip 2 Diyabet Yönetimi', description: 'Tip 2 diyabet tedavisinde kullanılan Ozempic (Semaglutide) ve Metformin ilaçlarının etki mekanizmaları, avantajları, yan etkileri ve kullanım alanları detaylı karşılaştırması.', icon: '<i class="fa-solid fa-hand-holding-droplet"></i>', url: '/blog/ozempic-metformin-tip2-diyabet.html' },
+    ];
+
+    // Blog yazılarını HTML'e ekleyen fonksiyon
+    function displayBlogPosts() {
+        const blogGrid = document.querySelector('.blog-post-grid');
+        if (!blogGrid) return; // Grid elementi bulunamazsa dur
+
+        const recentPosts = blogPosts.slice(-3); // Son 3 elemanı alır
+
+        recentPosts.forEach(post => {
+            const card = document.createElement('div');
+            card.classList.add('blog-post-card');
+            card.innerHTML = `
+                ${post.icon ? `<div class="icon">${post.icon}</div>` : ''} <h3>${post.title}</h3>
+                <p>${post.description}</p>
+                <a class="card-button" href="${post.url}">Devamını Oku</a>
+            `;
+            blogGrid.appendChild(card);
+        });
+    }
+
+    // Arama fonksiyonu ve verileri
+    const sitemapData = [
+      { loc: "https://hesapkolik.net/aritmetik-geometrik-istatistik.html", title: "Aritmetik Geometrik İstatistik Hesaplayıcı" },
+      { loc: "https://hesapkolik.net/gizlilik-politikasi.html", title: "Gizlilik Politikası" },
+      { loc: "https://hesapkolik.net/hakkimizda.html", title: "Hakkımızda" },
+      { loc: "https://hesapkolik.net/iletisim.html", title: "İletişim" },
+      { loc: "https://hesapkolik.net/index.html", title: "Ana Sayfa" },
+      { loc: "https://hesapkolik.net/kullanim-sartlari.html", title: "Kullanım Şartları" },
+      { loc: "https://hesapkolik.net/muhendislik-hesaplamalari.html", title: "Mühendislik Hesaplamaları" },
+      { loc: "https://hesapkolik.net/rota-hesaplayici.html", title: "Rota Hesaplayıcı" },
+      { loc: "https://hesapkolik.net/saglik-hesaplamalari.html", title: "Sağlık Hesaplamaları" },
+      { loc: "https://hesapkolik.net/blog/adsense-gelir.html", title: "Adsense Gelir Hesaplama Blog" },
+      { loc: "https://hesapkolik.net/blog/ampul-secimi.html", title: "Ampul Seçimi Blog" },
+      { loc: "https://hesapkolik.net/blog/arac.html", title: "Araç Blog" },
+      { loc: "https://hesapkolik.net/blog/blog-index.html", title: "Tüm Blog Yazıları" },
+      { loc: "https://hesapkolik.net/blog/bmi.html", title: "BMI Blog" },
+      { loc: "https://hesapkolik.net/blog/borsa.html", title: "Borsa Blog" },
+      { loc: "https://hesapkolik.net/blog/diyabet-fayda.html", title: "Diyabet Fayda Blog" },
+      { loc: "https://hesapkolik.net/blog/enflasyon-korunma-yollari.html", title: "Enflasyondan Korunma Yolları Blog" },
+      { loc: "https://hesapkolik.net/blog/ev-cephe-secim-rehberi.html", title: "Ev Cephe Seçim Rehberi Blog" },
+      { loc: "https://hesapkolik.net/blog/gpa-nedir.html", title: "GPA Nedir Blog" },
+      { loc: "https://hesapkolik.net/blog/gunluk-su-ihtiyaci-rehberi.html", title: "Günlük Su İhtiyacı Rehberi Blog" },
+      { loc: "https://hesapkolik.net/blog/hba1c.html", title: "HbA1c Değerini Anlamak Blog" },
+      { loc: "https://hesapkolik.net/blog/ikinci-el-ev-alim-rehberi.html", title: "İkinci El Ev Alım Rehberi Blog" },
+      { loc: "https://hesapkolik.net/blog/isi-transfer.html", title: "Isı Transferi Blog" },
+      { loc: "https://hesapkolik.net/blog/karbon-ayak-izi-azaltma-yollari.html", title: "Karbon Ayak İzi Azaltma Yolları Blog" },
+      { loc: "https://hesapkolik.net/blog/klima-nasıl-secilir.html", title: "Klima Nasıl Seçilir Blog" },
+      { loc: "https://hesapkolik.net/blog/ozempic-metformin-tip2-diyabet.html", title: "Ozempic ve Metformin Tip 2 Diyabet Blog" },
+      { loc: "https://hesapkolik.net/blog/protein-ihtiyaci-rehberi.html", title: "Protein İhtiyacı Rehberi Blog" },
+      { loc: "https://hesapkolik.net/blog/yakit-tasarrufu.html", title: "Yakıt Tasarrufu Blog" },
+      { loc: "https://hesapkolik.net/deney-tasarim-araclari/deney-tasarim-araçları.html", title: "Deney Tasarım Araçları" },
+      { loc: "https://hesapkolik.net/deney-tasarim-araclari/faktoriyel-deneysel-tasarim.html", title: "Faktöriyel Deneysel Tasarım" },
+      { loc: "https://hesapkolik.net/deney-tasarim-araclari/taguchi-tasarim-olusturucu.html", title: "Taguchi Tasarım Oluşturucu" },
+      { loc: "https://hesapkolik.net/deney-tasarim-araclari/yanit-yuzey-metodolojisi-olusturma.html", title: "Yanıt Yüzey Metodolojisi Oluşturma" },
+      { loc: "https://hesapkolik.net/egitim/egitim-hesaplamalari.html", title: "Eğitim Hesaplamaları" },
+      { loc: "https://hesapkolik.net/egitim/gmat-hesaplama.html", title: "GMAT Hesaplama" },
+      { loc: "https://hesapkolik.net/egitim/gpa-hesaplama.html", title: "GPA Hesaplama" },
+      { loc: "https://hesapkolik.net/egitim/gre-hesaplama.html", title: "GRE Hesaplama" },
+      { loc: "https://hesapkolik.net/egitim/ielts-hesaplama.html", title: "IELTS Hesaplama" },
+      { loc: "https://hesapkolik.net/egitim/toefl-hesaplama.html", title: "TOEFL Hesaplama" },
+      { loc: "https://hesapkolik.net/eglence-hesaplama/ask-uyum-hesaplayici.html", title: "Aşk Uyum Hesaplayıcı" },
+      { loc: "https://hesapkolik.net/eglence-hesaplama/burc-uyumu-hesaplayici.html", title: "Burç Uyumu Hesaplayıcı" },
+      { loc: "https://hesapkolik.net/eglence-hesaplama/eglenceli-hesaplamalar.html", title: "Eğlenceli Hesaplamalar" },
+      { loc: "https://hesapkolik.net/eglence-hesaplama/iq-hesaplama-araci.html", title: "IQ Hesaplama Aracı" },
+      { loc: "https://hesapkolik.net/faydali-araclar/birim-cevirici.html", title: "Birim Çevirici" },
+      { loc: "https://hesapkolik.net/faydali-araclar/faydali-araclar-hesaplayicilar.html", title: "Faydalı Araçlar ve Hesaplayıcılar" },
+      { loc: "https://hesapkolik.net/faydali-araclar/kelime-karakter-sayici.html", title: "Kelime ve Karakter Sayıcı" },
+      { loc: "https://hesapkolik.net/faydali-araclar/kronometre-geri-sayim-sayaci.html", title: "Kronometre Geri Sayım Sayacı" },
+      { loc: "https://hesapkolik.net/faydali-araclar/qr-kod-uretici.html", title: "QR Kod Üretici" },
+      { loc: "https://hesapkolik.net/faydali-araclar/random-number-generator.html", title: "Rastgele Sayı Üretici" },
+      { loc: "https://hesapkolik.net/faydali-araclar/renk-donusum-araci.html", title: "Renk Dönüşüm Aracı" },
+      { loc: "https://hesapkolik.net/faydali-araclar/zaman-dilimi-hesapla.html", title: "Zaman Dilimi Hesapla" },
+      { loc: "https://hesapkolik.net/finans-ekonomi/adsense-hesaplayici.html", title: "Adsense Hesaplayıcı" },
+      { loc: "https://hesapkolik.net/finans-ekonomi/bes-birikim-hesaplama.html", title: "BES Birikim Hesaplama" },
+      { loc: "https://hesapkolik.net/finans-ekonomi/birikim-hasaplama-araci.html", title: "Birikim Hesaplama Aracı" },
+      { loc: "https://hesapkolik.net/finans-ekonomi/doviz-altin-cevirici.html", title: "Döviz Altın Çevirici" },
+      { loc: "https://hesapkolik.net/finans-ekonomi/e-ticaret-kar-hesaplama.html", title: "E-ticaret Kar Hesaplama" },
+      { loc: "https://hesapkolik.net/finans-ekonomi/faiz-hesaplayici.html", title: "Faiz Hesaplayıcı" },
+      { loc: "https://hesapkolik.net/finans-ekonomi/finans-ekonomi-hesaplamalari.html", title: "Finans Ekonomi Hesaplamaları" },
+      { loc: "https://hesapkolik.net/finans-ekonomi/yuzde-hesaplayici.html", title: "Yüzde Hesaplayıcı" },
+      { loc: "https://hesapkolik.net/gunluk hayat hesaplamalari/elektrikli-arac-sarj-maliyeti.html", title: "Elektrikli Araç Şarj Maliyeti" },
+      { loc: "https://hesapkolik.net/gunluk hayat hesaplamalari/gunluk-hayat-hesaplamalari.html", title: "Günlük Hayat Hesaplamaları" },
+      { loc: "https://hesapkolik.net/gunluk hayat hesaplamalari/karbon-hesaplama.html", title: "Karbon Ayak İzi Hesaplama" },
+      { loc: "https://hesapkolik.net/gunluk hayat hesaplamalari/klima-enerji-tuketimi.html", title: "Klima Enerji Tüketimi" },
+      { loc: "https://hesapkolik.net/gunluk hayat hesaplamalari/mutfak-donusturucu.html", title: "Mutfak Dönüştürücü" },
+      { loc: "https://hesapkolik.net/gunluk hayat hesaplamalari/yakit-tuketimi-hesaplayici.html", title: "Yakıt Tüketimi Hesaplayıcı" },
+      { loc: "https://hesapkolik.net/gunluk hayat hesaplamalari/yas-hesaplayici.html", title: "Yaş Hesaplayıcı" },
+      { loc: "https://hesapkolik.net/muhendislik/cevre/askida-kati-madde-yuku-hesaplayici.html", title: "Askıda Katı Madde Yükü Hesaplayıcı" },
+      { loc: "https://hesapkolik.net/muhendislik/cevre/cevre-muh.html", title: "Çevre Mühendisliği Hesaplamaları" },
+      { loc: "https://hesapkolik.net/muhendislik/cevre/gunes-paneli-verimlilik-hesaplayici.html", title: "Güneş Paneli Verimlilik Hesaplayıcı" },
+      { loc: "https://hesapkolik.net/muhendislik/elektrik-elektronik/elektrik-elektronik.html", title: "Elektrik Elektronik Hesaplamaları" },
+      { loc: "https://hesapkolik.net/muhendislik/elektrik-elektronik/seri-paralel-direnc-hesaplama.html", title: "Seri Paralel Direnç Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/insaat/beton-hacmi-malzeme.html", title: "Beton Hacmi Malzeme Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/insaat/boya-miktari-hesaplayici.html", title: "Boya Miktarı Hesaplayıcı" },
+      { loc: "https://hesapkolik.net/muhendislik/insaat/fayans-seramik.html", title: "Fayans Seramik Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/insaat/insaat-muh.html", title: "İnşaat Mühendisliği Hesaplamaları" },
+      { loc: "https://hesapkolik.net/muhendislik/insaat/tugla-blok-duvar.html", title: "Tuğla Blok Duvar Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/kimya/enerji-denkligi.html", title: "Enerji Denkliği Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/kimya/gaz-yogunlugu.html", title: "Gaz Yoğunluğu Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/kimya/isi-transferi.html", title: "Isı Transferi Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/kimya/kimya-muhendisligi.html", title: "Kimya Mühendisliği Hesaplamaları" },
+      { loc: "https://hesapkolik.net/muhendislik/kimya/kutle-denkligi.html", title: "Kütle Denkliği Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/kimya/mmol-meq-donusturucu.html", title: "Mmol Meq Dönüştürücü" },
+      { loc: "https://hesapkolik.net/muhendislik/kimya/molarite-hesaplama.html", title: "Molarite Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/kimya/ph-hesaplama.html", title: "pH Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/kimya/reaktor-hacmi.html", title: "Reaktör Hacmi Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/kimya/yogunluk-hesaplama.html", title: "Yoğunluk Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/kimya/yuzde-kutle-hesaplama.html", title: "Yüzde Kütle Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/makine/burkulma-yuku.html", title: "Burkulma Yükü Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/makine/burulma.gerilmesi.html", title: "Burulma Gerilmesi Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/makine/egilme-gerilmesi.html", title: "Eğilme Gerilmesi Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/makine/emniyet-faktoru.html", title: "Emniyet Faktörü Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/makine/isi-esanjörü-lmtd.html", title: "Isı Eşanjörü LMTD Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/makine/kesme-gerilme.html", title: "Kesme Gerilme Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/makine/makine-muhendisligi.html", title: "Makine Mühendisliği Hesaplamaları" },
+      { loc: "https://hesapkolik.net/muhendislik/makine/normal-gerilme.html", title: "Normal Gerilme Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/makine/pompa-gucu.html", title: "Pompa Gücü Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/makine/reynolds-sayisi.html", title: "Reynolds Sayısı Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/makine/sertlik-donusumu.html", title: "Sertlik Dönüşümü Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/makine/sogutma-yuku.html", title: "Soğutma Yükü Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/tekstil/baski-pati.html", title: "Baskı Patı Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/tekstil/boya-recetesi.html", title: "Boya Reçetesi Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/tekstil/cozgu-atki-miktari.html", title: "Çözgü Atkı Miktarı Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/tekstil/dokuma-verimlilik.html", title: "Dokuma Verimlilik Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/tekstil/elyaf-karisim.html", title: "Elyaf Karışım Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/tekstil/iplik-numarasi.html", title: "İplik Numarası Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/tekstil/iplik-uzunlugu.html", title: "İplik Uzunluğu Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/tekstil/kumas-cekme-orani.html", title: "Kumaş Çekme Oranı Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/tekstil/kumas-fire.html", title: "Kumaş Fire Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/tekstil/kumas-gramaji.html", title: "Kumaş Gramajı Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/tekstil/kumas-sikiligi.html", title: "Kumaş Sıkılığı Hesaplama" },
+      { loc: "https://hesapkolik.net/muhendislik/tekstil/tekstil-muhendisligi.html", title: "Tekstil Mühendisliği Hesaplamaları" },
+      { loc: "https://hesapkolik.net/saglik/adet-dongusu-takibi.html", title: "Adet Döngüsü Takibi" },
+      { loc: "https://hesapkolik.net/saglik/adim-kalori-hesaplayici.html", title: "Adım Kalori Hesaplayıcı" },
+      { loc: "https://hesapkolik.net/saglik/bmi-hesaplayici.html", title: "BMI Hesaplayıcı" },
+      { loc: "https://hesapkolik.net/saglik/diyabet-hesaplayici.html", title: "Diyabet Hesaplayıcı" },
+      { loc: "https://hesapkolik.net/saglik/gunluk-kalori-ihtiyaci-hesaplayici.html", title: "Günlük Kalori İhtiyacı Hesaplayıcı" },
+      { loc: "https://hesapkolik.net/saglik/gunluk-karbonhidrat-ihtiyaci.html", title: "Günlük Karbonhidrat İhtiyacı" },
+      { loc: "https://hesapkolik.net/saglik/gunluk-protein-ihtiyaci.html", title: "Günlük Protein İhtiyacı" },
+      { loc: "https://hesapkolik.net/saglik/gunluk-su-ihtiyaci.html", title: "Günlük Su İhtiyacı" },
+      { loc: "https://hesapkolik.net/saglik/hedef-nabiz-bolgesi.html", title: "Hedef Nabız Bölgesi" },
+      { loc: "https://hesapkolik.net/saglik/ideal-kilo-hesaplayici.html", title: "İdeal Kilo Hesaplayıcı" },
+      { loc: "https://hesapkolik.net/saglik/persentil-hesaplama.html", title: "Persentil Hesaplama" },
+      { loc: "https://hesapkolik.net/saglik/vucut-yag-hesaplama.html", title: "Vücut Yağ Hesaplama" }
+    ];
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+        const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
+        const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
+
+        loadPartial('header-placeholder', headerPath, true);
+        loadPartial('footer-placeholder', footerPath, true);
+
+        displayBlogPosts(); // Blog yazılarını göster
+
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+        const noResultsMessage = searchResults.querySelector('.no-results');
+
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            searchResults.innerHTML = ''; // Clear previous results
+            if (query.length === 0) {
+                searchResults.style.display = 'none';
+                return;
+            }
+
+            const filteredResults = sitemapData.filter(item =>
+                item.title.toLowerCase().includes(query)
+            );
+
+            if (filteredResults.length > 0) {
+                filteredResults.forEach(item => {
+                    const anchor = document.createElement('a');
+                    anchor.href = item.loc;
+                    anchor.textContent = item.title;
+                    searchResults.appendChild(anchor);
+                });
+                noResultsMessage.style.display = 'none';
+                searchResults.style.display = 'block';
+            } else {
+                noResultsMessage.style.display = 'block';
+                searchResults.appendChild(noResultsMessage);
+                searchResults.style.display = 'block';
+            }
+        });
+
+        // Close search results when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!searchInput.contains(event.target) && !searchResults.contains(event.target)) {
+                searchResults.style.display = 'none';
+            }
+        });
+    });
+    </script>
+  </body>
+</html>
