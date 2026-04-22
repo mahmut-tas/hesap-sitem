@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Word Birleştirici - Ücretsiz ve Güvenli - Hesapkolik</title>
+    <meta content="Birden fazla Word (DOCX) dosyasını anında tek bir belge haline getirin. 2026 teknolojisiyle hızlı ve ücretsiz birleştirme." name="description"/>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+    <style>
+        body { font-family: 'Poppins', sans-serif; margin: 0; background-color: #f4f7f6; display: flex; flex-direction: column; min-height: 100vh; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+        .hero-section { background-color: #27ae60; color: white; padding: 60px 0; text-align: center; }
+        .converter-container {
+            background: white; margin: -40px auto 40px; padding: 40px; border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; max-width: 700px;
+            z-index: 10; position: relative;
+        }
+        .upload-area { border: 2px dashed #27ae60; padding: 40px; border-radius: 10px; cursor: pointer; background: #f9fdfa; }
+        .file-list { text-align: left; margin-top: 20px; max-height: 200px; overflow-y: auto; display: none; }
+        .file-item { background: #eee; padding: 8px 12px; margin-bottom: 5px; border-radius: 4px; display: flex; justify-content: space-between; }
+        .btn-merge {
+            background-color: #2ecc71; color: white; border: none; padding: 15px 40px;
+            font-size: 1.1em; font-weight: 600; border-radius: 5px; cursor: pointer;
+            margin-top: 20px; display: none; width: 100%;
+        }
+        .status-area { margin-top: 20px; display: none; }
+        .progress-bar-wrap { width: 100%; background: #eee; height: 10px; border-radius: 5px; margin-top: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; background: #27ae60; width: 0%; transition: width 0.3s; }
+        .info-section { padding: 40px 0; }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Word Dosyalarını Birleştir</h1>
+                <p>Birden fazla .docx belgesini saniyeler içinde tek bir dosyada toplayın.</p>
+            </div>
+        </section>
+
+        <section class="container">
+            <div class="converter-container">
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-file-word" style="font-size: 50px; color: #27ae60; margin-bottom: 15px;"></i>
+                    <h3>Word Dosyalarını Seçin</h3>
+                    <p>Birden fazla dosya seçebilir veya sürükleyebilirsiniz</p>
+                    <input type="file" id="fileInput" accept=".docx" multiple>
+                </div>
+
+                <div id="fileList" class="file-list"></div>
+
+                <button id="mergeBtn" class="btn-merge">Dosyaları Birleştir ve İndir</button>
+
+                <div id="status" class="status-area">
+                    <span id="statusText">İşleniyor...</span>
+                    <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h2>Neden Word Birleştirici?</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <h4><i class="fas fa-bolt"></i> Hızlı ve Ücretsiz</h4>
+                    <p>2026 standartlarında hazırlanan altyapımızla onlarca dosyayı saniyeler içinde birleştirin. Tamamen ücretsiz!</p>
+                </div>
+                <div>
+                    <h4><i class="fas fa-lock"></i> %100 Güvenli</h4>
+                    <p>Dosyalarınız sunucuya yüklenmez. İşlem tarayıcınızda biter, gizliliğiniz korunur.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header/Footer Yükleme (Hesapkolik Standart)
+            function loadPartial(id, url) {
+                fetch(url).then(r => r.text()).then(h => {
+                    document.getElementById(id).innerHTML = h;
+                }).catch(e => console.log(e));
+            }
+            loadPartial('header-placeholder', '/header.html');
+            loadPartial('footer-placeholder', '/footer.html');
+
+            const fileInput = document.getElementById('fileInput');
+            const fileListDiv = document.getElementById('fileList');
+            const mergeBtn = document.getElementById('mergeBtn');
+            const status = document.getElementById('status');
+            const progressBar = document.getElementById('progressBar');
+            
+            let selectedFiles = [];
+
+            fileInput.addEventListener('change', function(e) {
+                selectedFiles = Array.from(e.target.files);
+                if (selectedFiles.length > 0) {
+                    fileListDiv.innerHTML = '<strong>Seçilen Dosyalar:</strong>';
+                    selectedFiles.forEach(f => {
+                        fileListDiv.innerHTML += `<div class="file-item"><span>${f.name}</span> <i class="fas fa-check" style="color:green"></i></div>`;
+                    });
+                    fileListDiv.style.display = 'block';
+                    mergeBtn.style.display = 'block';
+                }
+            });
+
+            mergeBtn.addEventListener('click', async () => {
+                mergeBtn.style.display = 'none';
+                status.style.display = 'block';
+                
+                try {
+                    const zip = new JSZip();
+                    let combinedContent = "";
+
+                    for (let i = 0; i < selectedFiles.length; i++) {
+                        const file = selectedFiles[i];
+                        const content = await file.arrayBuffer();
+                        const wordZip = await JSZip.loadAsync(content);
+                        
+                        // Word dosyasının ana metin kısmını çıkar
+                        const docXml = await wordZip.file("word/document.xml").async("text");
+                        
+                        // XML içindeki <w:body> etiketinin arasını al
+                        const bodyContent = docXml.match(/<w:body>(.*?)<\/w:body>/s)[1];
+                        
+                        // Sayfa sonu eklemek isterseniz buraya break kodu eklenebilir
+                        combinedContent += bodyContent + '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
+                        
+                        progressBar.style.width = ((i + 1) / selectedFiles.length * 100) + '%';
+                    }
+
+                    // Ana Word şablonunu oluştur
+                    const finalXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                        <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+                        <w:body>${combinedContent}<w:sectPr/></w:body></w:document>`;
+
+                    zip.file('[Content_Types].xml', `<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>`);
+                    zip.folder('_rels').file('.rels', `<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`);
+                    zip.folder('word').file('document.xml', finalXml);
+
+                    const blob = await zip.generateAsync({ type: 'blob' });
+                    saveAs(blob, "birlesmis_belge_hesapkolik.docx");
+                    
+                    document.getElementById('statusText').innerText = "✅ Birleştirme Tamamlandı!";
+                } catch (err) {
+                    alert("Hata: Dosyalar okunurken bir sorun oluştu.");
+                    mergeBtn.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
