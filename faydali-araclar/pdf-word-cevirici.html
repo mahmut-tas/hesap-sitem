@@ -23,17 +23,15 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             background-color: #f4f7f6;
-            color: #333;
-            line-height: 1.6;
+            color: #333; line-height: 1.6;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            display: flex; flex-direction: column;
         }
         .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
         .hero-section { background-color: #2c3e50; color: white; padding: 60px 0; text-align: center; }
+        
         .converter-container {
             background: white; margin: -40px auto 40px; padding: 40px; border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; max-width: 700px;
@@ -43,6 +41,7 @@
         .upload-area:hover { background: #f0f7ff; border-color: #2980b9; }
         .upload-area i { font-size: 50px; color: #3498db; margin-bottom: 15px; }
         #fileInput { display: none; }
+        
         .btn-convert {
             background-color: #e74c3c; color: white; border: none; padding: 15px 40px;
             font-size: 1.1em; font-weight: 600; border-radius: 5px; cursor: pointer;
@@ -52,15 +51,17 @@
         .status-area { margin-top: 20px; font-weight: 600; display: none; }
         .progress-bar-wrap { width: 100%; background: #eee; border-radius: 30px; height: 10px; margin: 12px 0 8px; overflow: hidden; }
         .progress-bar { height: 10px; background: linear-gradient(90deg, #3498db, #2ecc71); border-radius: 30px; width: 0%; transition: width 0.3s ease; }
+        
+        .icon-small { color: #3498db; margin-right: 8px; }
+        .info-section { padding: 40px 0; text-align: justify; }
+        .success-msg { color: #27ae60; }
+        .error-msg { color: #e74c3c; }
         .loader {
             border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%;
             width: 30px; height: 30px; animation: spin 1s linear infinite; display: inline-block;
             vertical-align: middle; margin-right: 10px;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .info-section { padding: 40px 0; text-align: justify; }
-        .success-msg { color: #27ae60; }
-        .error-msg { color: #e74c3c; }
     </style>
 </head>
 <body>
@@ -74,55 +75,57 @@
             </div>
         </section>
 
+        <section class="container">
+            <div class="converter-container">
+                <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-file-pdf"></i>
+                    <h3>PDF Dosyasını Seçin</h3>
+                    <p>veya buraya sürükleyip bırakın</p>
+                    <input type="file" id="fileInput" accept=".pdf">
+                </div>
+                <div id="fileInfo" style="margin-top: 15px; display: none;">
+                    <strong id="fileName">belge.pdf</strong>
+                </div>
+                <button id="convertBtn" class="btn-convert">
+                    <i class="fas fa-file-word" style="margin-right:8px;"></i>Word'e Dönüştür ve İndir
+                </button>
+                <div id="status" class="status-area">
+                    <div class="loader"></div>
+                    <span id="statusText">İşleniyor...</span>
+                    <div class="progress-bar-wrap">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="info-section container">
             <h2 style="color: #2c3e50; text-align: center; margin-bottom: 30px;">PDF - Word Dönüştürücü Hakkında Her Şey</h2>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px;">
                 <div>
                     <h4><i class="fas fa-question-circle icon-small"></i> Bu Araç Ne İşe Yarar?</h4>
-                    <p>
-                        Hesapkolik tarafından geliştirilen bu araç, üzerinde değişiklik yapamadığınız <strong>PDF</strong> dosyalarınızı, Microsoft Word (<strong>.docx</strong>) formatına dönüştürür. 
-                        <strong>2026</strong> teknolojisiyle optimize edilen algoritmamız, metinleri tarayıcı tarafında işleyerek font, paragraf yapısı ve metin içeriğini mümkün olan en yüksek doğrulukla çıkarmanızı sağlar.
-                    </p>
+                    <p>Hesapkolik tarafından geliştirilen bu araç, üzerinde değişiklik yapamadığınız <strong>PDF</strong> dosyalarınızı, Microsoft Word (<strong>.docx</strong>) formatına dönüştürür. <strong>2026</strong> teknolojisiyle optimize edilen algoritmamız içeriği en yüksek doğrulukla çıkarır.</p>
                 </div>
                 <div>
                     <h4><i class="fas fa-check-double icon-small"></i> Neden Hesapkolik?</h4>
-                    <p>
-                        Piyasadaki çoğu aracın aksine, bu hizmet tamamen <strong>ücretsiz</strong> sunulmaktadır. Herhangi bir kayıt işlemi, dosya boyutu sınırı veya "pro" üyelik baskısı ile karşılaşmazsınız. 
-                        Ayrıca, dosyalarınız asla bir sunucuya yüklenmez; tüm işlem kendi bilgisayarınızda gerçekleşir.
-                    </p>
+                    <p>Bu hizmet tamamen <strong>ücretsiz</strong> sunulmaktadır. Kayıt işlemi veya dosya sınırı yoktur. Dosyalarınız asla bir sunucuya yüklenmez; tüm işlem bilgisayarınızda gerçekleşir.</p>
                 </div>
             </div>
 
             <hr style="border: 0; border-top: 1px dashed #ccc; margin: 30px 0;">
 
             <h3><i class="fas fa-magic icon-small"></i> Nasıl Kullanılır?</h3>
-            <p>
-                PDF dosyalarınızı Word'e çevirmek için sadece birkaç saniye yeterlidir:
-            </p>
             <ul style="margin-left: 20px; color: #555;">
-                <li><strong>Dosyayı Seçin:</strong> "PDF Dosyasını Seçin" butonuna tıklayarak veya dosyanızı sürükleyip bırakarak yükleyin.</li>
-                <li><strong>Dönüştürmeyi Başlatın:</strong> "Word'e Dönüştür ve İndir" butonuna basın.</li>
-                <li><strong>İndirme ve Kayıt:</strong> Sistemimiz 2026 güncel kütüphanelerini kullanarak belgenizi saniyeler içinde hazırlar ve indirme işlemi otomatik olarak başlar.</li>
+                <li><strong>Dosyayı Seçin:</strong> PDF dosyanızı yükleme alanına bırakın.</li>
+                <li><strong>Dönüştürmeyi Başlatın:</strong> "Word'e Dönüştür" butonuna basın.</li>
+                <li><strong>İndirme:</strong> Sistemimiz belgenizi saniyeler içinde hazırlar ve indirme otomatik başlar.</li>
             </ul>
 
             <div style="background-color: #e8f4fd; padding: 25px; border-radius: 10px; margin-top: 30px;">
                 <h4 style="margin-top: 0;"><i class="fas fa-shield-alt"></i> Güvenlik ve Gizlilik (2026 Standartları)</h4>
-                <p>
-                    Kullanıcı verilerinin güvenliği bizim önceliğimizdir. Geleneksel çevrimiçi dönüştürücüler dosyanızı kendi sunucularına kopyalar. <strong>Hesapkolik Ücretsiz PDF Dönüştürücü</strong> ise %100 tarayıcı tabanlı (Client-Side) çalışır. 
-                    Bu, belgenizin içeriğinin bilgisayarınızdan asla çıkmadığı ve dışarıdan kimsenin (biz dahil) belgenize erişemeyeceği anlamına gelir.
-                </p>
+                <p>Verileriniz güvende! <strong>Hesapkolik Ücretsiz PDF Dönüştürücü</strong> %100 tarayıcı tabanlı çalışır. Belgeniz bilgisayarınızdan asla dışarı çıkmaz.</p>
             </div>
-
-            <h4><i class="fas fa-lightbulb icon-small"></i> Önemli İpuçları</h4>
-            <p>
-                Dönüştürme kalitesi, orijinal PDF dosyanızın oluşturulma biçimine bağlıdır. Metin tabanlı (aranabilir) PDF'lerde kusursuz sonuçlar alırsınız. Ancak tamamen resimlerden oluşan (taranmış) belgelerde metin seçilemeyebilir. 
-                Belgenizdeki tablolar ve karmaşık düzenler, Word formatına aktarıldığında düzenlenebilir saf metin formuna getirilir.
-            </p>
-
-            <p class="disclaimer-text">
-                <strong>Not:</strong> 2026 yılı itibarıyla en güncel .docx standartlarını destekliyoruz. Tamamen ücretsiz olan bu servisi, eğitim, iş ve kişisel projelerinizde sınırsızca kullanabilirsiniz.
-            </p>
         </section>
     </main>
 
@@ -130,49 +133,30 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // --- HEADER & FOOTER YÜKLEME (REFERANS ALINAN KISIM) ---
+            // Header & Footer Yükleyici
             const isEnglishPage = window.location.pathname.startsWith('/en/');
-
             function loadPartial(elementId, url) {
                 fetch(url)
-                    .then(response => {
-                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                        return response.text();
-                    })
+                    .then(response => { if (!response.ok) throw new Error(); return response.text(); })
                     .then(html => {
                         const placeholder = document.getElementById(elementId);
                         if (placeholder) {
                             placeholder.innerHTML = html;
-                            // Scriptleri aktive et
-                            const scripts = placeholder.querySelectorAll('script');
-                            scripts.forEach(oldScript => {
+                            placeholder.querySelectorAll('script').forEach(oldScript => {
                                 const newScript = document.createElement('script');
                                 Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
                                 newScript.textContent = oldScript.textContent;
                                 oldScript.parentNode.replaceChild(newScript, oldScript);
                             });
                         }
-                    })
-                    .catch(error => console.error(`Error loading ${url}:`, error));
+                    }).catch(e => console.error(e));
             }
+            loadPartial('header-placeholder', isEnglishPage ? '/en/header.html' : '/header.html');
+            loadPartial('footer-placeholder', isEnglishPage ? '/en/footer.html' : '/footer.html');
 
-            const headerPath = isEnglishPage ? '/en/header.html' : '/header.html';
-            const footerPath = isEnglishPage ? '/en/footer.html' : '/footer.html';
-
-            loadPartial('header-placeholder', headerPath);
-            loadPartial('footer-placeholder', footerPath);
-
-            // --- PDF DÖNÜŞTÜRÜCÜ MANTIK ---
+            // Dönüştürücü Mantığı
             pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-
-            const fileInput = document.getElementById('fileInput');
-            const convertBtn = document.getElementById('convertBtn');
-            const status = document.getElementById('status');
-            const statusText = document.getElementById('statusText');
-            const fileInfo = document.getElementById('fileInfo');
-            const fileNameDisp = document.getElementById('fileName');
-            const progressBar = document.getElementById('progressBar');
-            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput'), convertBtn = document.getElementById('convertBtn'), status = document.getElementById('status'), statusText = document.getElementById('statusText'), fileInfo = document.getElementById('fileInfo'), fileNameDisp = document.getElementById('fileName'), progressBar = document.getElementById('progressBar'), uploadArea = document.getElementById('uploadArea');
 
             function handleFile(file) {
                 fileNameDisp.textContent = file.name;
@@ -181,11 +165,7 @@
                 status.style.display = 'none';
             }
 
-            fileInput.addEventListener('change', function() {
-                if (this.files && this.files[0]) handleFile(this.files[0]);
-            });
-
-            // Sürükle bırak desteği
+            fileInput.addEventListener('change', function() { if (this.files[0]) handleFile(this.files[0]); });
             uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.style.background = '#f0f7ff'; });
             uploadArea.addEventListener('dragleave', () => { uploadArea.style.background = '#f9fbfd'; });
             uploadArea.addEventListener('drop', (e) => {
@@ -194,28 +174,13 @@
                 if (f && f.type === 'application/pdf') handleFile(f);
             });
 
-            // DOCX Üretim Fonksiyonları (escXml, buildDocumentXml, buildDocx)
             function escXml(str) { return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-
-            function buildDocumentXml(lines) {
-                const paras = lines.map(line => `<w:p><w:r><w:t xml:space="preserve">${escXml(line)}</w:t></w:r></w:p>`).join('');
-                return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${paras}<w:sectPr/></w:body></w:document>`;
-            }
-
-            async function buildDocx(lines) {
-                const zip = new JSZip();
-                zip.file('[Content_Types].xml', `<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>`);
-                zip.folder('_rels').file('.rels', `<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`);
-                zip.folder('word').file('document.xml', buildDocumentXml(lines));
-                return await zip.generateAsync({ type: 'blob' });
-            }
-
+            
             convertBtn.addEventListener('click', async () => {
                 const file = fileInput.files[0];
                 if (!file) return;
                 convertBtn.style.display = 'none';
                 status.style.display = 'block';
-                
                 try {
                     const arrayBuffer = await file.arrayBuffer();
                     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
@@ -227,13 +192,19 @@
                         const text = await page.getTextContent();
                         text.items.forEach(item => lines.push(item.str));
                     }
-                    const blob = await buildDocx(lines);
+                    const zip = new JSZip();
+                    const paras = lines.map(line => `<w:p><w:r><w:t xml:space="preserve">${escXml(line)}</w:t></w:r></w:p>`).join('');
+                    const docXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${paras}<w:sectPr/></w:body></w:document>`;
+                    
+                    zip.file('[Content_Types].xml', `<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>`);
+                    zip.folder('_rels').file('.rels', `<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`);
+                    zip.folder('word').file('document.xml', docXml);
+                    
+                    const blob = await zip.generateAsync({ type: 'blob' });
                     saveAs(blob, file.name.replace('.pdf', '') + "_hesapkolik.docx");
                     statusText.textContent = "✅ Tamamlandı!";
                     progressBar.style.width = '100%';
-                } catch (e) {
-                    statusText.textContent = "❌ Hata oluştu.";
-                }
+                } catch (e) { statusText.textContent = "❌ Hata!"; }
             });
         });
     </script>
