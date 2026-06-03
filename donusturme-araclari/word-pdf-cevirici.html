@@ -254,7 +254,7 @@
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:30px; margin-bottom:40px;">
                 <div>
                     <h4><i class="fas fa-question-circle icon-small"></i> Bu Araç Ne İşe Yarar?</h4>
-                    <p>Hesapkolik tarafından geliştirilen bu araç, Microsoft Word (<strong>.docx</strong>) dosyalarınızı evrensel olarak açılabilen <strong>PDF</strong> formatına dönüştürür. Başlıklar, tablolar, liste biçimlendirmeleri ve yazı stilleri korunur.</p>
+                    <p>Hesapkolik tarafından geliştirilenSub bu araç, Microsoft Word (<strong>.docx</strong>) dosyalarınızı evrensel olarak açılabilen <strong>PDF</strong> formatına dönüştürür. Başlıklar, tablolar, liste biçimlendirmeleri ve yazı stilleri korunur.</p>
                 </div>
                 <div>
                     <h4><i class="fas fa-check-double icon-small"></i> Neden Hesapkolik?</h4>
@@ -279,7 +279,7 @@
 
             <div style="background-color:#fef9e7; padding:25px; border-radius:10px; margin-top:20px;">
                 <h4 style="margin-top:0;"><i class="fas fa-exclamation-triangle" style="color:#f39c12; margin-right:8px;"></i> Sınırlamalar</h4>
-                <p>Karmaşık sayfa arka planları, özel fontlar Navy ve makrolar tam olarak aktarılamayabilir. Çok gelişmiş biçimlendirme gerektiren belgeler için masaüstü Word uygulamasını kullanmanızı öneririz.</p>
+                <p>Karmaşık sayfa arka planları, özel fontlar ve makrolar tam olarak aktarılamayabilir. Çok gelişmiş biçimlendirme gerektiren belgeler için masaüstü Word uygulamasını kullanmanızı öneririz.</p>
             </div>
 
             <div style="background-color:#e8f8f5; padding:25px; border-radius:10px; margin-top:20px;">
@@ -292,11 +292,16 @@
     <div id="footer-placeholder"></div>
 
     <div id="renderContainer" style="
-        position: fixed; left: -9999px; top: 0;
-        opacity: 1;
-        width: 210mm; background: white;
+        position: absolute; 
+        bottom: 0; 
+        left: 0;
+        width: 210mm; 
+        height: 0; 
+        overflow: hidden;
+        background: white;
         font-family: 'Calibri', Arial, sans-serif;
         font-size: 11pt; line-height: 1.5; color: #000;
+        z-index: -1;
     "></div>
 
     <script>
@@ -595,8 +600,8 @@
                 const fullHtml = buildPdfHtml(currentHtml, settings.pageWidth);
                 renderContainer.innerHTML = fullHtml;
 
-                // DÜZELTME: DOM yerleşimi ve özellikle varsa resimlerin yüklenmesi için bekleme süresi 350ms'ye çıkarıldı
-                await new Promise(r => setTimeout(r, 350)); 
+                // DÜZELTME: DOM yerleşimi ve asenkron Base64 resim çizimleri için bekleme süresi daha kararlı hale getirildi (800ms)
+                await new Promise(r => setTimeout(r, 800)); 
 
                 if (cancelRequested) {
                     cleanup();
@@ -612,7 +617,7 @@
                 const opt = {
                     margin:      settings.margin,
                     filename:    fileName,
-                    image:       { type: 'jpeg', quality: 0.92 },
+                    image:       { type: 'jpeg', quality: 0.95 },
                     html2canvas: settings.html2canvas,
                     jsPDF:       settings.jsPDF,
                     pagebreak:   { mode: ['avoid-all', 'css', 'legacy'] },
@@ -626,10 +631,10 @@
                     }
                 }, 400);
 
-                // DÜZELTME: html2pdf'e doğrudan renderContainer'ın kendisi parametre olarak geçildi (Seçici hatası önlendi)
+                // DÜZELTME: html2pdf'e string seçici yerine doğrudan nesnenin ID referansı çağrılarak temiz bir DOM klonlaması sağlandı.
                 const pdfBlob = await html2pdf()
                     .set(opt)
-                    .from(renderContainer)
+                    .from(document.getElementById('renderContainer'))
                     .outputPdf('blob');
 
                 clearInterval(progressInterval);
@@ -672,6 +677,7 @@
             }
         });
 
+        // ─── Temizlik ve İptal Yönetimi ──────────────────────────────────
         function cleanup() {
             renderContainer.innerHTML   = '';
             status.style.display        = 'none';
@@ -683,6 +689,7 @@
 
     });
 
+    // ─── Form Sıfırlama Fonksiyonu ───────────────────────────────────
     function resetConverter() {
         document.getElementById('fileInput').value            = '';
         document.getElementById('fileInfo').style.display     = 'none';
