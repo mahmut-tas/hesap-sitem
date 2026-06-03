@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
 
+    <!-- Orijinal CSS dosyaları korundu -->
     <link href="/css/header.css" rel="stylesheet"/>
     <link href="/css/style.css" rel="stylesheet"/>
     <link href="/css/footer.css" rel="stylesheet"/>
@@ -31,27 +32,56 @@
         }
         .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
         .hero-section { background-color: #2c3e50; color: white; padding: 60px 0; text-align: center; }
-        
+
         .converter-container {
             background: white; margin: -40px auto 40px; padding: 40px; border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; max-width: 700px;
             z-index: 10; position: relative;
         }
-        .upload-area { border: 2px dashed #3498db; padding: 40px; border-radius: 10px; cursor: pointer; transition: all 0.3s; background: #f9fbfd; }
+        .upload-area {
+            border: 2px dashed #3498db; padding: 40px; border-radius: 10px;
+            cursor: pointer; transition: all 0.3s; background: #f9fbfd;
+        }
         .upload-area:hover { background: #f0f7ff; border-color: #2980b9; }
+        .upload-area.drag-over { background: #e3f2fd; border-color: #1565c0; transform: scale(1.01); }
         .upload-area i { font-size: 50px; color: #3498db; margin-bottom: 15px; }
         #fileInput { display: none; }
-        
+
         .btn-convert {
             background-color: #e74c3c; color: white; border: none; padding: 15px 40px;
             font-size: 1.1em; font-weight: 600; border-radius: 5px; cursor: pointer;
             margin-top: 20px; display: none; width: 100%; transition: 0.3s;
         }
         .btn-convert:hover { background-color: #c0392b; }
+
+        /* YENİ: İptal butonu */
+        .btn-cancel {
+            background-color: #95a5a6; color: white; border: none; padding: 10px 30px;
+            font-size: 0.95em; font-weight: 600; border-radius: 5px; cursor: pointer;
+            margin-top: 10px; display: none; width: 100%; transition: 0.3s;
+        }
+        .btn-cancel:hover { background-color: #7f8c8d; }
+
         .status-area { margin-top: 20px; font-weight: 600; display: none; }
         .progress-bar-wrap { width: 100%; background: #eee; border-radius: 30px; height: 10px; margin: 12px 0 8px; overflow: hidden; }
         .progress-bar { height: 10px; background: linear-gradient(90deg, #3498db, #2ecc71); border-radius: 30px; width: 0%; transition: width 0.3s ease; }
-        
+        .status-detail { font-size: 0.82em; color: #888; margin-top: 4px; font-weight: 400; }
+
+        /* YENİ: Önizleme canvas */
+        #previewSection { display: none; margin-top: 20px; text-align: left; }
+        #previewSection h4 { font-size: 0.9em; color: #666; margin-bottom: 8px; }
+        #previewCanvas {
+            border: 1px solid #ddd; border-radius: 6px; max-width: 100%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        /* YENİ: Dosya boyutu uyarısı */
+        .size-warning {
+            background: #fff3cd; border: 1px solid #ffc107; color: #856404;
+            padding: 10px 15px; border-radius: 6px; margin-top: 12px;
+            font-size: 0.88em; display: none;
+        }
+
         .icon-small { color: #3498db; margin-right: 8px; }
         .info-section { padding: 40px 0; text-align: justify; }
         .success-msg { color: #27ae60; }
@@ -62,6 +92,19 @@
             vertical-align: middle; margin-right: 10px;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* YENİ: Sonuç kutusu */
+        .result-box {
+            background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px;
+            padding: 20px; margin-top: 20px; display: none;
+        }
+        .result-box .stats { font-size: 0.85em; color: #555; margin-top: 8px; }
+        .btn-new { 
+            background: #3498db; color: white; border: none; padding: 10px 25px;
+            border-radius: 5px; cursor: pointer; margin-top: 12px; font-size: 0.9em;
+            font-family: 'Poppins', sans-serif; transition: 0.2s;
+        }
+        .btn-new:hover { background: #2980b9; }
     </style>
 </head>
 <body>
@@ -77,35 +120,68 @@
 
         <section class="container">
             <div class="converter-container">
+
                 <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
                     <i class="fas fa-file-pdf"></i>
                     <h3>PDF Dosyasını Seçin</h3>
                     <p>veya buraya sürükleyip bırakın</p>
                     <input type="file" id="fileInput" accept=".pdf">
                 </div>
-                <div id="fileInfo" style="margin-top: 15px; display: none;">
-                    <strong id="fileName">belge.pdf</strong>
+
+                <!-- YENİ: Dosya boyutu uyarısı -->
+                <div class="size-warning" id="sizeWarning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span id="sizeWarningText"></span>
                 </div>
+
+                <div id="fileInfo" style="margin-top:15px; display:none;">
+                    <strong id="fileName">belge.pdf</strong>
+                    <span id="fileSize" style="color:#888; font-size:0.85em; margin-left:8px;"></span>
+                </div>
+
+                <!-- YENİ: Önizleme -->
+                <div id="previewSection">
+                    <h4><i class="fas fa-eye icon-small"></i>İlk Sayfa Önizlemesi</h4>
+                    <canvas id="previewCanvas"></canvas>
+                </div>
+
                 <button id="convertBtn" class="btn-convert">
                     <i class="fas fa-file-word" style="margin-right:8px;"></i>Word'e Dönüştür ve İndir
                 </button>
+
+                <!-- YENİ: İptal butonu -->
+                <button id="cancelBtn" class="btn-cancel">
+                    <i class="fas fa-times" style="margin-right:6px;"></i>İşlemi İptal Et
+                </button>
+
                 <div id="status" class="status-area">
                     <div class="loader"></div>
                     <span id="statusText">İşleniyor...</span>
                     <div class="progress-bar-wrap">
                         <div class="progress-bar" id="progressBar"></div>
                     </div>
+                    <div class="status-detail" id="statusDetail"></div>
                 </div>
+
+                <!-- YENİ: Sonuç kutusu -->
+                <div class="result-box" id="resultBox">
+                    <div style="font-size:1.2em;">✅ <strong>Dönüştürme Tamamlandı!</strong></div>
+                    <div class="stats" id="resultStats"></div>
+                    <button class="btn-new" onclick="resetConverter()">
+                        <i class="fas fa-redo" style="margin-right:6px;"></i>Yeni Dosya Dönüştür
+                    </button>
+                </div>
+
             </div>
         </section>
 
         <section class="info-section container">
-            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 30px;">PDF - Word Dönüştürücü Hakkında Her Şey</h2>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px;">
+            <h2 style="color:#2c3e50; text-align:center; margin-bottom:30px;">PDF - Word Dönüştürücü Hakkında Her Şey</h2>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:30px; margin-bottom:40px;">
                 <div>
                     <h4><i class="fas fa-question-circle icon-small"></i> Bu Araç Ne İşe Yarar?</h4>
-                    <p>Hesapkolik tarafından geliştirilen bu araç, üzerinde değişiklik yapamadığınız <strong>PDF</strong> dosyalarınızı, Microsoft Word (<strong>.docx</strong>) formatına dönüştürür. <strong>2026</strong> teknolojisiyle optimize edilen algoritmamız içeriği en yüksek doğrulukla çıkarır.</p>
+                    <p>Hesapkolik tarafından geliştirilen bu araç, üzerinde değişiklik yapamadığınız <strong>PDF</strong> dosyalarınızı, Microsoft Word (<strong>.docx</strong>) formatına dönüştürür. Koordinat tabanlı metin sıralama algoritması ile içeriği en yüksek doğrulukla çıkarır.</p>
                 </div>
                 <div>
                     <h4><i class="fas fa-check-double icon-small"></i> Neden Hesapkolik?</h4>
@@ -113,17 +189,18 @@
                 </div>
             </div>
 
-            <hr style="border: 0; border-top: 1px dashed #ccc; margin: 30px 0;">
+            <hr style="border:0; border-top:1px dashed #ccc; margin:30px 0;">
 
             <h3><i class="fas fa-magic icon-small"></i> Nasıl Kullanılır?</h3>
-            <ul style="margin-left: 20px; color: #555;">
+            <ul style="margin-left:20px; color:#555;">
                 <li><strong>Dosyayı Seçin:</strong> PDF dosyanızı yükleme alanına bırakın.</li>
+                <li><strong>Önizleyin:</strong> İlk sayfa otomatik olarak gösterilir.</li>
                 <li><strong>Dönüştürmeyi Başlatın:</strong> "Word'e Dönüştür" butonuna basın.</li>
                 <li><strong>İndirme:</strong> Sistemimiz belgenizi saniyeler içinde hazırlar ve indirme otomatik başlar.</li>
             </ul>
 
-            <div style="background-color: #e8f4fd; padding: 25px; border-radius: 10px; margin-top: 30px;">
-                <h4 style="margin-top: 0;"><i class="fas fa-shield-alt"></i> Güvenlik ve Gizlilik (2026 Standartları)</h4>
+            <div style="background-color:#e8f4fd; padding:25px; border-radius:10px; margin-top:30px;">
+                <h4 style="margin-top:0;"><i class="fas fa-shield-alt"></i> Güvenlik ve Gizlilik</h4>
                 <p>Verileriniz güvende! <strong>Hesapkolik Ücretsiz PDF Dönüştürücü</strong> %100 tarayıcı tabanlı çalışır. Belgeniz bilgisayarınızdan asla dışarı çıkmaz.</p>
             </div>
         </section>
@@ -132,81 +209,507 @@
     <div id="footer-placeholder"></div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Header & Footer Yükleyici
-            const isEnglishPage = window.location.pathname.startsWith('/en/');
-            function loadPartial(elementId, url) {
-                fetch(url)
-                    .then(response => { if (!response.ok) throw new Error(); return response.text(); })
-                    .then(html => {
-                        const placeholder = document.getElementById(elementId);
-                        if (placeholder) {
-                            placeholder.innerHTML = html;
-                            placeholder.querySelectorAll('script').forEach(oldScript => {
-                                const newScript = document.createElement('script');
-                                Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
-                                newScript.textContent = oldScript.textContent;
-                                oldScript.parentNode.replaceChild(newScript, oldScript);
-                            });
-                        }
-                    }).catch(e => console.error(e));
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // ─── Header & Footer Yükleyici ────────────────────────────────────────
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+        function loadPartial(elementId, url) {
+            fetch(url)
+                .then(r => { if (!r.ok) throw new Error(); return r.text(); })
+                .then(html => {
+                    const el = document.getElementById(elementId);
+                    if (!el) return;
+                    el.innerHTML = html;
+                    el.querySelectorAll('script').forEach(old => {
+                        const s = document.createElement('script');
+                        Array.from(old.attributes).forEach(a => s.setAttribute(a.name, a.value));
+                        s.textContent = old.textContent;
+                        old.parentNode.replaceChild(s, old);
+                    });
+                }).catch(e => console.error(e));
+        }
+        loadPartial('header-placeholder', isEnglishPage ? '/en/header.html' : '/header.html');
+        loadPartial('footer-placeholder', isEnglishPage ? '/en/footer.html' : '/footer.html');
+
+        // ─── PDF.js Worker ────────────────────────────────────────────────────
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+        // ─── DOM Referansları ─────────────────────────────────────────────────
+        const fileInput      = document.getElementById('fileInput');
+        const convertBtn     = document.getElementById('convertBtn');
+        const cancelBtn      = document.getElementById('cancelBtn');
+        const status         = document.getElementById('status');
+        const statusText     = document.getElementById('statusText');
+        const statusDetail   = document.getElementById('statusDetail');
+        const fileInfo       = document.getElementById('fileInfo');
+        const fileNameDisp   = document.getElementById('fileName');
+        const fileSizeDisp   = document.getElementById('fileSize');
+        const progressBar    = document.getElementById('progressBar');
+        const uploadArea     = document.getElementById('uploadArea');
+        const sizeWarning    = document.getElementById('sizeWarning');
+        const sizeWarningTxt = document.getElementById('sizeWarningText');
+        const previewSection = document.getElementById('previewSection');
+        const previewCanvas  = document.getElementById('previewCanvas');
+        const resultBox      = document.getElementById('resultBox');
+        const resultStats    = document.getElementById('resultStats');
+
+        // İptal kontrolü için flag
+        let cancelRequested  = false;
+        let currentFile      = null;
+
+        // ─── Yardımcı: XML karakterlerini escape et ───────────────────────────
+        function escXml(str) {
+            return str
+                .replace(/&/g,  '&amp;')
+                .replace(/</g,  '&lt;')
+                .replace(/>/g,  '&gt;')
+                .replace(/"/g,  '&quot;')
+                .replace(/'/g,  '&apos;');
+        }
+
+        // ─── Yardımcı: Dosya boyutunu okunabilir formata çevir ───────────────
+        function formatBytes(bytes) {
+            if (bytes < 1024)       return bytes + ' B';
+            if (bytes < 1048576)    return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / 1048576).toFixed(1) + ' MB';
+        }
+
+        // ─── Yardımcı: Koordinat tabanlı satır birleştirme ───────────────────
+        // PDF öğelerini Y koordinatına göre satırlara gruplar,
+        // ardından X koordinatına göre sıralar. Bu sayede:
+        //   • Sütun karışıklığı önlenir
+        //   • Başlık / gövde sırası korunur
+        //   • Yatay metin akışı doğru çıkar
+        function groupItemsIntoLines(items, yTolerance) {
+            if (!items.length) return [];
+
+            // Y koordinatına göre azalan sırala (PDF koordinatı alttan başlar)
+            const sorted = [...items].sort((a, b) => b.y - a.y);
+
+            const lines = [];
+            let currentLine = [sorted[0]];
+            let currentY    = sorted[0].y;
+
+            for (let i = 1; i < sorted.length; i++) {
+                const item = sorted[i];
+                // Aynı satır toleransı içindeyse aynı satıra ekle
+                if (Math.abs(item.y - currentY) <= yTolerance) {
+                    currentLine.push(item);
+                } else {
+                    // Yeni satır: mevcut satırı X'e göre sırala ve kaydet
+                    lines.push(currentLine.sort((a, b) => a.x - b.x));
+                    currentLine = [item];
+                    currentY    = item.y;
+                }
             }
-            loadPartial('header-placeholder', isEnglishPage ? '/en/header.html' : '/header.html');
-            loadPartial('footer-placeholder', isEnglishPage ? '/en/footer.html' : '/footer.html');
+            // Son satırı ekle
+            lines.push(currentLine.sort((a, b) => a.x - b.x));
 
-            // Dönüştürücü Mantığı
-            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-            const fileInput = document.getElementById('fileInput'), convertBtn = document.getElementById('convertBtn'), status = document.getElementById('status'), statusText = document.getElementById('statusText'), fileInfo = document.getElementById('fileInfo'), fileNameDisp = document.getElementById('fileName'), progressBar = document.getElementById('progressBar'), uploadArea = document.getElementById('uploadArea');
+            return lines;
+        }
 
-            function handleFile(file) {
-                fileNameDisp.textContent = file.name;
-                fileInfo.style.display = 'block';
-                convertBtn.style.display = 'block';
-                status.style.display = 'none';
+        // ─── Yardımcı: Satır öğelerini metne dönüştür ────────────────────────
+        // Öğeler arasındaki X boşluğuna göre kelime arası boşluk ekler
+        function lineToText(lineItems) {
+            let text = '';
+            for (let i = 0; i < lineItems.length; i++) {
+                const item = lineItems[i];
+                if (i === 0) {
+                    text += item.str;
+                } else {
+                    const prev    = lineItems[i - 1];
+                    const gap     = item.x - (prev.x + prev.width);
+                    // Boşluk eşiği: öğe genişliğinin %25'inden büyükse boşluk ekle
+                    const spaceTh = Math.max(prev.width * 0.25, 3);
+                    if (gap > spaceTh) text += ' ';
+                    text += item.str;
+                }
+            }
+            return text;
+        }
+
+        // ─── Yardımcı: Satır yüksekliğine göre font boyutu sınıfı ───────────
+        // fontSize > 16  → başlık  (w:sz büyük)
+        // fontSize > 11  → alt başlık
+        // diğer          → normal gövde
+        function getFontSize(fontSize) {
+            if (fontSize >= 16) return 32;   // Word'de yarım punto birimiyle: 16pt = 32
+            if (fontSize >= 12) return 24;   // 12pt
+            return 20;                        // 10pt (varsayılan gövde)
+        }
+
+        // ─── Yardımcı: Paragraf XML'i üret ───────────────────────────────────
+        function makeParagraph(text, fontSize, isBold) {
+            if (!text.trim()) {
+                // Boş paragraf = satır boşluğu
+                return '<w:p><w:pPr><w:spacing w:after="80"/></w:pPr></w:p>';
+            }
+            const bold  = isBold ? '<w:b/>' : '';
+            const sz    = `<w:sz w:val="${fontSize}"/><w:szCs w:val="${fontSize}"/>`;
+            const rPr   = `<w:rPr>${bold}${sz}</w:rPr>`;
+            const t     = `<w:t xml:space="preserve">${escXml(text)}</w:t>`;
+            return `<w:p><w:r>${rPr}${t}</w:r></w:p>`;
+        }
+
+        // ─── Yardımcı: Sayfa sonu XML'i ──────────────────────────────────────
+        function makePageBreak() {
+            return '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
+        }
+
+        // ─── Önizleme: PDF'in ilk sayfasını canvas'a çiz ─────────────────────
+        async function renderPreview(pdfDoc) {
+            try {
+                const page     = await pdfDoc.getPage(1);
+                const scale    = 0.5;
+                const viewport = page.getViewport({ scale });
+                previewCanvas.width  = viewport.width;
+                previewCanvas.height = viewport.height;
+                await page.render({
+                    canvasContext: previewCanvas.getContext('2d'),
+                    viewport
+                }).promise;
+                previewSection.style.display = 'block';
+            } catch (e) {
+                previewSection.style.display = 'none';
+            }
+        }
+
+        // ─── Dosya seçilince ──────────────────────────────────────────────────
+        async function handleFile(file) {
+            currentFile = file;
+            fileNameDisp.textContent = file.name;
+            fileSizeDisp.textContent = '(' + formatBytes(file.size) + ')';
+            fileInfo.style.display   = 'block';
+            resultBox.style.display  = 'none';
+            status.style.display     = 'none';
+            progressBar.style.width  = '0%';
+
+            // Boyut uyarısı
+            if (file.size > 50 * 1024 * 1024) {          // 50 MB+
+                sizeWarningTxt.textContent =
+                    'Bu dosya çok büyük (50 MB+). Dönüştürme uzun sürebilir veya tarayıcı donabilir.';
+                sizeWarning.style.display = 'block';
+            } else if (file.size > 10 * 1024 * 1024) {   // 10–50 MB
+                sizeWarningTxt.textContent =
+                    'Büyük dosya (' + formatBytes(file.size) + '). Dönüştürme biraz sürebilir.';
+                sizeWarning.style.display = 'block';
+            } else {
+                sizeWarning.style.display = 'none';
             }
 
-            fileInput.addEventListener('change', function() { if (this.files[0]) handleFile(this.files[0]); });
-            uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.style.background = '#f0f7ff'; });
-            uploadArea.addEventListener('dragleave', () => { uploadArea.style.background = '#f9fbfd'; });
-            uploadArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                const f = e.dataTransfer.files[0];
-                if (f && f.type === 'application/pdf') handleFile(f);
-            });
+            // Önizleme yükle
+            previewSection.style.display = 'none';
+            try {
+                const ab     = await file.arrayBuffer();
+                const pdfDoc = await pdfjsLib.getDocument({ data: ab }).promise;
+                await renderPreview(pdfDoc);
+            } catch (_) { /* önizleme başarısız olsa da devam et */ }
 
-            function escXml(str) { return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-            
-            convertBtn.addEventListener('click', async () => {
-                const file = fileInput.files[0];
-                if (!file) return;
-                convertBtn.style.display = 'none';
-                status.style.display = 'block';
-                try {
-                    const arrayBuffer = await file.arrayBuffer();
-                    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-                    const lines = [];
-                    for (let i = 1; i <= pdf.numPages; i++) {
-                        statusText.textContent = `Sayfa ${i} / ${pdf.numPages} işleniyor...`;
-                        progressBar.style.width = (i / pdf.numPages * 90) + '%';
-                        const page = await pdf.getPage(i);
-                        const text = await page.getTextContent();
-                        text.items.forEach(item => lines.push(item.str));
-                    }
-                    const zip = new JSZip();
-                    const paras = lines.map(line => `<w:p><w:r><w:t xml:space="preserve">${escXml(line)}</w:t></w:r></w:p>`).join('');
-                    const docXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${paras}<w:sectPr/></w:body></w:document>`;
-                    
-                    zip.file('[Content_Types].xml', `<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>`);
-                    zip.folder('_rels').file('.rels', `<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`);
-                    zip.folder('word').file('document.xml', docXml);
-                    
-                    const blob = await zip.generateAsync({ type: 'blob' });
-                    saveAs(blob, file.name.replace('.pdf', '') + "_hesapkolik.docx");
-                    statusText.textContent = "✅ Tamamlandı!";
-                    progressBar.style.width = '100%';
-                } catch (e) { statusText.textContent = "❌ Hata!"; }
-            });
+            convertBtn.style.display = 'block';
+        }
+
+        // ─── Event: dosya seçimi ──────────────────────────────────────────────
+        fileInput.addEventListener('change', function () {
+            if (this.files[0]) handleFile(this.files[0]);
         });
+
+        // ─── Event: drag & drop ───────────────────────────────────────────────
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('drag-over');
+        });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('drag-over');
+        });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            const f = e.dataTransfer.files[0];
+            if (f && f.type === 'application/pdf') handleFile(f);
+        });
+
+        // ─── Event: İptal butonu ──────────────────────────────────────────────
+        cancelBtn.addEventListener('click', () => {
+            cancelRequested = true;
+            cancelBtn.style.display  = 'none';
+            statusText.textContent   = '⏹ İptal ediliyor...';
+        });
+
+        // ─── Ana dönüştürme fonksiyonu ────────────────────────────────────────
+        convertBtn.addEventListener('click', async () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            // UI hazırlığı
+            cancelRequested          = false;
+            convertBtn.style.display = 'none';
+            cancelBtn.style.display  = 'block';
+            status.style.display     = 'block';
+            resultBox.style.display  = 'none';
+            progressBar.style.width  = '0%';
+            statusText.textContent   = 'PDF yükleniyor...';
+            statusDetail.textContent = '';
+
+            const startTime = Date.now();
+
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf         = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                const totalPages  = pdf.numPages;
+
+                statusText.textContent = 'Sayfalar işleniyor...';
+
+                const allParagraphs = []; // Her sayfa için paragraf XML dizisi
+                let   totalWords    = 0;
+
+                // ── Batch işleme (5'er sayfa) ─────────────────────────────────
+                // Tarayıcıyı dondurmamak için sayfaları gruplar halinde işle
+                const BATCH_SIZE = 5;
+
+                for (let batchStart = 1; batchStart <= totalPages; batchStart += BATCH_SIZE) {
+                    if (cancelRequested) break;
+
+                    const batchEnd   = Math.min(batchStart + BATCH_SIZE - 1, totalPages);
+                    const batchPages = [];
+
+                    // Batch'teki sayfaları paralel çek
+                    for (let i = batchStart; i <= batchEnd; i++) {
+                        batchPages.push(pdf.getPage(i));
+                    }
+                    const pages = await Promise.all(batchPages);
+
+                    // Her sayfayı sırayla işle
+                    for (let pi = 0; pi < pages.length; pi++) {
+                        if (cancelRequested) break;
+
+                        const pageNum   = batchStart + pi;
+                        const progress  = Math.round((pageNum / totalPages) * 88);
+                        progressBar.style.width = progress + '%';
+                        statusText.textContent  = `Sayfa ${pageNum} / ${totalPages} işleniyor...`;
+                        statusDetail.textContent = `Batch ${Math.ceil(batchStart / BATCH_SIZE)} / ${Math.ceil(totalPages / BATCH_SIZE)}`;
+
+                        const page        = pages[pi];
+                        const textContent = await page.getTextContent();
+                        const viewport    = page.getViewport({ scale: 1 });
+
+                        // ── Koordinat tabanlı öğe listesi ─────────────────
+                        // transform[4] = X, transform[5] = Y (PDF koordinatı)
+                        // transform[3] = font yüksekliği (ölçeklenmiş)
+                        const items = textContent.items
+                            .filter(item => item.str && item.str.trim() !== '')
+                            .map(item => ({
+                                str:      item.str,
+                                x:        item.transform[4],
+                                y:        item.transform[5],
+                                fontSize: Math.abs(item.transform[3]),
+                                width:    item.width || 0,
+                                hasEOL:   item.hasEOL || false,
+                            }));
+
+                        if (!items.length) continue;
+
+                        // Sayfa boyutuna göre dinamik Y toleransı hesapla
+                        // Küçük font olan sayfalarda daha küçük tolerans
+                        const avgFontSize = items.reduce((s, i) => s + i.fontSize, 0) / items.length;
+                        const yTolerance  = Math.max(avgFontSize * 0.6, 3);
+
+                        // Koordinat bazlı satırlara grupla
+                        const lines = groupItemsIntoLines(items, yTolerance);
+
+                        // Paragraf XML'lerini üret
+                        const pageParagraphs = [];
+                        let   lastY          = null;
+
+                        for (const lineItems of lines) {
+                            if (!lineItems.length) continue;
+
+                            // Satırın dominant font boyutunu bul
+                            const dominantFont = lineItems.reduce((prev, cur) =>
+                                cur.fontSize > prev.fontSize ? cur : prev, lineItems[0]).fontSize;
+
+                            // Paragraflar arası Y farkı büyükse boş satır ekle
+                            const lineY = lineItems[0].y;
+                            if (lastY !== null) {
+                                const yGap = Math.abs(lastY - lineY);
+                                if (yGap > avgFontSize * 2.5) {
+                                    // Büyük boşluk = paragraf arası boşluk
+                                    pageParagraphs.push(makeParagraph('', 20, false));
+                                }
+                            }
+                            lastY = lineY;
+
+                            // Satırdaki metni birleştir
+                            const lineText = lineToText(lineItems);
+                            if (!lineText.trim()) continue;
+
+                            totalWords += lineText.trim().split(/\s+/).length;
+
+                            // Font boyutuna göre kalın/normal karar ver
+                            const isBold  = dominantFont >= 14;
+                            const sz      = getFontSize(dominantFont);
+                            pageParagraphs.push(makeParagraph(lineText, sz, isBold));
+                        }
+
+                        allParagraphs.push(...pageParagraphs);
+
+                        // Son sayfa değilse sayfa sonu ekle
+                        if (pageNum < totalPages) {
+                            allParagraphs.push(makePageBreak());
+                        }
+
+                        // UI'ın güncellenmesi için kısa bekleme
+                        await new Promise(r => setTimeout(r, 0));
+                    }
+                }
+
+                if (cancelRequested) {
+                    status.style.display     = 'none';
+                    cancelBtn.style.display  = 'none';
+                    convertBtn.style.display = 'block';
+                    statusText.textContent   = '';
+                    statusDetail.textContent = '';
+                    return;
+                }
+
+                // ── DOCX Paketi Oluştur ───────────────────────────────────────
+                statusText.textContent   = 'Word dosyası oluşturuluyor...';
+                statusDetail.textContent = '';
+                progressBar.style.width  = '92%';
+
+                const bodyXml = allParagraphs.join('');
+
+                const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document
+    xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+    xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <w:body>
+    ${bodyXml}
+    <w:sectPr>
+      <w:pgSz w:w="12240" w:h="15840"/>
+      <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"
+               w:header="720" w:footer="720" w:gutter="0"/>
+    </w:sectPr>
+  </w:body>
+</w:document>`;
+
+                // ── Gerekli tüm DOCX ilişki dosyaları ────────────────────────
+                const contentTypes = `<?xml version="1.0" encoding="UTF-8"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml"  ContentType="application/xml"/>
+  <Override PartName="/word/document.xml"
+    ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+  <Override PartName="/word/styles.xml"
+    ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>
+  <Override PartName="/word/settings.xml"
+    ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"/>
+</Types>`;
+
+                const rootRels = `<?xml version="1.0" encoding="UTF-8"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1"
+    Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument"
+    Target="word/document.xml"/>
+</Relationships>`;
+
+                // ── Eksik olan word/_rels/document.xml.rels ───────────────────
+                const wordRels = `<?xml version="1.0" encoding="UTF-8"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1"
+    Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles"
+    Target="styles.xml"/>
+  <Relationship Id="rId2"
+    Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings"
+    Target="settings.xml"/>
+</Relationships>`;
+
+                // ── Temel stiller (Normal + Heading1) ─────────────────────────
+                const stylesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+          xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml">
+  <w:docDefaults>
+    <w:rPrDefault>
+      <w:rPr>
+        <w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/>
+        <w:sz w:val="20"/>
+        <w:szCs w:val="20"/>
+        <w:lang w:val="tr-TR" w:eastAsia="tr-TR" w:bidi="ar-SA"/>
+      </w:rPr>
+    </w:rPrDefault>
+  </w:docDefaults>
+  <w:style w:type="paragraph" w:styleId="Normal" w:default="1">
+    <w:name w:val="Normal"/>
+    <w:qFormat/>
+  </w:style>
+  <w:style w:type="paragraph" w:styleId="Heading1">
+    <w:name w:val="heading 1"/>
+    <w:basedOn w:val="Normal"/>
+    <w:rPr><w:b/><w:sz w:val="32"/><w:szCs w:val="32"/></w:rPr>
+  </w:style>
+</w:styles>`;
+
+                // ── Ayarlar (Türkçe dil dahil) ────────────────────────────────
+                const settingsXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:themeFontLang w:val="tr-TR" w:eastAsia="tr-TR"/>
+  <w:defaultTabStop w:val="708"/>
+  <w:compat>
+    <w:compatSetting w:name="compatibilityMode" w:uri="http://schemas.microsoft.com/office/word" w:val="15"/>
+  </w:compat>
+</w:settings>`;
+
+                // ── ZIP oluştur ───────────────────────────────────────────────
+                const zip = new JSZip();
+                zip.file('[Content_Types].xml', contentTypes);
+                zip.folder('_rels').file('.rels', rootRels);
+
+                const wordFolder = zip.folder('word');
+                wordFolder.file('document.xml', documentXml);
+                wordFolder.file('styles.xml',   stylesXml);
+                wordFolder.file('settings.xml', settingsXml);
+                wordFolder.folder('_rels').file('document.xml.rels', wordRels);
+
+                progressBar.style.width  = '97%';
+                statusText.textContent   = 'İndirme hazırlanıyor...';
+
+                const blob     = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
+                const outName  = file.name.replace(/\.pdf$/i, '') + '_hesapkolik.docx';
+                saveAs(blob, outName);
+
+                // ── Başarı UI ─────────────────────────────────────────────────
+                progressBar.style.width  = '100%';
+                const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+                status.style.display     = 'none';
+                cancelBtn.style.display  = 'none';
+                resultBox.style.display  = 'block';
+                resultStats.textContent  =
+                    `${totalPages} sayfa · ~${totalWords.toLocaleString('tr-TR')} kelime · ${elapsed} saniyede tamamlandı · ${formatBytes(blob.size)} indirme`;
+
+            } catch (err) {
+                console.error(err);
+                cancelBtn.style.display   = 'none';
+                progressBar.style.width   = '0%';
+                statusText.innerHTML      = '<span class="error-msg">❌ Hata oluştu: ' + escXml(err.message || 'Bilinmeyen hata') + '</span>';
+                statusDetail.textContent  = 'Lütfen farklı bir PDF deneyin veya sayfayı yenileyip tekrar deneyin.';
+                convertBtn.style.display  = 'block';
+            }
+        });
+
+    }); // DOMContentLoaded
+
+    // ─── Sıfırla: yeni dosya için converter'ı temizle ────────────────────────
+    function resetConverter() {
+        document.getElementById('fileInput').value         = '';
+        document.getElementById('fileInfo').style.display  = 'none';
+        document.getElementById('convertBtn').style.display = 'none';
+        document.getElementById('cancelBtn').style.display  = 'none';
+        document.getElementById('status').style.display     = 'none';
+        document.getElementById('resultBox').style.display  = 'none';
+        document.getElementById('sizeWarning').style.display = 'none';
+        document.getElementById('previewSection').style.display = 'none';
+        document.getElementById('progressBar').style.width  = '0%';
+    }
     </script>
 </body>
 </html>
