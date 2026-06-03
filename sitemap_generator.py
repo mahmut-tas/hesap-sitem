@@ -69,7 +69,7 @@ def create_sitemap(root_dir, base_url, output_file='sitemap.xml'):
 # --- KULLANIM ÖRNEĞİ ---
 if __name__ == "__main__":
     # Masaüstünüzdeki site klasörünüzün tam yolu buraya girildi.
-    root_directory = r"C:\Users\suuser\Desktop\hesap-sitem" 
+    root_directory = r"C:\Users\suuser\Desktop\Kişisel\hesap-sitem" 
 
     # Sitenizin temel URL'si
     base_website_url = "https://hesapkolik.net" 
