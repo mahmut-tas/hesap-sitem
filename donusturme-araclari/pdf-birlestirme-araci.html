@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>PDF Birleştirici - Hesapkolik</title>
+    <meta content="Birden fazla PDF dosyasını kolayca ve güvenli bir şekilde tek bir PDF belgesinde birleştirin. Ücretsiz, hızlı ve sınırsız araç. Hesapkolik." name="description"/>
+    <meta content="pdf birleştir, pdf birleştirme, ücretsiz pdf birleştirici, pdf merge, hesapkolik" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=300;400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0; padding: 0;
+            background-color: #f4f7f6;
+            color: #333; line-height: 1.6;
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+        .hero-section { background-color: #1a3a5c; color: white; padding: 60px 0; text-align: center; }
+        .hero-section p { opacity: 0.85; margin: 10px 0 0; }
+
+        .converter-container {
+            background: white; margin: -40px auto 40px; padding: 40px;
+            border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center; max-width: 750px;
+            z-index: 10; position: relative;
+        }
+
+        /* ── Sürükle Bırak Alanı ── */
+        .upload-area {
+            border: 2px dashed #2980b9; padding: 40px; border-radius: 10px;
+            cursor: pointer; transition: all 0.3s; background: #f9fbfd;
+        }
+        .upload-area:hover  { background: #f0f7ff; border-color: #1a6fa8; }
+        .upload-area.drag-over { background: #e3f2fd; border-color: #1565c0; transform: scale(1.01); }
+        .upload-area i { font-size: 50px; color: #2980b9; margin-bottom: 15px; }
+        #fileInput { display: none; }
+
+        /* ── Dosya Listesi ve Sıralama Arayüzü ── */
+        .file-list-section { display: none; margin-top: 25px; text-align: left; }
+        .file-list-section h4 { font-size: 1em; color: #444; margin-bottom: 12px; font-weight: 600; }
+        
+        .file-item {
+            display: flex; align-items: center; justify-content: space-between;
+            background: #f8f9fa; border: 1px solid #e2e8f0; padding: 12px 16px;
+            border-radius: 8px; margin-bottom: 8px; transition: 0.2s;
+        }
+        .file-item:hover { border-color: #cbd5e1; background: #f1f5f9; }
+        .file-info-wrap { display: flex; align-items: center; gap: 12px; }
+        .file-icon { color: #e74c3c; font-size: 1.4em; }
+        .file-name { font-size: 0.9em; font-weight: 600; color: #334155; word-break: break-all; }
+        .file-meta { font-size: 0.78em; color: #64748b; margin-top: 2px; }
+        
+        .file-actions { display: flex; align-items: center; gap: 8px; }
+        .btn-action {
+            background: white; border: 1px solid #cbd5e1; width: 32px; height: 32px;
+            border-radius: 6px; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; color: #64748b; transition: 0.2s;
+        }
+        .btn-action:hover { background: #f1f5f9; color: #1e293b; }
+        .btn-delete:hover { background: #fee2e2; color: #ef4444; border-color: #fca5a5; }
+
+        /* ── Butonlar ── */
+        .btn-convert {
+            background-color: #1a3a5c; color: white; border: none; padding: 15px 40px;
+            font-size: 1.1em; font-weight: 600; border-radius: 5px; cursor: pointer;
+            margin-top: 20px; display: none; width: 100%; transition: 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+        .btn-convert:hover { background-color: #122b44; }
+
+        .btn-add-more {
+            background: none; border: 2px solid #2980b9; color: #2980b9;
+            padding: 8px 20px; font-size: 0.88em; font-weight: 600; border-radius: 5px;
+            cursor: pointer; transition: 0.2s; font-family: 'Poppins', sans-serif;
+            margin-top: 10px; display: inline-block;
+        }
+        .btn-add-more:hover { background: #2980b9; color: white; }
+
+        .btn-new {
+            background: #2980b9; color: white; border: none; padding: 10px 25px;
+            border-radius: 5px; cursor: pointer; margin-top: 12px; font-size: 0.9em;
+            font-family: 'Poppins', sans-serif; transition: 0.2s;
+        }
+        .btn-new:hover { background: #1f6f9f; }
+
+        /* ── İlerleme Alanı ── */
+        .status-area { margin-top: 20px; font-weight: 600; display: none; }
+        .progress-bar-wrap { width: 100%; background: #eee; border-radius: 30px; height: 10px; margin: 12px 0 8px; overflow: hidden; }
+        .progress-bar { height: 10px; background: linear-gradient(90deg, #2980b9, #27ae60); border-radius: 30px; width: 0%; transition: width 0.3s ease; }
+        .status-detail { font-size: 0.82em; color: #888; margin-top: 4px; font-weight: 400; }
+
+        /* ── Sonuç Kutusu ── */
+        .result-box {
+            background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px;
+            padding: 20px; margin-top: 20px; display: none;
+        }
+        .result-box .stats { font-size: 0.85em; color: #555; margin-top: 8px; }
+
+        .error-msg { color: #e74c3c; }
+        .icon-small { color: #2980b9; margin-right: 8px; }
+
+        .loader {
+            border: 4px solid #f3f3f3; border-top: 4px solid #2980b9; border-radius: 50%;
+            width: 30px; height: 30px; animation: spin 1s linear infinite;
+            display: inline-block; vertical-align: middle; margin-right: 10px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .info-section { padding: 40px 0; text-align: justify; }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>PDF Dosyalarını Birleştir</h1>
+                <p>Birden fazla PDF belgenizi tek bir dosya haline hızlıca getirin.</p>
+            </div>
+        </section>
+
+        <section class="container">
+            <div class="converter-container">
+
+                <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-file-import"></i>
+                    <h3>PDF Dosyalarını Seçin</h3>
+                    <p>veya buraya sürükleyip bırakın (Çoklu seçim yapabilirsiniz)</p>
+                    <input type="file" id="fileInput" accept=".pdf" multiple>
+                </div>
+
+                <div class="file-list-section" id="fileListSection">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h4><i class="fas fa-list-ol icon-small"></i>Birleştirilecek Dosya Sırası</h4>
+                        <button type="button" class="btn-add-more" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-plus" style="margin-right: 6px;"></i>Daha Fazla Ekle
+                        </button>
+                    </div>
+                    <div id="fileListContainer" style="margin-top: 10px;"></div>
+                </div>
+
+                <button id="convertBtn" class="btn-convert">
+                    <i class="fas fa-object-group" style="margin-right:8px;"></i>PDF'leri Birleştir ve İndir
+                </button>
+
+                <div id="status" class="status-area">
+                    <div class="loader"></div>
+                    <span id="statusText">İşleniyor...</span>
+                    <div class="progress-bar-wrap">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    <div class="status-detail" id="statusDetail"></div>
+                </div>
+
+                <div class="result-box" id="resultBox">
+                    <div style="font-size:1.2em;">✅ <strong>Birleştirme Tamamlandı!</strong></div>
+                    <div class="stats" id="resultStats"></div>
+                    <button class="btn-new" onclick="resetConverter()">
+                        <i class="fas fa-redo" style="margin-right:6px;"></i>Yeni Birleştirme Başlat
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h2 style="color:#1a3a5c; text-align:center; margin-bottom:30px;">PDF Birleştirici Hakkında Her Şey</h2>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:30px; margin-bottom:40px;">
+                <div>
+                    <h4><i class="fas fa-question-circle icon-small"></i> Sıralama Nasıl Yapılır?</h4>
+                    <p>Dosyaları ekledikten sonra, liste üzerindeki yukarı (▲) ve aşağı (▼) ok butonlarını kullanarak hangi belgenin önce veya sonra geleceğini kolayca belirleyebilirsiniz. Birleştirme işlemi yukarıdan aşağıya doğru sırayla gerçekleşir.</p>
+                </div>
+                <div>
+                    <h4><i class="fas fa-check-double icon-small"></i> Kalite Kaybı Yaşanır mı?</h4>
+                    <p>Hayır. <strong>Hesapkolik PDF Birleştirici</strong>, sayfaları yeniden render etmez veya sıkıştırmaz. Belgelerinizin orijinal vektörel metin kalitesi, şemaları, formları ve içindeki görseller tamamen korunur.</p>
+                </div>
+            </div>
+
+            <hr style="border:0; border-top:1px dashed #ccc; margin:30px 0;">
+
+            <h3><i class="fas fa-magic icon-small"></i> Nasıl Kullanılır?</h3>
+            <ul style="margin-left:20px; color:#555;">
+                <li><strong>Dosyaları Ekleyin:</strong> Birleştirmek istediğiniz tüm PDF'leri aynı anda seçip yükleme alanına bırakın.</li>
+                <li><strong>Sıralayın:</strong> Ok butonlarıyla belgelerin sayfa akış düzenini ayarlayın.</li>
+                <li><strong>Birleştirmeyi Başlatın:</strong> "PDF'leri Birleştir" butonuna basarak işlemi tamamlayın. Dosyanız otomatik indirilecektir.</li>
+            </ul>
+
+            <div style="background-color:#e8f4fd; padding:25px; border-radius:10px; margin-top:30px;">
+                <h4 style="margin-top:0;"><i class="fas fa-shield-alt icon-small"></i> %100 Güvenli ve Gizli</h4>
+                <p>Tüm birleştirme mantığı tamamen bilgisayarınızın RAM belleğinde ve tarayıcı üzerinde koşturulur. Belgeleriniz sunucularımıza yüklenmediği için gizlilik ihlali veya siber sızıntı riski tamamen sıfırdır.</p>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // ─── Header & Footer Yükleyici ────────────────────────────────────
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+        function loadPartial(id, url) {
+            fetch(url)
+                .then(r => { if (!r.ok) throw new Error(); return r.text(); })
+                .then(html => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    el.innerHTML = html;
+                    el.querySelectorAll('script').forEach(old => {
+                        const s = document.createElement('script');
+                        Array.from(old.attributes).forEach(a => s.setAttribute(a.name, a.value));
+                        s.textContent = old.textContent;
+                        old.parentNode.replaceChild(s, old);
+                    });
+                }).catch(e => console.error(e));
+        }
+        loadPartial('header-placeholder', isEnglishPage ? '/en/header.html' : '/header.html');
+        loadPartial('footer-placeholder', isEnglishPage ? '/en/footer.html' : '/footer.html');
+
+        // ─── DOM Referansları ─────────────────────────────────────────────
+        const fileInput          = document.getElementById('fileInput');
+        const uploadArea         = document.getElementById('uploadArea');
+        const convertBtn         = document.getElementById('convertBtn');
+        const status             = document.getElementById('status');
+        const statusText         = document.getElementById('statusText');
+        const statusDetail       = document.getElementById('statusDetail');
+        const progressBar        = document.getElementById('progressBar');
+        const fileListSection    = document.getElementById('fileListSection');
+        const fileListContainer  = document.getElementById('fileListContainer');
+        const resultBox          = document.getElementById('resultBox');
+        const resultStats        = document.getElementById('resultStats');
+
+        // Yüklenen dosyaları hafızada tutacak dizi yapıları
+        let uploadedFiles = [];
+
+        function formatBytes(bytes) {
+            if (bytes < 1024)     return bytes + ' B';
+            if (bytes < 1048576)  return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / 1048576).toFixed(1) + ' MB';
+        }
+
+        // ─── Dosya Listesini Ekrana Çizme (Render) ────────────────────────
+        function renderFileList() {
+            fileListContainer.innerHTML = '';
+            
+            if (uploadedFiles.length === 0) {
+                fileListSection.style.display = 'none';
+                convertBtn.style.display = 'none';
+                return;
+            }
+
+            fileListSection.style.display = 'block';
+            convertBtn.style.display = 'block';
+
+            uploadedFiles.forEach((fileObj, index) => {
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                item.innerHTML = `
+                    <div class="file-info-wrap">
+                        <i class="fas fa-file-pdf file-icon"></i>
+                        <div>
+                            <div class="file-name">${fileObj.name}</div>
+                            <div class="file-meta">${formatBytes(fileObj.size)} • Sayfa Sayısı Hesaplanıyor...</div>
+                        </div>
+                    </div>
+                    <div class="file-actions">
+                        <button type="button" class="btn-action" onclick="moveItem(${index}, -1)" ${index === 0 ? 'disabled style="opacity:0.4;"' : ''} title="Yukarı Taşı">
+                            <i class="fas fa-arrow-up"></i>
+                        </button>
+                        <button type="button" class="btn-action" onclick="moveItem(${index}, 1)" ${index === uploadedFiles.length - 1 ? 'disabled style="opacity:0.4;"' : ''} title="Aşağı Taşı">
+                            <i class="fas fa-arrow-down"></i>
+                        </button>
+                        <button type="button" class="btn-action btn-delete" onclick="removeFile(${index})" title="Sil">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `;
+                fileListContainer.appendChild(item);
+
+                // Asenkron olarak sayfa sayılarını oku ve güncelle
+                if (fileObj.pageCount === null) {
+                    fileObj.file.arrayBuffer().then(ab => {
+                        window.PdfLib.PDFDocument.load(ab, { ignoreEncryption: true }).then(pdfDoc => {
+                            fileObj.pageCount = pdfDoc.getPageCount();
+                            const metaDiv = item.querySelector('.file-meta');
+                            if (metaDiv) metaDiv.textContent = `${formatBytes(fileObj.size)} • ${fileObj.pageCount} Sayfa`;
+                        }).catch(() => {
+                            const metaDiv = item.querySelector('.file-meta');
+                            if (metaDiv) metaDiv.textContent = `${formatBytes(fileObj.size)} • Sayfa sayısı okunamadı`;
+                        });
+                    });
+                } else {
+                    item.querySelector('.file-meta').textContent = `${formatBytes(fileObj.size)} • ${fileObj.pageCount} Sayfa`;
+                }
+            });
+        }
+
+        // ─── Dosya Ekleme Kontrolü ────────────────────────────────────────
+        function addFiles(files) {
+            resultBox.style.display = 'none';
+            for (let i = 0; i < files.length; i++) {
+                if (files[i].type === 'application/pdf') {
+                    uploadedFiles.push({
+                        file: files[i],
+                        name: files[i].name,
+                        size: files[i].size,
+                        pageCount: null
+                    });
+                }
+            }
+            fileInput.value = ''; // Aynı dosyaları tekrar ekleyebilmek için input temizlenir
+            renderFileList();
+        }
+
+        // ─── Liste Yönetim Fonksiyonları (Global Pencereler İçin) ──────────
+        window.moveItem = function (index, direction) {
+            const targetIndex = index + direction;
+            if (targetIndex < 0 || targetIndex >= uploadedFiles.length) return;
+            // Elemanların yerini değiştir
+            const temp = uploadedFiles[index];
+            uploadedFiles[index] = uploadedFiles[targetIndex];
+            uploadedFiles[targetIndex] = temp;
+            renderFileList();
+        };
+
+        window.removeFile = function (index) {
+            uploadedFiles.splice(index, 1);
+            renderFileList();
+        };
+
+        // ─── Event Dinleyiciler ────────────────────────────────────────────
+        fileInput.addEventListener('change', function () {
+            if (this.files.length > 0) addFiles(this.files);
+        });
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('drag-over');
+        });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('drag-over');
+        });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            if (e.dataTransfer.files.length > 0) addFiles(e.dataTransfer.files);
+        });
+
+        // ─── Ana Birleştirme Fonksiyonu ────────────────────────────────────
+        convertBtn.addEventListener('click', async () => {
+            if (uploadedFiles.length < 2) {
+                alert('Lütfen birleştirmek için en az 2 PDF dosyası ekleyin.');
+                return;
+            }
+
+            convertBtn.style.display = 'none';
+            fileListSection.style.display = 'none';
+            status.style.display = 'block';
+            progressBar.style.width = '10%';
+            statusText.textContent = 'Birleştirme işlemi başlatılıyor...';
+            statusDetail.textContent = 'Belgeler sıraya alınıyor.';
+
+            const startTime = Date.now();
+
+            try {
+                // Yeni boş bir PDF dokümanı oluştur
+                const mergedPdf = await window.PdfLib.PDFDocument.create();
+                let processedPagesCount = 0;
+
+                for (let i = 0; i < uploadedFiles.length; i++) {
+                    const fileObj = uploadedFiles[i];
+                    statusText.textContent = `Belge ${i + 1} / ${uploadedFiles.length} işleniyor...`;
+                    statusDetail.textContent = `${fileObj.name} sisteme aktarılıyor.`;
+                    
+                    const progressVal = Math.round((i / uploadedFiles.length) * 80) + 10;
+                    progressBar.style.width = progressVal + '%';
+
+                    const fileBuffer = await fileObj.file.arrayBuffer();
+                    
+                    // Şifreli veya bozuk dosya kontrolüyle yükleme yapıyoruz
+                    const currentPdf = await window.PdfLib.PDFDocument.load(fileBuffer, { ignoreEncryption: true });
+                    const pageIndices = currentPdf.getPageIndices();
+                    
+                    // Mevcut PDF'in sayfalarını kopyala ve yeni dökümana ekle
+                    const copiedPages = await mergedPdf.copyPages(currentPdf, pageIndices);
+                    copiedPages.forEach((page) => {
+                        mergedPdf.addPage(page);
+                        processedPagesCount++;
+                    });
+                }
+
+                progressBar.style.width = '90%';
+                statusText.textContent = 'Yeni PDF dosyası derleniyor...';
+                statusDetail.textContent = 'Dosya indirilmeye hazır hale getiriliyor.';
+
+                // Değişiklikleri byte array olarak kaydet
+                const mergedPdfBytes = await mergedPdf.save();
+                
+                // Blob nesnesi oluşturup indirmeyi başlat
+                const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
+                const outName = 'birlestirilmis_belge_hesapkolik.pdf';
+                
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = outName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+                // Başarı Ekranı
+                progressBar.style.width = '100%';
+                const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+                status.style.display = 'none';
+                resultBox.style.display = 'block';
+                resultStats.textContent = `Toplam ${uploadedFiles.length} dosya · ${processedPagesCount} sayfa · ${elapsed} saniyede tek PDF yapıldı · ${formatBytes(blob.size)} indirme`;
+
+            } catch (err) {
+                console.error(err);
+                progressBar.style.width = '0%';
+                statusText.innerHTML = '<span class="error-msg">❌ Hata oluştu: ' + (err.message || 'Bilinmeyen hata') + '</span>';
+                statusDetail.textContent = 'Lütfen dosyaların şifreli veya bozuk olmadığından emin olup tekrar deneyin.';
+                convertBtn.style.display = 'block';
+                fileListSection.style.display = 'block';
+            }
+        });
+
+    });
+
+    // ─── Sıfırla ─────────────────────────────────────────────────────────────
+    function resetConverter() {
+        document.getElementById('fileInput').value = '';
+        document.getElementById('status').style.display = 'none';
+        document.getElementById('resultBox').style.display = 'none';
+        document.getElementById('progressBar').style.width = '0%';
+        document.getElementById('fileListContainer').innerHTML = '';
+        document.getElementById('fileListSection').style.display = 'none';
+        document.getElementById('convertBtn').style.display = 'none';
+        // Dizi temizliği
+        window.location.reload(); // En temiz bellek sıfırlaması için sayfayı yeniliyoruz
+    }
+    </script>
+</body>
+</html>
