@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>PDF Sayfa Çıkarıcı - Hesapkolik</title>
+    <meta content="PDF dosyanızdan istediğiniz sayfaları veya sayfa aralığını ayrı bir PDF olarak indirin. Ücretsiz, güvenli, tarayıcı tabanlı." name="description"/>
+    <meta content="pdf sayfa çıkar, pdf sayfa ayır, pdf bölme, pdf sayfa seç, hesapkolik" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <!-- PDF.js: Önizleme için -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <!-- pdf-lib: Sayfa kopyalama / yeni PDF oluşturma için -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <!-- FileSaver: İndirme için -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+    <style>
+        :root {
+            --primary:   #c0392b;
+            --primary-d: #a93226;
+            --accent:    #e74c3c;
+            --blue:      #2980b9;
+            --dark:      #2c3e50;
+            --light-bg:  #f4f7f6;
+            --card-bg:   #ffffff;
+            --border:    #e0e0e0;
+            --text:      #333333;
+            --muted:     #888888;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0; padding: 0;
+            background: var(--light-bg);
+            color: var(--text); line-height: 1.6;
+            min-height: 100vh; display: flex; flex-direction: column;
+        }
+        main { flex: 1; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+
+        /* ── Hero ── */
+        .hero-section {
+            background: var(--dark); color: white;
+            padding: 60px 0; text-align: center;
+        }
+        .hero-section h1 { margin: 0 0 10px; font-size: 2em; }
+        .hero-section p  { margin: 0; opacity: .85; }
+
+        /* ── Ana Kart ── */
+        .converter-container {
+            background: var(--card-bg);
+            margin: -40px auto 40px;
+            padding: 36px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.1);
+            max-width: 750px;
+            position: relative; z-index: 10;
+        }
+
+        /* ── Yükleme Alanı ── */
+        .upload-area {
+            border: 2px dashed var(--blue);
+            padding: 40px; border-radius: 10px;
+            cursor: pointer; transition: all .3s;
+            background: #f9fbfd; text-align: center;
+        }
+        .upload-area:hover    { background: #f0f7ff; border-color: #1a6fa8; }
+        .upload-area.drag-over { background: #e3f2fd; border-color: #1565c0; transform: scale(1.01); }
+        .upload-area i  { font-size: 48px; color: var(--blue); margin-bottom: 12px; display: block; }
+        .upload-area h3 { margin: 0 0 6px; color: var(--dark); }
+        .upload-area p  { margin: 0; color: var(--muted); font-size: .9em; }
+        #fileInput { display: none; }
+
+        /* ── Dosya Bilgisi ── */
+        .file-badge {
+            display: none; margin-top: 14px;
+            background: #eaf4fb; border: 1px solid #b3d9f0;
+            border-radius: 8px; padding: 10px 16px;
+            font-size: .88em; color: var(--dark);
+            align-items: center; gap: 10px;
+        }
+        .file-badge i { color: var(--blue); font-size: 1.2em; }
+        .file-badge .fname { font-weight: 600; flex: 1; word-break: break-all; }
+        .file-badge .fsize { color: var(--muted); white-space: nowrap; }
+
+        /* ── Sayfa Özeti Bandı ── */
+        .page-summary {
+            display: none; margin-top: 14px;
+            background: #f0fdf4; border: 1px solid #86efac;
+            border-radius: 8px; padding: 10px 16px;
+            font-size: .88em; color: #166534;
+            gap: 18px; align-items: center; flex-wrap: wrap;
+        }
+        .page-summary span { display: flex; align-items: center; gap: 6px; }
+        .page-summary i { font-size: 1em; }
+
+        /* ── Seçim Paneli ── */
+        .selection-panel {
+            display: none; margin-top: 22px;
+            border: 1px solid var(--border); border-radius: 10px;
+            overflow: hidden;
+        }
+        .sel-tabs {
+            display: flex; background: #f5f5f5;
+            border-bottom: 1px solid var(--border);
+        }
+        .sel-tab {
+            flex: 1; padding: 11px; text-align: center;
+            cursor: pointer; font-size: .88em; font-weight: 600;
+            color: var(--muted); border: none; background: none;
+            font-family: 'Poppins', sans-serif; transition: .2s;
+            border-bottom: 3px solid transparent;
+        }
+        .sel-tab.active {
+            color: var(--primary); border-bottom-color: var(--primary);
+            background: white;
+        }
+        .sel-tab:hover:not(.active) { background: #ececec; }
+
+        .sel-body { padding: 20px 22px; background: white; }
+
+        /* ── Mod: Tek Sayfa ── */
+        .mode-single .input-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .mode-single label { font-size: .88em; color: var(--dark); font-weight: 600; white-space: nowrap; }
+        .num-input {
+            width: 90px; padding: 8px 10px; border: 1px solid #ccc;
+            border-radius: 6px; font-family: 'Poppins', sans-serif;
+            font-size: .95em; text-align: center;
+        }
+        .num-input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 2px #d0e9f8; }
+        .hint { font-size: .78em; color: var(--muted); margin-top: 6px; }
+
+        /* ── Mod: Aralık ── */
+        .mode-range .range-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .mode-range label { font-size: .88em; color: var(--dark); font-weight: 600; }
+        .range-sep { color: var(--muted); font-size: .9em; }
+
+        /* ── Mod: Özel ── */
+        .mode-custom .custom-input {
+            width: 100%; padding: 9px 12px;
+            border: 1px solid #ccc; border-radius: 6px;
+            font-family: 'Poppins', sans-serif; font-size: .9em;
+            box-sizing: border-box;
+        }
+        .mode-custom .custom-input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 2px #d0e9f8; }
+        .custom-examples { font-size: .78em; color: var(--muted); margin-top: 6px; }
+        .custom-examples code { background: #f0f0f0; padding: 1px 5px; border-radius: 3px; font-size: .95em; }
+
+        /* ── Önizleme Şeridi ── */
+        .preview-strip {
+            display: none; margin-top: 22px;
+        }
+        .preview-strip h4 {
+            font-size: .88em; color: var(--muted);
+            margin: 0 0 10px; display: flex; align-items: center; gap: 6px;
+        }
+        .preview-strip h4 i { color: var(--blue); }
+        .strip-scroll {
+            display: flex; gap: 10px;
+            overflow-x: auto; padding-bottom: 8px;
+        }
+        .strip-scroll::-webkit-scrollbar { height: 5px; }
+        .strip-scroll::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+        .thumb-wrap {
+            flex-shrink: 0; text-align: center; cursor: pointer;
+            transition: transform .15s;
+        }
+        .thumb-wrap:hover { transform: scale(1.04); }
+        .thumb-wrap canvas {
+            border: 2px solid var(--border); border-radius: 5px;
+            display: block; width: 80px; height: 113px;
+            object-fit: cover;
+        }
+        .thumb-wrap.selected canvas { border-color: var(--primary); box-shadow: 0 0 0 2px #f5b7b1; }
+        .thumb-wrap .pg-num {
+            font-size: .7em; color: var(--muted); margin-top: 3px;
+        }
+        .thumb-wrap.selected .pg-num { color: var(--primary); font-weight: 600; }
+
+        /* ── Dönüştür Butonu ── */
+        .btn-convert {
+            display: none; width: 100%; margin-top: 22px;
+            background: var(--primary); color: white;
+            border: none; padding: 15px; border-radius: 8px;
+            font-size: 1.05em; font-weight: 700;
+            font-family: 'Poppins', sans-serif; cursor: pointer;
+            transition: .25s; letter-spacing: .3px;
+        }
+        .btn-convert:hover { background: var(--primary-d); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(192,57,43,.3); }
+        .btn-convert:active { transform: translateY(0); }
+
+        /* ── İptal ── */
+        .btn-cancel {
+            display: none; width: 100%; margin-top: 10px;
+            background: #95a5a6; color: white;
+            border: none; padding: 10px; border-radius: 6px;
+            font-size: .9em; font-weight: 600;
+            font-family: 'Poppins', sans-serif; cursor: pointer; transition: .2s;
+        }
+        .btn-cancel:hover { background: #7f8c8d; }
+
+        /* ── İlerleme ── */
+        .status-area { display: none; margin-top: 18px; font-weight: 600; text-align: center; }
+        .progress-bar-wrap { width: 100%; background: #eee; border-radius: 30px; height: 10px; margin: 10px 0 6px; overflow: hidden; }
+        .progress-bar { height: 10px; background: linear-gradient(90deg, var(--blue), #27ae60); border-radius: 30px; width: 0%; transition: width .35s ease; }
+        .status-detail { font-size: .8em; color: var(--muted); font-weight: 400; margin-top: 3px; }
+        .loader {
+            display: inline-block; vertical-align: middle; margin-right: 8px;
+            border: 3px solid #f3f3f3; border-top-color: var(--blue);
+            border-radius: 50%; width: 22px; height: 22px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── Sonuç ── */
+        .result-box {
+            display: none; margin-top: 20px;
+            background: #f0fdf4; border: 1px solid #86efac;
+            border-radius: 10px; padding: 20px; text-align: center;
+        }
+        .result-box .result-title { font-size: 1.15em; font-weight: 700; color: #166534; }
+        .result-box .result-stats { font-size: .84em; color: #555; margin-top: 6px; }
+        .btn-new {
+            display: inline-block; margin-top: 14px;
+            background: var(--blue); color: white; border: none;
+            padding: 10px 24px; border-radius: 6px; cursor: pointer;
+            font-family: 'Poppins', sans-serif; font-size: .88em; font-weight: 600; transition: .2s;
+        }
+        .btn-new:hover { background: #1f6f9f; }
+
+        /* ── Boyut uyarısı ── */
+        .size-warning {
+            display: none; margin-top: 12px;
+            background: #fff3cd; border: 1px solid #ffc107;
+            color: #856404; padding: 9px 14px;
+            border-radius: 6px; font-size: .86em;
+        }
+
+        /* ── Hata ── */
+        .error-msg { color: var(--accent); }
+
+        /* ── Bilgi Bölümü ── */
+        .info-section { padding: 40px 0; text-align: justify; }
+        .icon-small { color: var(--blue); margin-right: 7px; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-bottom: 36px; }
+        @media (max-width: 600px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .converter-container { padding: 24px 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1><i class="fas fa-file-export" style="margin-right:12px;opacity:.9;"></i>PDF Sayfa Çıkarıcı</h1>
+                <p>PDF dosyanızdan istediğiniz sayfa veya sayfa aralığını tek tıkla ayrı PDF olarak indirin.</p>
+            </div>
+        </section>
+
+        <section class="container">
+            <div class="converter-container">
+
+                <!-- Yükleme -->
+                <div class="upload-area" id="uploadArea"
+                     onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-file-pdf"></i>
+                    <h3>PDF Dosyasını Seçin</h3>
+                    <p>veya buraya sürükleyip bırakın</p>
+                    <input type="file" id="fileInput" accept=".pdf">
+                </div>
+
+                <!-- Boyut uyarısı -->
+                <div class="size-warning" id="sizeWarning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span id="sizeWarningText"></span>
+                </div>
+
+                <!-- Dosya rozeti -->
+                <div class="file-badge" id="fileBadge">
+                    <i class="fas fa-file-pdf"></i>
+                    <span class="fname" id="fileName"></span>
+                    <span class="fsize" id="fileSize"></span>
+                </div>
+
+                <!-- Sayfa özeti -->
+                <div class="page-summary" id="pageSummary">
+                    <span><i class="fas fa-copy"></i> Toplam: <strong id="totalPages">—</strong> sayfa</span>
+                    <span><i class="fas fa-ruler-combined"></i> Boyut: <strong id="pageSize">—</strong></span>
+                </div>
+
+                <!-- Seçim Paneli -->
+                <div class="selection-panel" id="selectionPanel">
+                    <!-- Sekmeler -->
+                    <div class="sel-tabs">
+                        <button class="sel-tab active" id="tabSingle" onclick="switchTab('single')">
+                            <i class="fas fa-file" style="margin-right:5px;"></i>Tek Sayfa
+                        </button>
+                        <button class="sel-tab" id="tabRange" onclick="switchTab('range')">
+                            <i class="fas fa-align-justify" style="margin-right:5px;"></i>Sayfa Aralığı
+                        </button>
+                        <button class="sel-tab" id="tabCustom" onclick="switchTab('custom')">
+                            <i class="fas fa-list-ol" style="margin-right:5px;"></i>Özel Seçim
+                        </button>
+                    </div>
+
+                    <!-- Tek Sayfa -->
+                    <div class="sel-body mode-single" id="modeSingle">
+                        <div class="input-row">
+                            <label for="singlePage">Sayfa numarası:</label>
+                            <input type="number" id="singlePage" class="num-input" min="1" value="1" placeholder="1">
+                            <span id="singleHint" style="font-size:.82em; color:var(--muted);"></span>
+                        </div>
+                        <div class="hint">Seçili sayfayı tek sayfalık PDF olarak indirir.</div>
+                    </div>
+
+                    <!-- Aralık -->
+                    <div class="sel-body mode-range" id="modeRange" style="display:none;">
+                        <div class="range-row">
+                            <label>Başlangıç:</label>
+                            <input type="number" id="rangeStart" class="num-input" min="1" value="1">
+                            <span class="range-sep">—</span>
+                            <label>Bitiş:</label>
+                            <input type="number" id="rangeEnd" class="num-input" min="1" value="1">
+                            <span id="rangeCount" style="font-size:.82em; color:var(--muted);"></span>
+                        </div>
+                        <div class="hint">Belirtilen aralıktaki tüm sayfaları tek PDF dosyasında birleştirir.</div>
+                    </div>
+
+                    <!-- Özel -->
+                    <div class="sel-body mode-custom" id="modeCustom" style="display:none;">
+                        <input type="text" id="customPages" class="custom-input"
+                               placeholder="Örn: 1, 3, 5-8, 12, 15-20">
+                        <div class="custom-examples">
+                            Virgülle ayırın. Aralık için tire kullanın. &nbsp;
+                            Örnek: <code>2, 5, 10-15, 20</code>
+                        </div>
+                        <div id="customCount" style="margin-top:8px; font-size:.82em; color:var(--muted);"></div>
+                    </div>
+                </div>
+
+                <!-- Önizleme Şeridi -->
+                <div class="preview-strip" id="previewStrip">
+                    <h4>
+                        <i class="fas fa-th-large"></i>
+                        Sayfa Önizlemesi
+                        <span id="previewNote" style="color:var(--muted); font-weight:400; font-size:.9em;"></span>
+                    </h4>
+                    <div class="strip-scroll" id="stripScroll"></div>
+                </div>
+
+                <!-- Dönüştür -->
+                <button class="btn-convert" id="convertBtn">
+                    <i class="fas fa-download" style="margin-right:8px;"></i>
+                    <span id="convertBtnText">Sayfaları Çıkar ve İndir</span>
+                </button>
+
+                <!-- İptal -->
+                <button class="btn-cancel" id="cancelBtn">
+                    <i class="fas fa-times" style="margin-right:6px;"></i>İptal Et
+                </button>
+
+                <!-- İlerleme -->
+                <div class="status-area" id="status">
+                    <span class="loader"></span>
+                    <span id="statusText">İşleniyor...</span>
+                    <div class="progress-bar-wrap">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    <div class="status-detail" id="statusDetail"></div>
+                </div>
+
+                <!-- Sonuç -->
+                <div class="result-box" id="resultBox">
+                    <div class="result-title">✅ Başarıyla İndirildi!</div>
+                    <div class="result-stats" id="resultStats"></div>
+                    <button class="btn-new" onclick="resetConverter()">
+                        <i class="fas fa-redo" style="margin-right:5px;"></i>Yeni İşlem
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Bilgi -->
+        <section class="info-section container">
+            <h2 style="color:var(--dark); text-align:center; margin-bottom:30px;">PDF Sayfa Çıkarıcı Hakkında</h2>
+
+            <div class="info-grid">
+                <div>
+                    <h4><i class="fas fa-question-circle icon-small"></i>Bu Araç Ne İşe Yarar?</h4>
+                    <p>Çok sayfalı bir PDF dosyasından sadece ihtiyacınız olan <strong>tek sayfayı</strong>, belirli bir <strong>sayfa aralığını</strong> veya <strong>seçtiğiniz birden fazla sayfayı</strong> yeni bir PDF olarak almanızı sağlar. Tüm işlem tarayıcınızda gerçekleşir.</p>
+                </div>
+                <div>
+                    <h4><i class="fas fa-check-double icon-small"></i>Ne Zaman Kullanılır?</h4>
+                    <p>100 sayfalık bir raporun sadece özet sayfasını paylaşmak, sözleşmenin imza sayfasını ayırmak veya büyük bir e-kitabın ilgili bölümünü çıkarmak için idealdir.</p>
+                </div>
+            </div>
+
+            <hr style="border:0; border-top:1px dashed #ccc; margin:28px 0;">
+
+            <h3><i class="fas fa-magic icon-small"></i>Nasıl Kullanılır?</h3>
+            <ul style="margin-left:20px; color:#555;">
+                <li><strong>Dosyayı Seçin:</strong> PDF'i yükleme alanına sürükleyin veya tıklayıp seçin.</li>
+                <li><strong>Modu Seçin:</strong> Tek sayfa, sayfa aralığı veya özel seçim seçeneklerinden birini kullanın.</li>
+                <li><strong>Önizleyin:</strong> Sayfaların küçük resimleri otomatik gösterilir, tıklayarak seçebilirsiniz.</li>
+                <li><strong>İndirin:</strong> "Sayfaları Çıkar ve İndir" butonuna basın.</li>
+            </ul>
+
+            <div style="background:#e8f4fd; padding:24px; border-radius:10px; margin-top:28px;">
+                <h4 style="margin-top:0;"><i class="fas fa-shield-alt icon-small"></i>Güvenlik ve Gizlilik</h4>
+                <p><strong>Hesapkolik PDF Sayfa Çıkarıcı</strong> %100 tarayıcı tabanlı çalışır. Dosyanız sunucuya gönderilmez, bilgisayarınızdan dışarı çıkmaz. Şifreli PDF'lerde çalışmayabilir.</p>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // ─── Header & Footer ──────────────────────────────────────────────
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+        function loadPartial(id, url) {
+            fetch(url)
+                .then(r => { if (!r.ok) throw new Error(); return r.text(); })
+                .then(html => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    el.innerHTML = html;
+                    el.querySelectorAll('script').forEach(old => {
+                        const s = document.createElement('script');
+                        Array.from(old.attributes).forEach(a => s.setAttribute(a.name, a.value));
+                        s.textContent = old.textContent;
+                        old.parentNode.replaceChild(s, old);
+                    });
+                }).catch(console.error);
+        }
+        loadPartial('header-placeholder', isEnglishPage ? '/en/header.html' : '/header.html');
+        loadPartial('footer-placeholder', isEnglishPage ? '/en/footer.html' : '/footer.html');
+
+        // ─── PDF.js Worker ────────────────────────────────────────────────
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+        // ─── State ───────────────────────────────────────────────────────
+        let pdfBytes    = null;   // ArrayBuffer — pdf-lib için
+        let pdfDoc      = null;   // PDF.js belgesi — önizleme için
+        let totalPages  = 0;
+        let currentMode = 'single';
+        let cancelRequested = false;
+
+        // ─── DOM ─────────────────────────────────────────────────────────
+        const fileInput      = document.getElementById('fileInput');
+        const uploadArea     = document.getElementById('uploadArea');
+        const fileBadge      = document.getElementById('fileBadge');
+        const fileNameEl     = document.getElementById('fileName');
+        const fileSizeEl     = document.getElementById('fileSize');
+        const sizeWarning    = document.getElementById('sizeWarning');
+        const sizeWarningTxt = document.getElementById('sizeWarningText');
+        const pageSummary    = document.getElementById('pageSummary');
+        const totalPagesEl   = document.getElementById('totalPages');
+        const pageSizeEl     = document.getElementById('pageSize');
+        const selectionPanel = document.getElementById('selectionPanel');
+        const previewStrip   = document.getElementById('previewStrip');
+        const stripScroll    = document.getElementById('stripScroll');
+        const previewNote    = document.getElementById('previewNote');
+        const convertBtn     = document.getElementById('convertBtn');
+        const convertBtnText = document.getElementById('convertBtnText');
+        const cancelBtn      = document.getElementById('cancelBtn');
+        const status         = document.getElementById('status');
+        const statusText     = document.getElementById('statusText');
+        const statusDetail   = document.getElementById('statusDetail');
+        const progressBar    = document.getElementById('progressBar');
+        const resultBox      = document.getElementById('resultBox');
+        const resultStats    = document.getElementById('resultStats');
+
+        // ─── Yardımcı ────────────────────────────────────────────────────
+        function formatBytes(b) {
+            if (b < 1024)    return b + ' B';
+            if (b < 1048576) return (b/1024).toFixed(1) + ' KB';
+            return (b/1048576).toFixed(1) + ' MB';
+        }
+
+        function mm(pts) { return (pts * 0.3528).toFixed(0) + ' mm'; }
+
+        // ─── Özel sayfa girdisini parse et ───────────────────────────────
+        // "1, 3, 5-8, 12" → [1, 3, 5, 6, 7, 8, 12]  (1 tabanlı, sıralı, tekrarsız)
+        function parseCustom(str, max) {
+            const pages = new Set();
+            const parts = str.split(',');
+            for (const part of parts) {
+                const t = part.trim();
+                if (!t) continue;
+                if (t.includes('-')) {
+                    const [a, b] = t.split('-').map(x => parseInt(x.trim(), 10));
+                    if (isNaN(a) || isNaN(b)) continue;
+                    const lo = Math.max(1, Math.min(a, b));
+                    const hi = Math.min(max, Math.max(a, b));
+                    for (let i = lo; i <= hi; i++) pages.add(i);
+                } else {
+                    const n = parseInt(t, 10);
+                    if (!isNaN(n) && n >= 1 && n <= max) pages.add(n);
+                }
+            }
+            return [...pages].sort((a, b) => a - b);
+        }
+
+        // ─── Seçilen sayfa listesini al ───────────────────────────────────
+        function getSelectedPages() {
+            if (currentMode === 'single') {
+                const n = parseInt(document.getElementById('singlePage').value, 10);
+                if (isNaN(n) || n < 1 || n > totalPages) return null;
+                return [n];
+            }
+            if (currentMode === 'range') {
+                const s = parseInt(document.getElementById('rangeStart').value, 10);
+                const e = parseInt(document.getElementById('rangeEnd').value, 10);
+                if (isNaN(s) || isNaN(e) || s < 1 || e > totalPages || s > e) return null;
+                const arr = [];
+                for (let i = s; i <= e; i++) arr.push(i);
+                return arr;
+            }
+            if (currentMode === 'custom') {
+                const pages = parseCustom(document.getElementById('customPages').value, totalPages);
+                return pages.length ? pages : null;
+            }
+            return null;
+        }
+
+        // ─── Buton metnini güncelle ───────────────────────────────────────
+        function updateConvertBtn() {
+            const pages = getSelectedPages();
+            if (!pages || !pages.length) {
+                convertBtn.style.display = 'none';
+                return;
+            }
+            const n = pages.length;
+            if (n === 1) {
+                convertBtnText.textContent = `Sayfa ${pages[0]}'i İndir (1 sayfa)`;
+            } else {
+                convertBtnText.textContent = `${n} Sayfayı Çıkar ve İndir`;
+            }
+            convertBtn.style.display = 'block';
+            updatePreviewHighlight(pages);
+        }
+
+        // ─── Önizleme şeridinde seçili sayfaları vurgula ─────────────────
+        function updatePreviewHighlight(pages) {
+            const set = new Set(pages);
+            stripScroll.querySelectorAll('.thumb-wrap').forEach(wrap => {
+                const pg = parseInt(wrap.dataset.page, 10);
+                wrap.classList.toggle('selected', set.has(pg));
+            });
+        }
+
+        // ─── Sekme değiştir ───────────────────────────────────────────────
+        window.switchTab = function (mode) {
+            currentMode = mode;
+            ['single', 'range', 'custom'].forEach(m => {
+                document.getElementById('tab' + m.charAt(0).toUpperCase() + m.slice(1))
+                    .classList.toggle('active', m === mode);
+                document.getElementById('mode' + m.charAt(0).toUpperCase() + m.slice(1))
+                    .style.display = m === mode ? 'block' : 'none';
+            });
+            updateConvertBtn();
+        };
+
+        // ─── Input olayları ───────────────────────────────────────────────
+        document.getElementById('singlePage').addEventListener('input', function () {
+            document.getElementById('singleHint').textContent =
+                totalPages ? `(1 – ${totalPages})` : '';
+            updateConvertBtn();
+        });
+
+        ['rangeStart', 'rangeEnd'].forEach(id => {
+            document.getElementById(id).addEventListener('input', () => {
+                const s = parseInt(document.getElementById('rangeStart').value, 10);
+                const e = parseInt(document.getElementById('rangeEnd').value, 10);
+                if (!isNaN(s) && !isNaN(e) && s <= e) {
+                    document.getElementById('rangeCount').textContent =
+                        `(${e - s + 1} sayfa)`;
+                } else {
+                    document.getElementById('rangeCount').textContent = '';
+                }
+                updateConvertBtn();
+            });
+        });
+
+        document.getElementById('customPages').addEventListener('input', function () {
+            const pages = parseCustom(this.value, totalPages);
+            document.getElementById('customCount').textContent =
+                pages.length ? `${pages.length} sayfa seçildi: ${pages.slice(0, 20).join(', ')}${pages.length > 20 ? ' …' : ''}` : '';
+            updateConvertBtn();
+        });
+
+        // ─── Önizleme Şeridi Oluştur ──────────────────────────────────────
+        // Büyük PDF'lerde ilk MAX_PREVIEW sayfayı göster
+        const MAX_PREVIEW = 30;
+
+        async function buildPreviewStrip() {
+            stripScroll.innerHTML = '';
+            const count = Math.min(totalPages, MAX_PREVIEW);
+            previewNote.textContent = totalPages > MAX_PREVIEW
+                ? `(ilk ${MAX_PREVIEW} sayfa gösteriliyor)` : '';
+
+            for (let i = 1; i <= count; i++) {
+                try {
+                    const page = await pdfDoc.getPage(i);
+                    const vp   = page.getViewport({ scale: 0.18 });
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width  = vp.width;
+                    canvas.height = vp.height;
+                    await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+
+                    const wrap = document.createElement('div');
+                    wrap.className  = 'thumb-wrap';
+                    wrap.dataset.page = i;
+                    wrap.innerHTML  = `<span class="pg-num">${i}</span>`;
+                    wrap.insertBefore(canvas, wrap.firstChild);
+
+                    // Tıklayınca tek sayfa moduna geç ve seç
+                    wrap.addEventListener('click', () => {
+                        switchTab('single');
+                        document.getElementById('singlePage').value = i;
+                        updateConvertBtn();
+                    });
+
+                    stripScroll.appendChild(wrap);
+                } catch (_) { /* önizleme hatası görmezden gel */ }
+            }
+
+            previewStrip.style.display = 'block';
+        }
+
+        // ─── Dosya yükleme ────────────────────────────────────────────────
+        async function handleFile(file) {
+            if (!file || file.type !== 'application/pdf') return;
+
+            // Boyut uyarısı
+            if (file.size > 100 * 1024 * 1024) {
+                sizeWarningTxt.textContent =
+                    'Çok büyük dosya (' + formatBytes(file.size) + '). Önizleme yavaş yüklenebilir.';
+                sizeWarning.style.display = 'block';
+            } else if (file.size > 30 * 1024 * 1024) {
+                sizeWarningTxt.textContent =
+                    'Büyük dosya (' + formatBytes(file.size) + '). Biraz bekleyin.';
+                sizeWarning.style.display = 'block';
+            } else {
+                sizeWarning.style.display = 'none';
+            }
+
+            // UI sıfırla
+            selectionPanel.style.display = 'none';
+            previewStrip.style.display   = 'none';
+            convertBtn.style.display     = 'none';
+            resultBox.style.display      = 'none';
+            stripScroll.innerHTML        = '';
+
+            fileNameEl.textContent = file.name;
+            fileSizeEl.textContent = '(' + formatBytes(file.size) + ')';
+            fileBadge.style.display = 'flex';
+
+            // İlerleme
+            status.style.display     = 'block';
+            progressBar.style.width  = '10%';
+            statusText.textContent   = 'PDF yükleniyor...';
+            statusDetail.textContent = '';
+
+            try {
+                const ab   = await file.arrayBuffer();
+                pdfBytes   = ab.slice(0); // pdf-lib için kopya
+                progressBar.style.width = '35%';
+                statusText.textContent  = 'Sayfa bilgisi okunuyor...';
+
+                pdfDoc = await pdfjsLib.getDocument({ data: ab }).promise;
+                totalPages = pdfDoc.numPages;
+
+                // İlk sayfadan boyut al
+                const firstPage = await pdfDoc.getPage(1);
+                const vp        = firstPage.getViewport({ scale: 1 });
+                pageSizeEl.textContent  = mm(vp.width) + ' × ' + mm(vp.height);
+                totalPagesEl.textContent = totalPages;
+                pageSummary.style.display = 'flex';
+
+                // Input sınırlarını ayarla
+                document.getElementById('singlePage').max = totalPages;
+                document.getElementById('singlePage').value = 1;
+                document.getElementById('rangeStart').max  = totalPages;
+                document.getElementById('rangeEnd').max    = totalPages;
+                document.getElementById('rangeEnd').value  = totalPages;
+                document.getElementById('singleHint').textContent = `(1 – ${totalPages})`;
+                document.getElementById('rangeCount').textContent  = `(${totalPages} sayfa)`;
+
+                progressBar.style.width = '55%';
+                statusText.textContent  = 'Önizlemeler hazırlanıyor...';
+
+                selectionPanel.style.display = 'block';
+                await buildPreviewStrip();
+
+                progressBar.style.width  = '100%';
+                status.style.display     = 'none';
+                updateConvertBtn();
+
+            } catch (err) {
+                console.error(err);
+                progressBar.style.width  = '0%';
+                statusText.innerHTML     = `<span class="error-msg">❌ PDF açılamadı: ${err.message || 'Bilinmeyen hata'}</span>`;
+                statusDetail.textContent = 'Şifreli veya bozuk PDF olabilir.';
+            }
+        }
+
+        // ─── Event: Dosya seçimi ──────────────────────────────────────────
+        fileInput.addEventListener('change', function () {
+            if (this.files[0]) handleFile(this.files[0]);
+        });
+
+        // ─── Event: Drag & Drop ───────────────────────────────────────────
+        uploadArea.addEventListener('dragover',  e => { e.preventDefault(); uploadArea.classList.add('drag-over'); });
+        uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('drag-over'));
+        uploadArea.addEventListener('drop', e => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            const f = e.dataTransfer.files[0];
+            if (f) handleFile(f);
+        });
+
+        // ─── Event: İptal ────────────────────────────────────────────────
+        cancelBtn.addEventListener('click', () => {
+            cancelRequested = true;
+            cancelBtn.style.display = 'none';
+            statusText.textContent  = '⏹ İptal ediliyor...';
+        });
+
+        // ─── Ana: Dönüştür ────────────────────────────────────────────────
+        convertBtn.addEventListener('click', async () => {
+            const pages = getSelectedPages();
+            if (!pages || !pdfBytes) return;
+
+            cancelRequested          = false;
+            convertBtn.style.display = 'none';
+            cancelBtn.style.display  = 'block';
+            status.style.display     = 'block';
+            resultBox.style.display  = 'none';
+            progressBar.style.width  = '0%';
+            statusText.textContent   = 'Sayfalar kopyalanıyor...';
+            statusDetail.textContent = '';
+
+            const startTime = Date.now();
+
+            try {
+                // pdf-lib ile kaynak PDF'i yükle
+                progressBar.style.width = '15%';
+                const { PDFDocument } = PDFLib;
+                const srcDoc  = await PDFDocument.load(pdfBytes);
+                const outDoc  = await PDFDocument.create();
+
+                // Seçilen sayfaları kopyala (0 tabanlı index)
+                const indices = pages.map(p => p - 1);
+                progressBar.style.width = '30%';
+                statusText.textContent  = `${pages.length} sayfa kopyalanıyor...`;
+
+                const copied = await outDoc.copyPages(srcDoc, indices);
+
+                for (let i = 0; i < copied.length; i++) {
+                    if (cancelRequested) break;
+                    outDoc.addPage(copied[i]);
+                    const prog = 30 + Math.round((i + 1) / copied.length * 55);
+                    progressBar.style.width = prog + '%';
+                    statusDetail.textContent = `${i + 1} / ${copied.length} sayfa`;
+                    // Her 10 sayfada bir UI güncelle
+                    if (i % 10 === 0) await new Promise(r => setTimeout(r, 0));
+                }
+
+                if (cancelRequested) {
+                    cleanupAfterCancel();
+                    return;
+                }
+
+                progressBar.style.width  = '90%';
+                statusText.textContent   = 'PDF oluşturuluyor...';
+                statusDetail.textContent = '';
+
+                const outBytes = await outDoc.save();
+                const blob     = new Blob([outBytes], { type: 'application/pdf' });
+
+                // Dosya adı oluştur
+                const baseName = document.getElementById('fileName').textContent
+                    .replace(/\.pdf$/i, '');
+                let suffix;
+                if (pages.length === 1) {
+                    suffix = `_sayfa${pages[0]}`;
+                } else if (currentMode === 'range') {
+                    suffix = `_sayfa${pages[0]}-${pages[pages.length - 1]}`;
+                } else {
+                    suffix = `_${pages.length}sayfa`;
+                }
+                const outName = baseName + suffix + '_hesapkolik.pdf';
+
+                saveAs(blob, outName);
+
+                progressBar.style.width  = '100%';
+                const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+                status.style.display     = 'none';
+                cancelBtn.style.display  = 'none';
+                resultBox.style.display  = 'block';
+                resultStats.textContent  =
+                    `${pages.length} sayfa · ${formatBytes(blob.size)} · ${elapsed} saniyede tamamlandı`;
+
+            } catch (err) {
+                console.error(err);
+                cancelBtn.style.display  = 'none';
+                progressBar.style.width  = '0%';
+                statusText.innerHTML     = `<span class="error-msg">❌ Hata: ${err.message || 'Bilinmeyen hata'}</span>`;
+                statusDetail.textContent = 'Lütfen tekrar deneyin.';
+                convertBtn.style.display = 'block';
+            }
+        });
+
+        function cleanupAfterCancel() {
+            status.style.display     = 'none';
+            cancelBtn.style.display  = 'none';
+            convertBtn.style.display = 'block';
+            progressBar.style.width  = '0%';
+        }
+
+    }); // DOMContentLoaded
+
+    // ─── Sıfırla ─────────────────────────────────────────────────────────────
+    function resetConverter() {
+        document.getElementById('fileInput').value              = '';
+        document.getElementById('fileBadge').style.display     = 'none';
+        document.getElementById('pageSummary').style.display   = 'none';
+        document.getElementById('selectionPanel').style.display = 'none';
+        document.getElementById('previewStrip').style.display  = 'none';
+        document.getElementById('convertBtn').style.display    = 'none';
+        document.getElementById('cancelBtn').style.display     = 'none';
+        document.getElementById('status').style.display        = 'none';
+        document.getElementById('resultBox').style.display     = 'none';
+        document.getElementById('sizeWarning').style.display   = 'none';
+        document.getElementById('progressBar').style.width     = '0%';
+        document.getElementById('stripScroll').innerHTML       = '';
+    }
+    </script>
+</body>
+</html>

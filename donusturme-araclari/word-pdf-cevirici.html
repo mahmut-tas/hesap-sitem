@@ -16,9 +16,7 @@
     <link href="/css/style.css" rel="stylesheet"/>
     <link href="/css/footer.css" rel="stylesheet"/>
 
-    <!-- mammoth: DOCX → HTML dönüşümü için -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
-    <!-- html2pdf: HTML → PDF için -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
@@ -101,7 +99,6 @@
             font-size: 0.82em; line-height: 1.6; color: #333;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06); text-align: left;
         }
-        /* Önizleme içindeki Word stillerini hafifçe normalize et */
         #previewContent h1 { font-size: 1.4em; margin: 0.4em 0; }
         #previewContent h2 { font-size: 1.2em; margin: 0.35em 0; }
         #previewContent h3 { font-size: 1.05em; margin: 0.3em 0; }
@@ -168,36 +165,29 @@
         <section class="container">
             <div class="converter-container">
 
-                <!-- Yükleme Alanı -->
-                <div class="upload-area" id="uploadArea"
-                     onclick="document.getElementById('fileInput').click()">
+                <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
                     <i class="fas fa-file-word"></i>
                     <h3>Word Dosyasını Seçin</h3>
                     <p>veya buraya sürükleyip bırakın (.docx)</p>
                     <input type="file" id="fileInput" accept=".docx,.doc">
                 </div>
 
-                <!-- Boyut uyarısı -->
                 <div class="size-warning" id="sizeWarning">
                     <i class="fas fa-exclamation-triangle"></i>
                     <span id="sizeWarningText"></span>
                 </div>
 
-                <!-- Dosya bilgisi -->
                 <div id="fileInfo">
                     <strong id="fileName"></strong>
                     <span id="fileSize"></span>
                 </div>
 
-                <!-- Önizleme -->
                 <div id="previewSection">
                     <h4><i class="fas fa-eye icon-small"></i>Belge Önizlemesi</h4>
                     <div id="previewContent"></div>
                 </div>
 
-                <!-- PDF Ayarları -->
-                <button class="settings-toggle" id="settingsToggle" style="display:none;"
-                        onclick="toggleSettings()">
+                <button class="settings-toggle" id="settingsToggle" style="display:none;" onclick="toggleSettings()">
                     <i class="fas fa-sliders-h" style="margin-right:5px;"></i>PDF Ayarları ▾
                 </button>
 
@@ -230,17 +220,14 @@
                     </div>
                 </div>
 
-                <!-- Dönüştür Butonu -->
                 <button id="convertBtn" class="btn-convert">
                     <i class="fas fa-file-pdf" style="margin-right:8px;"></i>PDF'e Dönüştür ve İndir
                 </button>
 
-                <!-- İptal Butonu -->
                 <button id="cancelBtn" class="btn-cancel">
                     <i class="fas fa-times" style="margin-right:6px;"></i>İşlemi İptal Et
                 </button>
 
-                <!-- İlerleme -->
                 <div id="status" class="status-area">
                     <div class="loader"></div>
                     <span id="statusText">İşleniyor...</span>
@@ -250,7 +237,6 @@
                     <div class="status-detail" id="statusDetail"></div>
                 </div>
 
-                <!-- Sonuç Kutusu -->
                 <div class="result-box" id="resultBox">
                     <div style="font-size:1.2em;">✅ <strong>Dönüştürme Tamamlandı!</strong></div>
                     <div class="stats" id="resultStats"></div>
@@ -293,7 +279,7 @@
 
             <div style="background-color:#fef9e7; padding:25px; border-radius:10px; margin-top:20px;">
                 <h4 style="margin-top:0;"><i class="fas fa-exclamation-triangle" style="color:#f39c12; margin-right:8px;"></i> Sınırlamalar</h4>
-                <p>Karmaşık sayfa arka planları, özel fontlar ve makrolar tam olarak aktarılamayabilir. Çok gelişmiş biçimlendirme gerektiren belgeler için masaüstü Word uygulamasını kullanmanızı öneririz.</p>
+                <p>Karmaşık sayfa arka planları, özel fontlar Navy ve makrolar tam olarak aktarılamayabilir. Çok gelişmiş biçimlendirme gerektiren belgeler için masaüstü Word uygulamasını kullanmanızı öneririz.</p>
             </div>
 
             <div style="background-color:#e8f8f5; padding:25px; border-radius:10px; margin-top:20px;">
@@ -305,12 +291,12 @@
 
     <div id="footer-placeholder"></div>
 
-    <!-- Gizli render konteyneri (html2pdf için) -->
     <div id="renderContainer" style="
-        position:fixed; left:-9999px; top:0;
-        width:210mm; background:white;
-        font-family:'Calibri',Arial,sans-serif;
-        font-size:11pt; line-height:1.5; color:#000;
+        position: fixed; left: -9999px; top: 0;
+        opacity: 1;
+        width: 210mm; background: white;
+        font-family: 'Calibri', Arial, sans-serif;
+        font-size: 11pt; line-height: 1.5; color: #000;
     "></div>
 
     <script>
@@ -373,7 +359,6 @@
             const orient = document.getElementById('pageOrientation').value;
             const scale  = parseFloat(document.getElementById('imageQuality').value);
 
-            // html2pdf boyut haritası
             const sizeMap = {
                 a4:     [210, 297],
                 letter: [215.9, 279.4],
@@ -415,7 +400,6 @@
             const result = await mammoth.convertToHtml(
                 { arrayBuffer },
                 {
-                    // Mammoth stil haritalaması: Word stillerini HTML'e çevir
                     styleMap: [
                         "p[style-name='Heading 1'] => h1:fresh",
                         "p[style-name='Heading 2'] => h2:fresh",
@@ -436,7 +420,7 @@
                     }),
                 }
             );
-            return result.value; // HTML string
+            return result.value;
         }
 
         // ─── PDF'e uygun tam HTML belgesi oluştur ─────────────────────────
@@ -498,7 +482,6 @@
         async function handleFile(file) {
             if (!file) return;
 
-            // .doc uyarısı (.docx desteklenir, .doc kısmi destek)
             if (file.name.toLowerCase().endsWith('.doc') && !file.name.toLowerCase().endsWith('.docx')) {
                 sizeWarningTxt.textContent =
                     '.doc formatı kısmi desteklenir. En iyi sonuç için dosyayı .docx olarak kaydedin.';
@@ -526,7 +509,6 @@
             previewSection.style.display = 'none';
             currentHtml = '';
 
-            // Önizleme: mammoth ile DOCX → HTML
             statusText.textContent  = 'Belge okunuyor...';
             statusDetail.textContent = '';
             status.style.display    = 'block';
@@ -542,7 +524,6 @@
                 progressBar.style.width  = '90%';
                 statusText.textContent   = 'Önizleme hazırlanıyor...';
 
-                // Önizleme paneline yükle
                 previewContent.innerHTML = currentHtml;
                 previewSection.style.display = 'block';
 
@@ -607,7 +588,6 @@
             try {
                 const settings = getSettings();
 
-                // Render konteynerine tam HTML'i yerleştir
                 statusText.textContent  = 'Sayfa düzeni hesaplanıyor...';
                 statusDetail.textContent = 'Bu işlem belge boyutuna göre 5-30 saniye sürebilir.';
                 progressBar.style.width = '15%';
@@ -615,7 +595,8 @@
                 const fullHtml = buildPdfHtml(currentHtml, settings.pageWidth);
                 renderContainer.innerHTML = fullHtml;
 
-                await new Promise(r => setTimeout(r, 150)); // DOM yerleşimi için bekle
+                // DÜZELTME: DOM yerleşimi ve özellikle varsa resimlerin yüklenmesi için bekleme süresi 350ms'ye çıkarıldı
+                await new Promise(r => setTimeout(r, 350)); 
 
                 if (cancelRequested) {
                     cleanup();
@@ -625,7 +606,6 @@
                 progressBar.style.width = '35%';
                 statusText.textContent  = 'PDF oluşturuluyor...';
 
-                // html2pdf ile dönüştür
                 const fileName = (document.getElementById('fileName').textContent || 'belge')
                     .replace(/\.docx?$/i, '') + '_hesapkolik.pdf';
 
@@ -638,7 +618,6 @@
                     pagebreak:   { mode: ['avoid-all', 'css', 'legacy'] },
                 };
 
-                // İlerlemeyi simüle et (html2pdf async süreci)
                 let fakeProgress = 35;
                 const progressInterval = setInterval(() => {
                     if (fakeProgress < 88 && !cancelRequested) {
@@ -647,9 +626,10 @@
                     }
                 }, 400);
 
+                // DÜZELTME: html2pdf'e doğrudan renderContainer'ın kendisi parametre olarak geçildi (Seçici hatası önlendi)
                 const pdfBlob = await html2pdf()
                     .set(opt)
-                    .from(renderContainer.querySelector('body') || renderContainer)
+                    .from(renderContainer)
                     .outputPdf('blob');
 
                 clearInterval(progressInterval);
@@ -669,7 +649,6 @@
                 document.body.removeChild(link);
                 setTimeout(() => URL.revokeObjectURL(url), 5000);
 
-                // Temizlik
                 renderContainer.innerHTML = '';
 
                 // Başarı UI
@@ -693,7 +672,6 @@
             }
         });
 
-        // ─── Yardımcı: İptal sonrası temizlik ────────────────────────────
         function cleanup() {
             renderContainer.innerHTML   = '';
             status.style.display        = 'none';
@@ -703,9 +681,8 @@
             progressBar.style.width     = '0%';
         }
 
-    }); // DOMContentLoaded
+    });
 
-    // ─── Sıfırla ─────────────────────────────────────────────────────────────
     function resetConverter() {
         document.getElementById('fileInput').value            = '';
         document.getElementById('fileInfo').style.display     = 'none';
