@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Word - PDF Dönüştürücü - Hesapkolik</title>
+    <meta content="Word (DOCX) belgelerinizi kolayca PDF formatına dönüştürün. Hızlı, güvenli ve ücretsiz araç. Hesapkolik." name="description"/>
+    <meta content="word pdf dönüştür, docx to pdf, word pdf çevirme, ücretsiz pdf dönüştürücü, hesapkolik" name="keywords"/>
+
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+
+    <link href="/css/header.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link href="/css/footer.css" rel="stylesheet"/>
+
+    <!-- mammoth: DOCX → HTML dönüşümü için -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <!-- html2pdf: HTML → PDF için -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0; padding: 0;
+            background-color: #f4f7f6;
+            color: #333; line-height: 1.6;
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+        .hero-section { background-color: #1a3a5c; color: white; padding: 60px 0; text-align: center; }
+        .hero-section p { opacity: 0.85; margin: 10px 0 0; }
+
+        .converter-container {
+            background: white; margin: -40px auto 40px; padding: 40px;
+            border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center; max-width: 700px;
+            z-index: 10; position: relative;
+        }
+
+        /* ── Yükleme Alanı ── */
+        .upload-area {
+            border: 2px dashed #2980b9; padding: 40px; border-radius: 10px;
+            cursor: pointer; transition: all 0.3s; background: #f9fbfd;
+        }
+        .upload-area:hover  { background: #f0f7ff; border-color: #1a6fa8; }
+        .upload-area.drag-over { background: #e3f2fd; border-color: #1565c0; transform: scale(1.01); }
+        .upload-area i { font-size: 50px; color: #2980b9; margin-bottom: 15px; }
+        #fileInput { display: none; }
+
+        /* ── Butonlar ── */
+        .btn-convert {
+            background-color: #1a3a5c; color: white; border: none; padding: 15px 40px;
+            font-size: 1.1em; font-weight: 600; border-radius: 5px; cursor: pointer;
+            margin-top: 20px; display: none; width: 100%; transition: 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+        .btn-convert:hover { background-color: #122b44; }
+
+        .btn-cancel {
+            background-color: #95a5a6; color: white; border: none; padding: 10px 30px;
+            font-size: 0.95em; font-weight: 600; border-radius: 5px; cursor: pointer;
+            margin-top: 10px; display: none; width: 100%; transition: 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+        .btn-cancel:hover { background-color: #7f8c8d; }
+
+        .btn-new {
+            background: #2980b9; color: white; border: none; padding: 10px 25px;
+            border-radius: 5px; cursor: pointer; margin-top: 12px; font-size: 0.9em;
+            font-family: 'Poppins', sans-serif; transition: 0.2s;
+        }
+        .btn-new:hover { background: #1f6f9f; }
+
+        /* ── İlerleme ── */
+        .status-area { margin-top: 20px; font-weight: 600; display: none; }
+        .progress-bar-wrap { width: 100%; background: #eee; border-radius: 30px; height: 10px; margin: 12px 0 8px; overflow: hidden; }
+        .progress-bar { height: 10px; background: linear-gradient(90deg, #2980b9, #27ae60); border-radius: 30px; width: 0%; transition: width 0.4s ease; }
+        .status-detail { font-size: 0.82em; color: #888; margin-top: 4px; font-weight: 400; }
+
+        /* ── Dosya bilgisi ── */
+        #fileInfo { margin-top: 15px; display: none; }
+        #fileSize  { color: #888; font-size: 0.85em; margin-left: 8px; }
+
+        /* ── Boyut uyarısı ── */
+        .size-warning {
+            background: #fff3cd; border: 1px solid #ffc107; color: #856404;
+            padding: 10px 15px; border-radius: 6px; margin-top: 12px;
+            font-size: 0.88em; display: none;
+        }
+
+        /* ── Önizleme ── */
+        #previewSection { display: none; margin-top: 20px; text-align: left; }
+        #previewSection h4 { font-size: 0.9em; color: #666; margin-bottom: 8px; }
+        #previewContent {
+            border: 1px solid #ddd; border-radius: 6px; max-height: 280px;
+            overflow-y: auto; padding: 16px 20px; background: #fff;
+            font-size: 0.82em; line-height: 1.6; color: #333;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06); text-align: left;
+        }
+        /* Önizleme içindeki Word stillerini hafifçe normalize et */
+        #previewContent h1 { font-size: 1.4em; margin: 0.4em 0; }
+        #previewContent h2 { font-size: 1.2em; margin: 0.35em 0; }
+        #previewContent h3 { font-size: 1.05em; margin: 0.3em 0; }
+        #previewContent p  { margin: 0.2em 0; }
+        #previewContent table { border-collapse: collapse; width: 100%; margin: 8px 0; }
+        #previewContent td, #previewContent th { border: 1px solid #ccc; padding: 4px 8px; }
+
+        /* ── PDF Ayarları Paneli ── */
+        .settings-panel {
+            background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px;
+            padding: 18px 20px; margin-top: 16px; text-align: left; display: none;
+        }
+        .settings-panel h4 { margin: 0 0 12px; font-size: 0.92em; color: #444; }
+        .settings-row { display: flex; gap: 16px; flex-wrap: wrap; }
+        .settings-item { flex: 1; min-width: 130px; }
+        .settings-item label { font-size: 0.8em; color: #666; display: block; margin-bottom: 4px; }
+        .settings-item select, .settings-item input[type="checkbox"] {
+            font-family: 'Poppins', sans-serif; font-size: 0.85em;
+            border: 1px solid #ccc; border-radius: 4px; padding: 5px 8px;
+            background: white; width: 100%;
+        }
+        .settings-toggle {
+            background: none; border: none; color: #2980b9; font-size: 0.82em;
+            cursor: pointer; padding: 0; margin-top: 10px; font-family: 'Poppins', sans-serif;
+        }
+        .settings-toggle:hover { text-decoration: underline; }
+
+        /* ── Sonuç Kutusu ── */
+        .result-box {
+            background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px;
+            padding: 20px; margin-top: 20px; display: none;
+        }
+        .result-box .stats { font-size: 0.85em; color: #555; margin-top: 8px; }
+
+        /* ── Mesajlar ── */
+        .error-msg { color: #e74c3c; }
+        .icon-small { color: #2980b9; margin-right: 8px; }
+
+        .loader {
+            border: 4px solid #f3f3f3; border-top: 4px solid #2980b9; border-radius: 50%;
+            width: 30px; height: 30px; animation: spin 1s linear infinite;
+            display: inline-block; vertical-align: middle; margin-right: 10px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* ── Bilgi Bölümü ── */
+        .info-section { padding: 40px 0; text-align: justify; }
+
+        /* Gizli render iframe'i */
+        #renderFrame { display: none; }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Word'den PDF'e Dönüştür</h1>
+                <p>DOCX belgelerinizi yüksek kaliteli PDF formatına saniyeler içinde çevirin.</p>
+            </div>
+        </section>
+
+        <section class="container">
+            <div class="converter-container">
+
+                <!-- Yükleme Alanı -->
+                <div class="upload-area" id="uploadArea"
+                     onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-file-word"></i>
+                    <h3>Word Dosyasını Seçin</h3>
+                    <p>veya buraya sürükleyip bırakın (.docx)</p>
+                    <input type="file" id="fileInput" accept=".docx,.doc">
+                </div>
+
+                <!-- Boyut uyarısı -->
+                <div class="size-warning" id="sizeWarning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span id="sizeWarningText"></span>
+                </div>
+
+                <!-- Dosya bilgisi -->
+                <div id="fileInfo">
+                    <strong id="fileName"></strong>
+                    <span id="fileSize"></span>
+                </div>
+
+                <!-- Önizleme -->
+                <div id="previewSection">
+                    <h4><i class="fas fa-eye icon-small"></i>Belge Önizlemesi</h4>
+                    <div id="previewContent"></div>
+                </div>
+
+                <!-- PDF Ayarları -->
+                <button class="settings-toggle" id="settingsToggle" style="display:none;"
+                        onclick="toggleSettings()">
+                    <i class="fas fa-sliders-h" style="margin-right:5px;"></i>PDF Ayarları ▾
+                </button>
+
+                <div class="settings-panel" id="settingsPanel">
+                    <h4><i class="fas fa-cog icon-small"></i>Dönüştürme Ayarları</h4>
+                    <div class="settings-row">
+                        <div class="settings-item">
+                            <label>Sayfa Boyutu</label>
+                            <select id="pageSize">
+                                <option value="a4">A4</option>
+                                <option value="letter">US Letter</option>
+                                <option value="a3">A3</option>
+                            </select>
+                        </div>
+                        <div class="settings-item">
+                            <label>Yönlendirme</label>
+                            <select id="pageOrientation">
+                                <option value="portrait">Dikey (Portrait)</option>
+                                <option value="landscape">Yatay (Landscape)</option>
+                            </select>
+                        </div>
+                        <div class="settings-item">
+                            <label>Görüntü Kalitesi</label>
+                            <select id="imageQuality">
+                                <option value="2">Yüksek (Yavaş)</option>
+                                <option value="1.5" selected>Orta (Önerilen)</option>
+                                <option value="1">Düşük (Hızlı)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dönüştür Butonu -->
+                <button id="convertBtn" class="btn-convert">
+                    <i class="fas fa-file-pdf" style="margin-right:8px;"></i>PDF'e Dönüştür ve İndir
+                </button>
+
+                <!-- İptal Butonu -->
+                <button id="cancelBtn" class="btn-cancel">
+                    <i class="fas fa-times" style="margin-right:6px;"></i>İşlemi İptal Et
+                </button>
+
+                <!-- İlerleme -->
+                <div id="status" class="status-area">
+                    <div class="loader"></div>
+                    <span id="statusText">İşleniyor...</span>
+                    <div class="progress-bar-wrap">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    <div class="status-detail" id="statusDetail"></div>
+                </div>
+
+                <!-- Sonuç Kutusu -->
+                <div class="result-box" id="resultBox">
+                    <div style="font-size:1.2em;">✅ <strong>Dönüştürme Tamamlandı!</strong></div>
+                    <div class="stats" id="resultStats"></div>
+                    <button class="btn-new" onclick="resetConverter()">
+                        <i class="fas fa-redo" style="margin-right:6px;"></i>Yeni Dosya Dönüştür
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="info-section container">
+            <h2 style="color:#1a3a5c; text-align:center; margin-bottom:30px;">Word - PDF Dönüştürücü Hakkında Her Şey</h2>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:30px; margin-bottom:40px;">
+                <div>
+                    <h4><i class="fas fa-question-circle icon-small"></i> Bu Araç Ne İşe Yarar?</h4>
+                    <p>Hesapkolik tarafından geliştirilen bu araç, Microsoft Word (<strong>.docx</strong>) dosyalarınızı evrensel olarak açılabilen <strong>PDF</strong> formatına dönüştürür. Başlıklar, tablolar, liste biçimlendirmeleri ve yazı stilleri korunur.</p>
+                </div>
+                <div>
+                    <h4><i class="fas fa-check-double icon-small"></i> Neden Hesapkolik?</h4>
+                    <p>Bu hizmet tamamen <strong>ücretsiz</strong> sunulmaktadır. Kayıt işlemi veya dosya sınırı yoktur. Dosyalarınız asla bir sunucuya yüklenmez; tüm işlem tarayıcınızda gerçekleşir.</p>
+                </div>
+            </div>
+
+            <hr style="border:0; border-top:1px dashed #ccc; margin:30px 0;">
+
+            <h3><i class="fas fa-magic icon-small"></i> Nasıl Kullanılır?</h3>
+            <ul style="margin-left:20px; color:#555;">
+                <li><strong>Dosyayı Seçin:</strong> DOCX dosyanızı yükleme alanına sürükleyin veya tıklayarak seçin.</li>
+                <li><strong>Önizleyin:</strong> Belge içeriği otomatik olarak gösterilir.</li>
+                <li><strong>Ayarları Düzenleyin (opsiyonel):</strong> Sayfa boyutu, yönlendirme ve kalite seçeneğini belirleyin.</li>
+                <li><strong>Dönüştürün:</strong> "PDF'e Dönüştür" butonuna basın, indirme otomatik başlar.</li>
+            </ul>
+
+            <div style="background-color:#e8f4fd; padding:25px; border-radius:10px; margin-top:30px;">
+                <h4 style="margin-top:0;"><i class="fas fa-info-circle icon-small"></i> Desteklenen İçerik</h4>
+                <p>Metin biçimlendirme (kalın, italik, altı çizili), başlık seviyeleri (H1–H6), tablolar, listeler (madde imli & numaralı), sayfa yapısı ve kenar boşlukları korunarak PDF'e aktarılır. Görseller de büyük ölçüde desteklenir.</p>
+            </div>
+
+            <div style="background-color:#fef9e7; padding:25px; border-radius:10px; margin-top:20px;">
+                <h4 style="margin-top:0;"><i class="fas fa-exclamation-triangle" style="color:#f39c12; margin-right:8px;"></i> Sınırlamalar</h4>
+                <p>Karmaşık sayfa arka planları, özel fontlar ve makrolar tam olarak aktarılamayabilir. Çok gelişmiş biçimlendirme gerektiren belgeler için masaüstü Word uygulamasını kullanmanızı öneririz.</p>
+            </div>
+
+            <div style="background-color:#e8f8f5; padding:25px; border-radius:10px; margin-top:20px;">
+                <h4 style="margin-top:0;"><i class="fas fa-shield-alt icon-small"></i> Güvenlik ve Gizlilik</h4>
+                <p>Verileriniz güvende! <strong>Hesapkolik Ücretsiz Word Dönüştürücü</strong> %100 tarayıcı tabanlı çalışır. Belgeniz bilgisayarınızdan asla dışarı çıkmaz.</p>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <!-- Gizli render konteyneri (html2pdf için) -->
+    <div id="renderContainer" style="
+        position:fixed; left:-9999px; top:0;
+        width:210mm; background:white;
+        font-family:'Calibri',Arial,sans-serif;
+        font-size:11pt; line-height:1.5; color:#000;
+    "></div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // ─── Header & Footer Yükleyici ────────────────────────────────────
+        const isEnglishPage = window.location.pathname.startsWith('/en/');
+        function loadPartial(id, url) {
+            fetch(url)
+                .then(r => { if (!r.ok) throw new Error(); return r.text(); })
+                .then(html => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    el.innerHTML = html;
+                    el.querySelectorAll('script').forEach(old => {
+                        const s = document.createElement('script');
+                        Array.from(old.attributes).forEach(a => s.setAttribute(a.name, a.value));
+                        s.textContent = old.textContent;
+                        old.parentNode.replaceChild(s, old);
+                    });
+                }).catch(e => console.error(e));
+        }
+        loadPartial('header-placeholder', isEnglishPage ? '/en/header.html' : '/header.html');
+        loadPartial('footer-placeholder', isEnglishPage ? '/en/footer.html' : '/footer.html');
+
+        // ─── DOM Referansları ─────────────────────────────────────────────
+        const fileInput       = document.getElementById('fileInput');
+        const uploadArea      = document.getElementById('uploadArea');
+        const convertBtn      = document.getElementById('convertBtn');
+        const cancelBtn       = document.getElementById('cancelBtn');
+        const status          = document.getElementById('status');
+        const statusText      = document.getElementById('statusText');
+        const statusDetail    = document.getElementById('statusDetail');
+        const progressBar     = document.getElementById('progressBar');
+        const fileInfo        = document.getElementById('fileInfo');
+        const fileNameDisp    = document.getElementById('fileName');
+        const fileSizeDisp    = document.getElementById('fileSize');
+        const sizeWarning     = document.getElementById('sizeWarning');
+        const sizeWarningTxt  = document.getElementById('sizeWarningText');
+        const previewSection  = document.getElementById('previewSection');
+        const previewContent  = document.getElementById('previewContent');
+        const resultBox       = document.getElementById('resultBox');
+        const resultStats     = document.getElementById('resultStats');
+        const renderContainer = document.getElementById('renderContainer');
+        const settingsToggle  = document.getElementById('settingsToggle');
+
+        let cancelRequested   = false;
+        let currentHtml       = '';      // mammoth'un ürettiği HTML
+
+        // ─── Yardımcı: Dosya boyutunu formatla ───────────────────────────
+        function formatBytes(bytes) {
+            if (bytes < 1024)     return bytes + ' B';
+            if (bytes < 1048576)  return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / 1048576).toFixed(1) + ' MB';
+        }
+
+        // ─── Yardımcı: Ayarları oku ───────────────────────────────────────
+        function getSettings() {
+            const size   = document.getElementById('pageSize').value;
+            const orient = document.getElementById('pageOrientation').value;
+            const scale  = parseFloat(document.getElementById('imageQuality').value);
+
+            // html2pdf boyut haritası
+            const sizeMap = {
+                a4:     [210, 297],
+                letter: [215.9, 279.4],
+                a3:     [297, 420],
+            };
+            const [w, h] = sizeMap[size];
+            const isLand = orient === 'landscape';
+
+            return {
+                jsPDF: {
+                    unit:        'mm',
+                    format:      size === 'letter' ? 'letter' : size.toUpperCase(),
+                    orientation: orient,
+                },
+                html2canvas: {
+                    scale,
+                    useCORS:   true,
+                    logging:   false,
+                    allowTaint: true,
+                },
+                margin:     [10, 10, 10, 10],
+                pageWidth:  isLand ? h : w,
+            };
+        }
+
+        // ─── Ayarlar panelini aç/kapat ────────────────────────────────────
+        window.toggleSettings = function () {
+            const panel = document.getElementById('settingsPanel');
+            const btn   = document.getElementById('settingsToggle');
+            const open  = panel.style.display === 'block';
+            panel.style.display = open ? 'none' : 'block';
+            btn.innerHTML       = open
+                ? '<i class="fas fa-sliders-h" style="margin-right:5px;"></i>PDF Ayarları ▾'
+                : '<i class="fas fa-sliders-h" style="margin-right:5px;"></i>PDF Ayarları ▴';
+        };
+
+        // ─── DOCX → HTML (mammoth) ────────────────────────────────────────
+        async function docxToHtml(arrayBuffer) {
+            const result = await mammoth.convertToHtml(
+                { arrayBuffer },
+                {
+                    // Mammoth stil haritalaması: Word stillerini HTML'e çevir
+                    styleMap: [
+                        "p[style-name='Heading 1'] => h1:fresh",
+                        "p[style-name='Heading 2'] => h2:fresh",
+                        "p[style-name='Heading 3'] => h3:fresh",
+                        "p[style-name='Heading 4'] => h4:fresh",
+                        "p[style-name='Heading 5'] => h5:fresh",
+                        "p[style-name='Heading 6'] => h6:fresh",
+                        "p[style-name='Title']     => h1.doc-title:fresh",
+                        "p[style-name='Subtitle']  => p.doc-subtitle:fresh",
+                        "r[style-name='Strong']    => strong",
+                        "r[style-name='Emphasis']  => em",
+                    ],
+                    includeDefaultStyleMap: true,
+                    convertImage: mammoth.images.imgElement(function (image) {
+                        return image.read('base64').then(function (b64) {
+                            return { src: 'data:' + image.contentType + ';base64,' + b64 };
+                        });
+                    }),
+                }
+            );
+            return result.value; // HTML string
+        }
+
+        // ─── PDF'e uygun tam HTML belgesi oluştur ─────────────────────────
+        function buildPdfHtml(innerHtml, pageWidth) {
+            return `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; }
+  body {
+      font-family: 'Calibri', Arial, sans-serif;
+      font-size: 11pt;
+      line-height: 1.6;
+      color: #000;
+      margin: 0;
+      padding: 10mm 15mm;
+      width: ${pageWidth}mm;
+      background: #fff;
+  }
+  h1 { font-size: 20pt; font-weight: bold; margin: 12pt 0 6pt; color: #1a3a5c; border-bottom: 2px solid #1a3a5c; padding-bottom: 4pt; }
+  h2 { font-size: 16pt; font-weight: bold; margin: 10pt 0 5pt; color: #1a3a5c; }
+  h3 { font-size: 13pt; font-weight: bold; margin: 8pt 0 4pt; color: #2c3e50; }
+  h4, h5, h6 { font-size: 11pt; font-weight: bold; margin: 6pt 0 3pt; }
+  p  { margin: 0 0 6pt; }
+  ul, ol { margin: 4pt 0 6pt 20pt; padding: 0; }
+  li { margin-bottom: 3pt; }
+  table { border-collapse: collapse; width: 100%; margin: 8pt 0; font-size: 10pt; }
+  th { background: #1a3a5c; color: white; padding: 6pt 8pt; text-align: left; }
+  td { border: 1px solid #ccc; padding: 5pt 8pt; vertical-align: top; }
+  tr:nth-child(even) td { background: #f5f8fb; }
+  img { max-width: 100%; height: auto; display: block; margin: 6pt 0; }
+  strong, b { font-weight: bold; }
+  em, i { font-style: italic; }
+  u { text-decoration: underline; }
+  s, strike { text-decoration: line-through; }
+  blockquote {
+      border-left: 4px solid #2980b9; margin: 8pt 0; padding: 4pt 12pt;
+      background: #f0f7ff; color: #444; font-style: italic;
+  }
+  pre, code {
+      font-family: 'Courier New', monospace; background: #f5f5f5;
+      border: 1px solid #ddd; border-radius: 3px;
+  }
+  pre  { padding: 8pt; overflow-x: auto; font-size: 9pt; }
+  code { padding: 1pt 4pt; font-size: 9pt; }
+  .doc-title    { font-size: 24pt; font-weight: bold; text-align: center; color: #1a3a5c; margin-bottom: 4pt; }
+  .doc-subtitle { font-size: 14pt; text-align: center; color: #666; margin-bottom: 12pt; }
+  a { color: #2980b9; text-decoration: underline; }
+  hr { border: none; border-top: 1px solid #ccc; margin: 10pt 0; }
+</style>
+</head>
+<body>${innerHtml}</body>
+</html>`;
+        }
+
+        // ─── Dosya seçilince ──────────────────────────────────────────────
+        async function handleFile(file) {
+            if (!file) return;
+
+            // .doc uyarısı (.docx desteklenir, .doc kısmi destek)
+            if (file.name.toLowerCase().endsWith('.doc') && !file.name.toLowerCase().endsWith('.docx')) {
+                sizeWarningTxt.textContent =
+                    '.doc formatı kısmi desteklenir. En iyi sonuç için dosyayı .docx olarak kaydedin.';
+                sizeWarning.style.display = 'block';
+            } else if (file.size > 20 * 1024 * 1024) {
+                sizeWarningTxt.textContent =
+                    'Büyük dosya (' + formatBytes(file.size) + '). Dönüştürme biraz uzun sürebilir.';
+                sizeWarning.style.display = 'block';
+            } else if (file.size > 5 * 1024 * 1024) {
+                sizeWarningTxt.textContent =
+                    'Orta boyutlu dosya (' + formatBytes(file.size) + '). İşlem biraz sürebilir.';
+                sizeWarning.style.display = 'block';
+            } else {
+                sizeWarning.style.display = 'none';
+            }
+
+            fileNameDisp.textContent = file.name;
+            fileSizeDisp.textContent = '(' + formatBytes(file.size) + ')';
+            fileInfo.style.display   = 'block';
+            resultBox.style.display  = 'none';
+            status.style.display     = 'none';
+            progressBar.style.width  = '0%';
+            convertBtn.style.display = 'none';
+            settingsToggle.style.display = 'none';
+            previewSection.style.display = 'none';
+            currentHtml = '';
+
+            // Önizleme: mammoth ile DOCX → HTML
+            statusText.textContent  = 'Belge okunuyor...';
+            statusDetail.textContent = '';
+            status.style.display    = 'block';
+            progressBar.style.width = '20%';
+
+            try {
+                const ab  = await file.arrayBuffer();
+                progressBar.style.width = '55%';
+                statusText.textContent  = 'İçerik analiz ediliyor...';
+
+                currentHtml = await docxToHtml(ab);
+
+                progressBar.style.width  = '90%';
+                statusText.textContent   = 'Önizleme hazırlanıyor...';
+
+                // Önizleme paneline yükle
+                previewContent.innerHTML = currentHtml;
+                previewSection.style.display = 'block';
+
+                progressBar.style.width  = '100%';
+                status.style.display     = 'none';
+
+                convertBtn.style.display    = 'block';
+                settingsToggle.style.display = 'inline-block';
+
+            } catch (err) {
+                console.error(err);
+                status.style.display    = 'block';
+                progressBar.style.width = '0%';
+                statusText.innerHTML    = '<span class="error-msg">❌ Dosya okunamadı: ' + (err.message || 'Bilinmeyen hata') + '</span>';
+                statusDetail.textContent = 'Dosyanın geçerli bir .docx formatında olduğundan emin olun.';
+            }
+        }
+
+        // ─── Event: Dosya seçimi ──────────────────────────────────────────
+        fileInput.addEventListener('change', function () {
+            if (this.files[0]) handleFile(this.files[0]);
+        });
+
+        // ─── Event: Drag & Drop ───────────────────────────────────────────
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('drag-over');
+        });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('drag-over');
+        });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            const f = e.dataTransfer.files[0];
+            if (f) handleFile(f);
+        });
+
+        // ─── Event: İptal ────────────────────────────────────────────────
+        cancelBtn.addEventListener('click', () => {
+            cancelRequested = true;
+            cancelBtn.style.display  = 'none';
+            statusText.textContent   = '⏹ İptal ediliyor...';
+        });
+
+        // ─── Ana Dönüştürme Fonksiyonu ────────────────────────────────────
+        convertBtn.addEventListener('click', async () => {
+            if (!currentHtml) return;
+
+            cancelRequested          = false;
+            convertBtn.style.display = 'none';
+            settingsToggle.style.display = 'none';
+            cancelBtn.style.display  = 'block';
+            status.style.display     = 'block';
+            resultBox.style.display  = 'none';
+            progressBar.style.width  = '0%';
+            statusText.textContent   = 'PDF hazırlanıyor...';
+            statusDetail.textContent = '';
+
+            const startTime = Date.now();
+
+            try {
+                const settings = getSettings();
+
+                // Render konteynerine tam HTML'i yerleştir
+                statusText.textContent  = 'Sayfa düzeni hesaplanıyor...';
+                statusDetail.textContent = 'Bu işlem belge boyutuna göre 5-30 saniye sürebilir.';
+                progressBar.style.width = '15%';
+
+                const fullHtml = buildPdfHtml(currentHtml, settings.pageWidth);
+                renderContainer.innerHTML = fullHtml;
+
+                await new Promise(r => setTimeout(r, 150)); // DOM yerleşimi için bekle
+
+                if (cancelRequested) {
+                    cleanup();
+                    return;
+                }
+
+                progressBar.style.width = '35%';
+                statusText.textContent  = 'PDF oluşturuluyor...';
+
+                // html2pdf ile dönüştür
+                const fileName = (document.getElementById('fileName').textContent || 'belge')
+                    .replace(/\.docx?$/i, '') + '_hesapkolik.pdf';
+
+                const opt = {
+                    margin:      settings.margin,
+                    filename:    fileName,
+                    image:       { type: 'jpeg', quality: 0.92 },
+                    html2canvas: settings.html2canvas,
+                    jsPDF:       settings.jsPDF,
+                    pagebreak:   { mode: ['avoid-all', 'css', 'legacy'] },
+                };
+
+                // İlerlemeyi simüle et (html2pdf async süreci)
+                let fakeProgress = 35;
+                const progressInterval = setInterval(() => {
+                    if (fakeProgress < 88 && !cancelRequested) {
+                        fakeProgress += Math.random() * 6;
+                        progressBar.style.width = Math.min(fakeProgress, 88) + '%';
+                    }
+                }, 400);
+
+                const pdfBlob = await html2pdf()
+                    .set(opt)
+                    .from(renderContainer.querySelector('body') || renderContainer)
+                    .outputPdf('blob');
+
+                clearInterval(progressInterval);
+
+                if (cancelRequested) {
+                    cleanup();
+                    return;
+                }
+
+                // İndir
+                const url  = URL.createObjectURL(pdfBlob);
+                const link = document.createElement('a');
+                link.href     = url;
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+                // Temizlik
+                renderContainer.innerHTML = '';
+
+                // Başarı UI
+                progressBar.style.width  = '100%';
+                const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+                status.style.display     = 'none';
+                cancelBtn.style.display  = 'none';
+                resultBox.style.display  = 'block';
+                resultStats.textContent  =
+                    `${formatBytes(pdfBlob.size)} PDF · ${elapsed} saniyede tamamlandı`;
+
+            } catch (err) {
+                console.error(err);
+                cancelBtn.style.display  = 'none';
+                progressBar.style.width  = '0%';
+                statusText.innerHTML     = '<span class="error-msg">❌ Hata oluştu: ' + (err.message || 'Bilinmeyen hata') + '</span>';
+                statusDetail.textContent = 'Lütfen farklı bir dosya deneyin veya sayfayı yenileyip tekrar deneyin.';
+                convertBtn.style.display = 'block';
+                settingsToggle.style.display = 'inline-block';
+                renderContainer.innerHTML = '';
+            }
+        });
+
+        // ─── Yardımcı: İptal sonrası temizlik ────────────────────────────
+        function cleanup() {
+            renderContainer.innerHTML   = '';
+            status.style.display        = 'none';
+            cancelBtn.style.display     = 'none';
+            convertBtn.style.display    = 'block';
+            settingsToggle.style.display = 'inline-block';
+            progressBar.style.width     = '0%';
+        }
+
+    }); // DOMContentLoaded
+
+    // ─── Sıfırla ─────────────────────────────────────────────────────────────
+    function resetConverter() {
+        document.getElementById('fileInput').value            = '';
+        document.getElementById('fileInfo').style.display     = 'none';
+        document.getElementById('convertBtn').style.display   = 'none';
+        document.getElementById('cancelBtn').style.display    = 'none';
+        document.getElementById('status').style.display       = 'none';
+        document.getElementById('resultBox').style.display    = 'none';
+        document.getElementById('sizeWarning').style.display  = 'none';
+        document.getElementById('previewSection').style.display = 'none';
+        document.getElementById('settingsToggle').style.display = 'none';
+        document.getElementById('settingsPanel').style.display  = 'none';
+        document.getElementById('progressBar').style.width    = '0%';
+        document.getElementById('renderContainer').innerHTML  = '';
+    }
+    </script>
+</body>
+</html>
